@@ -24,6 +24,18 @@ export function parseSrt(text) {
   return items;
 }
 
+export function closeSrtGaps(items) {
+  if (!Array.isArray(items) || items.length === 0) return items || [];
+  const out = items.map((item) => ({ ...item }));
+  if (out[0].start > 0) out[0].start = 0;
+  for (let i = 1; i < out.length; i++) {
+    const prev = out[i - 1];
+    const current = out[i];
+    if (current.start > prev.end) prev.end = round3(current.start);
+  }
+  return out;
+}
+
 export function splitScript(script) {
   const normalized = String(script || '').replace(/\r/g, '').trim();
   if (!normalized) return [];
@@ -46,7 +58,7 @@ function chooseBoundary(target, candidates, min, max) {
 }
 
 export async function buildBeats({ script, srtText, ttsPath, maxBeat = 3.2, minBeat = 0.85 }) {
-  let beats = srtText ? parseSrt(srtText) : [];
+  let beats = srtText ? closeSrtGaps(parseSrt(srtText)) : [];
   if (!beats.length) {
     const phrases = splitScript(script);
     if (!phrases.length) throw new Error('Script or SRT is required.');
