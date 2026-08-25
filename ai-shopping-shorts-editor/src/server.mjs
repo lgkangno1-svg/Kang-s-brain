@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pipeline as streamPipeline } from 'node:stream/promises';
 import { Transform } from 'node:stream';
-import { projectId, ensureDir, safeFilename, writeJson, readJson } from './core/utils.mjs';
+import { projectId, ensureDir, safeFilename, parseByteRange, writeJson, readJson } from './core/utils.mjs';
 import { runProject, replaceClipAndRerender, resolveSettings } from './core/pipeline.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,10 +36,14 @@ function mime(file) { return file.endsWith('.html') ? 'text/html; charset=utf-8'
 
 async function sendFile(req, res, filePath, contentType) {
   const stat = await fs.stat(filePath);
-  const range = req.headers.range;
-  if (range) {
-    const m = range.match(/bytes=(\d+)-(\d*)/);
-    const start = Number(m?.[1] || 0); const end = m?.[2] ? Number(m[2]) : stat.size - 1;
+  const range = parseByteRange(req.headers.range, stat.size);
+  if (req.headers.range && !range?.satisfiable) {
+    res.writeHead(416, { 'content-range': `bytes */${stat.size}`, 'accept-ranges': 'bytes' });
+    res.end();
+    return;
+  }
+  if (range?.satisfiable) {
+    const { start, end } = range;
     res.writeHead(206, { 'content-type': contentType, 'content-length': end - start + 1, 'content-range': `bytes ${start}-${end}/${stat.size}`, 'accept-ranges': 'bytes' });
     createReadStream(filePath, { start, end }).pipe(res); return;
   }
