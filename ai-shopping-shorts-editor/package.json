@@ -1,0 +1,16 @@
+{
+  "name": "ai-shopping-shorts-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-assisted cut-only editor for shopping Shorts using OpenCode Go Vision + FFmpeg.",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test",
+    "demo": "node scripts/demo.mjs",
+    "check": "node --check src/server.mjs && node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
