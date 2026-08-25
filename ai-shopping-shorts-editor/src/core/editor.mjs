@@ -112,9 +112,15 @@ export async function buildEdl({ beats, segments, apiKey, settings, usage, workD
     await fs.mkdir(judgeDir, { recursive: true });
     const items = [];
     for (const clip of edl) {
-      const framePath = path.join(judgeDir, `${clip.beatId}.jpg`);
-      await extractFrameAt(clip.sourcePath, clip.sourceStart + (clip.sourceEnd - clip.sourceStart) / 2, framePath, 512);
-      items.push({ beatId: clip.beatId, text: clip.text, framePath });
+      const span = clip.sourceEnd - clip.sourceStart;
+      const times = [0.12, 0.5, 0.88].map((ratio) => clip.sourceStart + span * ratio);
+      const framePaths = [];
+      for (let i = 0; i < times.length; i++) {
+        const framePath = path.join(judgeDir, `${clip.beatId}-${i + 1}.jpg`);
+        await extractFrameAt(clip.sourcePath, times[i], framePath, 512);
+        framePaths.push(framePath);
+      }
+      items.push({ beatId: clip.beatId, text: clip.text, framePaths });
     }
     try {
       const judgments = await judgeSelectionsVision(items, { apiKey, model: settings.visionModel, usage });
