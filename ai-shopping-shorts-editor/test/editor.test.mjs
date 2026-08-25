@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEdl } from '../src/core/editor.mjs';
+import { buildEdl, chooseJudgeReplacement } from '../src/core/editor.mjs';
 
 test('fallback editor keeps choosing the best remaining eligible scene', async () => {
   const beats = [
@@ -16,4 +16,18 @@ test('fallback editor keeps choosing the best remaining eligible scene', async (
   const edl = await buildEdl({ beats, segments, apiKey: '', settings: {}, usage: {}, workDir: '/tmp' });
 
   assert.deepEqual(edl.map((clip) => clip.segmentId), ['s1', 's2']);
+});
+
+test('quality judge replacement skips segments already occupied by another beat', () => {
+  const clip = { segmentId: 's1', sourceId: 'V1', alternatives: ['s2', 's3', 's4'] };
+  const beat = { id: 'b1', duration: 1.5 };
+  const segments = new Map([
+    ['s2', { id: 's2', sourceId: 'V2', duration: 2.0 }],
+    ['s3', { id: 's3', sourceId: 'V3', duration: 1.0 }],
+    ['s4', { id: 's4', sourceId: 'V4', duration: 2.0 }]
+  ]);
+
+  const replacement = chooseJudgeReplacement(clip, beat, segments, new Set(['s2']));
+
+  assert.equal(replacement?.id, 's4');
 });
