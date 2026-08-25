@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseSrt, splitScript, adaptBeatsToAvailableSegments } from '../src/core/beats.mjs';
+import { parseSrt, splitScript, buildBeats, adaptBeatsToAvailableSegments } from '../src/core/beats.mjs';
 import { normalizeSegments } from '../src/core/media.mjs';
 import { validateEdl } from '../src/core/editor.mjs';
 
@@ -21,6 +21,17 @@ test('normalizeSegments splits long shots', () => {
 test('validateEdl catches gaps', () => {
   const x = validateEdl([{ programStart: 0, programEnd: 2, sourceStart: 0, sourceEnd: 2, segmentId: 'a', sourceId: 'V1' }, { programStart: 2.5, programEnd: 4, sourceStart: 1, sourceEnd: 2.5, segmentId: 'b', sourceId: 'V2' }]);
   assert.equal(x.ok, false);
+});
+
+test('buildBeats merges a leading micro-beat forward when it fits maxBeat', async () => {
+  const srt = '1\n00:00:00,000 --> 00:00:00,300\n자\n\n2\n00:00:00,300 --> 00:00:01,800\n상품을 보여드릴게요\n\n3\n00:00:01,800 --> 00:00:03,200\n포장도 확인하세요';
+  const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.85, maxBeat: 3.2 });
+  assert.equal(out.length, 2);
+  assert.equal(out[0].start, 0);
+  assert.equal(out[0].end, 1.8);
+  assert.equal(out[0].duration, 1.8);
+  assert.equal(out[0].text, '자 상품을 보여드릴게요');
+  assert.equal(out[1].start, 1.8);
 });
 
 test('adaptBeatsToAvailableSegments splits narration when every source shot is shorter', () => {
