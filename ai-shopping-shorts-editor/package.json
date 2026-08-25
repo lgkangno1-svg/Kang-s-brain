@@ -8,7 +8,8 @@
     "start": "node src/server.mjs",
     "test": "node --test",
     "demo": "node scripts/demo.mjs",
-    "check": "node --check src/server.mjs && node --test"
+    "check": "node --check src/server.mjs && node --test",
+    "doctor": "node scripts/doctor.mjs"
   },
   "engines": {
     "node": ">=20"
