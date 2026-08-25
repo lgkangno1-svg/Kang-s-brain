@@ -56,6 +56,29 @@ async function imageDataUrl(filePath) {
   return `data:${mime};base64,${bytes.toString('base64')}`;
 }
 
+export function validateVisionBatchResponse(batch, parsed) {
+  if (!Array.isArray(parsed)) throw new Error('Vision analysis did not return an array.');
+  const expectedIds = batch.map((seg) => seg.id);
+  const expected = new Set(expectedIds);
+  const seen = new Set();
+  const duplicate = [];
+  const unexpected = [];
+
+  for (const row of parsed) {
+    const id = String(row?.id || '');
+    if (!expected.has(id)) unexpected.push(id || '(missing id)');
+    else if (seen.has(id)) duplicate.push(id);
+    else seen.add(id);
+  }
+
+  const missing = expectedIds.filter((id) => !seen.has(id));
+  if (parsed.length !== batch.length || missing.length || duplicate.length || unexpected.length) {
+    throw new Error(`Vision analysis batch integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  }
+
+  return new Map(parsed.map((row) => [row.id, row]));
+}
+
 export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepseek-v4-flash-vision-exp', batchSize = 10, usage, onProgress }) {
   const output = [];
   for (let offset = 0; offset < segments.length; offset += batchSize) {
@@ -71,9 +94,8 @@ export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepsee
       maxTokens: Math.max(2500, batch.length * 420)
     });
     const parsed = extractJson(raw);
-    if (!Array.isArray(parsed)) throw new Error('Vision analysis did not return an array.');
-    const byId = new Map(parsed.map((x) => [x.id, x]));
-    for (const seg of batch) output.push({ ...seg, ...(byId.get(seg.id) || {}) });
+    const byId = validateVisionBatchResponse(batch, parsed);
+    for (const seg of batch) output.push({ ...seg, ...byId.get(seg.id) });
     onProgress?.(Math.min(1, (offset + batch.length) / segments.length));
   }
   return output;
