@@ -26,12 +26,30 @@ export function parseSrt(text) {
 
 export function closeSrtGaps(items) {
   if (!Array.isArray(items) || items.length === 0) return items || [];
-  const out = items.map((item) => ({ ...item }));
-  if (out[0].start > 0) out[0].start = 0;
-  for (let i = 1; i < out.length; i++) {
-    const prev = out[i - 1];
-    const current = out[i];
-    if (current.start > prev.end) prev.end = round3(current.start);
+  const out = [];
+  for (const original of items) {
+    const current = { ...original };
+    if (!out.length) {
+      if (current.start > 0) current.start = 0;
+      out.push(current);
+      continue;
+    }
+
+    const prev = out.at(-1);
+    if (current.start > prev.end) {
+      prev.end = round3(current.start);
+      out.push(current);
+      continue;
+    }
+
+    if (current.start < prev.end) {
+      if (current.end <= prev.end) {
+        prev.text = `${prev.text} ${current.text}`.trim();
+        continue;
+      }
+      current.start = round3(prev.end);
+    }
+    out.push(current);
   }
   return out;
 }
