@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS = {
   analysisWidth: 512,
   visionBatchSize: 10,
   judgeThreshold: 62,
+  failOnAiError: true,
   fitMode: 'crop',
   segmenting: { min: 1.0, ideal: 3.0, max: 5.2, maxSegments: 80 }
 };
@@ -77,7 +78,8 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
         });
         await writeJson(visionCachePath, segments.map(({ framePath, sourcePath, ...rest }) => rest));
       } catch (error) {
-        onStatus(`Vision API 분석 실패. 로컬 장면 정보로 계속 진행: ${error.message}`);
+        if (settings.failOnAiError !== false) throw new Error(`OpenCode Vision 분석 실패: ${error.message}`);
+        onStatus(`Vision API 분석 실패. 명시적 fallback 설정에 따라 로컬 장면 정보로 계속 진행: ${error.message}`);
         segments = allSegments;
       }
     }
@@ -88,9 +90,7 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
   let beats = await buildBeats({ script, srtText, ttsPath, maxBeat: 3.2 });
   const beforeAdaptiveSplit = beats.length;
   beats = adaptBeatsToAvailableSegments(beats, segments);
-  if (beats.length > beforeAdaptiveSplit) {
-    onStatus(`짧은 원본 컷에 맞춰 편집 Beat를 ${beforeAdaptiveSplit}개에서 ${beats.length}개로 세분화`);
-  }
+  if (beats.length > beforeAdaptiveSplit) onStatus(`짧은 원본 컷에 맞춰 편집 Beat를 ${beforeAdaptiveSplit}개에서 ${beats.length}개로 세분화`);
   await writeJson(path.join(workDir, 'beats.json'), beats);
   await writeJson(path.join(workDir, 'segments.json'), segments.map(({ framePath, ...rest }) => rest));
 
