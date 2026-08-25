@@ -25,6 +25,7 @@
 - `minBeat`보다 짧은 micro-beat는 이전 beat와 합칠 수 있을 때만 처리하면 첫 beat가 그대로 남는다. 쇼츠 시작의 0.x초 순간 컷을 줄이려면 이전 병합이 불가능한 경우 다음 beat와도 `maxBeat` 범위 안에서 안전하게 forward-merge하고 타임라인 연속성을 보존한다.
 - SRT를 편집 타임라인의 source of truth로 사용할 때는 단순 공백뿐 아니라 겹치는 cue도 EDL 생성 전에 정규화해야 한다. 부분 겹침은 자막 순서를 보존한 채 다음 cue의 시작점을 직전 cue 끝으로 당기고, 완전히 직전 cue 안에 포함된 cue는 텍스트를 직전 beat에 흡수해 0/음수 길이 beat와 program overlap을 만들지 않는다.
 - SRT 파일의 블록/번호 순서를 시간 순서라고 가정하지 않는다. 내보내기·수정 과정에서 cue 블록이 뒤섞여도 정상 타임라인을 겹침으로 오판하지 않도록 gap/overlap 정규화 전에 `start` 오름차순으로 정렬하고, 같은 시작 시각은 더 긴 cue를 먼저 처리한다.
+- 유료 Vision batch 응답은 배열이라는 이유만으로 신뢰하지 않는다. 요청한 segment ID가 정확히 한 번씩 모두 돌아왔는지 검증하고, 누락·중복·예상 밖 ID가 하나라도 있으면 조용히 로컬 기본 메타데이터와 섞지 말고 실패로 처리해야 Planner가 부분적으로 미분석된 장면을 정상 AI 분석 결과처럼 사용하지 않는다.
 
 ## Quality metrics
 - Caption↔visual judge score
