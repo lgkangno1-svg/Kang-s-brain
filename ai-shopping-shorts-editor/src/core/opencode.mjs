@@ -62,7 +62,7 @@ export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepsee
     const batch = segments.slice(offset, offset + batchSize);
     const content = [{
       type: 'text',
-      text: `You are a video-shot analyst for ecommerce shopping Shorts. Each following image is the CENTER frame of a distinct shot, in exactly this order:\n${batch.map((s, i) => `${i + 1}. ${s.id} (${s.sourceId}, ${s.start}-${s.end}s)`).join('\n')}\n\nReturn ONLY a JSON array with one object per image, same order. Schema: {"id":string,"description":string,"subjects":string[],"actions":string[],"usabilityTags":string[],"shotType":"close_up|medium|wide|macro|unknown","productVisibility":0..1,"visualQuality":0..1,"motionLevel":0..1,"confidence":0..1}. Describe visible evidence only. Tags should be useful to match narration such as freshness, texture, size, packaging, selection, preparation, eating, shipping, comparison, detail.`
+      text: `You are a video-shot analyst for ecommerce shopping Shorts. Each following image is the CENTER frame of a distinct shot, in exactly this order:\n${batch.map((s, i) => `${i + 1}. ${s.id} (${s.sourceId}, ${s.start}-${s.end}s)`).join('\n')}\n\nReturn ONLY a JSON array with one object per image, same order. Schema: {"id":string,"description":string,"subjects":string[],"actions":string[],"usabilityTags":string[],"shotType":"close_up|medium|wide|macro|unknown","productVisibility":0..1,"visualQuality":0..1,"motionLevel":0..1,"confidence":0..1}. Describe visible evidence only. Write description and usabilityTags in concise Korean (keep visible brand/product names as written). Keep description under 80 Korean characters and each list to at most 5 items. Tags should help match shopping narration such as 신선함, 식감, 크기, 포장, 선별, 손질, 먹는장면, 배송, 비교, 디테일.`
     }];
     for (const seg of batch) content.push({ type: 'image_url', image_url: { url: await imageDataUrl(seg.framePath), detail: 'low' } });
     const raw = await postChat({
@@ -82,9 +82,11 @@ export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepsee
 export async function planTimelineAI(beats, segments, { apiKey, model = 'deepseek-v4-flash', usage }) {
   const compactSegments = segments.map((s) => ({
     id: s.id, sourceId: s.sourceId, start: s.start, end: s.end, duration: s.duration,
-    description: s.description, actions: s.actions, subjects: s.subjects,
-    tags: s.usabilityTags, shotType: s.shotType,
-    productVisibility: s.productVisibility, visualQuality: s.visualQuality, confidence: s.confidence
+    description: String(s.description || '').slice(0, 140),
+    actions: (s.actions || []).slice(0, 5), subjects: (s.subjects || []).slice(0, 5),
+    tags: (s.usabilityTags || []).slice(0, 5), shotType: s.shotType,
+    productVisibility: Math.round(Number(s.productVisibility || 0) * 100) / 100,
+    visualQuality: Math.round(Number(s.visualQuality || 0) * 100) / 100
   }));
   const prompt = `You are the edit director for a CUT-ONLY YouTube Shopping Shorts video.\nGoal: map each narration beat to the most semantically relevant visual from several source videos.\nRules:\n- Do not simply concatenate sources. Mix sources throughout.\n- Prefer a visual action/product detail that directly supports the narration.\n- Avoid using the same segment twice.\n- Avoid the same source more than 2 times consecutively when comparable alternatives exist.\n- Each chosen source segment must be long enough for beat.duration.\n- sourceStart must be within the candidate segment and leave enough time for the full beat.\n- Keep cuts aligned exactly to beat boundaries.\n- Return 3 alternative segment IDs for each beat when possible.\n\nBEATS:\n${JSON.stringify(beats)}\n\nSEGMENTS:\n${JSON.stringify(compactSegments)}\n\nReturn ONLY JSON object: {"choices":[{"beatId":string,"segmentId":string,"sourceStart":number,"score":0..100,"reason":string,"alternatives":string[]}]} . Include exactly one choice per beat.`;
   const raw = await postChat({
@@ -98,12 +100,15 @@ export async function planTimelineAI(beats, segments, { apiKey, model = 'deepsee
   return extractJson(raw);
 }
 
-export async function judgeSelectionsVision(items, { apiKey, model = 'deepseek-v4-flash-vision-exp', usage, batchSize = 8 }) {
+export async function judgeSelectionsVision(items, { apiKey, model = 'deepseek-v4-flash-vision-exp', usage, batchSize = 6 }) {
   const results = [];
   for (let offset = 0; offset < items.length; offset += batchSize) {
     const batch = items.slice(offset, offset + batchSize);
-    const content = [{ type: 'text', text: `Judge how well each image supports its narration beat in a product shopping Short. Images are in order.\n${batch.map((x, i) => `${i + 1}. ${x.beatId}: ${x.text}`).join('\n')}\nReturn ONLY JSON array: [{"beatId":string,"score":0..100,"reason":string}]. Score semantic support, not aesthetics alone.` }];
-    for (const item of batch) content.push({ type: 'image_url', image_url: { url: await imageDataUrl(item.framePath), detail: 'low' } });
+    const content = [{ type: 'text', text: `각 자막 Beat와 선택된 영상 동작이 얼마나 잘 맞는지 평가하세요. 각 Beat 뒤에는 시간순으로 시작/중간/끝 3프레임이 제공됩니다. 정지 이미지 미학보다 세 프레임 전체의 상품/행동 의미가 내레이션을 뒷받침하는지를 우선하세요.\n${batch.map((x, i) => `${i + 1}. ${x.beatId}: ${x.text}`).join('\n')}\nReturn ONLY JSON array: [{"beatId":string,"score":0..100,"reason":string}].` }];
+    for (const item of batch) {
+      const paths = item.framePaths?.length ? item.framePaths : [item.framePath].filter(Boolean);
+      for (const framePath of paths) content.push({ type: 'image_url', image_url: { url: await imageDataUrl(framePath), detail: 'low' } });
+    }
     const raw = await postChat({ apiKey, model, usage, messages: [{ role: 'user', content }], maxTokens: 2500 });
     const parsed = extractJson(raw);
     if (Array.isArray(parsed)) results.push(...parsed);
