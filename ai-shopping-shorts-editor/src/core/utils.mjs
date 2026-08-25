@@ -1,0 +1,63 @@
+import { createHash, randomUUID } from 'node:crypto';
+import { createReadStream, promises as fs } from 'node:fs';
+import path from 'node:path';
+
+export const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+export const round3 = (n) => Math.round(n * 1000) / 1000;
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const projectId = () => `${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`;
+export const sha256Text = (text) => createHash('sha256').update(String(text)).digest('hex');
+
+export async function ensureDir(dir) {
+  await fs.mkdir(dir, { recursive: true });
+  return dir;
+}
+
+export function safeFilename(input) {
+  const base = path.basename(String(input || 'file.bin'));
+  return base.replace(/[^a-zA-Z0-9._()\-가-힣]/g, '_').slice(0, 180) || 'file.bin';
+}
+
+export async function sha256File(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256');
+    const stream = createReadStream(filePath);
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('error', reject);
+    stream.on('end', () => resolve(hash.digest('hex')));
+  });
+}
+
+export async function readJson(filePath, fallback = null) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
+
+export async function writeJson(filePath, value) {
+  await ensureDir(path.dirname(filePath));
+  await fs.writeFile(filePath, JSON.stringify(value, null, 2));
+}
+
+export function extractJson(text) {
+  if (typeof text !== 'string') throw new Error('Model response was not text.');
+  const trimmed = text.trim();
+  try { return JSON.parse(trimmed); } catch {}
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced) {
+    try { return JSON.parse(fenced[1].trim()); } catch {}
+  }
+  const firstArray = trimmed.indexOf('[');
+  const lastArray = trimmed.lastIndexOf(']');
+  if (firstArray >= 0 && lastArray > firstArray) {
+    try { return JSON.parse(trimmed.slice(firstArray, lastArray + 1)); } catch {}
+  }
+  const firstObj = trimmed.indexOf('{');
+  const lastObj = trimmed.lastIndexOf('}');
+  if (firstObj >= 0 && lastObj > firstObj) {
+    try { return JSON.parse(trimmed.slice(firstObj, lastObj + 1)); } catch {}
+  }
+  throw new Error('Could not parse JSON from model response.');
+}
