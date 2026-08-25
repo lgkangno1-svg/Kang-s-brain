@@ -17,6 +17,9 @@
 8. 실패 시 수정 또는 revert
 9. 변경 이유와 trade-off 기록
 
+## Durable lessons
+- AI를 쓰지 않는 deterministic fallback도 품질 점수 정렬을 실제 선택에 그대로 반영해야 한다. 후보를 품질순으로 정렬한 뒤 beat index로 회전 선택하면 낮은 품질 장면을 의도적으로 고를 수 있으므로, duration/중복/diversity 제약을 적용한 뒤 최고 점수의 남은 후보를 우선한다.
+
 ## Quality metrics
 - Caption↔visual judge score
 - duplicate segment rate
