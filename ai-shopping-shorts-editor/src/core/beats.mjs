@@ -93,13 +93,28 @@ export async function buildBeats({ script, srtText, ttsPath, maxBeat = 3.2, minB
   }
 
   const final = [];
-  for (const beat of normalized) {
+  for (let i = 0; i < normalized.length; i++) {
+    const beat = normalized[i];
     const d = beat.end - beat.start;
-    if (d < minBeat && final.length && (beat.end - final.at(-1).start) <= maxBeat) {
-      const prev = final.at(-1);
-      prev.end = beat.end;
-      prev.text = `${prev.text} ${beat.text}`.trim();
-    } else final.push({ ...beat });
+    if (d < minBeat) {
+      if (final.length && (beat.end - final.at(-1).start) <= maxBeat + 0.05) {
+        const prev = final.at(-1);
+        prev.end = beat.end;
+        prev.text = `${prev.text} ${beat.text}`.trim();
+        continue;
+      }
+      const next = normalized[i + 1];
+      if (next && (next.end - beat.start) <= maxBeat + 0.05) {
+        final.push({
+          ...beat,
+          end: next.end,
+          text: `${beat.text} ${next.text}`.trim()
+        });
+        i += 1;
+        continue;
+      }
+    }
+    final.push({ ...beat });
   }
   return final.map((b, i) => ({ ...b, id: `b${i + 1}`, duration: round3(b.end - b.start) }));
 }
