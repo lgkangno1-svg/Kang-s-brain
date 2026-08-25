@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseSrt, splitScript } from '../src/core/beats.mjs';
+import { parseSrt, splitScript, adaptBeatsToAvailableSegments } from '../src/core/beats.mjs';
 import { normalizeSegments } from '../src/core/media.mjs';
 import { validateEdl } from '../src/core/editor.mjs';
 
@@ -21,4 +21,14 @@ test('normalizeSegments splits long shots', () => {
 test('validateEdl catches gaps', () => {
   const x = validateEdl([{ programStart: 0, programEnd: 2, sourceStart: 0, sourceEnd: 2, segmentId: 'a', sourceId: 'V1' }, { programStart: 2.5, programEnd: 4, sourceStart: 1, sourceEnd: 2.5, segmentId: 'b', sourceId: 'V2' }]);
   assert.equal(x.ok, false);
+});
+
+test('adaptBeatsToAvailableSegments splits narration when every source shot is shorter', () => {
+  const beats = [{ id:'b1', start:0, end:3, duration:3, text:'빠른 장면에서도 자막 타이밍에 맞춰 편집합니다' }];
+  const segments = [{ duration:1.2 }, { duration:1.1 }, { duration:1.0 }];
+  const out = adaptBeatsToAvailableSegments(beats, segments);
+  assert.ok(out.length >= 3);
+  assert.equal(out[0].start, 0);
+  assert.equal(out.at(-1).end, 3);
+  assert.ok(out.every((b) => b.duration <= 1.24));
 });
