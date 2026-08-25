@@ -103,3 +103,38 @@ export async function buildBeats({ script, srtText, ttsPath, maxBeat = 3.2, minB
   }
   return final.map((b, i) => ({ ...b, id: `b${i + 1}`, duration: round3(b.end - b.start) }));
 }
+
+export function adaptBeatsToAvailableSegments(beats, segments, options = {}) {
+  const safety = options.safety ?? 0.04;
+  const durations = (segments || [])
+    .map((s) => Number(s.duration || (s.end - s.start)))
+    .filter((d) => Number.isFinite(d) && d > 0.2);
+  if (!durations.length) return beats;
+
+  const maxUsable = Math.max(...durations) + safety;
+  const out = [];
+  for (const beat of beats) {
+    if (beat.duration <= maxUsable) {
+      out.push({ ...beat, id: `b${out.length + 1}` });
+      continue;
+    }
+
+    const parts = Math.ceil(beat.duration / Math.max(0.25, maxUsable - safety));
+    const words = String(beat.text || '').split(/\s+/).filter(Boolean);
+    for (let i = 0; i < parts; i++) {
+      const start = beat.start + beat.duration * i / parts;
+      const end = beat.start + beat.duration * (i + 1) / parts;
+      const from = Math.floor(i * words.length / parts);
+      const to = Math.floor((i + 1) * words.length / parts);
+      const text = words.slice(from, to).join(' ') || beat.text;
+      out.push({
+        id: `b${out.length + 1}`,
+        start: round3(start),
+        end: round3(end),
+        duration: round3(end - start),
+        text
+      });
+    }
+  }
+  return out.map((b, i) => ({ ...b, id: `b${i + 1}`, duration: round3(b.end - b.start) }));
+}
