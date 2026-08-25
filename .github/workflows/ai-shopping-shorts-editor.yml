@@ -1,0 +1,23 @@
+name: AI Shopping Shorts Editor CI
+
+on:
+  push:
+    paths:
+      - 'ai-shopping-shorts-editor/**'
+      - '.github/workflows/ai-shopping-shorts-editor.yml'
+  pull_request:
+    paths:
+      - 'ai-shopping-shorts-editor/**'
+      - '.github/workflows/ai-shopping-shorts-editor.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit and protocol tests
+        working-directory: ai-shopping-shorts-editor
+        run: npm run check
