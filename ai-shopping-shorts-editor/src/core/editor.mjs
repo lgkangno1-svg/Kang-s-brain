@@ -98,7 +98,8 @@ export async function buildEdl({ beats, segments, apiKey, settings, usage, workD
     try {
       plan = await planTimelineAI(beats, segments, { apiKey, model: settings.plannerModel, usage });
     } catch (error) {
-      onStatus?.(`AI 편집 계획 실패, 안전한 fallback 사용: ${error.message}`);
+      if (settings.failOnAiError !== false) throw new Error(`OpenCode 편집 계획 실패: ${error.message}`);
+      onStatus?.(`AI 편집 계획 실패, 명시적 fallback 설정에 따라 대체 선택 사용: ${error.message}`);
       plan = fallbackPlan(beats, segments);
     }
   } else plan = fallbackPlan(beats, segments);
