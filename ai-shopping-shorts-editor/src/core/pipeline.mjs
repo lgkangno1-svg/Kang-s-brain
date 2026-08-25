@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { assertMediaTools, analyzeSourceLocally, probe } from './media.mjs';
-import { buildBeats } from './beats.mjs';
+import { buildBeats, adaptBeatsToAvailableSegments } from './beats.mjs';
 import { analyzeSegmentsVision, UsageTracker } from './opencode.mjs';
 import { buildEdl, renderEdl, validateEdl } from './editor.mjs';
 import { ensureDir, readJson, writeJson, sha256Text } from './utils.mjs';
@@ -85,7 +85,12 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
 
   const srtText = srtPath ? await fs.readFile(srtPath, 'utf8') : '';
   onStatus('자막/TTS 타임라인을 편집 Beat로 변환하는 중');
-  const beats = await buildBeats({ script, srtText, ttsPath, maxBeat: 3.2 });
+  let beats = await buildBeats({ script, srtText, ttsPath, maxBeat: 3.2 });
+  const beforeAdaptiveSplit = beats.length;
+  beats = adaptBeatsToAvailableSegments(beats, segments);
+  if (beats.length > beforeAdaptiveSplit) {
+    onStatus(`짧은 원본 컷에 맞춰 편집 Beat를 ${beforeAdaptiveSplit}개에서 ${beats.length}개로 세분화`);
+  }
   await writeJson(path.join(workDir, 'beats.json'), beats);
   await writeJson(path.join(workDir, 'segments.json'), segments.map(({ framePath, ...rest }) => rest));
 
