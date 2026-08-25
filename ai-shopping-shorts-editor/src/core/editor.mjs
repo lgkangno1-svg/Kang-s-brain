@@ -23,7 +23,7 @@ function fallbackPlan(beats, segments) {
       const diversityB = (b.sourceId === lastSource && sameSourceCount >= 2) ? -2 : 0;
       return (diversityB + b.visualQuality + b.productVisibility) - (diversityA + a.visualQuality + a.productVisibility);
     });
-    const chosen = candidates[i % Math.min(candidates.length, Math.max(1, candidates.length))] || candidates[0];
+    const chosen = candidates[0];
     used.add(chosen.id);
     if (chosen.sourceId === lastSource) sameSourceCount++; else { lastSource = chosen.sourceId; sameSourceCount = 1; }
     choices.push({ beatId: beat.id, segmentId: chosen.id, sourceStart: chosen.start, score: 50, reason: 'Deterministic fallback selection', alternatives: candidates.slice(1, 4).map((s) => s.id) });
