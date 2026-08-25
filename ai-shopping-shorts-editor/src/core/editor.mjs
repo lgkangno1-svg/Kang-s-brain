@@ -74,6 +74,16 @@ function repairChoices(plan, beats, segments) {
   return repaired;
 }
 
+export function chooseJudgeReplacement(clip, beat, segMap, occupiedSegmentIds = new Set()) {
+  if (!clip || !beat) return null;
+  return (clip.alternatives || [])
+    .map((id) => segMap.get(id))
+    .find((s) => s
+      && s.duration + 0.04 >= beat.duration
+      && s.sourceId !== clip.sourceId
+      && !occupiedSegmentIds.has(s.id)) || null;
+}
+
 export function validateEdl(edl, sourceMeta = new Map()) {
   const errors = [];
   let cursor = 0;
@@ -126,17 +136,20 @@ export async function buildEdl({ beats, segments, apiKey, settings, usage, workD
     try {
       const judgments = await judgeSelectionsVision(items, { apiKey, model: settings.visionModel, usage });
       const scores = new Map(judgments.map((j) => [j.beatId, j]));
+      const occupiedSegmentIds = new Set(edl.map((clip) => clip.segmentId));
       for (const clip of edl) {
         const j = scores.get(clip.beatId);
         if (j) { clip.judgeScore = Number(j.score); clip.judgeReason = j.reason; }
         if (j && Number(j.score) < (settings.judgeThreshold ?? 62)) {
           const beat = beats.find((b) => b.id === clip.beatId);
-          const replacement = clip.alternatives.map((id) => segMap.get(id)).find((s) => s && s.duration >= beat.duration && s.sourceId !== clip.sourceId);
+          occupiedSegmentIds.delete(clip.segmentId);
+          const replacement = chooseJudgeReplacement(clip, beat, segMap, occupiedSegmentIds);
           if (replacement) {
             clip.segmentId = replacement.id; clip.sourceId = replacement.sourceId; clip.sourcePath = replacement.sourcePath;
             clip.sourceStart = replacement.start; clip.sourceEnd = round3(replacement.start + beat.duration);
             clip.reason = `Judge ${j.score}: replaced with alternative`;
           }
+          occupiedSegmentIds.add(clip.segmentId);
         }
       }
     } catch (error) {
