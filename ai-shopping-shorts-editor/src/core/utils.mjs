@@ -18,6 +18,28 @@ export function safeFilename(input) {
   return base.replace(/[^a-zA-Z0-9._()\-가-힣]/g, '_').slice(0, 180) || 'file.bin';
 }
 
+export function parseByteRange(rangeHeader, size) {
+  if (!rangeHeader) return null;
+  if (!Number.isSafeInteger(size) || size < 0) throw new Error('Invalid resource size.');
+  const match = /^bytes=(\d*)-(\d*)$/.exec(String(rangeHeader).trim());
+  if (!match || (!match[1] && !match[2]) || size === 0) return { satisfiable: false };
+
+  let start; let end;
+  if (match[1]) {
+    start = Number(match[1]);
+    end = match[2] ? Number(match[2]) : size - 1;
+  } else {
+    const suffixLength = Number(match[2]);
+    if (!Number.isSafeInteger(suffixLength) || suffixLength <= 0) return { satisfiable: false };
+    start = Math.max(0, size - suffixLength);
+    end = size - 1;
+  }
+
+  if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start < 0 || end < start || start >= size) return { satisfiable: false };
+  end = Math.min(end, size - 1);
+  return { satisfiable: true, start, end };
+}
+
 export async function sha256File(filePath) {
   return new Promise((resolve, reject) => {
     const hash = createHash('sha256');
