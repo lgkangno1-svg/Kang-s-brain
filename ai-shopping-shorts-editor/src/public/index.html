@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Shopping Shorts Editor</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main>
+  <header><div><h1>AI Shopping Shorts Editor</h1><p>여러 원본에서 자막 의미에 맞는 장면을 골라 9:16 쇼츠로 컷 편집합니다.</p></div><span class="badge">CUT ONLY · MVP</span></header>
+  <section class="grid">
+    <div class="card">
+      <h2>1. 소스</h2>
+      <label>원본 영상 2~6개<input id="videos" type="file" accept="video/*" multiple></label>
+      <label>TTS 음성 (권장)<input id="tts" type="file" accept="audio/*"></label>
+      <label>SRT 자막 (있으면 타이밍 최우선)<input id="srt" type="file" accept=".srt,text/plain"></label>
+      <label>자막/대본<textarea id="script" rows="9" placeholder="쇼츠 내레이션을 입력하세요."></textarea></label>
+    </div>
+    <div class="card">
+      <h2>2. AI / 편집 설정</h2>
+      <label>OpenCode Go API Key<input id="apiKey" type="password" placeholder="oc_... (서버에 저장하지 않음)"></label>
+      <label>품질 모드<select id="quality"><option value="balanced" selected>Balanced — 비용/품질 균형</option><option value="economy">Economy — AI 2차 검수 생략</option><option value="quality">Quality — 선택 컷 Vision 재검수</option></select></label>
+      <label>화면 맞춤<select id="fit"><option value="crop" selected>9:16 중앙 크롭</option><option value="contain">전체 보이기(레터박스)</option></select></label>
+      <button id="run">AI 컷 편집 시작</button>
+      <p class="hint">API 키가 없어도 전체 FFmpeg 파이프라인 테스트는 가능하지만, 장면 의미 매칭은 fallback으로 동작합니다.</p>
+    </div>
+  </section>
+  <section class="card status-card">
+    <div class="status-row"><h2>3. 진행 상태</h2><span id="status" class="status">대기</span></div>
+    <progress id="progress" max="100" value="0"></progress>
+    <div id="logs" class="logs"></div>
+  </section>
+  <section id="result" class="grid hidden">
+    <div class="card"><h2>결과 영상</h2><video id="preview" controls playsinline></video><a id="download" class="button-link" download="shopping-shorts.mp4">MP4 저장</a></div>
+    <div class="card"><h2>자동 QA / API 사용량</h2><pre id="qa"></pre><h3>편집 EDL</h3><div id="timeline" class="timeline"></div></div>
+  </section>
+</main>
+<script type="module" src="/assets/app.js"></script>
+</body></html>
