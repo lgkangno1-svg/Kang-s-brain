@@ -33,6 +33,30 @@ test('buildBeats closes normal SRT caption gaps so EDL timing stays contiguous',
   assert.equal(out[1].end, 2.2);
 });
 
+test('buildBeats trims partial SRT overlap while preserving caption order', async () => {
+  const srt = '1\n00:00:00,200 --> 00:00:02,000\n첫 장면\n\n2\n00:00:01,500 --> 00:00:03,000\n두 번째 장면\n\n3\n00:00:03,200 --> 00:00:04,000\n세 번째 장면';
+  const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.2, maxBeat: 3.2 });
+  assert.equal(out.length, 3);
+  assert.equal(out[0].start, 0);
+  assert.equal(out[0].end, 2);
+  assert.equal(out[1].start, 2);
+  assert.equal(out[1].end, 3.2);
+  assert.equal(out[1].text, '두 번째 장면');
+  assert.equal(out[2].start, 3.2);
+  assert.equal(out[2].end, 4);
+});
+
+test('buildBeats folds a fully-contained overlapping SRT cue into the previous beat', async () => {
+  const srt = '1\n00:00:00,000 --> 00:00:02,000\n첫 장면\n\n2\n00:00:01,000 --> 00:00:01,500\n강조 문구\n\n3\n00:00:02,000 --> 00:00:03,000\n다음 장면';
+  const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.2, maxBeat: 3.2 });
+  assert.equal(out.length, 2);
+  assert.equal(out[0].start, 0);
+  assert.equal(out[0].end, 2);
+  assert.equal(out[0].text, '첫 장면 강조 문구');
+  assert.equal(out[1].start, 2);
+  assert.equal(out[1].end, 3);
+});
+
 test('buildBeats merges a leading micro-beat forward when it fits maxBeat', async () => {
   const srt = '1\n00:00:00,000 --> 00:00:00,300\n자\n\n2\n00:00:00,300 --> 00:00:01,800\n상품을 보여드릴게요\n\n3\n00:00:01,800 --> 00:00:03,200\n포장도 확인하세요';
   const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.85, maxBeat: 3.2 });
