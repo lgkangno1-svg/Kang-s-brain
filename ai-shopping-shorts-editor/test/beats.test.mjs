@@ -33,6 +33,13 @@ test('buildBeats closes normal SRT caption gaps so EDL timing stays contiguous',
   assert.equal(out[1].end, 2.2);
 });
 
+test('buildBeats normalizes out-of-order SRT cues by timestamp before gap and overlap handling', async () => {
+  const srt = '3\n00:00:02,000 --> 00:00:03,000\n세 번째 장면\n\n1\n00:00:00,000 --> 00:00:01,000\n첫 장면\n\n2\n00:00:01,000 --> 00:00:02,000\n두 번째 장면';
+  const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.2, maxBeat: 3.2 });
+  assert.deepEqual(out.map((beat) => beat.text), ['첫 장면', '두 번째 장면', '세 번째 장면']);
+  assert.deepEqual(out.map((beat) => [beat.start, beat.end]), [[0, 1], [1, 2], [2, 3]]);
+});
+
 test('buildBeats trims partial SRT overlap while preserving caption order', async () => {
   const srt = '1\n00:00:00,200 --> 00:00:02,000\n첫 장면\n\n2\n00:00:01,500 --> 00:00:03,000\n두 번째 장면\n\n3\n00:00:03,200 --> 00:00:04,000\n세 번째 장면';
   const out = await buildBeats({ script: '', srtText: srt, ttsPath: null, minBeat: 0.2, maxBeat: 3.2 });
