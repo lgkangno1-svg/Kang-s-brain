@@ -160,7 +160,10 @@ export async function buildEdl({ beats, segments, apiKey, settings, usage, workD
   return edl;
 }
 
-export async function renderEdl({ edl, outputPath, ttsPath, fitMode = 'crop' }) {
+export function buildRenderArgs({ edl, outputPath, ttsPath, fitMode = 'crop' }) {
+  const timelineDuration = round3(Number(edl.at(-1)?.programEnd));
+  if (!Number.isFinite(timelineDuration) || timelineDuration <= 0) throw new Error('EDL timeline duration is invalid.');
+
   const uniqueSources = [...new Set(edl.map((c) => c.sourcePath))];
   const inputIndex = new Map(uniqueSources.map((p, i) => [p, i]));
   const args = ['-hide_banner', '-loglevel', 'error', '-y'];
@@ -181,8 +184,13 @@ export async function renderEdl({ edl, outputPath, ttsPath, fitMode = 'crop' }) 
   });
   filters.push(`${labels.join('')}concat=n=${labels.length}:v=1:a=0[vout]`);
   args.push('-filter_complex', filters.join(';'), '-map', '[vout]');
-  if (audioIndex != null) args.push('-map', `${audioIndex}:a:0?`, '-shortest', '-c:a', 'aac', '-b:a', '192k');
-  args.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outputPath);
+  if (audioIndex != null) args.push('-map', `${audioIndex}:a:0?`, '-c:a', 'aac', '-b:a', '192k');
+  args.push('-t', String(timelineDuration), '-c:v', 'libx264', '-preset', 'fast', '-crf', '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outputPath);
+  return args;
+}
+
+export async function renderEdl({ edl, outputPath, ttsPath, fitMode = 'crop' }) {
+  const args = buildRenderArgs({ edl, outputPath, ttsPath, fitMode });
   await run('ffmpeg', args);
   return probe(outputPath);
 }
