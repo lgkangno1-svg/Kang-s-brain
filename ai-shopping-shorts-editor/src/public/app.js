@@ -49,7 +49,7 @@ $('run').addEventListener('click', async () => {
     const p=await request('/api/projects',{method:'POST'}); projectId=p.id; log(`프로젝트 ${projectId} 생성`);
     for(let i=0;i<videos.length;i++){log(`영상 업로드 ${i+1}/${videos.length}: ${videos[i].name}`); await upload(projectId,videos[i],'video'); $('progress').value=5+Math.round((i+1)/videos.length*15);}
     if(tts){log('TTS 업로드');await upload(projectId,tts,'tts');} if(srt){log('SRT 업로드');await upload(projectId,srt,'srt');}
-    await request(`/api/projects/${projectId}/run`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({script,apiKey:$('apiKey').value.trim(),settings:{qualityMode:$('quality').value,fitMode:$('fit').value,visionBatchSize:$('quality').value==='economy'?14:10}})});
+    await request(`/api/projects/${projectId}/run`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({script,apiKey:$('apiKey').value.trim(),settings:{qualityMode:$('quality').value,fitMode:$('fit').value}})});
     poll(projectId);
   } catch(e) { $('run').disabled=false; log('ERROR: '+e.message); alert(e.message); }
 });
