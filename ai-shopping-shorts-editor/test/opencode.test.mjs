@@ -18,7 +18,7 @@ const server = http.createServer(async (req, res) => {
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const port=server.address().port; process.env.OPENCODE_GO_BASE_URL=`http://127.0.0.1:${port}`;
-const { analyzeSegmentsVision, planTimelineAI, UsageTracker } = await import('../src/core/opencode.mjs');
+const { analyzeSegmentsVision, planTimelineAI, UsageTracker, validateVisionBatchResponse } = await import('../src/core/opencode.mjs');
 
 test.after(()=>server.close());
 
@@ -30,4 +30,18 @@ test('OpenCode compatible vision and planner protocol', async()=>{
   const plan=await planTimelineAI([{id:'b1',start:0,end:2,duration:2,text:'제품을 보여드립니다'}],segments,{apiKey:'fake',usage});
   assert.equal(plan.choices[0].segmentId,'V1_s001');
   const snap=usage.snapshot(); assert.equal(snap.calls,2); assert.equal(snap.cachedTokens,20); assert.ok(snap.estimatedCost.maxUsd>=snap.estimatedCost.minUsd);
+});
+
+test('Vision batch integrity accepts every expected id exactly once regardless of response order', () => {
+  const batch = [{ id: 's1' }, { id: 's2' }];
+  const byId = validateVisionBatchResponse(batch, [{ id: 's2', description: 'two' }, { id: 's1', description: 'one' }]);
+  assert.equal(byId.get('s1').description, 'one');
+  assert.equal(byId.get('s2').description, 'two');
+});
+
+test('Vision batch integrity rejects missing, duplicate, and unexpected ids', () => {
+  const batch = [{ id: 's1' }, { id: 's2' }];
+  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }]), /missing=\[s2\]/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 's1' }]), /duplicate=\[s1\]/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 'alien' }]), /unexpected=\[alien\]/);
 });
