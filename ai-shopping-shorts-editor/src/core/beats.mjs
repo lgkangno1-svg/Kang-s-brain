@@ -26,9 +26,11 @@ export function parseSrt(text) {
 
 export function closeSrtGaps(items) {
   if (!Array.isArray(items) || items.length === 0) return items || [];
+  const ordered = items
+    .map((item) => ({ ...item }))
+    .sort((a, b) => (a.start - b.start) || (b.end - a.end));
   const out = [];
-  for (const original of items) {
-    const current = { ...original };
+  for (const current of ordered) {
     if (!out.length) {
       if (current.start > 0) current.start = 0;
       out.push(current);
