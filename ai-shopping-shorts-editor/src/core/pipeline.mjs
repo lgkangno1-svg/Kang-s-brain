@@ -37,6 +37,11 @@ export function resolveSettings(input = {}) {
   };
 }
 
+export function assertManualReplacementAvailable(clips, beatId, segmentId) {
+  const owner = clips.find((clip) => clip.beatId !== beatId && clip.segmentId === segmentId);
+  if (owner) throw new Error(`Selected alternative is already used by ${owner.beatId}.`);
+}
+
 export async function runProject({ projectDir, videoPaths, script, srtPath, ttsPath, apiKey, settings = {}, onStatus = () => {} }) {
   settings = resolveSettings(settings);
   const cacheDir = await ensureDir(path.join(projectDir, 'cache'));
@@ -130,6 +135,7 @@ export async function replaceClipAndRerender({ projectDir, project, beatId, segm
   const clip = edlDoc.clips.find((x) => x.beatId === beatId);
   if (!beat || !seg || !clip) throw new Error('Beat, segment, or clip not found.');
   if (seg.duration + 0.04 < beat.duration) throw new Error('Selected alternative is shorter than this narration beat.');
+  assertManualReplacementAvailable(edlDoc.clips, beatId, segmentId);
   const sourceIndex = Number(String(seg.sourceId).replace(/^V/, '')) - 1;
   const sourcePath = seg.sourcePath || project.videos?.[sourceIndex];
   if (!sourcePath) throw new Error('Source video path could not be resolved.');
