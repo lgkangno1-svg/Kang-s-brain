@@ -43,12 +43,65 @@
     "fourHourText": "依步行舒適度與可用時間，加入西村或北村，再安排咖啡廳或一餐。",
     "freshnessNote": "開放時間、臨時休館、票務規則與店家營業狀況可能變動。出發前請再次確認具時效性的資訊。"
   },
+  "Color": {
+    "eyebrow": "個人色彩 · 免費瀏覽器預覽",
+    "title": "找出值得在韓國嘗試的顏色。",
+    "intro": "先在瀏覽器內私密分析自拍，檢查並手動修正估算結果，再把配色帶入韓服推薦。這是造型參考，不是專業個人色彩診斷。"
+  },
+  "ColorScanner": {
+    "photoAlt": "已上傳自拍預覽",
+    "emptyTitle": "加入一張清晰自拍",
+    "emptyText": "請在自然光下正對鏡頭，避免強濾鏡、彩色燈光與深陰影。",
+    "chooseAnother": "選擇另一張照片",
+    "uploadSelfie": "上傳或拍攝自拍",
+    "running": "正在讀取可見色彩…",
+    "analyzeFree": "分析我的顏色 — 免費預覽",
+    "resultTitle": "你的可見色彩傾向",
+    "resultPlaceholder": "結果會顯示在這裡",
+    "resultDisclaimer": "這是依目前光線條件做的照片估算，不是專業個人色彩診斷。用於韓服搭配前，你可以手動修正結果。",
+    "undertoneLabel": "底色傾向",
+    "depthLabel": "可見明暗深度",
+    "contrastLabel": "對比度",
+    "confidence": "估算可信度 {confidence}% · 明度指數 {lightness}/100",
+    "browserPrivacy": "此免費預覽中，自拍只保留在你的瀏覽器內。",
+    "correctUndertone": "修正底色",
+    "correctDepth": "修正可見深度",
+    "hanbokColors": "值得嘗試的韓服配色",
+    "paletteAria": "{name} 配色",
+    "sensitiveTraitNote": "掃描只使用可見色彩像素提供造型建議，不會辨識你的身分，也不會推測種族、族群、國籍、宗教、健康狀況或吸引力。",
+    "undertone": {"warm": "暖", "neutral": "中性", "cool": "冷"},
+    "depth": {"light": "淺", "medium": "中等", "deep": "深"},
+    "contrast": {"soft": "柔和", "medium": "中等", "high": "高"},
+    "warnings": {
+      "darkPhoto": "照片偏暗。使用自然日光可能得到更可靠的結果。",
+      "overexposedPhoto": "臉部區域似乎過曝，請嘗試更柔和的自然光。",
+      "limitedPixels": "可用的類臉部色彩像素較少，請手動檢查估算結果。"
+    },
+    "errors": {
+      "canvasUnavailable": "此瀏覽器無法執行本機照片分析。",
+      "insufficientPixels": "無法讀取足夠的可用像素。請嘗試更明亮、正面的照片。",
+      "unknown": "無法分析這張照片，請嘗試另一張清晰自拍。"
+    },
+    "palettes": {
+      "jadeWarmIvory": {"name": "玉色與暖象牙白", "note": "適合宮殿背景的經典組合，臉部附近保留溫暖感。"},
+      "peachSage": {"name": "蜜桃與鼠尾草綠", "note": "柔和親切，適合日光拍照和輕鬆街區散步。"},
+      "creamCrimson": {"name": "奶油白與緋紅", "note": "對比更強，適合宮殿建築和正式韓服造型。"},
+      "softWhiteJade": {"name": "柔白與玉色", "note": "平衡靈活，傳統或現代韓服都容易搭配。"},
+      "dustyRoseNavy": {"name": "灰粉與海軍藍", "note": "精緻穩重，在宮殿石材與木質背景前很上鏡。"},
+      "mutedPlumIvory": {"name": "柔梅紫與象牙白", "note": "低飽和的安靜浪漫配色，不依賴過於鮮豔的顏色。"},
+      "moonBlueSoftWhite": {"name": "月藍與柔白", "note": "清爽對比，適合宮殿庭院和石質背景。"},
+      "lilacPlum": {"name": "丁香紫與梅紫", "note": "精緻的現代浪漫韓服方向。"},
+      "roseDeepNavy": {"name": "玫瑰與深海軍藍", "note": "冷調深色帶來更強的拍照對比，同時不過度偏暖。"}
+    }
+  },
   "Meta": {
     "homeTitle": "Korea Concierge — 個人化韓國旅行指南",
     "homeDescription": "為國際旅客打造的多語韓國旅行與文化指南，提供免費在地探索與可選的個人化體驗。",
     "cultureTitle": "K-Culture Lab — 四柱、生肖與韓國傳統文化",
     "cultureDescription": "以文化和娛樂體驗的方式探索韓國生肖、四柱與傳統色彩故事，並採用隱私優先的輸入設計。",
     "gyeongbokgungTitle": "景福宮指南 — 路線、韓服與周邊停留點",
-    "gyeongbokgungDescription": "按時間規劃景福宮行程，兼顧韓服歸還緩衝、拍照重點、步行舒適度與周邊餐飲。"
+    "gyeongbokgungDescription": "按時間規劃景福宮行程，兼顧韓服歸還緩衝、拍照重點、步行舒適度與周邊餐飲。",
+    "colorTitle": "個人色彩預覽 — 私密瀏覽器分析",
+    "colorDescription": "免費在瀏覽器內嘗試個人色彩預覽，用於韓服搭配。自拍保留在裝置上，結果可手動修正。"
   }
 }
