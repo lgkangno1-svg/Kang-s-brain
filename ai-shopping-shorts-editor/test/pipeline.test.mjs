@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeVisionCacheFingerprint, refreshManualReplacementAlternatives, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeStagedOutputPath, makeVisionCacheFingerprint, refreshManualReplacementAlternatives, renderReplacementStaged, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
 
 test('manual replacement rejects a segment already used by another beat before rerender', () => {
   const clips = [
@@ -32,6 +35,42 @@ test('manual replacement alternatives exclude the new current segment and preser
   assert.deepEqual(alternatives, ['s1', 's3', 's4']);
   assert.deepEqual(clip.alternatives, ['s1', 's3', 's4']);
   assert.equal(clip.alternatives.includes('s2'), false);
+});
+
+test('manual replacement renders to a same-format staging path', () => {
+  assert.equal(
+    makeStagedOutputPath('/tmp/output/shorts.mp4', 'test-nonce'),
+    '/tmp/output/.shorts.test-nonce.tmp.mp4'
+  );
+});
+
+test('failed manual replacement render leaves the prior output untouched and removes staging output', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'shorts-replace-'));
+  const outputPath = path.join(dir, 'shorts.mp4');
+  const stagedPath = makeStagedOutputPath(outputPath, 'failure-case');
+  await fs.writeFile(outputPath, 'previous-good-video');
+
+  const fakeRender = async ({ outputPath: candidatePath }) => {
+    assert.equal(candidatePath, stagedPath);
+    await fs.writeFile(candidatePath, 'partial-broken-render');
+    throw new Error('synthetic ffmpeg failure');
+  };
+
+  await assert.rejects(
+    renderReplacementStaged({
+      edl: [{ beatId: 'b1' }],
+      outputPath,
+      ttsPath: null,
+      fitMode: 'crop',
+      render: fakeRender,
+      nonce: 'failure-case'
+    }),
+    /synthetic ffmpeg failure/
+  );
+
+  assert.equal(await fs.readFile(outputPath, 'utf8'), 'previous-good-video');
+  await assert.rejects(fs.stat(stagedPath), { code: 'ENOENT' });
+  await fs.rm(dir, { recursive: true, force: true });
 });
 
 test('Vision cache fingerprint changes when the semantic cache schema changes', () => {
