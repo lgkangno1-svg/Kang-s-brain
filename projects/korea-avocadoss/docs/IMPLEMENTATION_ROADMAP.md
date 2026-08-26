@@ -40,14 +40,15 @@ P0 root documents now emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generat
 #### Step 2C-5 — deterministic legacy duplicate retirement ✅
 Six known unprefixed public duplicates permanently redirect to their English canonical equivalents via explicit static map; production-server CI verifies HTTP 308, exact destination 200 and query preservation.
 
-#### Step 2C-6 — remove shadowed legacy implementation safely ✅ pending CI merge
+#### Step 2C-6 — remove shadowed legacy implementation safely ✅
 - fresh main/PR #5 state inspected before editing;
 - current Next.js multiple-root-layout rules rechecked: when there is no top-level `app/layout.tsx`, `/` should remain owned by a root group;
 - removed the now-unreachable legacy Color, Hanbok, Credits, Culture and Gyeongbokgung page implementations;
 - removed `LegacyShell` and its legacy-only English `NextIntlClientProvider` / Quick Help instance;
 - retained only a minimal `(legacy)` root layout plus `/` fallback page because it is structural support for the multiple-root architecture; the fallback uses `permanentRedirect('/en')`, while `config/legacy-redirects.json` remains the public routing authority and CI still verifies it first;
-- no browser-language negotiation, IP geolocation, nationality/market inference, new dependency, AI/model call, wallet/payment change or customer-data transfer was introduced;
-- generated-document validation remains locale-driven and does not hardcode the old 46-page total.
+- generated-document validation remains locale-driven and does not hardcode the old 46-page total;
+- PR #6 workflow run `33015960301` passed dependency install, all P0 localization contracts, Next.js production build/TypeScript, generated document-language verification and deterministic legacy redirect/query-preservation checks;
+- no browser-language negotiation, IP geolocation, nationality/market inference, new dependency, AI/model call, wallet/payment change or customer-data transfer was introduced.
 
 #### Step 2C-7 — next slice: supply-chain reproducibility + Step 2 gate closure
 Before starting Saju, close the known package-resolution gap without fabricating dependency state.
