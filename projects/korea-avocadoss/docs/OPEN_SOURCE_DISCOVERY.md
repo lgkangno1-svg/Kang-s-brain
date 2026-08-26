@@ -132,6 +132,36 @@ Decision: **defer for locale/FAQ routing**; no benefit for deterministic routing
 - https://huggingface.co/Unbabel/eamt22-cometinho-da
 - https://huggingface.co/Unbabel/wmt22-cometkiwi-da
 
+## 2026-08-26 — Step 2B-4 Gyeongbokgung localization, metadata and text-expansion QA
+
+### GitHub / upstream reviewed
+- Re-searched GitHub for `next-intl` and current App Router localization references before editing. `amannn/next-intl` remains the maintained, first-party-focused dependency already used by the project; adding a second i18n/SEO package would duplicate routing and message ownership.
+- Current `next-intl` learning material, updated for Next.js 16.3, explicitly supports `getTranslations` inside async `generateMetadata`, matching the existing Server Component architecture.
+- Decision: **adapt the existing `next-intl` server pattern** for localized title/description metadata on native locale pages. Do not enable canonical/hreflang/x-default yet because locale cutover and remaining route parity are not complete.
+- Decision: use a small locale-scoped CSS safety layer for long CJK/Vietnamese/Thai strings (`min-width: 0`, overflow wrapping, language-aware line breaking and narrow-screen button/headline handling) rather than adding a layout library.
+- TypeScript message augmentation remains deferred until a real build can be proven; it is not necessary to safely complete this slice.
+
+### Hugging Face reviewed
+- `Unbabel/wmt20-comet-qe-da` — Apache-2.0 quality-estimation model covering multilingual translation evaluation.
+- `Unbabel/wmt22-comet-da` — Apache-2.0 reference-based COMET evaluator.
+- `Unbabel/wmt22-cometkiwi-da` — CC-BY-NC-SA-4.0 and unsuitable for the commercial workflow.
+- Decision: **do not add COMET or any translation model to runtime/build**. Static P0 copy remains small enough for deterministic parity checks and human review; Python/model downloads would add CI weight and supply-chain surface without improving runtime UX or margin.
+
+### Implementation / safety implications
+- `/[locale]/explore/gyeongbokgung` is now native localized content instead of re-exporting the English legacy page.
+- Home, Culture and Gyeongbokgung native locale pages now expose localized title/description metadata only; canonical/hreflang cutover stays deferred.
+- Gyeongbokgung editorial copy avoids asserting live hours/closures/ticket/shop status and instead explicitly tells users to verify time-sensitive facts before departure.
+- P0 dictionaries add the same `Gyeongbokgung` and `Meta` schema, preserving parity-check compatibility.
+- No new runtime dependency, AI call, translation API, embedding store or external user-data flow was added; marginal AI/provider cost remains zero.
+
+### Sources
+- https://github.com/amannn/next-intl
+- https://learn.next-intl.dev/chapters/03-translations/02-server-client-components
+- https://learn.next-intl.dev/changelog
+- https://huggingface.co/Unbabel/wmt20-comet-qe-da
+- https://huggingface.co/Unbabel/wmt22-comet-da
+- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
+
 ## Discovery rules for future entries
 
 For every major feature, record:
