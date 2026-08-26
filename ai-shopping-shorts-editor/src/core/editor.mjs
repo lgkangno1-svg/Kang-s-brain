@@ -90,7 +90,13 @@ export function validateEdl(edl, sourceMeta = new Map()) {
   const seen = new Set();
   edl.forEach((c, i) => {
     if (Math.abs(c.programStart - cursor) > 0.08) errors.push(`clip ${i}: program gap/overlap (${c.programStart} vs ${cursor})`);
+    if (!(c.programEnd > c.programStart)) errors.push(`clip ${i}: invalid program range`);
     if (!(c.sourceEnd > c.sourceStart)) errors.push(`clip ${i}: invalid source range`);
+    const programDuration = c.programEnd - c.programStart;
+    const sourceDuration = c.sourceEnd - c.sourceStart;
+    if (Number.isFinite(programDuration) && Number.isFinite(sourceDuration) && Math.abs(programDuration - sourceDuration) > 0.04) {
+      errors.push(`clip ${i}: source/program duration mismatch (${round3(sourceDuration)}s vs ${round3(programDuration)}s)`);
+    }
     const meta = sourceMeta.get(c.sourceId);
     if (meta && c.sourceEnd > meta.duration + 0.08) errors.push(`clip ${i}: sourceEnd exceeds source duration`);
     if (c.sourceStart < -0.001) errors.push(`clip ${i}: negative sourceStart`);
