@@ -1,0 +1,43 @@
+{
+  "Global": {
+    "nav": {
+      "myColor": "Màu cá nhân",
+      "hanbok": "Hanbok",
+      "gyeongbokgung": "Gyeongbokgung",
+      "kCulture": "Văn hóa Hàn Quốc",
+      "credits": "Tín dụng"
+    },
+    "language": "Ngôn ngữ",
+    "footerTagline": "Trải nghiệm du lịch và văn hóa Hàn Quốc được cá nhân hóa cho du khách quốc tế."
+  },
+  "QuickHelp": {
+    "ariaLabel": "Trợ giúp nhanh về Hàn Quốc miễn phí",
+    "badge": "MIỄN PHÍ · KHÔNG DÙNG AI API",
+    "launcherTitle": "Trợ giúp nhanh",
+    "launcherSubtitle": "Giải đáp miễn phí",
+    "close": "Đóng Trợ giúp nhanh",
+    "back": "Quay lại",
+    "topics": "Chủ đề",
+    "zeroCredits": "0 tín dụng",
+    "rootTitle": "Trợ giúp nhanh về Hàn Quốc",
+    "rootAnswer": "Xin chào! Hãy chọn chủ đề bạn muốn biết và tôi sẽ trả lời ngay. Tính năng này miễn phí và không gọi AI API.",
+    "rootTopics": {
+      "palace": "Gyeongbokgung",
+      "hanbok": "Hanbok",
+      "color": "Màu cá nhân",
+      "food": "Ẩm thực & quán cà phê",
+      "culture": "Văn hóa Hàn Quốc",
+      "credits": "Tín dụng & thanh toán",
+      "privacy": "Quyền riêng tư"
+    }
+  },
+  "Consent": {
+    "photo": "Chỉ sử dụng ảnh của tôi cho tính năng màu cá nhân mà tôi đã yêu cầu.",
+    "birth": "Chỉ sử dụng thông tin sinh của tôi cho phần diễn giải văn hóa mà tôi đã yêu cầu.",
+    "optionalBirthTime": "Giờ sinh là tùy chọn. Nếu không chắc, hãy chọn “Tôi không biết”."
+  },
+  "Credits": {
+    "freeHelp": "Trợ giúp nhanh hoàn toàn miễn phí và không sử dụng AI API.",
+    "beforeCharge": "Mọi tính năng trả phí đều hiển thị số tín dụng cố định trước khi bạn xác nhận."
+  }
+}
