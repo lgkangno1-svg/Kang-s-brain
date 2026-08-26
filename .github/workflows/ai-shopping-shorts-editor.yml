@@ -1,6 +1,7 @@
 name: AI Shopping Shorts Editor CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'ai-shopping-shorts-editor/**'
@@ -10,14 +11,35 @@ on:
       - 'ai-shopping-shorts-editor/**'
       - '.github/workflows/ai-shopping-shorts-editor.yml'
 
+concurrency:
+  group: ai-shopping-shorts-editor-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Mini PC self-hosted QA
+    runs-on: [self-hosted, linux, x64, minipc]
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+
+      - name: Runner preflight
+        run: |
+          set -euo pipefail
+          echo "runner=$(hostname)"
+          node --version
+          npm --version
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+          node -e "const major=Number(process.versions.node.split('.')[0]); if (major < 22) { console.error('Node.js 22+ is required'); process.exit(1); }"
+
       - name: Unit and protocol tests
         working-directory: ai-shopping-shorts-editor
         run: npm run check
+
+      - name: Synthetic FFmpeg end-to-end QA
+        working-directory: ai-shopping-shorts-editor
+        run: npm run demo
