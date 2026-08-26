@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { QUICK_HELP_NODES, QUICK_HELP_ROOT_ID } from "./data";
 
@@ -9,6 +10,7 @@ const TITLE_ID = "quick-help-title";
 const ANSWER_ID = "quick-help-answer";
 
 export function QuickHelp({ localePrefix = "" }: { localePrefix?: string }) {
+  const t = useTranslations("QuickHelp");
   const [open, setOpen] = useState(false);
   const [nodeId, setNodeId] = useState(QUICK_HELP_ROOT_ID);
   const [history, setHistory] = useState<string[]>([]);
@@ -59,9 +61,10 @@ export function QuickHelp({ localePrefix = "" }: { localePrefix?: string }) {
 
   const atRoot = nodeId === QUICK_HELP_ROOT_ID && history.length === 0;
   const ctaHref = node.cta?.href && node.cta.href.startsWith("/") ? `${localePrefix}${node.cta.href}` : node.cta?.href;
+  const title = t(node.titleKey);
 
   return (
-    <aside className="quickHelp" aria-label="Free Korea Quick Help">
+    <aside className="quickHelp" aria-label={t("ariaLabel")}>
       {open ? (
         <section
           id={PANEL_ID}
@@ -73,28 +76,28 @@ export function QuickHelp({ localePrefix = "" }: { localePrefix?: string }) {
         >
           <div className="quickHelpHeader">
             <div>
-              <small>FREE · NO AI API</small>
-              <strong id={TITLE_ID}>{node.title}</strong>
+              <small>{t("badge")}</small>
+              <strong id={TITLE_ID}>{title}</strong>
             </div>
-            <button ref={closeRef} type="button" className="quickHelpIconButton" onClick={close} aria-label="Close Quick Help">×</button>
+            <button ref={closeRef} type="button" className="quickHelpIconButton" onClick={close} aria-label={t("close")}>×</button>
           </div>
 
           <div className="quickHelpBody">
-            <p id={ANSWER_ID} aria-live="polite" aria-atomic="true">{node.answer}</p>
+            <p id={ANSWER_ID} aria-live="polite" aria-atomic="true">{t(node.answerKey)}</p>
             {node.choices?.length ? (
-              <div className="quickHelpChoices" aria-label={`Questions about ${node.title}`}>
+              <div className="quickHelpChoices" aria-label={t("questionsAbout", { title })}>
                 {node.choices.map((choice) => (
-                  <button key={choice.nextId} type="button" onClick={() => go(choice.nextId)}>{choice.label}</button>
+                  <button key={choice.nextId} type="button" onClick={() => go(choice.nextId)}>{t(choice.labelKey)}</button>
                 ))}
               </div>
             ) : null}
-            {node.cta && ctaHref ? <Link className="quickHelpCta" href={ctaHref} onClick={close}>{node.cta.label} →</Link> : null}
+            {node.cta && ctaHref ? <Link className="quickHelpCta" href={ctaHref} onClick={close}>{t(node.cta.labelKey)} →</Link> : null}
           </div>
 
           <div className="quickHelpFooter">
-            <button type="button" onClick={back} disabled={atRoot}>Back</button>
-            <button type="button" onClick={reset} disabled={atRoot}>Topics</button>
-            <span aria-label="Cost: zero credits">0 credits</span>
+            <button type="button" onClick={back} disabled={atRoot}>{t("back")}</button>
+            <button type="button" onClick={reset} disabled={atRoot}>{t("topics")}</button>
+            <span aria-label={t("costAria")}>{t("zeroCredits")}</span>
           </div>
         </section>
       ) : null}
@@ -109,7 +112,7 @@ export function QuickHelp({ localePrefix = "" }: { localePrefix?: string }) {
         aria-haspopup="dialog"
       >
         <span aria-hidden="true">?</span>
-        <span><strong>Quick Help</strong><small>Free answers</small></span>
+        <span><strong>{t("launcherTitle")}</strong><small>{t("launcherSubtitle")}</small></span>
       </button>
     </aside>
   );
