@@ -1,0 +1,43 @@
+{
+  "Hanbok": {
+    "eyebrow": "Ghép Hanbok · Xem thử miễn phí theo quy tắc",
+    "title": "Chọn hướng Hanbok hợp với màu của bạn và lịch trình thực tế trong ngày.",
+    "intro": "Bắt đầu từ màu sắc, phong cách và mức độ thoải mái khi đi bộ. Bản xem thử miễn phí này chỉ dùng quy tắc đơn giản trên thiết bị, không gọi AI, không tải ảnh lên và không trừ tín dụng."
+  },
+  "HanbokMatcher": {
+    "freeEyebrow": "0 tín dụng · 0 lần gọi AI",
+    "title": "Tạo một hướng Hanbok thực tế",
+    "intro": "Hãy chọn điều quan trọng nhất với bạn. Lựa chọn rõ ràng của bạn luôn được ưu tiên hơn mọi mặc định theo thị trường.",
+    "colorLegend": "1. Hướng màu sắc",
+    "colorHelp": "Nếu đã có kết quả Màu cá nhân, bạn có thể dùng nó; nếu chưa, chỉ cần chọn bảng màu bạn thích.",
+    "moodLegend": "2. Phong cách",
+    "moodHelp": "Hãy chọn phong cách bạn thực sự muốn mặc, không phải điều hệ thống suy đoán từ ngôn ngữ hay quốc tịch.",
+    "comfortLegend": "3. Ưu tiên chuyến đi",
+    "comfortHelp": "Trang phục cung điện cần vừa lên ảnh đẹp vừa phù hợp thời gian thuê và kế hoạch đi bộ.",
+    "colors": {"jadeIvory": "Ngọc bích & ngà ấm", "roseNavy": "Hồng tro & xanh navy", "moonBlue": "Xanh trăng & trắng dịu"},
+    "moods": {"elegant": "Truyền thống thanh lịch", "royal": "Hoàng gia / ấn tượng", "romantic": "Lãng mạn nhẹ nhàng", "minimal": "Tối giản hiện đại", "kdrama": "Cảm hứng K-drama"},
+    "comfort": {"walking": "Ưu tiên đi bộ", "balanced": "Cân bằng ảnh + thoải mái", "photoFirst": "Ưu tiên chụp ảnh"},
+    "resultEyebrow": "Xem thử ghép miễn phí",
+    "resultPalette": "Bảng màu",
+    "resultTripPriority": "Ưu tiên chuyến đi",
+    "directions": {
+      "elegant": {"name": "Thanh lịch cổ điển trong cung điện", "reason": "Ưu tiên đường nét truyền thống và độ tương phản vừa phải để trang phục hòa tự nhiên với kiến trúc cung điện."},
+      "royal": {"name": "Phong cách hoàng gia có cấu trúc", "reason": "Ưu tiên tương phản mạnh hơn và cảm giác trang trọng để tạo điểm nhấn rõ trong ảnh cung điện."},
+      "romantic": {"name": "Hanbok lãng mạn nhẹ nhàng", "reason": "Ưu tiên tương phản dịu, lớp vải mềm và nhịp thị giác nhẹ nhàng cho ảnh ban ngày."},
+      "minimal": {"name": "Hanbok tối giản hiện đại", "reason": "Giảm số màu và chi tiết trang trí để giữ hướng hiện đại, sạch và gọn."},
+      "kdrama": {"name": "Phong cách lấy cảm hứng K-drama", "reason": "Giữ đường nét điện ảnh dễ nhận ra nhưng vẫn thực tế cho việc thuê đồ và lịch trình trong ngày."}
+    },
+    "comfortNotes": {
+      "walking": "Ưu tiên lớp vải nhẹ, độ phồng vừa phải và khả năng di chuyển trước chi tiết trang trí.",
+      "balanced": "Giữ đủ cấu trúc để lên ảnh đẹp nhưng tránh độ phồng hoặc phụ kiện khiến đi bộ lâu bất tiện.",
+      "photoFirst": "Bạn có thể chọn cấu trúc hoặc độ phồng mạnh hơn cho ảnh, nhưng vẫn nên chừa thời gian thực tế để thay và trả đồ."
+    },
+    "freeBoundaryTitle": "Bản ghép miễn phí này làm gì",
+    "freeBoundaryText": "Chỉ kết hợp những lựa chọn bạn đã tự chọn ở trên bằng quy tắc xác định. Không dùng AI, suy đoán hồ sơ cá nhân hay truyền dữ liệu ra ngoài.",
+    "paidBoundaryText": "Nếu sau này có thử Hanbok ảo hoặc phối đồ AI cao cấp, mức tín dụng cố định cùng điều khoản ảnh và quyền riêng tư sẽ được hiển thị trước khi bạn xác nhận."
+  },
+  "Meta": {
+    "hanbokTitle": "Ghép Hanbok — Xem thử phối đồ miễn phí theo quy tắc",
+    "hanbokDescription": "Chọn hướng Hanbok theo màu sắc, phong cách và mức độ thoải mái khi đi bộ bằng bản xem thử đa ngôn ngữ miễn phí, không cần AI hay tải ảnh lên."
+  }
+}
