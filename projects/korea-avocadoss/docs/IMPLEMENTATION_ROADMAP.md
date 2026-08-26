@@ -22,21 +22,34 @@ PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discov
 - plugin wired through `next.config.ts` while preserving existing security headers;
 - P0-only `defineRouting` registry created with `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` target locales and explicit default `en`;
 - request config validates locale before loading a dictionary and returns 404 for unsupported locale values;
-- no proxy/redirect was activated yet because `[locale]` pages do not exist; this intentionally prevents migration-time 404 regressions;
+- no proxy/redirect was activated yet because `[locale]` pages did not exist at this gate;
 - no AI/API/token cost added; static dictionaries remain the production localization source;
 - NLLB-200 remains rejected for commercial production because current Hugging Face metadata/model card identify CC-BY-NC and non-production intended use.
 
-**2A verification:** static code/dependency review only. This environment did not provide a checked-out runtime with installed npm dependencies, so `npm install`/`npm run build` remains a required 2B gate before locale cutover. Do not claim production readiness yet.
+### Step 2B — localized app migration
 
-### Step 2B — next slice
-- create `[locale]` root layout/page migration without removing old routes prematurely;
-- wire translated global navigation and Quick Help to `next-intl`;
-- add locale-preserving navigation helper + functional language selector;
-- browser-language suggestion/negotiation, never nationality/IP inference and never overriding explicit selection;
-- run install/build/type validation before enabling proxy redirects.
+#### Step 2B-1 — locale routes + navigation shell ✅ by static review
+- added official `createNavigation(routing)` helpers so internal links preserve locale;
+- added accessible P0 language selector using the current pathname rather than sending users back to a generic homepage;
+- added validated `[locale]` layout and homepage with `NextIntlClientProvider`, P0 dictionaries and localized global navigation/footer copy;
+- added static params for the six P0 locales;
+- preserved the existing unprefixed site through a temporary migration-only `LegacyShell`; locale-prefixed routes use the new shell and legacy routes keep their current UI;
+- Quick Help CTAs now retain the current locale prefix instead of dropping users back onto unprefixed English routes;
+- no redirect/proxy cutover yet;
+- root document `<html lang>` remains `en` during this coexistence phase. Locale content has a scoped `lang` attribute, but document-level language and SEO alternates remain a 2C migration requirement.
+
+**2B-1 verification:** source-level/type-shape review completed. A clean repository runtime build could not be executed because the available shell environment cannot currently resolve `github.com`; production readiness is therefore not claimed.
+
+#### Step 2B-2 — next slice
+- localize the complete Quick Help decision tree, not only its seed/root labels;
+- migrate the next highest-value public route family behind `[locale]` so localized nav destinations do not become 404s;
+- translate landing-page marketing copy rather than using English brand copy as temporary fallback;
+- browser-language suggestion/negotiation only after explicit locale routes are proven; never infer nationality from IP/name/face and never override explicit selection;
+- add automated message-key parity checks before widening translated surface area.
 
 ### Step 2C
-- activate safe locale negotiation/cutover only after 2B routes build;
+- activate safe locale negotiation/cutover only after localized destination routes build;
+- move document-level language handling to the locale root architecture and remove the temporary legacy-shell client boundary;
 - canonical + hreflang + x-default metadata;
 - locale-aware sitemap;
 - migrate remaining public route families and eliminate English-only paid-flow dead ends;
