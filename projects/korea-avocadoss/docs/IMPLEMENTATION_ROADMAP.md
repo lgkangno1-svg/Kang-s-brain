@@ -35,23 +35,33 @@ Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It fo
 - centralized `SITE_ORIGIN`, complete public route shapes, BCP47 hreflang mapping and localized URL generation;
 - self-canonical metadata for each complete P0 Home/Color/Hanbok/Gyeongbokgung/Culture/Credits URL;
 - reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` alternates plus `x-default` → English;
-- sitemap changed from migration-only unprefixed URLs to 36 canonical localized URLs (6 public route shapes × 6 P0 locales) with reciprocal language alternates;
-- removed false `lastModified: new Date()` build-time freshness claims; add last-modified only from real content review timestamps later;
-- robots still permits intended public/search/answer crawling and now protects both unprefixed and P0-prefixed future account/saved/checkout/personal-result paths;
-- browser-language auto-routing and LegacyShell removal were intentionally excluded;
-- PR #3 run `32999919664` passed install, P0 i18n contracts and Next.js production build before documentation completion.
+- sitemap contains 36 canonical localized URLs (6 public route shapes × 6 P0 locales) with reciprocal language alternates;
+- false build-time freshness claims removed;
+- robots protects unprefixed and P0-prefixed future account/saved/checkout/personal-result paths;
+- browser-language auto-routing and legacy removal intentionally excluded;
+- PR #3 CI passed before merge.
 
-#### Step 2C-4 — next slice: document language + legacy boundary
-The localized pages still live under a root document whose `<html lang>` is currently English because migration-only legacy routes and locale routes share one root layout. This is now the highest-value remaining Step 2 accessibility/SEO defect.
+#### Step 2C-4 — locale-correct document language ✅
+- removed the shared top-level document root that forced `<html lang="en">` onto every locale;
+- adopted official Next.js multiple-root-layout architecture: locale-prefixed routes own their document in `[locale]/layout.tsx`, while migration-only unprefixed routes live in the URL-neutral `(legacy)` route group with their own English document shell;
+- public URL shapes were preserved; route groups do not appear in URLs;
+- locale documents now emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` from the existing P0 locale registry;
+- unprefixed legacy URLs remain functional and English; browser-language inference/redirect and legacy deletion were not included;
+- added `scripts/check-built-document-languages.mjs` and a least-privilege CI step that checks generated `.next` HTML after production build, rather than trusting source structure alone;
+- CI caught a route-depth regression after moving legacy Color into a group: its relative English message import was one level short. The import was repaired before completion;
+- PR #4 run `33005536571` passed P0 i18n contracts, Next.js 16.3.3 optimized build, TypeScript, 46/46 generated pages and generated-document language verification for all six P0 locales.
 
-Handle it as a separate rollback-aware architecture slice:
-- inspect fresh main and research current Next.js/next-intl root-layout patterns before changing route structure;
-- ensure each P0 localized document emits the correct HTML language (`en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`) without making static generation fragile;
-- preserve working unprefixed legacy URLs until an explicit migration/removal decision is proven;
-- do not combine browser-language auto-redirect, legacy route deletion and document-language restructuring in one risky patch;
-- regression-test Quick Help provider boundaries, locale navigation, sitemap/canonical output and all generated routes.
+#### Step 2C-5 — next slice: legacy duplicate boundary
+Now that canonical localized routes, correct document languages and executable build evidence exist, decide what to do with migration-only unprefixed public duplicates as a separate rollback-aware change.
 
-After document-language correctness is proven, decide in a later small slice whether unprefixed legacy duplicates should redirect or retire. Explicit user locale choice must always outrank browser/market inference.
+Scope for the next slice:
+- inspect fresh `main` and verify no other AI/developer changed routing;
+- research current Next.js redirect/caching behavior plus SEO migration guidance before changing legacy URLs;
+- prefer explicit deterministic mapping of known unprefixed public duplicates to their English canonical equivalents if evidence supports retirement;
+- do **not** infer language from nationality/market or silently override a user’s explicit locale;
+- keep browser-language suggestion/negotiation separate from deterministic legacy cleanup;
+- preserve Quick Help, sitemap/canonical/hreflang, locale switching and 46-page build coverage;
+- add redirect-specific executable checks before removing the legacy shell or pages.
 
 **Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; navigation does not regress; executable `check:i18n` + production build remains green.
 
