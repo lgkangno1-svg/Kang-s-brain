@@ -1,6 +1,15 @@
 export type Undertone = 'warm' | 'neutral' | 'cool';
 export type Depth = 'light' | 'medium' | 'deep';
 export type Contrast = 'soft' | 'medium' | 'high';
+export type VisibleToneWarning = 'darkPhoto' | 'overexposedPhoto' | 'limitedPixels';
+export type VisibleToneErrorCode = 'canvasUnavailable' | 'insufficientPixels';
+
+export class VisibleToneError extends Error {
+  constructor(public readonly code: VisibleToneErrorCode) {
+    super(code);
+    this.name = 'VisibleToneError';
+  }
+}
 
 export type VisibleToneResult = {
   undertone: Undertone;
@@ -8,7 +17,7 @@ export type VisibleToneResult = {
   contrast: Contrast;
   confidence: number;
   lightness: number;
-  warnings: string[];
+  warnings: VisibleToneWarning[];
 };
 
 type RGB = { r: number; g: number; b: number };
@@ -77,7 +86,7 @@ export async function analyzeVisibleTone(file: File): Promise<VisibleToneResult>
   canvas.height = height;
 
   const context = canvas.getContext('2d', { willReadFrequently: true });
-  if (!context) throw new Error('Canvas is unavailable in this browser.');
+  if (!context) throw new VisibleToneError('canvasUnavailable');
 
   // Central upper crop approximates the face area without running face recognition.
   const sourceWidth = bitmap.width * 0.5;
@@ -110,7 +119,7 @@ export async function analyzeVisibleTone(file: File): Promise<VisibleToneResult>
 
   const pixels = candidates.length >= 120 ? candidates : fallback;
   if (pixels.length < 80) {
-    throw new Error('We could not read enough usable pixels. Try a brighter, front-facing photo.');
+    throw new VisibleToneError('insufficientPixels');
   }
 
   const { average, luminanceStdDev } = getStats(pixels);
@@ -131,10 +140,10 @@ export async function analyzeVisibleTone(file: File): Promise<VisibleToneResult>
   if (luminanceStdDev >= 42) contrast = 'high';
 
   const skinRatio = candidates.length / Math.max(1, data.length / 16);
-  const warnings: string[] = [];
-  if (lab.l < 35) warnings.push('The photo looks dark. Daylight may give a more reliable result.');
-  if (lab.l > 86) warnings.push('The face area looks overexposed. Try softer natural light.');
-  if (skinRatio < 0.08) warnings.push('We found limited face-like color pixels, so please review the estimate manually.');
+  const warnings: VisibleToneWarning[] = [];
+  if (lab.l < 35) warnings.push('darkPhoto');
+  if (lab.l > 86) warnings.push('overexposedPhoto');
+  if (skinRatio < 0.08) warnings.push('limitedPixels');
 
   const confidence = clamp(0.42 + skinRatio * 1.6 - warnings.length * 0.06, 0.38, 0.82);
 
