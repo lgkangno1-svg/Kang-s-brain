@@ -5,11 +5,11 @@ import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
 
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}): Promise<Metadata> {
   const {locale} = await params;
-  const t = await getTranslations({locale, namespace: 'Meta'});
+  const t = await getTranslations({locale, namespace: 'HanbokMeta'});
 
   return {
-    title: t('hanbokTitle'),
-    description: t('hanbokDescription'),
+    title: t('title'),
+    description: t('description'),
   };
 }
 
