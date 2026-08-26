@@ -29,31 +29,31 @@ Native localized route/metadata; free user-choice deterministic matcher; modular
 Native P0 Credits route/metadata; authoritative numeric pricing only in `src/lib/credits/economics.ts`; fixed credits visible before paid actions; no fake checkout, subscription or ML personalized pricing.
 
 #### Step 2C-2 — executable verification ✅
-Established a minimal GitHub Actions build gate and used it to find/fix real regressions.
+Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and 46/46 static/SSG pages. No npm lockfile exists yet; dependency reproducibility remains a separate supply-chain follow-up and a lockfile must never be fabricated manually.
 
-Evidence and fixes:
-- official `actions/checkout` v7.0.1 and `actions/setup-node` v7.0.0 are pinned to full reviewed commit SHAs;
-- workflow is scoped to Korea Concierge paths, has `contents: read`, no repository secrets, no persisted checkout credentials, a 15-minute timeout, concurrency cancellation and disabled Next telemetry;
-- first run `32994639016` proved checkout/install/P0 i18n, then caught a TypeScript boundary bug: broad P0/P1/P2 `SupportedLocale` was being used for P0-only production routing;
-- added explicit `P0Locale` and typed `DEFAULT_LOCALE` accordingly;
-- second PR run `32995135203` passed TypeScript and exposed prerender failure because migration-only unprefixed routes rendered Quick Help without a client intl provider;
-- legacy Quick Help now receives only its English message namespace through `NextIntlClientProvider`, preserving locale-prefixed routes unchanged;
-- successful PR run `32995294201` passed install, all P0 i18n contracts, compilation, TypeScript, page-data collection and generation of all 46 static/SSG pages;
-- exact successful i18n evidence: 6 locales × 283 leaf keys, Quick Help 65 keys, Personal Color 38, Hanbok 44, Credits 3 plans + 11 paid feature labels;
-- build output confirmed P0 Home, Color, Credits, Culture, Gyeongbokgung and Hanbok paths;
-- next-intl `ENVIRONMENT_FALLBACK` console noise on the legacy client provider was traced to an unspecified client timezone; `Asia/Seoul` is now explicit for this Korea-local legacy fallback and is being kept under the same CI gate.
+#### Step 2C-3 — P0 SEO locale cutover ✅
+- centralized `SITE_ORIGIN`, complete public route shapes, BCP47 hreflang mapping and localized URL generation;
+- self-canonical metadata for each complete P0 Home/Color/Hanbok/Gyeongbokgung/Culture/Credits URL;
+- reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` alternates plus `x-default` → English;
+- sitemap changed from migration-only unprefixed URLs to 36 canonical localized URLs (6 public route shapes × 6 P0 locales) with reciprocal language alternates;
+- removed false `lastModified: new Date()` build-time freshness claims; add last-modified only from real content review timestamps later;
+- robots still permits intended public/search/answer crawling and now protects both unprefixed and P0-prefixed future account/saved/checkout/personal-result paths;
+- browser-language auto-routing and LegacyShell removal were intentionally excluded;
+- PR #3 run `32999919664` passed install, P0 i18n contracts and Next.js production build before documentation completion.
 
-Known supply-chain follow-up:
-- no npm lockfile is committed yet. CI therefore uses `npm install --ignore-scripts --no-audit --no-fund`. Before dependency resolution is called deterministic, generate/review/commit a lockfile from a trusted executable environment in a separate small slice; never fabricate one manually.
+#### Step 2C-4 — next slice: document language + legacy boundary
+The localized pages still live under a root document whose `<html lang>` is currently English because migration-only legacy routes and locale routes share one root layout. This is now the highest-value remaining Step 2 accessibility/SEO defect.
 
-#### Step 2C-3 — next slice: SEO/locale cutover
-Now that executable build proof exists, perform as a separate reviewable slice:
-- add canonical/hreflang/x-default for complete P0 public routes;
-- make sitemap/robots locale-aware and verify alternate URLs/indexability;
-- preserve public/private noindex boundaries;
-- do not combine browser-language auto-routing or legacy-shell removal into the same cutover; those remain later rollback-aware work.
+Handle it as a separate rollback-aware architecture slice:
+- inspect fresh main and research current Next.js/next-intl root-layout patterns before changing route structure;
+- ensure each P0 localized document emits the correct HTML language (`en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`) without making static generation fragile;
+- preserve working unprefixed legacy URLs until an explicit migration/removal decision is proven;
+- do not combine browser-language auto-redirect, legacy route deletion and document-language restructuring in one risky patch;
+- regression-test Quick Help provider boundaries, locale navigation, sitemap/canonical output and all generated routes.
 
-**Step 2 gate:** no English-only core public/paid-flow dead end; locale URLs have correct SEO alternates after cutover; navigation does not regress; executable `check:i18n` + production build evidence remains green.
+After document-language correctness is proven, decide in a later small slice whether unprefixed legacy duplicates should redirect or retire. Explicit user locale choice must always outrank browser/market inference.
+
+**Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; navigation does not regress; executable `check:i18n` + production build remains green.
 
 ## Step 3 — Saju deterministic cultural core
 Exact / approximate / unknown birth time; never fabricate missing hour; timezone/city only when required; deterministic calendar/pillar computation; reduced-scope three-pillar result and lower pricing when hour unknown; raw birth inputs never sent to LLM; cultural/entertainment framing and deletion controls.
@@ -80,7 +80,7 @@ Deterministic filtering, compact prompts, partial replans, hard token/cost ceili
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, market experiments, P1/P2 expansion from measured demand.
 
 ## Every-step regression checklist
-Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
+Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
 
 ## Current user action required
 **None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred to their gates.
