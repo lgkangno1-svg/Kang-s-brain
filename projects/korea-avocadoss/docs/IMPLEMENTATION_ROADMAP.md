@@ -18,41 +18,47 @@ PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discov
 ## Step 2 — Internationalized routing and language selector ← in progress
 
 ### Step 2A — dependency + request/routing foundation ✅
-- fresh upstream verification corrected the planned dependency from nonexistent/unverified `4.13.7` to **exact `next-intl@4.13.4`**;
-- plugin wired through `next.config.ts` while preserving existing security headers;
-- P0-only `defineRouting` registry created with `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` target locales and explicit default `en`;
-- request config validates locale before loading a dictionary and returns 404 for unsupported locale values;
-- no proxy/redirect was activated yet because `[locale]` pages did not exist at this gate;
-- no AI/API/token cost added; static dictionaries remain the production localization source;
-- NLLB-200 remains rejected for commercial production because current Hugging Face metadata/model card identify CC-BY-NC and non-production intended use.
+- exact `next-intl@4.13.4` pin after fresh upstream verification;
+- plugin wired through `next.config.ts` while preserving security headers;
+- P0-only routing registry for `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` with explicit default `en`;
+- request config validates locale before loading a dictionary and fails closed for unsupported values;
+- runtime translation ML rejected; static dictionaries remain production localization source.
 
 ### Step 2B — localized app migration
 
 #### Step 2B-1 — locale routes + navigation shell ✅ by static review
-- added official `createNavigation(routing)` helpers so internal links preserve locale;
-- added accessible P0 language selector using the current pathname rather than sending users back to a generic homepage;
-- added validated `[locale]` layout and homepage with `NextIntlClientProvider`, P0 dictionaries and localized global navigation/footer copy;
-- added static params for the six P0 locales;
-- preserved the existing unprefixed site through a temporary migration-only `LegacyShell`; locale-prefixed routes use the new shell and legacy routes keep their current UI;
-- Quick Help CTAs now retain the current locale prefix instead of dropping users back onto unprefixed English routes;
-- no redirect/proxy cutover yet;
-- root document `<html lang>` remains `en` during this coexistence phase. Locale content has a scoped `lang` attribute, but document-level language and SEO alternates remain a 2C migration requirement.
+- official locale-preserving navigation helpers;
+- accessible language selector retaining the current pathname;
+- validated `[locale]` layout/homepage with `NextIntlClientProvider`;
+- temporary migration-only `LegacyShell` keeps unprefixed routes working;
+- Quick Help CTAs retain locale prefixes;
+- temporary localized route bridges prevent `/ja/hanbok`, `/vi/color`, etc. from becoming 404s;
+- redirect/proxy cutover remains disabled until destination parity and build verification.
 
-**2B-1 verification:** source-level/type-shape review completed. A clean repository runtime build could not be executed because the available shell environment cannot currently resolve `github.com`; production readiness is therefore not claimed.
+#### Step 2B-2 — complete Quick Help localization + message QA ✅ by static/data-shape review
+- removed hard-coded English Quick Help titles, answers, choices, CTAs and accessibility text from the client component;
+- Quick Help decision graph now contains message keys only;
+- completed the full Quick Help tree in all P0 dictionaries: English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese and Thai;
+- added `scripts/check-message-parity.mjs`: English is the reference schema; missing, extra or blank leaves fail the check;
+- production `npm run build` now runs `npm run check:i18n` first;
+- local parity modeling confirms 87 leaf message keys for each of the six P0 dictionaries;
+- no translation API, model, RAG or embedding dependency added; Quick Help remains 0-credit / 0-AI / no external question transfer.
 
-#### Step 2B-2 — next slice
-- localize the complete Quick Help decision tree, not only its seed/root labels;
-- migrate the next highest-value public route family behind `[locale]` so localized nav destinations do not become 404s;
-- translate landing-page marketing copy rather than using English brand copy as temporary fallback;
-- browser-language suggestion/negotiation only after explicit locale routes are proven; never infer nationality from IP/name/face and never override explicit selection;
-- add automated message-key parity checks before widening translated surface area.
+**2B-2 verification limitation:** the repository cannot currently be clean-cloned in the available shell because `github.com` DNS resolution fails, so the committed Node check and `next build` could not be executed in that shell. Production build success is not claimed. Source-level structure was reviewed through GitHub after commit.
+
+#### Step 2B-3 — next slice
+- migrate landing-page marketing copy fully into P0 dictionaries instead of leaving English brand copy as fallback;
+- migrate the next highest-value public route family from temporary bridge content to native localized content;
+- add a small deterministic checker that every Quick Help message key referenced by the graph exists in the English schema, so graph/message drift fails before build;
+- review CJK/Thai/Vietnamese mobile text overflow after the translated public surface grows;
+- browser-language suggestion/negotiation only after explicit locale destinations are proven; never infer nationality from IP/name/face and never override explicit selection.
 
 ### Step 2C
 - activate safe locale negotiation/cutover only after localized destination routes build;
-- move document-level language handling to the locale root architecture and remove the temporary legacy-shell client boundary;
+- move document-level language handling to locale-root architecture and remove temporary legacy shell;
 - canonical + hreflang + x-default metadata;
 - locale-aware sitemap;
-- migrate remaining public route families and eliminate English-only paid-flow dead ends;
+- migrate remaining public routes and eliminate English-only paid-flow dead ends;
 - mobile overflow QA for CJK/Thai/Vietnamese.
 
 **Step 2 gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates and existing links do not regress.
