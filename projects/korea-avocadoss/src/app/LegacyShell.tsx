@@ -1,9 +1,11 @@
 "use client";
 
+import {NextIntlClientProvider} from 'next-intl';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {ReactNode} from 'react';
 
+import coreEnglishMessages from '../../messages/en.json';
 import {QuickHelp} from '@/features/quick-help/QuickHelp';
 import {P0_LOCALES} from '@/lib/i18n/locales';
 
@@ -42,7 +44,9 @@ export function LegacyShell({children}: {children: ReactNode}) {
         <p>Personalized Korea travel and culture, designed for international visitors.</p>
         <span>Production target: korea.avocadoss.co.kr</span>
       </footer>
-      <QuickHelp />
+      <NextIntlClientProvider locale="en" messages={{QuickHelp: coreEnglishMessages.QuickHelp}}>
+        <QuickHelp />
+      </NextIntlClientProvider>
     </>
   );
 }
