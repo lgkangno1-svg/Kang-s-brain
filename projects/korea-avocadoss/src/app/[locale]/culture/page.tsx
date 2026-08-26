@@ -1,6 +1,20 @@
+import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
-export default async function LocalizedCulturePage({params}: {params: Promise<{locale: string}>}) {
+type PageProps = {params: Promise<{locale: string}>};
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+  const {locale} = await params;
+  setRequestLocale(locale);
+  const meta = await getTranslations('Meta');
+
+  return {
+    title: meta('cultureTitle'),
+    description: meta('cultureDescription'),
+  };
+}
+
+export default async function LocalizedCulturePage({params}: PageProps) {
   const {locale} = await params;
   setRequestLocale(locale);
   const culture = await getTranslations('Culture');
