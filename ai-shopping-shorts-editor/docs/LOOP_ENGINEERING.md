@@ -60,6 +60,7 @@ HANDOFF 업데이트를 잊은 제품 변경은 인수인계 관점에서 미완
 - 유료 Quality Judge 응답도 부분 결과를 정상 검수처럼 적용하지 않는다. 요청한 각 beat에 대해 정확히 하나의 judgment가 있어야 하며, 누락·중복·예상 밖 beat가 있으면 해당 batch의 2차 검수를 실패로 취급해 부분 score가 조용히 EDL에 섞이는 것을 막는다.
 - Quality Judge의 `score`는 단순히 `Number(...)`로 강제 변환하지 않는다. 문자열·null·비정상 숫자·0~100 범위 밖 값은 threshold 비교를 왜곡하거나 `NaN < threshold === false`로 저품질 컷을 통과시킬 수 있으므로, 유한한 number 타입이면서 0~100 범위인지 응답 계약 단계에서 검증한다.
 - 같은 project의 장시간 mutating 작업은 **첫 asynchronous boundary 전에** 동기적으로 slot을 선점해야 한다. `running`을 검사한 뒤 `await bodyJson()` 같은 작업을 먼저 수행하면 두 요청이 모두 idle을 관찰할 수 있으므로, `/run`과 `/replace`는 먼저 project job을 claim하고 초기 파싱/setup 실패 시 owner-aware cleanup으로 slot을 해제한다. 서로 다른 project는 불필요하게 직렬화하지 않는다.
+- mutation lock 자체만으로 stale-state overwrite가 막히는 것은 아니다. mutable snapshot을 lock 전에 읽었다면 앞선 mutation이 끝난 뒤 오래된 객체로 최신 `project.json`을 다시 덮을 수 있으므로, `/upload`·`/run`·`/replace`는 **mutation ownership을 얻은 뒤 최신 project snapshot을 다시 읽고 그 객체만 수정/실행에 사용한다.** snapshot read가 실패하면 owner-aware하게 lock을 해제한다.
 - self-hosted CI는 GitHub Actions 성공을 제품 패치의 전제조건으로 만들지 않는다. Mini PC가 offline이거나 workflow가 queued여도 검증 가능한 변경은 branch/history에 저장하고, runner가 온라인일 때 `npm run check`와 실제 FFmpeg `npm run demo`를 추가 증거로 사용한다. 공개 저장소의 개인 self-hosted runner에서는 외부 fork PR 코드를 실행하지 않고 `GITHUB_TOKEN` 권한도 최소화한다.
 - 프로젝트를 여러 AI/개발자가 이어서 수정할 수 있으면 채팅 기억을 인수인계 수단으로 삼지 않는다. 최신 GitHub source와 `docs/HANDOFF.md`를 먼저 읽고, 의미 있는 변경마다 HANDOFF의 완료 상태/로드맵/다음 가설을 함께 갱신해 repository 자체가 현재 맥락을 보존하게 한다.
 
