@@ -60,7 +60,13 @@ export async function readJson(filePath, fallback = null) {
 
 export async function writeJson(filePath, value) {
   await ensureDir(path.dirname(filePath));
-  await fs.writeFile(filePath, JSON.stringify(value, null, 2));
+  const tempPath = `${filePath}.${process.pid}.${randomUUID()}.tmp`;
+  try {
+    await fs.writeFile(tempPath, JSON.stringify(value, null, 2));
+    await fs.rename(tempPath, filePath);
+  } finally {
+    await fs.rm(tempPath, { force: true }).catch(() => {});
+  }
 }
 
 export function extractJson(text) {
