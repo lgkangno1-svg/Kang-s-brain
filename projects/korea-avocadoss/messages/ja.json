@@ -1,0 +1,43 @@
+{
+  "Global": {
+    "nav": {
+      "myColor": "パーソナルカラー",
+      "hanbok": "韓服",
+      "gyeongbokgung": "景福宮",
+      "kCulture": "韓国文化",
+      "credits": "クレジット"
+    },
+    "language": "言語",
+    "footerTagline": "海外からの旅行者のための、パーソナライズされた韓国旅行・文化体験。"
+  },
+  "QuickHelp": {
+    "ariaLabel": "無料の韓国旅行クイックヘルプ",
+    "badge": "無料 · AI API不使用",
+    "launcherTitle": "クイックヘルプ",
+    "launcherSubtitle": "無料で回答",
+    "close": "クイックヘルプを閉じる",
+    "back": "戻る",
+    "topics": "トピック",
+    "zeroCredits": "0クレジット",
+    "rootTitle": "韓国旅行クイックヘルプ",
+    "rootAnswer": "こんにちは。知りたいテーマを選んでください。すぐに回答します。この機能は無料で、AI APIは呼び出しません。",
+    "rootTopics": {
+      "palace": "景福宮",
+      "hanbok": "韓服",
+      "color": "パーソナルカラー",
+      "food": "グルメ・カフェ",
+      "culture": "韓国文化",
+      "credits": "クレジット・支払い",
+      "privacy": "プライバシー"
+    }
+  },
+  "Consent": {
+    "photo": "私の写真は、私が希望したパーソナルカラー機能のためだけに使用してください。",
+    "birth": "出生情報は、私が希望した文化体験の鑑定のためだけに使用してください。",
+    "optionalBirthTime": "出生時刻は任意です。分からない場合は「分からない」を選べます。"
+  },
+  "Credits": {
+    "freeHelp": "クイックヘルプは無料で、AI APIを使用しません。",
+    "beforeCharge": "有料機能では、確定前に必要なクレジット数を必ず表示します。"
+  }
+}
