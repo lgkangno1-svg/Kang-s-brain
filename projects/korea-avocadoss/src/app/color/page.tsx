@@ -1,4 +1,6 @@
+import { NextIntlClientProvider } from 'next-intl';
 import { ColorScanner } from '@/features/color/color-scanner';
+import publicMessages from '../../../messages/public/en.json';
 
 export const metadata = { title: 'My Personal Color' };
 
@@ -11,7 +13,9 @@ export default function ColorPage() {
         <p>Start with a private browser-side selfie scan, review the estimate, then carry the palette into your Hanbok recommendation.</p>
       </section>
       <section className="prototype">
-        <ColorScanner />
+        <NextIntlClientProvider locale="en" messages={{ ColorScanner: publicMessages.ColorScanner }}>
+          <ColorScanner />
+        </NextIntlClientProvider>
       </section>
     </main>
   );
