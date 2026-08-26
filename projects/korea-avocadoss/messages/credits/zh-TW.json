@@ -1,0 +1,10 @@
+{
+  "Meta":{"creditsTitle":"點數與旅程通行證","creditsDescription":"一次性 Korea Concierge 旅程通行證，以固定點數使用進階個人化功能。"},
+  "Credits":{
+    "eyebrow":"一次性旅程通行證 · 上線初期不提供月費訂閱","title":"點數一次購買，只在值得的進階個人化服務中使用。","intro":"一般旅遊探索與實用文化內容維持免費。進階操作會在確認前顯示固定點數，不會因模型或 token 用量而臨時變價。","catalogStatus":"價格預覽","catalogNotice":"以下價格來自儲存庫內的權威點數目錄。即時結帳尚未開放；錢包與付款控制會在後續開發階段實作。","passesTitle":"選擇旅程通行證","passesIntro":"旅程通行證為一次性購買，不會自動續訂。多日旅行建議從 Advanced 開始。","creditsUnit":"點數","perCredit":"每點","tripPass":"旅程通行證",
+    "plans":{"basic":{"name":"Basic","badge":"旅程通行證","description":"適合短途旅行與少量進階個人化操作。"},"advanced":{"name":"Advanced","badge":"推薦","description":"適合多日旅行中使用穿搭、文化與行程功能。"},"ultra":{"name":"Ultra","badge":"單點成本最低","description":"適合情侶、家庭或一次旅行中頻繁使用進階個人化服務。"}},
+    "refillsTitle":"可選補充點數","refillsIntro":"補充包適合已經了解點數使用方式的使用者。首次購買仍以主要旅程通行證較划算。","refillLabel":"一次性補充","actionsTitle":"每項進階操作都會預先顯示固定點數","actionsIntro":"使用者支付的點數依功能固定。token 數量與供應商價格不會造成意外的浮動收費。","beforeConfirmation":"點，確認前顯示",
+    "features":{"color_repeat_scan":"再次進行個人色彩掃描","color_report":"詳細個人色彩報告","color_vision":"進階照片色彩複核","hanbok_recommend":"韓服搭配","travel_itinerary":"AI 行程規劃","travel_replan":"行程重新規劃","culture_saju_quick":"四柱快速文化解讀","culture_saju":"完整四柱文化解讀","culture_saju_deep":"延伸四柱解讀","concierge_standard":"韓國旅行管家問答","concierge_premium":"進階多步驟旅行管家問答"},
+    "predictableTitle":"以可預測為核心的價格設計","serverTitle":"伺服器權威定價與錢包","serverBody":"瀏覽器不能生成點數、修改目錄價格或餘額。正式錢包異動必須由伺服器授權。","reserveTitle":"預留、扣除、釋放","reserveBody":"付費操作會先預留固定點數，成功後才扣除；失敗則自動釋放。","paymentTitle":"國際付款將於後續開放","paymentBody":"後續付款基礎將支援海外信用卡與 PayPal，並透過相容韓國商戶的付款服務商接入。本頁不代表結帳已上線。","pricingTitle":"不採用個人化動態定價","pricingBody":"上線價格公開且固定。不會依國籍、個人特徵或機器學習價格模型對不同旅客設定不同價格。","freeTitle":"實用的免費層維持免費","freeBody":"依目前上線政策，一般探索、首次基礎個人色彩掃描與基礎生肖體驗維持免費。","technicalNote":"內部模型與供應商成本會分開監控。旅客購買的是有用結果，而不是原始 token。"
+  }
+}
