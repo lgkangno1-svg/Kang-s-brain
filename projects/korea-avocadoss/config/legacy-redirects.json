@@ -1,0 +1,8 @@
+[
+  { "source": "/", "destination": "/en", "permanent": true },
+  { "source": "/color", "destination": "/en/color", "permanent": true },
+  { "source": "/hanbok", "destination": "/en/hanbok", "permanent": true },
+  { "source": "/credits", "destination": "/en/credits", "permanent": true },
+  { "source": "/culture", "destination": "/en/culture", "permanent": true },
+  { "source": "/explore/gyeongbokgung", "destination": "/en/explore/gyeongbokgung", "permanent": true }
+]
