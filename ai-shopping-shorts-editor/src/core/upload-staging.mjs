@@ -44,6 +44,9 @@ export async function cleanupStaleUploadParts({ fs, inputsDir, now = Date.now(),
 export async function publishStagedUpload({ fs, stagedPath, finalPath, persist }) {
   let renamed = false;
   try {
+    // Maintenance must never make a valid upload fail. Age + exact tool-owned
+    // filename matching protect fresh/current staging files and user media.
+    await cleanupStaleUploadParts({ fs, inputsDir: path.dirname(stagedPath) }).catch(() => {});
     await fs.rename(stagedPath, finalPath);
     renamed = true;
     await persist(finalPath);
