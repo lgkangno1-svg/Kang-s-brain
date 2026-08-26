@@ -11,9 +11,10 @@ export default getRequestConfig(async ({requestLocale}) => {
     notFound();
   }
 
-  const [core, publicCopy] = await Promise.all([
+  const [core, publicCopy, hanbok] = await Promise.all([
     import(`../../messages/${requested}.json`),
     import(`../../messages/public/${requested}.json`),
+    import(`../../messages/hanbok/${requested}.json`),
   ]);
 
   return {
@@ -21,6 +22,7 @@ export default getRequestConfig(async ({requestLocale}) => {
     messages: {
       ...core.default,
       ...publicCopy.default,
+      ...hanbok.default,
     },
   };
 });
