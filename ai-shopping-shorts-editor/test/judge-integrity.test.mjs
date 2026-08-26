@@ -10,8 +10,18 @@ test('Quality Judge integrity accepts exactly one judgment per beat regardless o
 
 test('Quality Judge integrity rejects missing, duplicate, unexpected, and malformed beat coverage', () => {
   const items = [{ beatId: 'b1' }, { beatId: 'b2' }];
-  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1' }]), /missing=\[b2\]/);
-  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1' }, { beatId: 'b1' }]), /duplicate=\[b1\]/);
-  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1' }, { beatId: 'alien' }]), /unexpected=\[alien\]/);
+  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1', score: 70 }]), /missing=\[b2\]/);
+  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1', score: 70 }, { beatId: 'b1', score: 80 }]), /duplicate=\[b1\]/);
+  assert.throws(() => validateJudgeResponse(items, [{ beatId: 'b1', score: 70 }, { beatId: 'alien', score: 80 }]), /unexpected=\[alien\]/);
   assert.throws(() => validateJudgeResponse(items, {}), /Judge did not return an array/);
+});
+
+test('Quality Judge integrity rejects non-numeric and out-of-range scores', () => {
+  const items = [{ beatId: 'b1' }, { beatId: 'b2' }];
+  for (const score of ['70', null, -1, 101]) {
+    assert.throws(
+      () => validateJudgeResponse(items, [{ beatId: 'b1', score }, { beatId: 'b2', score: 80 }]),
+      /invalidScores=\[/
+    );
+  }
 });
