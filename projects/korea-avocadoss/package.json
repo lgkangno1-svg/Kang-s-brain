@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "check:i18n": "node scripts/check-message-parity.mjs",
+    "build": "npm run check:i18n && next build",
     "start": "next start"
   },
   "dependencies": {
