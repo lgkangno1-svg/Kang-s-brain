@@ -21,6 +21,7 @@
 - **validated EDL = AI와 renderer 사이의 계약**
 - **deterministic guard first**: 로컬 규칙으로 막을 수 있는 오류는 AI 재호출로 해결하지 않는다.
 - **recoverable local state**: 실패한 upload/render/save가 마지막 정상 상태를 훼손하지 않아야 한다.
+- **generation coherence**: MP4, beats, segments, EDL, QA는 같은 완료 세대를 가리켜야 한다.
 - **low-cost iteration**: 같은 분석 조건은 cache하고 manual replacement는 AI 0-call로 처리한다.
 - **provenance before cleanup**: crash 복구에서 파일을 지울 때는 프로그램이 만든 파일임을 확실히 식별하고 age/race 조건을 보수적으로 적용한다.
 
@@ -40,8 +41,9 @@
 - 시각 변화는 대략 1.5~3.2초를 지향하되 의미 경계를 우선한다.
 - 의미 일치 > 소스 다양성 > 미학적 다양성 순으로 판단한다.
 - 동일 segment 중복 사용을 기본 금지한다.
-- MP4, EDL, QA가 항상 같은 cut version을 가리킨다.
+- MP4, beats, segments, EDL, QA가 항상 같은 completed cut version을 가리킨다.
 - malformed AI 응답, 손상 cache, partial upload, 부분 저장, 동시 mutation, stale metadata snapshot이 정상 결과처럼 남지 않는다.
+- 실패한 자동 재실행은 마지막 정상 결과물을 보존한다.
 - crash 잔재 cleanup이 사용자 원본이나 현재 진행 중인 업로드를 추정으로 삭제하지 않는다.
 
 ## 3. 제품 범위 — CUT ONLY
@@ -77,8 +79,8 @@
 - Active PR: `#1 — feat: bootstrap AI Shopping Shorts Editor MVP`
 - Active branch: `feat/ai-shopping-shorts-editor-bootstrap`
 - Base: `main`
-- Loop 30 시작 HEAD: `531e3cf4e208e261a7a5b84acf7a063923241d2e`
-- Loop 30 stale-cleanup code/test HEAD: `52b956afb32952ef7c340ae2a1de08d3c6219f4d`
+- Loop 31 시작 HEAD: `97df9ab41fe07b8a9fa8bf6d60cf2fa445632717`
+- Loop 31 code/test HEAD before docs completion: `f604597ab91cc826d35d644273e785c8cda00a1d`
 
 SHA는 snapshot이다. 다음 작업자는 반드시 PR 최신 HEAD를 다시 확인한다.
 
@@ -110,10 +112,13 @@ Beat + semantic metadata
   -> optional Quality Vision Judge
   -> final EDL
 
-EDL
-  -> deterministic FFmpeg renderer
-  -> 1080x1920 H.264/AAC MP4
-  -> QA JSON
+Automatic run
+  -> render to hidden staged MP4
+  -> calculate QA in memory
+  -> stage beats/segments/EDL/QA JSON
+  -> backup previous completed generation
+  -> transactionally publish MP4 + beats + segments + EDL + QA
+  -> rollback previous generation if a later publish step fails
 
 Review UI
   -> alternative selection
@@ -158,12 +163,6 @@ Review UI
 10. 강제 종료가 stream 중 발생하면 project metadata는 partial file을 참조하지 않는다.
 11. final filename은 고유 token을 포함해 이전 orphan이 다음 upload를 `EEXIST`로 막지 않는다.
 
-왜 startup에서 모든 `.part`를 즉시 지우지 않는가:
-
-- 동일 workspace를 다른 서버 프로세스가 사용할 가능성을 완전히 배제할 수 없다.
-- 현재 진행 중인 다른 프로세스의 업로드를 지우면 데이터 손상이 된다.
-- 따라서 exact tool-owned naming + 24h age threshold + successful new upload publish 시점의 opportunistic cleanup을 선택했다.
-
 강제 종료가 **final rename 직후~project.json commit 직전** 발생하면 완전한 unreferenced final media가 남을 수 있다. 이 파일은 자동 삭제하지 않는다. metadata에 없는 full media의 provenance/age 정책은 별도 설계 대상이다.
 
 관련 파일:
@@ -171,6 +170,42 @@ Review UI
 - `src/core/upload-staging.mjs`
 - `test/upload-staging.test.mjs`
 - `src/server.mjs`
+
+### Automatic-run generation transaction — Loop 31
+
+Loop 31 이전 자동 `runProject()`는 다음 순서였다.
+
+1. `beats.json`, `segments.json`, `edl.json`을 final work path에 먼저 저장
+2. 기존 `output/shorts.mp4`에 직접 FFmpeg render
+3. 마지막에 `qa.json` 저장
+
+따라서 render/저장 실패 시 서로 다른 세대의 artifact가 섞일 수 있었다.
+
+Loop 31 이후:
+
+1. beats/segments/EDL은 메모리에서 준비하되 final authoritative path에 먼저 publish하지 않는다.
+2. FFmpeg는 hidden staged MP4에 render한다.
+3. QA도 메모리에서 계산한다.
+4. beats/segments/EDL/QA JSON을 staged sibling에 완성한다.
+5. 이전 completed generation의 존재하는 artifact를 backup한다.
+6. 다음 artifact를 하나의 rollback-aware commit set으로 publish한다.
+   - `output/shorts.mp4`
+   - `work/beats.json`
+   - `work/segments.json`
+   - `work/edl.json`
+   - `output/qa.json`
+7. 중간 rename 실패 시 이미 새로 publish한 artifact를 제거하고 backup을 복원한다.
+8. staging/backup debris는 best-effort cleanup한다.
+
+**불변조건:** failed automatic rerun은 마지막 completed generation을 논리적으로 보존해야 한다. Review UI/EDL/QA/manual replacement가 mixed generation을 정상 결과로 읽어서는 안 된다.
+
+관련 파일:
+
+- `src/core/artifact-commit.mjs`
+- `src/core/pipeline.mjs`
+- `test/artifact-commit.test.mjs`
+
+한계: 이 transaction은 실행 중 예외에 대해 rollback-safe하지만, 여러 파일 rename 사이에 **하드 전원 손실/프로세스 강제 종료**가 발생하면 JavaScript rollback이 실행되지 못한다. 이 아주 짧은 window까지 제거하려면 generation-directory + atomic current-manifest/pointer 구조가 필요할 수 있으나, 실제 fault evidence 없이 복잡도를 먼저 늘리지 않는다.
 
 ## 6. AI 모델 / 연동
 
@@ -217,7 +252,7 @@ Review UI
 7. AI 호출/토큰 증가에는 측정 가능한 품질 개선 근거가 필요하다.
 8. correctness/reliability/recovery guard는 deterministic local logic을 우선한다.
 
-Loop 30은 filesystem maintenance만 추가하며 OpenCode Go call/token과 FFmpeg 작업량을 늘리지 않는다.
+Loop 31은 OpenCode Go call/token 또는 FFmpeg encode 횟수를 늘리지 않는다. 이전 completed MP4를 보호하기 위해 commit 단계에서 local file backup/copy/rename 비용만 추가된다.
 
 ## 8. 현재 구현 완료 상태
 
@@ -227,7 +262,7 @@ Loop 30은 filesystem maintenance만 추가하며 OpenCode Go call/token과 FFmp
 - disk streaming upload
 - hidden unique staging upload + completed-file publish
 - metadata persistence 실패 시 published upload rollback
-- **24시간 이상 된 tool-owned `.upload-*.part` opportunistic cleanup**
+- 24시간 이상 된 tool-owned `.upload-*.part` opportunistic cleanup
 - FFprobe metadata 검사
 - FFmpeg scene-score 기반 장면 탐지
 - 쇼츠용 segment normalization
@@ -250,11 +285,12 @@ Loop 30은 filesystem maintenance만 추가하며 OpenCode Go call/token과 FFmp
 - 1080x1920 H.264/AAC render
 - TTS보다 EDL program timeline을 최종 영상 길이 기준으로 사용
 - 자동 QA
+- **automatic run staged render + MP4/beats/segments/EDL/QA transactional publish/rollback**
 - HTTP Range preview + malformed range 416
 - manual replacement preflight
 - manual alternatives refresh
 - staged manual rerender
-- MP4/EDL/QA transactional publish + rollback
+- manual MP4/EDL/QA transactional publish + rollback
 - atomic JSON persistence
 - API call/token/cost telemetry
 - Windows launcher
@@ -291,38 +327,36 @@ Loop 30은 filesystem maintenance만 추가하며 OpenCode Go call/token과 FFmp
 21. Judge alternatives refresh
 22. manual alternatives refresh
 23. manual rerender staging
-24. MP4/EDL/QA transactional publish/rollback
+24. manual MP4/EDL/QA transactional publish/rollback
 25. living HANDOFF 체계 도입
 26. same-project run/replace synchronous serialization
 27. upload/run/replace 공통 mutation serialization
 28. upload staging + unique publish path + metadata-failure rollback
 29. mutation claim 후 fresh `project.json` snapshot 재조회로 stale overwrite 차단
-30. **tool-owned stale `.upload-*.part` age/provenance cleanup 정책 구현**
+30. tool-owned stale `.upload-*.part` age/provenance cleanup 정책 구현
+31. **automatic run MP4/beats/segments/EDL/QA transactional publish/rollback**
 
-## 10. Loop 30 변경 요약
+## 10. Loop 31 변경 요약
 
 ### 문제
 
-Loop 28의 staging 구조 덕분에 crash 중 partial file이 정상 input metadata로 등록되지는 않지만, 프로세스가 강제 종료되면 hidden `.upload-*.part`가 디스크에 계속 남을 수 있다. 반복 crash가 있으면 workspace가 불필요하게 증가한다.
+자동 rerun이 새 work JSON을 먼저 publish하고 기존 최종 MP4에 직접 렌더했기 때문에, FFmpeg 또는 이후 JSON 저장 실패 시 mixed generation이 남을 수 있었다.
 
 ### 해결
 
-- `cleanupStaleUploadParts()` 추가
-- exact filename pattern: `.upload-[a-zA-Z0-9_-]+.part`
-- regular file만 대상
-- 기본 최소 age: 24시간
-- 현재/fresh staging 및 사용자 이름의 `.part`, final media는 보존
-- 새 업로드가 stream을 정상 완료하고 publish할 때 opportunistic cleanup 실행
-- cleanup 자체의 오류는 정상 업로드를 막지 않음
-- full unreferenced final media는 여전히 자동 삭제하지 않음
+- `commitRunArtifacts()` 추가
+- automatic run의 final work JSON 선저장 제거
+- FFmpeg output을 hidden staged MP4로 변경
+- render/QA 성공 후 MP4 + beats + segments + EDL + QA를 하나의 rollback-aware artifact set으로 commit
+- 중간 publish 실패 시 이전 completed artifact 복원
 
 ### 비용 영향
 
 - OpenCode Go call/token 증가 없음
-- FFmpeg 증가 없음
-- successful upload당 작은 directory scan/stat 비용만 추가
+- FFmpeg encode 횟수 증가 없음
+- local backup/copy/rename 오버헤드만 추가
 
-상세 기록: `docs/loop-history/2026-08-27-30-stale-upload-part-cleanup.md`
+상세 기록: `docs/loop-history/2026-08-27-31-automatic-run-artifact-transaction.md`
 
 ## 11. 검증 체계
 
@@ -345,10 +379,11 @@ npm run demo
 - Loop 27 project-mutation helper: PASS
 - Loop 28 upload staging: PASS
 - Loop 29 fresh snapshot: PASS
-- Loop 30 upload cleanup isolated Node validation: **2/2 PASS**
-  - old tool-owned staging removed while fresh/user files remain
-  - publish path removes stale debris and preserves current upload
-- Loop 30 `node --check` on updated helper logic: PASS
+- Loop 30 upload cleanup isolated Node validation: 2/2 PASS
+- **Loop 31 automatic-run artifact transaction isolated Node validation: 2/2 PASS**
+  - later EDL rename failure → old video/beats/segments/EDL/QA 모두 복원, transaction debris 0
+  - success path → five artifacts 모두 같은 new version으로 publish, transaction debris 0
+- Loop 31 transaction helper `node --check`: PASS
 
 현재 자동 실행환경에서 fresh repository clone 기반 full `npm run check`/`npm run demo`가 항상 가능한 것은 아니다. 실행하지 못한 full check를 성공했다고 주장하지 않는다. GitHub Actions는 추가 evidence이지 patch의 필수 gate가 아니다.
 
@@ -382,6 +417,7 @@ npm run demo
 - partial upload는 project metadata에 publish하지 않는다.
 - mutating route는 lock 전 snapshot을 persist source로 사용하지 않는다.
 - cleanup은 exact tool-owned staging pattern과 충분한 age 조건 없이 사용자 media를 삭제하지 않는다.
+- failed automatic run은 이전 authoritative output generation을 가능한 범위에서 rollback 보존한다.
 
 ## 14. 알려진 한계 / 리스크
 
@@ -392,8 +428,8 @@ npm run demo
 5. process restart 후 in-memory job/mutation status는 사라진다.
 6. crash가 upload final rename 직후 project metadata commit 전에 발생하면 **완전하지만 unreferenced orphan input**이 남을 수 있다. 자동 삭제 정책은 아직 없다.
 7. 24h stale staging cleanup은 새 successful upload 시 opportunistic하게 실행되므로, 더 이상 업로드가 없으면 오래된 `.part`는 그대로 남을 수 있다.
-8. 여러 독립 server process가 같은 workspace를 공유하는 것을 막는 cross-process lock은 없다. 24h age threshold는 위험을 줄이지만 cross-process ownership을 증명하지는 않는다.
-9. interrupted run의 work/output artifact provenance/recovery는 추가 점검이 필요하다.
+8. 여러 독립 server process가 같은 workspace를 공유하는 것을 막는 cross-process lock은 없다.
+9. automatic-run artifact transaction은 실행 중 예외에는 rollback-safe하지만, multi-file commit 중 hard power/process loss가 발생하면 rollback 자체가 실행되지 못할 수 있다.
 10. 전체 실제 상품영상 품질 benchmark corpus는 아직 부족하다.
 
 ## 15. 개발 로드맵
@@ -409,12 +445,13 @@ npm run demo
 - project mutation serialization
 - staged upload publish
 - post-claim fresh project snapshot
-- **age/provenance 기반 stale staging cleanup**
+- age/provenance 기반 stale staging cleanup
+- **transactional automatic-run completed generation publish**
 
 남은 후보:
 
+- automatic artifact commit hard-crash window가 실제 문제인지 fault-injection으로 측정
 - metadata에 없는 full orphan upload의 provenance/age 정책
-- interrupted run의 work/output artifact provenance 점검
 - cross-process workspace ownership/lock 필요성 평가
 - disk-full/permission failure injection coverage
 
@@ -454,11 +491,12 @@ npm run demo
 
 가장 먼저 검토할 후보:
 
-**interrupted run의 `work/`·`output/` artifact가 마지막 정상 결과와 명확히 구분되는지 점검한다.** 특히 자동 `/run` 경로가 manual replacement처럼 staged/transactional publish를 보장하는지 확인하고, 실패한 신규 렌더가 이전 정상 `shorts.mp4`/QA를 손상시킬 수 있다면 최소 범위로 보호한다.
+**automatic artifact transaction의 remaining hard-crash window가 실제 운용에서 의미 있는지 증거를 먼저 수집한다.** Mini PC에서 process-kill/disk-failure fault injection으로 multi-file commit 중단 시 결과를 관찰할 수 있다. 실제 위험이 확인되면 generation-directory + atomic manifest/pointer 구조를 검토하고, 그렇지 않으면 복잡도를 늘리지 않는다.
 
 그 다음:
 
-- metadata에 없는 full orphan media는 자동 삭제하지 말고 provenance/age evidence를 먼저 정의
+- disk-full/permission failure injection coverage
+- metadata에 없는 full orphan media provenance/age 정책
 - cross-process workspace ownership 문제가 실제 운용에서 필요한지 평가
 
 ## 17. 새 AI/개발자 작업 시작 체크리스트
