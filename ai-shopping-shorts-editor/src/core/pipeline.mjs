@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { assertMediaTools, analyzeSourceLocally, probe } from './media.mjs';
 import { buildBeats, adaptBeatsToAvailableSegments } from './beats.mjs';
-import { analyzeSegmentsVision, UsageTracker } from './opencode.mjs';
+import { analyzeSegmentsVision, UsageTracker, validateVisionBatchResponse } from './opencode.mjs';
 import { buildEdl, renderEdl, validateEdl } from './editor.mjs';
 import { ensureDir, readJson, writeJson, sha256Text } from './utils.mjs';
 
@@ -43,6 +43,15 @@ export function makeVisionCacheFingerprint({ model, sourceHashes, analysisWidth,
   return sha256Text(JSON.stringify({ schema, model, sourceHashes, analysisWidth, sceneThreshold, segmenting })).slice(0, 20);
 }
 
+export function isVisionCachePayloadValid(allSegments, cached) {
+  try {
+    validateVisionBatchResponse(allSegments, cached);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function assertManualReplacementAvailable(clips, beatId, segmentId) {
   const owner = clips.find((clip) => clip.beatId !== beatId && clip.segmentId === segmentId);
   if (owner) throw new Error(`Selected alternative is already used by ${owner.beatId}.`);
@@ -74,8 +83,7 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
   const visionCachePath = path.join(cacheDir, `vision-${cacheFingerprint}.json`);
   if (apiKey) {
     const cached = await readJson(visionCachePath, null);
-    const ids = new Set(allSegments.map((s) => s.id));
-    const cacheValid = Array.isArray(cached) && cached.length === allSegments.length && cached.every((s) => ids.has(s.id));
+    const cacheValid = isVisionCachePayloadValid(allSegments, cached);
     if (cacheValid) {
       onStatus('AI 영상 분석 캐시 재사용');
       const baseMap = new Map(allSegments.map((s) => [s.id, s]));
