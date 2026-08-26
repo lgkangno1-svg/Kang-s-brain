@@ -21,6 +21,7 @@
 - AI를 쓰지 않는 deterministic fallback도 품질 점수 정렬을 실제 선택에 그대로 반영해야 한다. 후보를 품질순으로 정렬한 뒤 beat index로 회전 선택하면 낮은 품질 장면을 의도적으로 고를 수 있으므로, duration/중복/diversity 제약을 적용한 뒤 최고 점수의 남은 후보를 우선한다.
 - Quality Judge가 낮은 점수 컷을 대체할 때도 초기 EDL의 불변조건을 보존해야 한다. 특히 다른 beat가 이미 사용 중인 segment를 대체 후보로 다시 선택하면 Judge API 비용을 지불한 뒤 최종 EDL 검증에서 실패할 수 있으므로, 대체 선택 시 현재 점유 segment 집합을 유지하고 중복 후보를 사전에 제외한다.
 - 수동 컷 교체도 자동 편집과 같은 EDL 불변조건을 렌더 전에 확인해야 한다. 다른 beat가 이미 쓰는 segment를 사용자가 선택한 경우 EDL을 저장하거나 FFmpeg를 실행하기 전에 거부해야 불필요한 재렌더와 사후 QA 실패를 막을 수 있다.
+- EDL의 program timeline 길이와 실제 source trim 길이는 clip마다 같은 불변조건으로 검증한다. 둘이 다르면 concat 결과가 의도한 beat 길이를 보장하지 못하고 FFmpeg를 돌린 뒤 duration QA에서야 실패가 드러날 수 있으므로, 렌더 전에 허용 가능한 rounding tolerance 안에서 `programEnd-programStart === sourceEnd-sourceStart`를 확인한다.
 - TTS가 있는 렌더에서는 오디오 길이를 전체 출력 길이의 기준으로 사용하지 않는다. `-shortest`는 TTS 파일이 beat/EDL 타임라인보다 조금만 짧아도 영상 자체를 조기 종료시킬 수 있으므로, 최종 출력 길이는 EDL의 program timeline으로 고정하고 오디오는 그 길이 안에서 매핑한다.
 - `minBeat`보다 짧은 micro-beat는 이전 beat와 합칠 수 있을 때만 처리하면 첫 beat가 그대로 남는다. 쇼츠 시작의 0.x초 순간 컷을 줄이려면 이전 병합이 불가능한 경우 다음 beat와도 `maxBeat` 범위 안에서 안전하게 forward-merge하고 타임라인 연속성을 보존한다.
 - SRT를 편집 타임라인의 source of truth로 사용할 때는 단순 공백뿐 아니라 겹치는 cue도 EDL 생성 전에 정규화해야 한다. 부분 겹침은 자막 순서를 보존한 채 다음 cue의 시작점을 직전 cue 끝으로 당기고, 완전히 직전 cue 안에 포함된 cue는 텍스트를 직전 beat에 흡수해 0/음수 길이 beat와 program overlap을 만들지 않는다.
