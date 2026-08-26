@@ -34,7 +34,7 @@ Next.js 16.3.3 + exact `next-intl@4.13.4`. P0 locale URLs: `/en`, `/zh-CN`, `/ja
 
 Migration-only unprefixed legacy routes remain. Locale-aware navigation preserves locale. Redirect/browser-language negotiation/canonical/hreflang/x-default stay disabled until route parity + executable build evidence.
 
-`check:i18n` now runs P0 dictionary parity, Quick Help contract, Personal Color contract and Hanbok contract. Hanbok copy is modularized under `messages/hanbok/{locale}.json`. Locale overflow CSS protects CJK/Vietnamese/Thai surfaces including Hanbok fieldsets/labels/results.
+`check:i18n` now runs P0 dictionary parity, Quick Help contract, Personal Color contract and Hanbok contract. Hanbok copy is modularized under `messages/hanbok/{locale}.json`. The request loader performs a recursive/deep message merge so shared namespaces such as `Meta` retain existing Home/Culture/Gyeongbokgung/Color keys when feature bundles add their own metadata. The parity checker mirrors that same deep-merge behavior. Locale overflow CSS protects CJK/Vietnamese/Thai surfaces including Hanbok fieldsets/labels/results.
 
 ## 5. Completed status
 
@@ -59,6 +59,17 @@ Latest run completed:
 - did **not** start the deferred bulk Hanbok visual asset project;
 - Step 7 remains the gate for a fuller Hanbok recommendation engine; this is only the zero-cost localized preview needed for Step 2 parity.
 
+### Regression caught and fixed in the same run
+
+The first modular-bundle implementation used a shallow object spread. Because both public copy and Hanbok copy contain a `Meta` namespace, the Hanbok bundle could replace the entire existing `Meta` object and hide metadata keys for Home/Culture/Gyeongbokgung/Color. This was detected during the required regression pass before production claims.
+
+Fix:
+- request message assembly now uses a small typed recursive merge rather than shallow top-level spread;
+- the parity checker uses the same recursive merge semantics so QA sees the same effective message tree as runtime;
+- Hanbok metadata continues to live under the common `Meta` namespace without erasing prior metadata.
+
+This fix adds no runtime package or external dependency.
+
 ## 6. Latest discovery decision
 
 ### GitHub
@@ -73,7 +84,7 @@ Full record: `docs/OPEN_SOURCE_DISCOVERY.md`.
 
 ## 7. Verification / blocker
 
-Evidence available: GitHub source writes for native Hanbok route, deterministic matcher, six P0 Hanbok bundles, request loader merge, parity/contract gates, responsive CSS, roadmap/discovery/handoff updates.
+Evidence available: GitHub source writes for native Hanbok route, deterministic matcher, six P0 Hanbok bundles, recursive request-message merge, parity/contract gates, responsive CSS, roadmap/discovery/handoff updates.
 
 Executable verification was attempted again on 2026-08-27 using clean clone → install → `npm run check:i18n` → build. The shell failed at clone with `Could not resolve host: github.com`. Therefore executable i18n/build success and production deployment are **not claimed**. A future environment with working GitHub DNS must run the full path before Step 2 cutover.
 
