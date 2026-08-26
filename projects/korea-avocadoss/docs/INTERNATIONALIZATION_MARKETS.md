@@ -1,7 +1,7 @@
 # Korea Concierge — International Markets & Localization Strategy
 
 **Status:** implementation baseline  
-**Date:** 2026-08-26  
+**Date:** 2026-08-27  
 **Target:** `korea.avocadoss.co.kr`
 
 ## 1. Product rule
@@ -16,11 +16,15 @@ Do not infer nationality, ethnicity, religion, dietary practice, spending power,
 
 Current official Korean tourism reporting shows that China, Japan and Taiwan remain core inbound markets. MCST reported approximately 1.45M visitors from China, 0.94M from Japan and 0.54M from Taiwan in 2026 Q1. US arrivals were also approximately 0.81M in Jan–Jun 2026. Official top-market reporting has repeatedly included Vietnam, Hong Kong, Thailand, Singapore, the Philippines and Malaysia among major inbound markets.
 
+**2026-08-27 refresh:** the Korea Tourism Organization continues to run the Foreign Tourist Survey annually across major airports/ports and explicitly measures information sources, activities, spend, satisfaction and travel friction. MCST's 2026 Korea Season program is specifically running in Thailand and Vietnam with Korean food, Hanbok, traditional music and other K-culture programming. This is directionally consistent with retaining Vietnamese and Thai as P0 rather than demoting either market. No evidence reviewed in this slice justifies changing the existing P0/P1 order; future changes must use newer aggregate arrivals/survey/first-party demand, not individual inference.
+
 Sources to re-check quarterly:
 - Korea Tourism Statistics / Korea Tourism Organization
 - MCST inbound-tourism releases
 - Korea Tourism Data Lab country-market analysis
 - Foreign Tourist Survey
+- https://kto.visitkorea.or.kr/coding/popup/popSearchSummary.jsp
+- https://www.mcst.go.kr/site/s_policy/govPolicy/performTotal.jsp
 
 ## 3. Locale rollout
 
