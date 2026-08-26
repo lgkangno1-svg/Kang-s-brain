@@ -2,6 +2,36 @@
 
 This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
+## 2026-08-27 — Step 2C-6 shadowed legacy implementation cleanup
+
+### GitHub / framework review
+The maintained `vercel/next.js` repository and current Next.js 16 Route Groups / root-layout documentation were rechecked before deleting migration-only UI. Current guidance confirms that multiple root layouts can live below `app/`, including under a dynamic locale segment, but when there is no top-level `app/layout.tsx` the home route `/` should still be owned by a root group.
+
+**Decision:** do not delete the `(legacy)` group blindly. Remove the unreachable legacy feature pages, `LegacyShell`, legacy navigation/footer and legacy-only English Quick Help provider, but retain the smallest structural `(legacy)/layout.tsx` plus `(legacy)/page.tsx`. The root page is only a defensive `permanentRedirect('/en')`; the public routing authority remains the explicit `config/legacy-redirects.json` map whose production HTTP behavior is already executable-tested. This minimizes dead code without risking the proven multiple-root architecture.
+
+No third-party router, migration package or code-generation tool is justified. Framework-native behavior is clearer, smaller and cheaper.
+
+### Hugging Face review
+The installed Hugging Face connector was attempted and returned a tool-unavailable error. A fresh public fallback search reviewed Next.js/frontend code datasets including `dimsavva/nextjs16` and `iamdyeus/ui-instruct-4k`.
+
+**Decision:** reject model/dataset involvement. Deleting shadowed file-system routes is an exact source-graph/framework-contract task, not an inference problem. Generic Next.js training datasets do not prove route ownership, redirect ordering or production-build correctness and would add provenance/inference complexity with no measurable benefit.
+
+### Security / privacy / cost impact
+- production AI/model calls: **0**;
+- CI AI/model calls: **0**;
+- runtime dependencies added: **0**;
+- customer data transfer added: **0**;
+- browser-language/IP/nationality/market inference added: **0**;
+- payment/wallet/credit behavior changed: **0**;
+- incremental supplier inference cost: **0**.
+
+### Sources reviewed
+- https://github.com/vercel/next.js
+- https://nextjs.org/docs/app/api-reference/file-conventions/route-groups
+- https://nextjs.org/docs/app/api-reference/file-conventions/layout
+- https://huggingface.co/datasets/dimsavva/nextjs16
+- https://huggingface.co/datasets/iamdyeus/ui-instruct-4k
+
 ## 2026-08-27 — Step 2C-5 deterministic legacy duplicate retirement
 
 ### GitHub / framework review

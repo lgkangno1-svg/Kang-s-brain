@@ -3,40 +3,40 @@
 **Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 2 — internationalized routing / locale parity / SEO and migration-boundary cleanup  
-**Last completed slice:** Step 2C-5 — deterministic retirement of unprefixed public duplicates through server-side permanent redirects  
-**Merged to main:** `f8ab937859080dec852a033114e23ab4cf724575` (PR #5)  
-**Merge-main CI:** run `33010888977` — SUCCESS  
-**Exact next slice:** Step 2C-6 — remove only the now-shadowed legacy implementation while preserving the explicit backwards-compatible redirect map and all P0 gates.
+**Current phase:** Step 2 — internationalized routing / locale parity / migration cleanup  
+**Last completed slice:** Step 2C-6 — shadowed legacy implementation cleanup  
+**Working PR:** #6 (`korea-concierge-step-2c6`)  
+**PR CI:** run `33015960301` — SUCCESS  
+**Exact next slice after merge:** Step 2C-7 — supply-chain reproducibility and Step 2 gate closure.
 
-> This is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Assume another AI/developer may have changed the repository. Never restore remembered older code over newer work without understanding it. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
+> This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
 
 ## 1. Product intent
-Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should be genuinely localized, useful before payment, deterministic/browser-local before AI, privacy-first for photos/birth data, source-validated for changing travel facts, server-authoritative for future wallet/payment operations, cost-controlled for AI and crawlable/answer-first on public pages.
+Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should be useful before payment, genuinely localized, deterministic/browser-local before AI, privacy-first for photos/birth data, source-validated for changing travel facts, server-authoritative for future wallet/payment operations, cost-controlled for AI and crawlable/answer-first on public pages.
 
 ## 2. Non-negotiable requirements
-- **P0 locales:** `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Explicit user choices outrank browser/market defaults. Never infer nationality, ethnicity, religion or sensitive identity from name, face or locale. Taiwan/Hong Kong analytics remain separable. English is a global fallback.
-- **Saju:** exact / approximate / unknown birth time are all valid. Never fabricate or AI-guess a missing hour. Unknown time returns only deterministic non-hour components and must be reduced-scope/lower-priced when monetized. Raw birth date/time/city/name/account identifiers never go to an LLM.
-- **Quick Help:** 0 credits, 0 AI, no external question transfer, P0 localized, button/topic tree. No RAG/embeddings/LLM without measured need.
-- **Security:** strict auth/validation, immutable/idempotent wallet later, verified payment callbacks, rate limits, dependency pinning, data minimization, EXIF stripping before future remote sensitive-media use, ZDR restrictions, safe logs, prompt instruction/data separation, source validation for AI-returned place facts, server-only secrets, no guessed CSP origins.
+- **P0 locales:** `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`. P1: Indonesian/Malay. Explicit user choice always wins. Never infer nationality, ethnicity, religion or sensitive identity from name, face or locale. Taiwan/Hong Kong analytics remain separable. English is a global fallback.
+- **Saju:** exact / rough / unknown birth time are valid. Never fabricate or AI-guess a missing hour. Unknown time returns deterministic non-hour components only and must be reduced-scope/lower-priced when monetized. Raw birth date/time/city/name/account identifiers never go to an LLM.
+- **Quick Help:** 0 credits, 0 AI, no external question transfer, P0 localized button/topic tree. No RAG/embeddings/LLM without measured need.
+- **Security:** strict auth/validation, immutable/idempotent wallet later, verified payment callbacks, rate limits, dependency pinning, data minimization, EXIF stripping before future remote sensitive-media use, ZDR restrictions, safe logs, prompt instruction/data separation, source validation for AI-returned place facts, server-only secrets and no guessed CSP origins.
 - **AI cost:** deterministic → static → cache → rules → browser-local → cheapest qualified Chinese OpenRouter model. Compact payloads, bounded candidates/history, hard token/provider-cost ceilings, one retry by default, same-model provider fallback before escalation, p50/p95 telemetry without sensitive prompt bodies.
 - **Credits:** `CREDIT_ECONOMICS.md` is authoritative. Basic/Advanced/Ultra one-time passes + optional top-ups; no subscriptions/ML personalized pricing without evidence. Fixed credits are shown before paid actions. Wallet mutations later use immutable reserve/capture/release/refund semantics.
 
-## 3. Source-of-truth documents
-Read before material changes: `PRD.md`, `ARCHITECTURE.md`, `AI_ROUTING.md`, `CREDIT_ECONOMICS.md`, `SEO_AEO_GEO.md`, `OPEN_SOURCE_DISCOVERY.md`, `INTERNATIONALIZATION_MARKETS.md`, `SECURITY_TOKEN_EFFICIENCY.md`, `IMPLEMENTATION_ROADMAP.md`, `PROJECT_HANDOFF.md`.
+## 3. Design workflow requirement
+For future user-facing screen creation or substantial UI redesign, **Stitch MCP is the design-first tool**. Use Stitch to explore/define the mobile-first UI, then implement the chosen result in the existing Next.js architecture and run accessibility/i18n/performance regression checks.
+
+The currently connected tool/plugin catalog in this execution environment exposes no Stitch MCP endpoint, and installable-plugin search returned no Stitch plugin. Therefore Step 2C-6 made **no visual design changes** and does not claim Stitch was used. Re-check Stitch MCP availability before the next UI-design slice rather than silently substituting another design tool.
 
 ## 4. Current architecture
 - Next.js **16.3.3** + exact `next-intl@4.13.4`.
 - Production P0 URL trees: `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`.
-- P1/P2 remain research registry values and must not widen production routing until their own localization gate.
 - Static reviewed dictionaries only; no runtime translation ML. Modular messages use recursive deep merge.
-- `P0Locale` is the production compile-time boundary; broader `SupportedLocale` must not leak into production routing.
+- `P0Locale` is the production compile-time boundary; broader research locales must not leak into routing.
 - Complete localized public surfaces: Home, Personal Color, Hanbok, Gyeongbokgung, K-Culture, Credits.
 - Complete P0 public URLs have self-canonical, reciprocal hreflang and `x-default` → English. Sitemap contains 36 canonical P0 URLs.
-- `[locale]/layout.tsx` owns P0 root documents and correct BCP47 `<html lang>` values: `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`.
-- `config/legacy-redirects.json` is the authoritative backwards-compatible unprefixed URL map. It maps only known public duplicates directly to their English canonical equivalent.
-- The `(legacy)` root/pages still exist in source as a short rollback reserve, but incoming public requests are intercepted by Next.js config redirects before filesystem routing.
-- There is **no browser-language, IP, nationality or market inference** in these redirects. Explicit locale URLs are untouched.
+- `[locale]/layout.tsx` owns P0 root documents and emits `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`.
+- `config/legacy-redirects.json` is the authoritative backwards-compatible unprefixed URL map. It maps six known former English URLs directly to English canonical equivalents via HTTP 308.
+- No browser-language, IP, nationality or market inference participates in redirects.
 
 ## 5. Completed roadmap
 - Step 0 ✅ product/architecture/cost/SEO/international/security baselines.
@@ -49,97 +49,70 @@ Read before material changes: `PRD.md`, `ARCHITECTURE.md`, `AI_ROUTING.md`, `CRE
 - Step 2C-2 ✅ executable GitHub Actions i18n + production-build gate.
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
-- **Step 2C-5 ✅ deterministic legacy duplicate retirement with executable HTTP redirect verification.**
+- Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
+- **Step 2C-6 ✅ implementation + PR CI green; merge pending.**
 
-## 6. Step 2C-5 implementation
-Current Next.js 16 redirect behavior and Google Search migration guidance were rechecked before the routing change. Known old English/unprefixed URLs now map directly to established English canonical paths:
+## 6. Step 2C-6 implementation
+Fresh `main` was inspected at `62329cc069d1af93951c9518a555ada93124255f`; no newer concurrent Korea Concierge change was present at branch creation.
 
-- `/` → `/en`
-- `/color` → `/en/color`
-- `/hanbok` → `/en/hanbok`
-- `/credits` → `/en/credits`
-- `/culture` → `/en/culture`
-- `/explore/gyeongbokgung` → `/en/explore/gyeongbokgung`
+Next.js 16 Route Groups/root-layout guidance was rechecked. Because there is no shared top-level `app/layout.tsx`, current guidance says the home route `/` should still be owned by a root group. Deleting `(legacy)` wholesale would therefore be an unnecessary architecture risk.
 
-The mapping is centralized in `config/legacy-redirects.json`. `next.config.ts` imports this map and exposes it via `redirects()`. Every rule is `permanent: true`, which Next.js emits as HTTP 308 before filesystem routing.
+Implemented cleanup:
+- deleted shadowed legacy `/color`, `/hanbok`, `/credits`, `/culture` and `/explore/gyeongbokgung` page implementations;
+- deleted `src/app/LegacyShell.tsx`, removing obsolete English navigation/footer and its legacy-only `NextIntlClientProvider` + Quick Help instance;
+- reduced `(legacy)/layout.tsx` to the minimum English structural root plus global CSS;
+- replaced the old full English home UI in `(legacy)/page.tsx` with a defensive `permanentRedirect('/en')` fallback;
+- retained `config/legacy-redirects.json` unchanged as the public routing authority;
+- retained dynamic generated-document validation rather than any old fixed page-count assumption.
 
-English is deliberate: the old unprefixed URLs were the former English surface. Redirecting them to `/en/...` preserves old-link intent without guessing the visitor's language. Explicit `/ja`, `/zh-CN`, `/vi`, etc. choices are never overridden.
-
-The legacy source files were intentionally not deleted in Step 2C-5. This separates SEO/URL migration from structural deletion and leaves one rollback-safe interval. Step 2C-6 may remove the now-unreachable implementation only after rechecking fresh main and dependencies/imports.
-
-## 7. Executable verification
-Workflow: `.github/workflows/korea-concierge-ci.yml`.
-
-Existing controls remain: SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation. Install remains `npm install --ignore-scripts --no-audit --no-fund` until a reviewed lockfile exists.
-
-Step 2C-5 added `scripts/check-legacy-redirects.mjs` and a production-server CI step. It:
-1. starts the built app with `next start` on loopback;
-2. waits for canonical `/en` to return 200;
-3. requests every legacy source without auto-following redirects;
-4. requires HTTP **308**;
-5. requires the exact configured `Location` destination;
-6. requires every canonical destination to return **200**;
-7. verifies old-link query parameters survive the redirect;
-8. kills the temporary test server reliably.
-
-Evidence:
-- initial implementation PR run `33010469160` — all P0 contracts, production build, document-language checks and redirect checks succeeded;
-- latest PR-head run `33010774475` on `7f6fcf234b426d5e88bb1f9ce665fbdc6a394359` — **SUCCESS**, including every redirect check;
-- PR #5 squash-merged as `f8ab937859080dec852a033114e23ab4cf724575`;
-- post-merge main run `33010888977` — **SUCCESS** across install, P0 localization contracts, Next.js production build, generated document languages and deterministic legacy redirects.
-
-This is executable CI/build evidence. It is **not** proof of production deployment, DNS cutover, live-domain HTTP behavior, Google indexing or Search Console state.
-
-No npm lockfile is committed. Dependency resolution is not fully reproducible. Generate/review/commit a lockfile only from a trusted executable environment in a separate supply-chain slice; never fabricate one manually.
-
-## 8. Open-source / model / market review
+## 7. Discovery decision for Step 2C-6
 ### GitHub / Next.js
-Maintained `vercel/next.js` redirect docs/source and Google Search permanent-redirect migration guidance were reviewed. Framework-native redirects are sufficient; no third-party routing/SEO dependency is justified for six static mappings.
+Maintained `vercel/next.js` and current Route Groups/root-layout documentation were reviewed. Framework-native structural cleanup is sufficient; no router/migration dependency is justified.
 
 ### Hugging Face
-The installed Hugging Face connector was attempted for redirect/SEO discovery but returned an unavailable-tool error. Public fallback search did not identify any model/dataset/Space that adds value to exact HTTP redirect semantics. Model use was rejected because this is a deterministic protocol/configuration problem.
+The installed Hugging Face search action returned a tool-unavailable error. Fresh public fallback review included `dimsavva/nextjs16` and `iamdyeus/ui-instruct-4k`. These generic docs/training datasets cannot prove file-system route ownership or redirect behavior.
 
-### KTO / MCST market refresh
-KTO's Foreign Tourist Survey remains an aggregate evidence source for information channels, activities, spend, satisfaction and travel friction. MCST's 2026 Korea Season includes Thailand and Vietnam with K-food, Hanbok and other K-culture programming. No reviewed evidence justified changing the existing P0/P1 order; `vi` and `th` remain P0.
+**Decision:** no model/dataset/Space adoption. This is deterministic source-graph + framework-contract work.
 
-These are aggregate product hypotheses only. They may never override explicit user language/preferences or be used to infer an individual's nationality, ethnicity or religion. Full rationale is recorded in `OPEN_SOURCE_DISCOVERY.md` and `INTERNATIONALIZATION_MARKETS.md`.
+## 8. Executable verification
+PR #6 workflow run `33015960301` — **SUCCESS**.
+
+Verified on the actual branch head:
+1. dependency install succeeded;
+2. all P0 localization contracts succeeded;
+3. Next.js 16.3.3 production build and TypeScript succeeded;
+4. generated P0 document-language checks succeeded;
+5. built production server still returned HTTP 308 for all six configured old URLs;
+6. canonical destinations returned 200 and query parameters remained preserved.
+
+Existing workflow security controls remain SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation.
+
+This is build/CI evidence, not production deployment or live-domain proof.
 
 ## 9. Security / privacy / token / margin impact
 - application AI/model calls added: **0**;
 - CI AI/model calls added: **0**;
 - runtime dependencies added: **0**;
 - new external customer-data transfer: **0**;
-- browser-language/IP/nationality inference added: **0**;
+- browser-language/IP/nationality/market inference added: **0**;
 - secrets/payment/wallet behavior changed: **0**;
 - ML/dynamic pricing: **0**;
 - incremental supplier inference cost: **0**.
 
-The only recurring cost added is a small deterministic HTTP verification inside the existing CI job. Redirects reduce duplicate crawl/index signals and route old campaign links directly to canonical pages; query preservation is tested.
+Removing the duplicate legacy Quick Help/provider reduces unreachable client-side code and maintenance surface. Public URL behavior remains the deterministic redirect map.
 
-## 10. Regression review
-- **Navigation:** canonical P0 navigation unchanged; old public links terminate at English canonical equivalents.
-- **Mobile/accessibility:** rendered canonical P0 components unchanged.
-- **i18n:** explicit P0 paths untouched; no locale inference added.
-- **Quick Help:** remains the localized 0-credit/0-AI deterministic tree.
-- **Privacy/security:** no new input collection or external transfer; redirect map is static and same-origin.
-- **Credits/payment:** no price, ledger, checkout or provider behavior changed.
-- **Performance:** exactly one direct redirect hop for old URLs; no redirect chain and no new runtime package.
-- **SEO/AEO/GEO:** old duplicates now emit a permanent server-side move signal; sitemap remains canonical-localized only.
-- **Analytics:** query parameters are explicitly preserved by executable test.
-- **Supply chain:** no dependency added; existing missing-lockfile risk remains unchanged.
+## 10. Known remaining technical risk
+No npm lockfile is committed. Runtime package versions are explicitly pinned, but full transitive dependency resolution is not reproducible. Do not fabricate a lockfile manually. Step 2C-7 should generate/review one only from a trusted executable environment, then move CI to `npm ci --ignore-scripts` if the evidence is sound.
 
-## 11. Exact next action — Step 2C-6 only
-1. Inspect fresh `main`, recent commits, this handoff and roadmap; assume concurrent work may exist.
-2. Re-search GitHub + Hugging Face before cleanup.
-3. Confirm the six redirect mappings remain the intended permanent public behavior.
-4. Find every live import/reference to `(legacy)`, `LegacyShell` and the legacy-only English Quick Help provider.
-5. Remove only unreachable legacy page implementation that is no longer needed for routing.
-6. Keep `config/legacy-redirects.json` and executable redirect checks as backwards-compatible URL support.
-7. Update generated-page expectations; do not assume the old 46-page total after deletion.
-8. If root metadata files or Next multiple-root requirements need a minimal structural shell, retain the smallest safe shell rather than force a risky architecture change.
-9. Do not add browser-language negotiation, IP geolocation or market inference in this cleanup.
-10. Preserve P0 sitemap/canonical/hreflang, document languages, locale switching, Quick Help, mobile/accessibility and green production build.
-11. Update `OPEN_SOURCE_DISCOVERY.md`, `IMPLEMENTATION_ROADMAP.md` and this handoff before completion.
+## 11. Exact next action — Step 2C-7 only
+1. Inspect fresh main and Step 2C-6 merge/CI state.
+2. Re-search GitHub + Hugging Face for npm/supply-chain alternatives.
+3. Generate a real npm lockfile only from a trusted executable environment and review integrity/resolved graph.
+4. Review whether dev dependency ranges should be narrowed while preserving known-good Next/React/next-intl versions.
+5. Switch CI to deterministic `npm ci --ignore-scripts` only after a reviewed lockfile exists.
+6. Rerun P0 contracts, production build, generated document languages and deterministic legacy redirects.
+7. If green, close Step 2 and only then begin Step 3 Saju deterministic core.
+8. Before Step 3 user-facing UI design, re-check Stitch MCP availability and use it first when available.
 
 ## 12. Deferred / do not accidentally start
 - bulk Hanbok visual asset generation/collection;
@@ -148,6 +121,7 @@ The only recurring cost added is a small deterministic HTTP verification inside 
 - RAG/embeddings/LLM for current Quick Help;
 - Saju narrative AI before deterministic calculation/privacy boundary;
 - checkout before authoritative wallet/payment callback foundations;
+- browser-language/IP/nationality inference;
 - guessed CSP origins;
 - production-deployment claims without evidence.
 
