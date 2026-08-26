@@ -21,19 +21,17 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <label className="languageSwitcher">
-      <span className="srOnly">{t('language')}</span>
-      <select
-        aria-label={t('language')}
-        value={locale}
-        onChange={onChange}
-        disabled={isPending}
-      >
-        {P0_LOCALES.map((code) => {
-          const definition = getLocaleDefinition(code);
-          return <option key={code} value={code}>{definition.nativeName}</option>;
-        })}
-      </select>
-    </label>
+    <select
+      className="langButton"
+      aria-label={t('language')}
+      value={locale}
+      onChange={onChange}
+      disabled={isPending}
+    >
+      {P0_LOCALES.map((code) => {
+        const definition = getLocaleDefinition(code);
+        return <option key={code} value={code}>{definition.nativeName}</option>;
+      })}
+    </select>
   );
 }
