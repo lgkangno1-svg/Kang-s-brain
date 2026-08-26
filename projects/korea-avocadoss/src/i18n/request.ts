@@ -4,6 +4,27 @@ import {notFound} from 'next/navigation';
 
 import {routing} from './routing';
 
+type Messages = Record<string, unknown>;
+
+function isMessageObject(value: unknown): value is Messages {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function mergeMessages(...sources: Messages[]): Messages {
+  const output: Messages = {};
+
+  for (const source of sources) {
+    for (const [key, value] of Object.entries(source)) {
+      const current = output[key];
+      output[key] = isMessageObject(current) && isMessageObject(value)
+        ? mergeMessages(current, value)
+        : value;
+    }
+  }
+
+  return output;
+}
+
 export default getRequestConfig(async ({requestLocale}) => {
   const requested = await requestLocale;
 
@@ -19,10 +40,6 @@ export default getRequestConfig(async ({requestLocale}) => {
 
   return {
     locale: requested,
-    messages: {
-      ...core.default,
-      ...publicCopy.default,
-      ...hanbok.default,
-    },
+    messages: mergeMessages(core.default, publicCopy.default, hanbok.default),
   };
 });
