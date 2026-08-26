@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assertManualReplacementAvailable, makeVisionCacheFingerprint, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
+import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeVisionCacheFingerprint, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
 
 test('manual replacement rejects a segment already used by another beat before rerender', () => {
   const clips = [
@@ -38,4 +38,58 @@ test('Vision cache fingerprint changes when the semantic cache schema changes', 
 
   assert.equal(current, makeVisionCacheFingerprint(input));
   assert.notEqual(current, previousContract);
+});
+
+test('Vision cache accepts a complete payload matching the current semantic contract', () => {
+  const segments = [{ id: 's1' }, { id: 's2' }];
+  const cached = segments.map(({ id }) => ({
+    id,
+    description: `${id} description`,
+    subjects: ['상품'],
+    actions: ['보여주기'],
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  }));
+
+  assert.equal(isVisionCachePayloadValid(segments, cached), true);
+});
+
+test('Vision cache rejects duplicate IDs that hide a missing segment', () => {
+  const segments = [{ id: 's1' }, { id: 's2' }];
+  const row = {
+    id: 's1',
+    description: '상품 클로즈업',
+    subjects: ['상품'],
+    actions: ['보여주기'],
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  };
+
+  assert.equal(isVisionCachePayloadValid(segments, [row, { ...row }]), false);
+});
+
+test('Vision cache rejects malformed semantic fields even when IDs and length match', () => {
+  const segments = [{ id: 's1' }];
+  const cached = [{
+    id: 's1',
+    description: '상품 클로즈업',
+    subjects: ['상품'],
+    actions: '보여주기',
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  }];
+
+  assert.equal(isVisionCachePayloadValid(segments, cached), false);
 });
