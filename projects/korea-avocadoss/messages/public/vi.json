@@ -29,5 +29,26 @@
     "sajuText": "Giờ sinh là tùy chọn. Giờ chính xác, khoảng thời gian ước chừng và ‘Tôi không biết’ đều là lựa chọn hợp lệ; hệ thống không bao giờ tự đoán giờ còn thiếu.",
     "colorTitle": "Kết nối màu sắc",
     "colorText": "Câu chuyện về màu may mắn truyền thống luôn được tách rõ khỏi hướng dẫn phối màu cá nhân."
+  },
+  "Gyeongbokgung": {
+    "eyebrow": "Gyeongbokgung · Khu vực ra mắt",
+    "title": "Thuê Hanbok, chụp ảnh, tham quan và ăn uống mà vẫn kịp giờ trả đồ.",
+    "intro": "Lập một chuyến đi Gyeongbokgung thực tế dựa trên thời gian bạn có, giờ trả Hanbok, ưu tiên chụp ảnh, mức đi bộ thoải mái và các điểm ăn uống hoặc cà phê gần đó.",
+    "routeModes": "Chế độ tuyến đường",
+    "oneHourTitle": "1 giờ chụp ảnh nhanh",
+    "oneHourText": "Tuyến cung điện ngắn với khoảng đệm an toàn để trả Hanbok đúng giờ.",
+    "twoHourTitle": "Cung điện + điểm chụp ảnh nổi bật",
+    "twoHourText": "Tuyến cân bằng cho khách lần đầu, có đủ thời gian cho các điểm chụp ảnh chính.",
+    "fourHourTitle": "Cung điện + khu phố + ăn uống",
+    "fourHourText": "Thêm Seochon hoặc Bukchon cùng quán cà phê hay bữa ăn tùy theo mức đi bộ thoải mái và thời gian còn lại.",
+    "freshnessNote": "Giờ mở cửa, ngày đóng cửa, quy định vé và tình trạng hoạt động của cửa hàng có thể thay đổi. Hãy kiểm tra lại thông tin có tính thời điểm trước khi khởi hành."
+  },
+  "Meta": {
+    "homeTitle": "Korea Concierge — Hướng dẫn Hàn Quốc phù hợp với bạn",
+    "homeDescription": "Hướng dẫn du lịch và văn hóa Hàn Quốc đa ngôn ngữ cho khách quốc tế, với khám phá địa phương miễn phí và các trải nghiệm cá nhân hóa tùy chọn.",
+    "cultureTitle": "K-Culture Lab — Saju, con giáp và truyền thống Hàn Quốc",
+    "cultureDescription": "Khám phá con giáp Hàn Quốc, Saju và câu chuyện màu sắc truyền thống như trải nghiệm văn hóa, giải trí với thiết kế ưu tiên quyền riêng tư.",
+    "gyeongbokgungTitle": "Hướng dẫn Gyeongbokgung — Tuyến đi, Hanbok và điểm dừng gần đó",
+    "gyeongbokgungDescription": "Lập kế hoạch Gyeongbokgung theo thời gian, có khoảng đệm trả Hanbok, ưu tiên chụp ảnh, mức đi bộ thoải mái và điểm ăn uống gần đó."
   }
 }
