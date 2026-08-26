@@ -1,0 +1,43 @@
+{
+  "Global": {
+    "nav": {
+      "myColor": "My Color",
+      "hanbok": "Hanbok",
+      "gyeongbokgung": "Gyeongbokgung",
+      "kCulture": "K-Culture",
+      "credits": "Credits"
+    },
+    "language": "Language",
+    "footerTagline": "Personalized Korea travel and culture, designed for international visitors."
+  },
+  "QuickHelp": {
+    "ariaLabel": "Free Korea Quick Help",
+    "badge": "FREE · NO AI API",
+    "launcherTitle": "Quick Help",
+    "launcherSubtitle": "Free answers",
+    "close": "Close Quick Help",
+    "back": "Back",
+    "topics": "Topics",
+    "zeroCredits": "0 credits",
+    "rootTitle": "Korea Quick Help",
+    "rootAnswer": "Hi! Choose a topic and I’ll give you an instant answer. This helper is free and does not call an AI API.",
+    "rootTopics": {
+      "palace": "Gyeongbokgung",
+      "hanbok": "Hanbok",
+      "color": "Personal color",
+      "food": "Food & cafés",
+      "culture": "K-Culture",
+      "credits": "Credits & payments",
+      "privacy": "Privacy"
+    }
+  },
+  "Consent": {
+    "photo": "Only use my photo for the color feature I requested.",
+    "birth": "Use my birth details only for the cultural reading I requested.",
+    "optionalBirthTime": "Birth time is optional. Choose ‘I don’t know’ if you are not sure."
+  },
+  "Credits": {
+    "freeHelp": "Quick Help is free and uses no AI API.",
+    "beforeCharge": "You will always see the fixed credit cost before a paid action."
+  }
+}
