@@ -1,0 +1,59 @@
+/* Locale-scoped resilience for CJK, Vietnamese and Thai text expansion. */
+[data-locale] .heroGrid > *,
+[data-locale] .sectionHead > *,
+[data-locale] .step > *,
+[data-locale] .quickHelpHeader > *,
+[data-locale] .infoBand > * {
+  min-width: 0;
+}
+
+[data-locale] h1,
+[data-locale] h2,
+[data-locale] h3,
+[data-locale] .heroText,
+[data-locale] .pageIntro > p,
+[data-locale] .step strong,
+[data-locale] .step p,
+[data-locale] .quickHelpHeader strong,
+[data-locale] .quickHelpBody > p,
+[data-locale] .quickHelpChoices button,
+[data-locale] .siteFooter p {
+  overflow-wrap: anywhere;
+}
+
+[data-locale="ja"],
+[data-locale="zh-CN"],
+[data-locale="zh-TW"] {
+  line-break: strict;
+}
+
+[data-locale="th"] {
+  line-break: loose;
+}
+
+.freshnessNote {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 520px) {
+  [data-locale] h1 {
+    font-size: clamp(42px, 13vw, 62px);
+    line-height: 1.02;
+  }
+
+  [data-locale] .pageIntro h1 {
+    font-size: clamp(40px, 12vw, 58px);
+  }
+
+  [data-locale] .primaryButton,
+  [data-locale] .secondaryButton {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}
