@@ -5,9 +5,9 @@
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 2 — internationalized routing / locale parity / migration cleanup  
 **Last completed slice:** Step 2C-6 — shadowed legacy implementation cleanup  
-**Working PR:** #6 (`korea-concierge-step-2c6`)  
-**PR CI:** run `33015960301` — SUCCESS  
-**Exact next slice after merge:** Step 2C-7 — supply-chain reproducibility and Step 2 gate closure.
+**Merged to main:** `b803984fc1999b201de0c007ae2d8683fa843565` (PR #6)  
+**Final PR-head CI:** run `33016109548` — SUCCESS  
+**Exact next slice:** Step 2C-7 — supply-chain reproducibility and Step 2 gate closure.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
 
@@ -50,7 +50,7 @@ The currently connected tool/plugin catalog in this execution environment expose
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
-- **Step 2C-6 ✅ implementation + PR CI green; merge pending.**
+- **Step 2C-6 ✅ merged to main.**
 
 ## 6. Step 2C-6 implementation
 Fresh `main` was inspected at `62329cc069d1af93951c9518a555ada93124255f`; no newer concurrent Korea Concierge change was present at branch creation.
@@ -75,9 +75,9 @@ The installed Hugging Face search action returned a tool-unavailable error. Fres
 **Decision:** no model/dataset/Space adoption. This is deterministic source-graph + framework-contract work.
 
 ## 8. Executable verification
-PR #6 workflow run `33015960301` — **SUCCESS**.
+Final PR #6 workflow run `33016109548` — **SUCCESS** on head `afe90b8f3e9e91884b32a178192489796adc1158` before squash merge.
 
-Verified on the actual branch head:
+Verified:
 1. dependency install succeeded;
 2. all P0 localization contracts succeeded;
 3. Next.js 16.3.3 production build and TypeScript succeeded;
