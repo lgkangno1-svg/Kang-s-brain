@@ -79,6 +79,29 @@ Decision: **defer for locale/FAQ routing**; no benefit for deterministic routing
 - https://learn.next-intl.dev/chapters/06-routing/05-locale-switcher
 - https://huggingface.co/facebook/nllb-200-distilled-600M
 
+## 2026-08-26 — Step 2B-2 Quick Help localization + translation QA
+
+### GitHub reviewed
+- Fresh search for i18n message-key validation/parity tooling returned only weak or low-signal candidates and no maintained dependency that justified increasing supply-chain surface for a simple six-file invariant.
+- Decision: **use a dependency-free Node parity checker** that flattens the English dictionary as the reference schema, then fails on missing, extra or blank P0 message leaves. The production `build` command now runs this check first.
+- Quick Help's decision graph now stores message keys only; every title, answer, choice, CTA and accessibility label resolves through the active `next-intl` dictionary. This removes the previous English hard-coded second-level answers.
+
+### Hugging Face reviewed
+- `Unbabel/wmt20-comet-qe-da` is an Apache-2.0 multilingual translation quality-estimation model and is technically usable for offline translation QA.
+- `Unbabel/wmt22-cometkiwi-da` is CC-BY-NC-SA-4.0 and unsuitable for the commercial production workflow.
+- Decision: **do not add either model to the application or build pipeline now**. COMET would add model downloads, Python/runtime complexity and CI time for a tiny reviewed static corpus. Human/native review plus deterministic key parity provides better cost/complexity fit today. Reconsider an Apache-2.0 COMET-class evaluator only when localization volume becomes large enough to justify offline automated QA.
+
+### Security / token / margin implications
+- Quick Help remains 0 credits, 0 AI API calls and sends no question externally.
+- No new runtime dependency, model, embedding store or translation API was added.
+- Message parity uses local filesystem reads only and therefore adds no provider cost or sensitive-data surface.
+- Localized fixed answers reduce accidental paid-model routing for common questions and preserve gross margin.
+
+### Sources
+- https://github.com/amannn/next-intl
+- https://huggingface.co/Unbabel/wmt20-comet-qe-da
+- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
+
 ## Discovery rules for future entries
 
 For every major feature, record:
