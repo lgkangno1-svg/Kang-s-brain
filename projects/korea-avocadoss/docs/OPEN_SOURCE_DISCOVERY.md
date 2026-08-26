@@ -55,56 +55,65 @@ COMET translation QA models rechecked.
 ## 2026-08-26 — Step 2C-1A Personal Color native locale surface
 
 ### GitHub reviewed
-Fresh search covered personal-color and skin-tone analysis projects, including:
+Fresh search covered personal-color and skin-tone analysis projects, including `JungWooGeon/personal_color_app`, `starbucksdolcelatte/ShowMeTheColor`, `PSY222/Colorinsight` and `Randon-Myntra-HackerRamp-21/Skyn`.
 
-- `JungWooGeon/personal_color_app` — React Native/Expo + Teachable Machine era implementation; useful as historical UX/reference, but small adoption, older architecture and external model workflow do not justify production adoption.
-- `starbucksdolcelatte/ShowMeTheColor` — research-style Python personal-color diagnosis using facial-region color features, Lab/HSV calculations and weighted comparison. Useful algorithmic reference, but not a browser-first maintained web component and lacks the product/privacy validation needed to replace current implementation.
-- `PSY222/Colorinsight` and similar face/segmentation/image-classification personal-color projects — demonstrate heavier ML alternatives but add model/backend complexity and require representative validation.
-- broader React/Flask skin-tone/skincare projects such as `Randon-Myntra-HackerRamp-21/Skyn` use face detection/CNN pipelines and solve a different product problem.
-
-**Decision: adapt current in-repo deterministic browser implementation, do not adopt an external repository or model in Step 2C.** Reasons:
-- current preview already avoids image upload and provider cost;
-- external projects do not provide strong evidence of current maintenance, representative cross-market validation or materially better user outcomes;
-- adding face recognition/segmentation/model packages increases bundle/runtime/supply-chain/privacy surface;
-- locale migration should not silently turn a zero-cost preview into remote AI;
-- manual correction plus clear “lighting-dependent styling estimate, not professional diagnosis” wording is safer for the current maturity level.
-
-Implementation adaptation in this slice:
-- analyzer warnings/errors are now stable typed codes rather than English text;
-- palette data uses stable IDs + hex values; localized names/notes live in dictionaries;
-- complete scanner UI is P0-localized;
-- a dependency-free Color message contract checker is included in `check:i18n`.
+**Decision: adapt current in-repo deterministic browser implementation, do not adopt an external repository or model in Step 2C.** Current preview avoids image upload/provider cost; external projects do not provide enough maintenance, representative validation or incremental user-value evidence to justify face/model dependencies. Analyzer messages therefore use stable codes, palette data uses stable IDs and copy remains in P0 dictionaries.
 
 ### Hugging Face reviewed
-Search for personal-color/skin-tone image classifiers returned general skin/image classification options including `driboune/skin_type`, while general image-classification guidance points to ViT/DeiT/ConvNeXt-class models. Google `derm-foundation` is a research foundation model for dermatology embeddings and explicitly discusses population/generalization limitations; it does not directly provide a validated personal-color styling classifier.
+General skin/image classification candidates including `driboune/skin_type` and Google `derm-foundation` were reviewed. They do not directly provide validated personal-color styling and introduce image-transfer/bundle/generalization concerns.
 
-**Decision: reject remote/bundled Hugging Face model adoption for this preview.** Reasons:
-- task mismatch: skin type/dermatology/general classification is not validated personal-color styling;
-- personal-color outputs are sensitive to lighting, white balance and image capture conditions;
-- external inference would introduce image-transfer/privacy obligations and supplier cost;
-- bundled models add download/bundle/latency burden on international mobile visitors;
-- fairness/provenance/generalization require representative validation before claiming improved quality.
-
-Revisit at Step 6 only if a premium vision path shows measurable incremental value. Any remote media analysis must require explicit consent, ZDR/data-collection restrictions, EXIF stripping/minimization, bounded supplier cost, representative evaluation and a free/manual fallback.
+**Decision:** reject remote/bundled model adoption for the free preview. Revisit only at Step 6 with explicit consent, ZDR/data-collection restrictions, EXIF minimization, representative validation, bounded supplier cost and a free/manual fallback.
 
 ### Security / privacy / token / margin implications
-- AI/model/provider calls added: **0**.
-- External selfie transfer added: **0**.
-- Runtime dependencies added: **0**.
-- Incremental inference cost: **0**.
-- Browser-local sampling remains the default and avoids identity recognition.
-- No race, ethnicity, nationality, religion, health or attractiveness inference is permitted.
-- Manual correction remains available to reduce overconfidence in heuristic output.
-- Gross-margin effect is favorable/neutral because localization improves usefulness without supplier cost.
+AI/model/provider calls 0; external selfie transfer 0; runtime dependencies 0; incremental inference cost 0; no sensitive identity inference permitted.
+
+## 2026-08-27 — Step 2C-1B Hanbok native locale surface
+
+### GitHub reviewed
+Fresh search for Hanbok/recommendation projects found:
+
+- `JamesAC42/hanbok` — despite its name, it is primarily a general language-learning product with sentence/grammar/cultural analysis and optional LLM integrations. It does not solve Hanbok styling recommendation and would add unrelated Redis/Mongo/API complexity.
+- `seungboAn/try-on-hanbok` — Flutter/Supabase Hanbok virtual-fitting application with user image upload and AI-based try-on. It is relevant as a later UX reference, but adopting its stack now would prematurely add remote media storage, AI inference, backend dependencies and privacy obligations.
+- other repositories returned by a `hanbok` search were small research/frontend/trend projects without clear evidence of maintained, commercially suitable recommendation logic for the current Next.js product.
+
+**Decision:** do not adopt an external Hanbok stack for Step 2C. Implement only a small deterministic matcher in the existing Next.js app. User-selected color, mood and trip comfort drive the preview; explicit choices outrank market defaults. Step 7 remains the gate for a fuller recommendation engine.
+
+### Hugging Face reviewed
+Fresh Hugging Face search found:
+
+- generic fashion models such as FashionCLIP/FashionSigLIP-style embeddings and clothing classifiers;
+- multiple virtual try-on Spaces, including Kolors-based and diffusion-based try-on demos;
+- `daeunn/hanbok-dataset`, a small Hanbok image/caption dataset with 784 rows visible in the dataset viewer;
+- small Hanbok LoRA datasets such as `AIARTCHAN/lora-Hanbok_LoRA_V2`, which has only a handful of rows and is aimed at image generation rather than validated recommendation.
+
+**Decision:** reject model/Space/dataset adoption for the current free matcher. Generic fashion embeddings do not provide validated Hanbok-specific recommendation quality; virtual try-on requires photo transfer and heavier inference; small Hanbok datasets do not establish representative coverage, commercial provenance or recommendation accuracy. Keep the current preview model-free and cost-free.
+
+Revisit premium virtual try-on later only if it produces measurable conversion/user value and after commercial license/data provenance, representative Hanbok coverage, image privacy/ZDR, EXIF stripping, latency and per-generation supplier cost are all acceptable. Premium execution must display a fixed credit price before confirmation.
+
+### Implementation adaptation
+- native P0 `/[locale]/hanbok` route with localized metadata;
+- deterministic client-side radio controls for color direction, mood and trip priority;
+- stable option IDs with human copy in separate `messages/hanbok/{locale}.json` bundles;
+- P0 parity + Hanbok message-contract checks before build;
+- CJK/Thai/Vietnamese text-expansion styles for fieldsets, labels and result facts;
+- no bulk Hanbok visual asset generation started.
+
+### Security / privacy / token / margin implications
+- AI/model/provider calls added: **0**;
+- photo upload/external user-data transfer added: **0**;
+- runtime dependencies added: **0**;
+- credits charged by the free matcher: **0**;
+- incremental inference/provider cost: **0**;
+- market/nationality/profile inference: **0**;
+- gross-margin effect: favorable/neutral because localized value increases with no supplier cost.
 
 ### Sources reviewed
-- https://github.com/JungWooGeon/personal_color_app
-- https://github.com/starbucksdolcelatte/ShowMeTheColor
-- https://github.com/PSY222/Colorinsight
-- https://github.com/Randon-Myntra-HackerRamp-21/Skyn
-- https://huggingface.co/driboune/skin_type
-- https://huggingface.co/google/derm-foundation
-- https://huggingface.co/docs/inference-providers/tasks/image-classification
+- https://github.com/JamesAC42/hanbok
+- https://github.com/seungboAn/try-on-hanbok
+- https://huggingface.co/models?other=fashion
+- https://huggingface.co/spaces?q=try-on
+- https://huggingface.co/datasets/daeunn/hanbok-dataset
+- https://huggingface.co/datasets/AIARTCHAN/lora-Hanbok_LoRA_V2
 
 ## Discovery rules for future entries
 
