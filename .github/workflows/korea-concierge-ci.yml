@@ -53,3 +53,10 @@ jobs:
 
       - name: Verify generated document languages
         run: npm run check:document-lang
+
+      - name: Verify deterministic legacy redirects
+        run: |
+          npm exec -- next start --hostname 127.0.0.1 --port 3100 > /tmp/korea-concierge-next.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          npm run check:legacy-redirects

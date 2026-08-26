@@ -51,19 +51,30 @@ Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It fo
 - CI caught a route-depth regression after moving legacy Color into a group: its relative English message import was one level short. The import was repaired before completion;
 - PR #4 run `33005536571` passed P0 i18n contracts, Next.js 16.3.3 optimized build, TypeScript, 46/46 generated pages and generated-document language verification for all six P0 locales.
 
-#### Step 2C-5 — next slice: legacy duplicate boundary
-Now that canonical localized routes, correct document languages and executable build evidence exist, decide what to do with migration-only unprefixed public duplicates as a separate rollback-aware change.
+#### Step 2C-5 — deterministic legacy duplicate retirement ✅
+- current Next.js 16 redirect semantics and Google Search migration guidance were rechecked before changing the boundary;
+- six known unprefixed public duplicates now map directly to their English canonical equivalents: `/→/en`, `/color→/en/color`, `/hanbok→/en/hanbok`, `/credits→/en/credits`, `/culture→/en/culture`, `/explore/gyeongbokgung→/en/explore/gyeongbokgung`;
+- mappings are explicit static data in `config/legacy-redirects.json`; no IP, browser-language, nationality, market, name or face inference participates;
+- `next.config.ts` uses `permanent: true`, producing server-side HTTP 308 redirects before filesystem routing;
+- legacy route source files remain temporarily in the tree as a rollback reserve, but incoming requests are retired at the routing boundary;
+- `scripts/check-legacy-redirects.mjs` and CI start the built production server and verify every source returns 308, the exact canonical target returns 200, and query parameters are preserved;
+- initial PR #5 executable run `33010469160` passed P0 contracts, production build, generated document-language verification and redirect verification;
+- market-priority evidence was refreshed from KTO/MCST; no evidence justified changing P0/P1 order, and 2026 Thailand/Vietnam K-culture programming remains directionally consistent with `vi`/`th` P0.
+
+#### Step 2C-6 — next slice: remove shadowed legacy implementation safely
+Now that the routing boundary has executable 308 evidence, remove only the implementation that has become unreachable, without changing canonical locale behavior.
 
 Scope for the next slice:
-- inspect fresh `main` and verify no other AI/developer changed routing;
-- research current Next.js redirect/caching behavior plus SEO migration guidance before changing legacy URLs;
-- prefer explicit deterministic mapping of known unprefixed public duplicates to their English canonical equivalents if evidence supports retirement;
-- do **not** infer language from nationality/market or silently override a user’s explicit locale;
-- keep browser-language suggestion/negotiation separate from deterministic legacy cleanup;
-- preserve Quick Help, sitemap/canonical/hreflang, locale switching and 46-page build coverage;
-- add redirect-specific executable checks before removing the legacy shell or pages.
+- inspect fresh `main` and PR #5 merge state first;
+- verify redirect mappings remain green and are still the only intended unprefixed public behavior;
+- remove shadowed `(legacy)` page implementations, `LegacyShell` and the legacy-only English provider only where no live code still imports them;
+- keep the explicit redirect map as backwards-compatible URL support;
+- update generated-page/document-language checks to the new expected page set rather than assuming the old 46-page count;
+- do not add browser-language negotiation, IP geolocation or market inference in this cleanup;
+- keep sitemap/canonical/hreflang, locale switching, Quick Help, mobile/accessibility and production build green;
+- if removal makes root metadata routes or multiple-root layout invalid, stop and preserve the minimal structural shell rather than forcing a risky architecture change.
 
-**Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; navigation does not regress; executable `check:i18n` + production build remains green.
+**Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; navigation does not regress; executable `check:i18n` + production build remains green.
 
 ## Step 3 — Saju deterministic cultural core
 Exact / approximate / unknown birth time; never fabricate missing hour; timezone/city only when required; deterministic calendar/pillar computation; reduced-scope three-pillar result and lower pricing when hour unknown; raw birth inputs never sent to LLM; cultural/entertainment framing and deletion controls.
@@ -90,7 +101,7 @@ Deterministic filtering, compact prompts, partial replans, hard token/cost ceili
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, market experiments, P1/P2 expansion from measured demand.
 
 ## Every-step regression checklist
-Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
+Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; redirects/404 behavior; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
 
 ## Current user action required
 **None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred to their gates.

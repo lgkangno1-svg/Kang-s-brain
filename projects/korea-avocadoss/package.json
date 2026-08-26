@@ -9,6 +9,7 @@
     "dev": "next dev",
     "check:i18n": "node scripts/check-message-parity.mjs && node scripts/check-quick-help-keys.mjs && node scripts/check-color-message-keys.mjs && node scripts/check-hanbok-message-keys.mjs && node scripts/check-credits-message-keys.mjs",
     "check:document-lang": "node scripts/check-built-document-languages.mjs",
+    "check:legacy-redirects": "node scripts/check-legacy-redirects.mjs",
     "build": "npm run check:i18n && next build",
     "start": "next start"
   },
