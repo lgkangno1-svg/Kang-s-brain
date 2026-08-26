@@ -18,7 +18,7 @@ const server = http.createServer(async (req, res) => {
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const port=server.address().port; process.env.OPENCODE_GO_BASE_URL=`http://127.0.0.1:${port}`;
-const { analyzeSegmentsVision, planTimelineAI, UsageTracker, validateVisionBatchResponse } = await import('../src/core/opencode.mjs');
+const { analyzeSegmentsVision, planTimelineAI, UsageTracker, validateVisionBatchResponse, validatePlannerResponse } = await import('../src/core/opencode.mjs');
 
 test.after(()=>server.close());
 
@@ -44,4 +44,18 @@ test('Vision batch integrity rejects missing, duplicate, and unexpected ids', ()
   assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }]), /missing=\[s2\]/);
   assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 's1' }]), /duplicate=\[s1\]/);
   assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 'alien' }]), /unexpected=\[alien\]/);
+});
+
+test('Planner integrity accepts exactly one choice per expected beat regardless of response order', () => {
+  const beats = [{ id: 'b1' }, { id: 'b2' }];
+  const parsed = { choices: [{ beatId: 'b2', segmentId: 's2' }, { beatId: 'b1', segmentId: 's1' }] };
+  assert.equal(validatePlannerResponse(beats, parsed), parsed);
+});
+
+test('Planner integrity rejects missing, duplicate, unexpected, and malformed beat coverage', () => {
+  const beats = [{ id: 'b1' }, { id: 'b2' }];
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }] }), /missing=\[b2\]/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }, { beatId: 'b1' }] }), /duplicate=\[b1\]/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }, { beatId: 'alien' }] }), /unexpected=\[alien\]/);
+  assert.throws(() => validatePlannerResponse(beats, {}), /choices array/);
 });
