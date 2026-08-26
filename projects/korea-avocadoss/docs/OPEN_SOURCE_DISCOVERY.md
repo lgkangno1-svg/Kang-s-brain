@@ -102,6 +102,36 @@ Decision: **defer for locale/FAQ routing**; no benefit for deterministic routing
 - https://huggingface.co/Unbabel/wmt20-comet-qe-da
 - https://huggingface.co/Unbabel/wmt22-cometkiwi-da
 
+## 2026-08-26 — Step 2B-3 localized public surfaces + graph QA
+
+### GitHub / upstream reviewed
+- Re-checked the latest `amannn/next-intl` App Router guidance and example layout before editing. Current guidance continues to support validated locale segments, request messages and locale-aware navigation; the first-party example remains a better fit than adding a second i18n stack.
+- `next-intl` also supports TypeScript augmentation for locale/message typing, but this slice intentionally **defers** augmentation until a verified build environment exists. Adding type augmentation now would enlarge the blast radius without solving the immediate public-copy migration.
+- Decision: **adapt the existing static-dictionary architecture** by splitting growing public marketing copy into `messages/public/{locale}.json`, then merging it with the core dictionary at request time. This keeps files reviewable while preserving one runtime message object and adds no package.
+- Decision: **adopt a small dependency-free graph/message checker** for Quick Help. It reads the state-machine source and fails when a referenced title/answer/choice key is absent from the English schema, complementing P0 parity checks.
+
+### Hugging Face reviewed
+- `Unbabel/wmt20-comet-qe-da` — Apache-2.0 multilingual QE model, source + translation scoring.
+- `Unbabel/wmt22-comet-da` and `Unbabel/eamt22-cometinho-da` — Apache-2.0 reference-based multilingual translation evaluation models.
+- `Unbabel/wmt22-cometkiwi-da` — CC-BY-NC-SA-4.0, unsuitable for the commercial workflow.
+- Decision: **reject runtime/build integration for this slice**. The new corpus is still small static product copy. Installing COMET/Python/models would add CI/runtime weight and supply-chain surface with no user-visible gain. Revisit Apache-2.0 offline QA once localization volume and native-review cost justify it.
+
+### Security / performance / margin implications
+- No runtime translation, AI API, RAG, embeddings or external user-data transfer was added.
+- Public copy is loaded from allowlisted locale files only after locale validation.
+- K-Culture copy reinforces that unknown birth time is valid and must never be guessed.
+- Added checks are filesystem-only build gates; marginal provider cost is zero.
+- Static localization and zero-AI Quick Help preserve gross margin and reduce the chance that common informational queries are routed to paid inference.
+
+### Sources
+- https://github.com/amannn/next-intl/blob/main/docs/src/pages/docs/usage/configuration.mdx
+- https://github.com/amannn/next-intl/blob/main/examples/example-app-router/src/app/%5Blocale%5D/layout.tsx
+- https://github.com/amannn/next-intl/blob/main/docs/src/pages/docs/workflows/typescript.mdx
+- https://huggingface.co/Unbabel/wmt20-comet-qe-da
+- https://huggingface.co/Unbabel/wmt22-comet-da
+- https://huggingface.co/Unbabel/eamt22-cometinho-da
+- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
+
 ## Discovery rules for future entries
 
 For every major feature, record:
