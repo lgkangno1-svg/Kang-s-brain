@@ -5,6 +5,7 @@
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 2 — internationalized routing / locale parity / SEO and migration-boundary cleanup  
 **Last completed slice:** Step 2C-4 — locale-correct document `<html lang>` with executable generated-HTML verification  
+**Merged to main:** `edcfe58ad3fe65ca102a4aac933358b3ca8bc98c` (PR #4)  
 **Exact next slice:** Step 2C-5 — decide and implement the migration-only unprefixed duplicate boundary as a separate rollback-aware change; do not mix browser-language inference into deterministic legacy cleanup.
 
 > Cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Assume another AI/developer may have changed the repository. Never restore remembered older code over newer work without understanding it. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or next step changes.
@@ -76,6 +77,8 @@ Run **`33005536571` — SUCCESS** after the fix:
 - static/SSG generation: **46/46**;
 - existing unprefixed URLs and all P0 Home/Color/Credits/Culture/Gyeongbokgung/Hanbok routes present in output;
 - generated-document verification: **passed for all 6 P0 locales**.
+
+Final PR head workflow **`33005783152` — SUCCESS** after roadmap/discovery/handoff synchronization; the same i18n, production-build and generated-document-language gates remained green immediately before merge.
 
 This proves build artifacts have the correct document language. It is **not** production deployment, DNS cutover, live HTTP inspection or search-engine indexing evidence.
 
