@@ -25,7 +25,8 @@ function flatten(value, prefix = "", output = new Map()) {
 async function loadLocale(locale) {
   const core = JSON.parse(await readFile(resolve(root, "messages", `${locale}.json`), "utf8"));
   const publicCopy = JSON.parse(await readFile(resolve(root, "messages", "public", `${locale}.json`), "utf8"));
-  return flatten({...core, ...publicCopy});
+  const hanbok = JSON.parse(await readFile(resolve(root, "messages", "hanbok", `${locale}.json`), "utf8"));
+  return flatten({...core, ...publicCopy, ...hanbok});
 }
 
 const dictionaries = new Map();
