@@ -102,6 +102,29 @@ export function validatePlannerResponse(beats, parsed) {
   return parsed;
 }
 
+export function validateJudgeResponse(items, parsed) {
+  if (!Array.isArray(parsed)) throw new Error('Judge did not return an array.');
+  const expectedIds = items.map((item) => item.beatId);
+  const expected = new Set(expectedIds);
+  const seen = new Set();
+  const duplicate = [];
+  const unexpected = [];
+
+  for (const judgment of parsed) {
+    const beatId = String(judgment?.beatId || '');
+    if (!expected.has(beatId)) unexpected.push(beatId || '(missing beatId)');
+    else if (seen.has(beatId)) duplicate.push(beatId);
+    else seen.add(beatId);
+  }
+
+  const missing = expectedIds.filter((id) => !seen.has(id));
+  if (parsed.length !== items.length || missing.length || duplicate.length || unexpected.length) {
+    throw new Error(`Judge beat integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  }
+
+  return parsed;
+}
+
 export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepseek-v4-flash-vision-exp', batchSize = 10, usage, onProgress }) {
   const output = [];
   for (let offset = 0; offset < segments.length; offset += batchSize) {
@@ -155,8 +178,8 @@ export async function judgeSelectionsVision(items, { apiKey, model = 'deepseek-v
       for (const framePath of paths) content.push({ type: 'image_url', image_url: { url: await imageDataUrl(framePath), detail: 'low' } });
     }
     const raw = await postChat({ apiKey, model, usage, messages: [{ role: 'user', content }], maxTokens: 2500 });
-    const parsed = extractJson(raw);
-    if (Array.isArray(parsed)) results.push(...parsed);
+    const parsed = validateJudgeResponse(batch, extractJson(raw));
+    results.push(...parsed);
   }
   return results;
 }
