@@ -7,7 +7,7 @@ import { Transform } from 'node:stream';
 import { projectId, ensureDir, safeFilename, parseByteRange, writeJson, readJson } from './core/utils.mjs';
 import { runProject, replaceClipAndRerender, resolveSettings } from './core/pipeline.mjs';
 import { beginProjectJob, abandonProjectJob } from './core/project-job.mjs';
-import { beginProjectMutation, endProjectMutation } from './core/project-mutation.mjs';
+import { beginProjectMutationWithFreshSnapshot, endProjectMutation } from './core/project-mutation.mjs';
 import { createUploadPaths, publishStagedUpload } from './core/upload-staging.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -81,9 +81,14 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && parts[3] === 'upload') {
         const kind = url.searchParams.get('kind'); const name = safeFilename(url.searchParams.get('name') || `${kind}.bin`);
         if (!['video', 'tts', 'srt'].includes(kind)) return json(res, 400, { error: 'Invalid kind' });
-        const mutation = beginProjectMutation(activeMutations, id, `upload:${kind}`);
-        if (!mutation) return json(res, 409, { error: 'Project is busy' });
-        const prefix = kind === 'video' ? `${String(project.videos.length + 1).padStart(2, '0')}-` : `${kind}-`;
+        const claimed = await beginProjectMutationWithFreshSnapshot(activeMutations, id, `upload:${kind}`, () => readJson(projectPath, null));
+        if (!claimed) return json(res, 409, { error: 'Project is busy' });
+        const { token: mutation, project: freshProject } = claimed;
+        if (!freshProject) {
+          endProjectMutation(activeMutations, id, mutation);
+          return json(res, 404, { error: 'Project not found' });
+        }
+        const prefix = kind === 'video' ? `${String(freshProject.videos.length + 1).padStart(2, '0')}-` : `${kind}-`;
         const { stagedPath, finalPath } = createUploadPaths(path.join(dir, 'inputs'), prefix, name);
         const maxBytes = kind === 'video' ? 8 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
         let bytes = 0;
@@ -100,8 +105,8 @@ const server = http.createServer(async (req, res) => {
             stagedPath,
             finalPath,
             persist: async (publishedPath) => {
-              if (kind === 'video') project.videos.push(publishedPath); else project[`${kind}Path`] = publishedPath;
-              await writeJson(projectPath, project);
+              if (kind === 'video') freshProject.videos.push(publishedPath); else freshProject[`${kind}Path`] = publishedPath;
+              await writeJson(projectPath, freshProject);
             }
           });
           return json(res, 200, { ok: true, path: path.basename(finalPath), bytes });
@@ -111,8 +116,13 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && parts[3] === 'run') {
-        const mutation = beginProjectMutation(activeMutations, id, 'run');
-        if (!mutation) return json(res, 409, { error: 'Project is busy' });
+        const claimed = await beginProjectMutationWithFreshSnapshot(activeMutations, id, 'run', () => readJson(projectPath, null));
+        if (!claimed) return json(res, 409, { error: 'Project is busy' });
+        const { token: mutation, project: freshProject } = claimed;
+        if (!freshProject) {
+          endProjectMutation(activeMutations, id, mutation);
+          return json(res, 404, { error: 'Project not found' });
+        }
         const state = beginProjectJob(jobs, id, '요청 확인');
         if (!state) {
           endProjectMutation(activeMutations, id, mutation);
@@ -121,9 +131,9 @@ const server = http.createServer(async (req, res) => {
         let payload;
         try {
           payload = await bodyJson(req);
-          project.script = payload.script || '';
-          project.settings = resolveSettings(payload.settings || {});
-          await writeJson(projectPath, project);
+          freshProject.script = payload.script || '';
+          freshProject.settings = resolveSettings(payload.settings || {});
+          await writeJson(projectPath, freshProject);
         } catch (error) {
           abandonProjectJob(jobs, id, state);
           endProjectMutation(activeMutations, id, mutation);
@@ -133,10 +143,10 @@ const server = http.createServer(async (req, res) => {
         state.updatedAt = new Date().toISOString();
         const setStatus = (status) => { state.status = status; state.logs.push({ at: new Date().toISOString(), message: status }); state.updatedAt = new Date().toISOString(); };
         runProject({
-          projectDir: dir, videoPaths: project.videos, script: project.script,
-          srtPath: project.srtPath, ttsPath: project.ttsPath,
+          projectDir: dir, videoPaths: freshProject.videos, script: freshProject.script,
+          srtPath: freshProject.srtPath, ttsPath: freshProject.ttsPath,
           apiKey: payload.apiKey || process.env.OPENCODE_GO_API_KEY || '',
-          settings: project.settings, onStatus: setStatus
+          settings: freshProject.settings, onStatus: setStatus
         }).then((result) => {
           state.running = false; state.result = { qa: result.qa, apiUsage: result.apiUsage }; state.status = '완료'; state.updatedAt = new Date().toISOString();
           endProjectMutation(activeMutations, id, mutation);
@@ -151,8 +161,13 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && parts[3] === 'edl') return json(res, 200, await readJson(path.join(dir, 'work', 'edl.json'), { clips: [] }));
       if (req.method === 'GET' && parts[3] === 'segments') return json(res, 200, await readJson(path.join(dir, 'work', 'segments.json'), []));
       if (req.method === 'POST' && parts[3] === 'replace') {
-        const mutation = beginProjectMutation(activeMutations, id, 'replace');
-        if (!mutation) return json(res, 409, { error: 'Project is busy' });
+        const claimed = await beginProjectMutationWithFreshSnapshot(activeMutations, id, 'replace', () => readJson(projectPath, null));
+        if (!claimed) return json(res, 409, { error: 'Project is busy' });
+        const { token: mutation, project: freshProject } = claimed;
+        if (!freshProject) {
+          endProjectMutation(activeMutations, id, mutation);
+          return json(res, 404, { error: 'Project not found' });
+        }
         const state = beginProjectJob(jobs, id, '컷 교체 요청 확인');
         if (!state) {
           endProjectMutation(activeMutations, id, mutation);
@@ -169,7 +184,7 @@ const server = http.createServer(async (req, res) => {
         state.status = '컷 교체 준비';
         state.updatedAt = new Date().toISOString();
         const setStatus = (status) => { state.status = status; state.logs.push({ at: new Date().toISOString(), message: status }); state.updatedAt = new Date().toISOString(); };
-        replaceClipAndRerender({ projectDir: dir, project, beatId: payload.beatId, segmentId: payload.segmentId, onStatus: setStatus })
+        replaceClipAndRerender({ projectDir: dir, project: freshProject, beatId: payload.beatId, segmentId: payload.segmentId, onStatus: setStatus })
           .then((result) => {
             state.running = false; state.result = { qa: result.qa }; state.status = '완료'; state.updatedAt = new Date().toISOString();
             endProjectMutation(activeMutations, id, mutation);
