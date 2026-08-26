@@ -1,7 +1,14 @@
 'use client';
 
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { analyzeVisibleTone, type Depth, type Undertone, type VisibleToneResult } from './analyze-visible-tone';
+import { useTranslations } from 'next-intl';
+import {
+  analyzeVisibleTone,
+  VisibleToneError,
+  type Depth,
+  type Undertone,
+  type VisibleToneResult,
+} from './analyze-visible-tone';
 import { getPalettes } from './palettes';
 import styles from './color-scanner.module.css';
 
@@ -15,13 +22,14 @@ const DEFAULT_RESULT: VisibleToneResult = {
 };
 
 export function ColorScanner() {
+  const t = useTranslations('ColorScanner');
   const [file, setFile] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState('');
   const [result, setResult] = useState<VisibleToneResult>(DEFAULT_RESULT);
   const [undertone, setUndertone] = useState<Undertone>('neutral');
   const [depth, setDepth] = useState<Depth>('medium');
   const [status, setStatus] = useState<'idle' | 'ready' | 'running' | 'done'>('idle');
-  const [error, setError] = useState('');
+  const [errorCode, setErrorCode] = useState<'canvasUnavailable' | 'insufficientPixels' | 'unknown' | ''>('');
 
   useEffect(() => () => {
     if (photoUrl) URL.revokeObjectURL(photoUrl);
@@ -36,13 +44,13 @@ export function ColorScanner() {
     setFile(selected);
     setPhotoUrl(URL.createObjectURL(selected));
     setStatus('ready');
-    setError('');
+    setErrorCode('');
   }
 
   async function runScan() {
     if (!file) return;
     setStatus('running');
-    setError('');
+    setErrorCode('');
     try {
       const nextResult = await analyzeVisibleTone(file);
       setResult(nextResult);
@@ -51,7 +59,7 @@ export function ColorScanner() {
       setStatus('done');
     } catch (scanError) {
       setStatus('ready');
-      setError(scanError instanceof Error ? scanError.message : 'We could not analyze this photo.');
+      setErrorCode(scanError instanceof VisibleToneError ? scanError.code : 'unknown');
     }
   }
 
@@ -61,70 +69,86 @@ export function ColorScanner() {
     <div className={styles.shell}>
       <div className={styles.photoColumn}>
         <div className={styles.photoStage}>
-          {photoUrl ? <img src={photoUrl} alt="Uploaded selfie preview" /> : (
+          {photoUrl ? <img src={photoUrl} alt={t('photoAlt')} /> : (
             <div className={styles.empty}>
-              <strong>Add a clear selfie</strong>
-              Face forward in natural light. Avoid strong filters, colored lighting and deep shadows.
+              <strong>{t('emptyTitle')}</strong>
+              {t('emptyText')}
             </div>
           )}
           <div className={styles.guide} aria-hidden="true" />
         </div>
         <label className={styles.fileButton}>
-          {photoUrl ? 'Choose another photo' : 'Upload or take a selfie'}
+          {photoUrl ? t('chooseAnother') : t('uploadSelfie')}
           <input type="file" accept="image/*" capture="user" onChange={handleFile} />
         </label>
         <button className={styles.scanButton} type="button" onClick={runScan} disabled={!file || status === 'running'}>
-          {status === 'running' ? 'Reading visible colors…' : 'Analyze my colors — free preview'}
+          {status === 'running' ? t('running') : t('analyzeFree')}
         </button>
-        {error && <div className={styles.error}>{error}</div>}
+        {errorCode && <div className={styles.error}>{t(`errors.${errorCode}`)}</div>}
       </div>
 
       <div className={styles.resultColumn}>
-        <h2>{completed ? 'Your visible color tendency' : 'Your result will appear here'}</h2>
-        <p>This is a photo-based estimate under the current lighting, not a professional personal-color diagnosis. You can correct the result before using it for Hanbok matching.</p>
+        <h2>{completed ? t('resultTitle') : t('resultPlaceholder')}</h2>
+        <p>{t('resultDisclaimer')}</p>
 
         <div className={styles.metrics}>
-          <div className={styles.metric}><small>Undertone tendency</small><strong>{completed ? result.undertone : '—'}</strong></div>
-          <div className={styles.metric}><small>Visible depth</small><strong>{completed ? result.depth : '—'}</strong></div>
-          <div className={styles.metric}><small>Contrast</small><strong>{completed ? result.contrast : '—'}</strong></div>
+          <div className={styles.metric}>
+            <small>{t('undertoneLabel')}</small>
+            <strong>{completed ? t(`undertone.${result.undertone}`) : '—'}</strong>
+          </div>
+          <div className={styles.metric}>
+            <small>{t('depthLabel')}</small>
+            <strong>{completed ? t(`depth.${result.depth}`) : '—'}</strong>
+          </div>
+          <div className={styles.metric}>
+            <small>{t('contrastLabel')}</small>
+            <strong>{completed ? t(`contrast.${result.contrast}`) : '—'}</strong>
+          </div>
         </div>
 
         <div className={styles.confidence}>
-          {completed ? `Estimate confidence ${Math.round(result.confidence * 100)}% · lightness index ${result.lightness}/100` : 'Your selfie stays in this browser for this MVP scan.'}
+          {completed
+            ? t('confidence', { confidence: Math.round(result.confidence * 100), lightness: result.lightness })
+            : t('browserPrivacy')}
         </div>
 
-        {completed && result.warnings.map((warning) => <div className={styles.warning} key={warning}>{warning}</div>)}
+        {completed && result.warnings.map((warning) => (
+          <div className={styles.warning} key={warning}>{t(`warnings.${warning}`)}</div>
+        ))}
 
         <div className={styles.manual}>
-          <label>Correct undertone
+          <label>{t('correctUndertone')}
             <select value={undertone} onChange={(event) => setUndertone(event.target.value as Undertone)}>
-              <option value="warm">Warm</option>
-              <option value="neutral">Neutral</option>
-              <option value="cool">Cool</option>
+              <option value="warm">{t('undertone.warm')}</option>
+              <option value="neutral">{t('undertone.neutral')}</option>
+              <option value="cool">{t('undertone.cool')}</option>
             </select>
           </label>
-          <label>Correct visible depth
+          <label>{t('correctDepth')}
             <select value={depth} onChange={(event) => setDepth(event.target.value as Depth)}>
-              <option value="light">Light</option>
-              <option value="medium">Medium</option>
-              <option value="deep">Deep</option>
+              <option value="light">{t('depth.light')}</option>
+              <option value="medium">{t('depth.medium')}</option>
+              <option value="deep">{t('depth.deep')}</option>
             </select>
           </label>
         </div>
 
-        <h3>Hanbok colors to try</h3>
+        <h3>{t('hanbokColors')}</h3>
         <div className={styles.paletteList}>
           {palettes.map((palette, index) => (
-            <div className={styles.palette} key={palette.name}>
-              <div className={styles.paletteHeader}><strong>{index + 1}. {palette.name}</strong><span>{palette.note}</span></div>
-              <div className={styles.swatches} aria-label={`${palette.name} colors`}>
+            <div className={styles.palette} key={palette.id}>
+              <div className={styles.paletteHeader}>
+                <strong>{index + 1}. {t(`palettes.${palette.id}.name`)}</strong>
+                <span>{t(`palettes.${palette.id}.note`)}</span>
+              </div>
+              <div className={styles.swatches} aria-label={t('paletteAria', { name: t(`palettes.${palette.id}.name`) })}>
                 {palette.colors.map((color) => <i key={color} style={{ backgroundColor: color }} />)}
               </div>
             </div>
           ))}
         </div>
 
-        <div className={styles.note}>The scan uses only visible color pixels for styling guidance. It does not identify you or infer race, ethnicity, nationality, religion, health or attractiveness.</div>
+        <div className={styles.note}>{t('sensitiveTraitNote')}</div>
       </div>
     </div>
   );
