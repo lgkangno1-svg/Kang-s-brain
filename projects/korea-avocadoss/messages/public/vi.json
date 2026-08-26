@@ -43,12 +43,66 @@
     "fourHourText": "Thêm Seochon hoặc Bukchon cùng quán cà phê hay bữa ăn tùy theo mức đi bộ thoải mái và thời gian còn lại.",
     "freshnessNote": "Giờ mở cửa, ngày đóng cửa, quy định vé và tình trạng hoạt động của cửa hàng có thể thay đổi. Hãy kiểm tra lại thông tin có tính thời điểm trước khi khởi hành."
   },
+  "Color": {
+    "eyebrow": "Màu cá nhân · Xem thử miễn phí trong trình duyệt",
+    "title": "Tìm những màu đáng thử khi ở Hàn Quốc.",
+    "intro": "Bắt đầu bằng quét ảnh selfie riêng tư ngay trong trình duyệt, kiểm tra và chỉnh kết quả ước tính, rồi dùng bảng màu cho gợi ý Hanbok. Đây là hướng dẫn phối đồ, không phải chẩn đoán màu cá nhân chuyên nghiệp."
+  },
+  "ColorScanner": {
+    "photoAlt": "Xem trước ảnh selfie đã tải lên",
+    "emptyTitle": "Thêm một ảnh selfie rõ nét",
+    "emptyText": "Nhìn thẳng vào máy ảnh dưới ánh sáng tự nhiên. Tránh bộ lọc mạnh, ánh sáng màu và bóng tối sâu.",
+    "chooseAnother": "Chọn ảnh khác",
+    "uploadSelfie": "Tải lên hoặc chụp selfie",
+    "running": "Đang đọc màu nhìn thấy…",
+    "analyzeFree": "Phân tích màu của tôi — xem thử miễn phí",
+    "resultTitle": "Xu hướng màu nhìn thấy của bạn",
+    "resultPlaceholder": "Kết quả sẽ xuất hiện ở đây",
+    "resultDisclaimer": "Đây là ước tính từ ảnh theo điều kiện ánh sáng hiện tại, không phải chẩn đoán màu cá nhân chuyên nghiệp. Bạn có thể chỉnh kết quả trước khi dùng cho gợi ý Hanbok.",
+    "undertoneLabel": "Xu hướng sắc độ nền",
+    "depthLabel": "Độ sáng tối nhìn thấy",
+    "contrastLabel": "Độ tương phản",
+    "confidence": "Độ tin cậy ước tính {confidence}% · chỉ số độ sáng {lightness}/100",
+    "browserPrivacy": "Trong bản xem thử miễn phí này, ảnh selfie chỉ ở trong trình duyệt của bạn.",
+    "correctUndertone": "Chỉnh sắc độ nền",
+    "correctDepth": "Chỉnh độ sáng tối",
+    "hanbokColors": "Màu Hanbok nên thử",
+    "paletteAria": "Bảng màu {name}",
+    "sensitiveTraitNote": "Quét chỉ dùng các điểm ảnh màu nhìn thấy để gợi ý phối đồ. Hệ thống không nhận dạng bạn hay suy đoán chủng tộc, dân tộc, quốc tịch, tôn giáo, sức khỏe hoặc mức độ hấp dẫn.",
+    "undertone": {"warm": "Ấm", "neutral": "Trung tính", "cool": "Lạnh"},
+    "depth": {"light": "Sáng", "medium": "Trung bình", "deep": "Đậm"},
+    "contrast": {"soft": "Mềm", "medium": "Trung bình", "high": "Cao"},
+    "warnings": {
+      "darkPhoto": "Ảnh có vẻ tối. Ánh sáng ban ngày có thể cho kết quả ổn định hơn.",
+      "overexposedPhoto": "Vùng mặt có vẻ quá sáng. Hãy thử ánh sáng tự nhiên dịu hơn.",
+      "limitedPixels": "Chúng tôi tìm thấy ít điểm ảnh màu giống vùng mặt, vì vậy hãy kiểm tra ước tính thủ công."
+    },
+    "errors": {
+      "canvasUnavailable": "Trình duyệt này không thể chạy phân tích ảnh cục bộ.",
+      "insufficientPixels": "Không đọc được đủ điểm ảnh sử dụng được. Hãy thử ảnh chính diện sáng hơn.",
+      "unknown": "Không thể phân tích ảnh này. Hãy thử một ảnh selfie rõ khác."
+    },
+    "palettes": {
+      "jadeWarmIvory": {"name": "Ngọc bích & ngà ấm", "note": "Phối màu cổ điển hợp bối cảnh cung điện, giữ cảm giác ấm gần khuôn mặt."},
+      "peachSage": {"name": "Đào & xanh xô thơm", "note": "Mềm mại, thân thiện cho ảnh ban ngày và dạo phố nhẹ nhàng."},
+      "creamCrimson": {"name": "Kem & đỏ thẫm", "note": "Tương phản mạnh hơn cho kiến trúc cung điện và Hanbok trang trọng."},
+      "softWhiteJade": {"name": "Trắng dịu & ngọc bích", "note": "Cân bằng và linh hoạt cho cả Hanbok truyền thống lẫn hiện đại."},
+      "dustyRoseNavy": {"name": "Hồng tro & xanh navy", "note": "Tinh tế và lên ảnh đẹp trước nền đá và gỗ của cung điện."},
+      "mutedPlumIvory": {"name": "Mận trầm & ngà", "note": "Bảng màu lãng mạn, điềm tĩnh mà không cần độ bão hòa quá cao."},
+      "moonBlueSoftWhite": {"name": "Xanh trăng & trắng dịu", "note": "Tương phản sạch, hợp sân cung điện và nền đá."},
+      "lilacPlum": {"name": "Tử đinh hương & mận", "note": "Hướng Hanbok hiện đại, lãng mạn và gọn gàng."},
+      "roseDeepNavy": {"name": "Hồng & navy đậm", "note": "Tạo độ sâu lạnh và tương phản ảnh rõ hơn mà vẫn hạn chế sắc ấm."
+      }
+    }
+  },
   "Meta": {
     "homeTitle": "Korea Concierge — Hướng dẫn Hàn Quốc phù hợp với bạn",
     "homeDescription": "Hướng dẫn du lịch và văn hóa Hàn Quốc đa ngôn ngữ cho khách quốc tế, với khám phá địa phương miễn phí và các trải nghiệm cá nhân hóa tùy chọn.",
     "cultureTitle": "K-Culture Lab — Saju, con giáp và truyền thống Hàn Quốc",
     "cultureDescription": "Khám phá con giáp Hàn Quốc, Saju và câu chuyện màu sắc truyền thống như trải nghiệm văn hóa, giải trí với thiết kế ưu tiên quyền riêng tư.",
     "gyeongbokgungTitle": "Hướng dẫn Gyeongbokgung — Tuyến đi, Hanbok và điểm dừng gần đó",
-    "gyeongbokgungDescription": "Lập kế hoạch Gyeongbokgung theo thời gian, có khoảng đệm trả Hanbok, ưu tiên chụp ảnh, mức đi bộ thoải mái và điểm ăn uống gần đó."
+    "gyeongbokgungDescription": "Lập kế hoạch Gyeongbokgung theo thời gian, có khoảng đệm trả Hanbok, ưu tiên chụp ảnh, mức đi bộ thoải mái và điểm ăn uống gần đó.",
+    "colorTitle": "Xem thử màu cá nhân — Phân tích riêng tư trong trình duyệt",
+    "colorDescription": "Thử miễn phí màu cá nhân trong trình duyệt để phối Hanbok. Ảnh selfie ở lại trên thiết bị và bạn có thể chỉnh kết quả thủ công."
   }
 }
