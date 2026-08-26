@@ -2,6 +2,8 @@ export const P0_LOCALES = ["en", "zh-CN", "ja", "zh-TW", "vi", "th"] as const;
 export const P1_LOCALES = ["id", "ms"] as const;
 export const P2_LOCALES = ["fr", "de", "es", "ru", "fil"] as const;
 
+export type P0Locale = (typeof P0_LOCALES)[number];
+
 export const SUPPORTED_LOCALES = [...P0_LOCALES, ...P1_LOCALES, ...P2_LOCALES] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -32,7 +34,7 @@ export const LOCALES: readonly LocaleDefinition[] = [
   { code: "fil", nativeName: "Filipino", englishName: "Filipino", status: "p2", htmlLang: "fil", markets: ["Philippines"] },
 ] as const;
 
-export const DEFAULT_LOCALE: SupportedLocale = "en";
+export const DEFAULT_LOCALE: P0Locale = "en";
 
 export function isSupportedLocale(value: string): value is SupportedLocale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value);
