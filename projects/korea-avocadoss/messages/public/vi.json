@@ -1,0 +1,33 @@
+{
+  "Home": {
+    "eyebrow": "Người bạn đồng hành tại Hàn Quốc",
+    "titleBefore": "Trải nghiệm Hàn Quốc theo cách",
+    "titleEmphasis": "phù hợp với bạn.",
+    "intro": "Màu cá nhân, Hanbok, tuyến tham quan cung điện, món ăn địa phương và văn hóa Hàn Quốc được nối thành một hành trình thay vì nhiều lần tìm kiếm rời rạc.",
+    "primaryAction": "Tìm màu của tôi",
+    "secondaryAction": "Khám phá Gyeongbokgung",
+    "context": "Giai đoạn đầu tập trung quanh Gyeongbokgung. Khám phá cơ bản vẫn miễn phí; các tính năng cá nhân hóa cần nhiều tính toán mới dùng tín dụng.",
+    "modulesTitle": "Một hồ sơ sở thích, một hành trình Hàn Quốc.",
+    "modulesIntro": "Gợi ý màu có thể hỗ trợ chọn Hanbok, Hanbok có thể ảnh hưởng tuyến chụp ảnh, còn thời gian bạn có sẽ quyết định món ăn và điểm ghé gần đó.",
+    "travelerTitle": "Được thiết kế cho du khách, không phải để gắn nhãn con người.",
+    "travelerIntro": "Lựa chọn rõ ràng của bạn luôn được ưu tiên hơn mọi mặc định theo thị trường. Chúng tôi không suy đoán quốc tịch, dân tộc, tôn giáo hay thuộc tính nhạy cảm từ tên, khuôn mặt hoặc ngôn ngữ.",
+    "freeTitle": "Khám phá miễn phí",
+    "freeText": "Điểm đến, duyệt địa điểm cơ bản, giải thích văn hóa và Trợ giúp nhanh đều dùng được mà không cần mua tín dụng.",
+    "paidTitle": "Tín dụng cho tính năng nâng cao",
+    "paidText": "Báo cáo AI chuyên sâu, tạo hình ảnh và lập kế hoạch cao cấp luôn hiển thị mức tín dụng cố định trước khi xác nhận.",
+    "internationalTitle": "Thiết kế cho khách quốc tế",
+    "internationalText": "Ngôn ngữ, khó khăn khi di chuyển, bộ lọc ăn uống và thông tin thực tế được bản địa hóa mà không áp đặt khuôn mẫu thị trường lên từng cá nhân."
+  },
+  "Culture": {
+    "eyebrow": "K-Culture Lab",
+    "title": "Khám phá truyền thống như văn hóa, không phải một lời khẳng định chắc chắn.",
+    "intro": "Con giáp Hàn Quốc và Saju được trình bày như trải nghiệm văn hóa và giải trí. Thông tin sinh cần sự đồng ý riêng và không dùng cho lời khuyên chuyên môn hoặc quyết định có tác động lớn.",
+    "planned": "Trải nghiệm dự kiến",
+    "zodiacTitle": "Con giáp Hàn Quốc",
+    "zodiacText": "Một điểm bắt đầu văn hóa nhẹ nhàng và miễn phí.",
+    "sajuTitle": "Saju / Tứ trụ",
+    "sajuText": "Giờ sinh là tùy chọn. Giờ chính xác, khoảng thời gian ước chừng và ‘Tôi không biết’ đều là lựa chọn hợp lệ; hệ thống không bao giờ tự đoán giờ còn thiếu.",
+    "colorTitle": "Kết nối màu sắc",
+    "colorText": "Câu chuyện về màu may mắn truyền thống luôn được tách rõ khỏi hướng dẫn phối màu cá nhân."
+  }
+}
