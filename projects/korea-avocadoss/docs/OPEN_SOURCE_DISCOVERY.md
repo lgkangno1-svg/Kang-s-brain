@@ -1,16 +1,16 @@
 # Korea Concierge — Open Source / Model Discovery Log
 
-This is the required discovery record before material feature implementation/revision. The rule is not “use open source whenever possible”; search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
+This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
 ## 2026-08-26 — Credits, wallet and pricing architecture
 
 ### GitHub
 `amirhf/creditLedger` — MIT. Useful patterns: immutable history, idempotency, auditable balance projection, transactional thinking.  
-**Decision:** adopt the accounting patterns, not the Go/Kafka/CQRS stack. Launch should use Postgres transactions, immutable ledger, idempotency keys and derived balance.
+**Decision:** adopt accounting patterns, not its heavier stack. Launch architecture remains Postgres transactions + immutable ledger + idempotency + derived balance.
 
 ### Hugging Face
-`PranavSharma/dynamic-pricing-model` and `iioos/dynamic-pricing-model` were reviewed.  
-**Decision:** reject for launch pricing. Training domains do not match tourism credit economics and ML-personalized pricing harms explainability. Use fixed public prices and controlled experiments later.
+`PranavSharma/dynamic-pricing-model` and `iioos/dynamic-pricing-model`.  
+**Decision:** reject. Their domains do not match tourism credit economics and ML-personalized pricing harms explainability. Keep fixed public prices.
 
 ## 2026-08-26 — Free Quick Help
 
@@ -25,95 +25,89 @@ Multilingual E5-style embeddings considered.
 ## 2026-08-26 — Internationalization architecture
 
 ### GitHub
-`amannn/next-intl` — MIT, mature Next.js App Router support, locale routing, Server Components, formatting, navigation. Fresh version correction established `4.13.4` as the latest verifiable stable version at the time and it is exactly pinned.  
-**Decision:** adopt and keep one i18n stack. Browser-language handling remains suggestion/negotiation only after route parity; explicit user choice always wins.
+`amannn/next-intl` — MIT, mature Next.js App Router support. `4.13.4` is exactly pinned.  
+**Decision:** use one i18n stack; explicit user locale choice always wins.
 
 ### Hugging Face
-`facebook/nllb-200-distilled-600M` — broad language coverage but CC-BY-NC and model card is research-oriented/not production release.  
-**Decision:** reject for commercial runtime localization. Use reviewed static dictionaries.
+`facebook/nllb-200-distilled-600M` — broad coverage but non-commercial/research-oriented for this use.  
+**Decision:** reject runtime translation; use reviewed static dictionaries.
 
 ## 2026-08-26 — Locale navigation / Quick Help / public localization QA
 
 ### GitHub
-Re-checks of `next-intl` App Router navigation, request messages and metadata patterns continued to fit the architecture better than adding another routing/i18n package. Dependency-free Node scripts were preferred for dictionary parity, Quick Help graph-key checking and later route-specific message contracts.  
-**Decision:** adapt existing stack, keep deterministic local build gates, no second i18n/SEO dependency.
+`next-intl` request/navigation/metadata patterns remain sufficient. Dependency-free Node scripts are used for dictionary and route-specific message contracts.  
+**Decision:** no second i18n/SEO package.
 
 ### Hugging Face
-`Unbabel/wmt20-comet-qe-da`, `Unbabel/wmt22-comet-da`, `Unbabel/eamt22-cometinho-da` (Apache-2.0) and `Unbabel/wmt22-cometkiwi-da` (non-commercial license) were reviewed for translation QA.  
-**Decision:** no runtime/build integration while the static P0 corpus is small. Python/model downloads/CI and supply-chain weight exceed current value. Non-commercial variants are excluded from commercial workflow.
+COMET translation QA models were reviewed.  
+**Decision:** no runtime/build integration while the static P0 corpus is small; model/CI weight exceeds value.
 
 ## 2026-08-26 — Gyeongbokgung localization + metadata + text expansion
 
-### GitHub
-`next-intl` server translation and async metadata patterns rechecked.  
-**Decision:** keep `getTranslations`/Server Component pattern and locale-scoped CSS for text expansion rather than adding libraries. Do not enable canonical/hreflang/x-default before route parity and executable build evidence.
-
-### Hugging Face
-COMET translation QA models rechecked.  
-**Decision:** unchanged; static reviewed P0 copy + deterministic parity remains cheaper and lower risk.
+`next-intl` server translation/metadata patterns rechecked; COMET candidates rechecked.  
+**Decision:** keep Server Components/static P0 copy + deterministic parity. Do not enable canonical/hreflang/x-default before route parity and executable build evidence.
 
 ## 2026-08-26 — Step 2C-1A Personal Color native locale surface
 
-### GitHub reviewed
-Fresh search covered personal-color and skin-tone analysis projects, including `JungWooGeon/personal_color_app`, `starbucksdolcelatte/ShowMeTheColor`, `PSY222/Colorinsight` and `Randon-Myntra-HackerRamp-21/Skyn`.
+### GitHub
+Personal-color/skin-tone projects including `JungWooGeon/personal_color_app`, `starbucksdolcelatte/ShowMeTheColor`, `PSY222/Colorinsight` and `Randon-Myntra-HackerRamp-21/Skyn` were reviewed.
 
-**Decision: adapt current in-repo deterministic browser implementation, do not adopt an external repository or model in Step 2C.** Current preview avoids image upload/provider cost; external projects do not provide enough maintenance, representative validation or incremental user-value evidence to justify face/model dependencies. Analyzer messages therefore use stable codes, palette data uses stable IDs and copy remains in P0 dictionaries.
+### Hugging Face
+General skin/image classification candidates including `driboune/skin_type` and Google `derm-foundation` were reviewed.
 
-### Hugging Face reviewed
-General skin/image classification candidates including `driboune/skin_type` and Google `derm-foundation` were reviewed. They do not directly provide validated personal-color styling and introduce image-transfer/bundle/generalization concerns.
-
-**Decision:** reject remote/bundled model adoption for the free preview. Revisit only at Step 6 with explicit consent, ZDR/data-collection restrictions, EXIF minimization, representative validation, bounded supplier cost and a free/manual fallback.
-
-### Security / privacy / token / margin implications
-AI/model/provider calls 0; external selfie transfer 0; runtime dependencies 0; incremental inference cost 0; no sensitive identity inference permitted.
+**Decision:** keep in-repo browser-local deterministic preview. External projects/models did not justify image transfer, representation risk, dependency weight or supplier cost. Revisit premium vision only at Step 6 with consent/ZDR/EXIF/privacy/cost gates.
 
 ## 2026-08-27 — Step 2C-1B Hanbok native locale surface
 
+### GitHub
+`JamesAC42/hanbok` is primarily language-learning software. `seungboAn/try-on-hanbok` is a relevant later virtual-fitting reference but requires image upload, AI fitting and backend services.
+
+### Hugging Face
+Generic fashion embeddings/classifiers, virtual try-on Spaces, `daeunn/hanbok-dataset` and small Hanbok LoRA datasets were reviewed.
+
+**Decision:** adopt none for the current free matcher. Keep user-choice-driven deterministic matching with 0 AI/provider/photo transfer. Step 7 remains the fuller recommendation gate; bulk Hanbok visual generation remains deferred.
+
+## 2026-08-27 — Step 2C-1C Credits native locale surface
+
 ### GitHub reviewed
-Fresh search for Hanbok/recommendation projects found:
+Fresh wallet/ledger search was compared with the already-adopted immutable-ledger direction. A recent `azex-ai/ledger` result is a production-oriented double-entry ledger with examples for top-up wallets, reserve/settle and credits. Those concepts reinforce the existing reserve/capture/release and immutable transaction requirements, but adopting a Go ledger engine during Step 2 localization would introduce an unnecessary service/runtime boundary before Step 4 auth/wallet work.
 
-- `JamesAC42/hanbok` — despite its name, it is primarily a general language-learning product with sentence/grammar/cultural analysis and optional LLM integrations. It does not solve Hanbok styling recommendation and would add unrelated Redis/Mongo/API complexity.
-- `seungboAn/try-on-hanbok` — Flutter/Supabase Hanbok virtual-fitting application with user image upload and AI-based try-on. It is relevant as a later UX reference, but adopting its stack now would prematurely add remote media storage, AI inference, backend dependencies and privacy obligations.
-- other repositories returned by a `hanbok` search were small research/frontend/trend projects without clear evidence of maintained, commercially suitable recommendation logic for the current Next.js product.
+The existing in-repo `src/lib/credits/economics.ts` already centralizes launch Trip Passes, refill packs, feature credit prices and margin assumptions. The localized UI therefore reads numeric prices/credits directly from that module instead of duplicating numbers in translation files.
 
-**Decision:** do not adopt an external Hanbok stack for Step 2C. Implement only a small deterministic matcher in the existing Next.js app. User-selected color, mood and trip comfort drive the preview; explicit choices outrank market defaults. Step 7 remains the gate for a fuller recommendation engine.
+**Decision:** adapt the existing in-repo economics catalog now; defer any external ledger implementation until Step 4. When Step 4 begins, re-search ledger libraries and compare them against a minimal Postgres transaction implementation before deciding.
 
 ### Hugging Face reviewed
-Fresh Hugging Face search found:
+Fresh search again surfaced dynamic-pricing models including:
 
-- generic fashion models such as FashionCLIP/FashionSigLIP-style embeddings and clothing classifiers;
-- multiple virtual try-on Spaces, including Kolors-based and diffusion-based try-on demos;
-- `daeunn/hanbok-dataset`, a small Hanbok image/caption dataset with 784 rows visible in the dataset viewer;
-- small Hanbok LoRA datasets such as `AIARTCHAN/lora-Hanbok_LoRA_V2`, which has only a handful of rows and is aimed at image generation rather than validated recommendation.
+- `iioos/dynamic-pricing-model` — MIT, ecommerce pricing/forecasting oriented;
+- `PranavSharma/dynamic-pricing-model` — Apache-2.0, ride-price regression; the model card states real-world limitations and the training domain is ride pricing;
+- dynamic-pricing demo Spaces aimed at inventory/demand pricing.
 
-**Decision:** reject model/Space/dataset adoption for the current free matcher. Generic fashion embeddings do not provide validated Hanbok-specific recommendation quality; virtual try-on requires photo transfer and heavier inference; small Hanbok datasets do not establish representative coverage, commercial provenance or recommendation accuracy. Keep the current preview model-free and cost-free.
-
-Revisit premium virtual try-on later only if it produces measurable conversion/user value and after commercial license/data provenance, representative Hanbok coverage, image privacy/ZDR, EXIF stripping, latency and per-generation supplier cost are all acceptable. Premium execution must display a fixed credit price before confirmation.
+**Decision:** reject all for launch customer pricing. They do not improve a fixed-credit travel product's trust or margin control and would make prices harder to audit. Korea Concierge will not vary customer prices using nationality, profile traits or ML. Public launch pricing remains deterministic and server-authoritative.
 
 ### Implementation adaptation
-- native P0 `/[locale]/hanbok` route with localized metadata;
-- deterministic client-side radio controls for color direction, mood and trip priority;
-- stable option IDs with human copy in separate `messages/hanbok/{locale}.json` bundles;
-- P0 parity + Hanbok message-contract checks before build;
-- CJK/Thai/Vietnamese text-expansion styles for fieldsets, labels and result facts;
-- no bulk Hanbok visual asset generation started.
+- `/[locale]/credits` is now native P0 content rather than an English re-export;
+- numeric Basic/Advanced/Ultra, refill and feature-credit values are read from `economics.ts` only;
+- translation bundles contain labels/descriptions, not authoritative numeric prices;
+- feature rows show fixed credits before confirmation semantics;
+- the page explicitly labels itself a pricing preview and does not expose a fake checkout before Step 4/5 wallet/payment gates;
+- a dependency-free build contract derives plan/paid-feature IDs from `economics.ts` and verifies matching English message keys;
+- P0 parity now includes the modular credits bundle.
 
 ### Security / privacy / token / margin implications
 - AI/model/provider calls added: **0**;
-- photo upload/external user-data transfer added: **0**;
 - runtime dependencies added: **0**;
-- credits charged by the free matcher: **0**;
+- external personal-data transfer added: **0**;
+- ML/dynamic personalized pricing: **0**;
+- checkout/payment mutation surface added: **0**;
+- numeric price duplication in locale copy: **0**;
 - incremental inference/provider cost: **0**;
-- market/nationality/profile inference: **0**;
-- gross-margin effect: favorable/neutral because localized value increases with no supplier cost.
+- gross-margin effect: neutral/favorable because pricing clarity/localization improves without supplier cost.
 
 ### Sources reviewed
-- https://github.com/JamesAC42/hanbok
-- https://github.com/seungboAn/try-on-hanbok
-- https://huggingface.co/models?other=fashion
-- https://huggingface.co/spaces?q=try-on
-- https://huggingface.co/datasets/daeunn/hanbok-dataset
-- https://huggingface.co/datasets/AIARTCHAN/lora-Hanbok_LoRA_V2
+- https://github.com/azex-ai/ledger
+- https://huggingface.co/iioos/dynamic-pricing-model
+- https://huggingface.co/PranavSharma/dynamic-pricing-model
 
 ## Discovery rules for future entries
 
