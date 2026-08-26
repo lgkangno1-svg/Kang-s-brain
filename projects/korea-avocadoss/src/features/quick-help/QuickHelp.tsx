@@ -8,7 +8,7 @@ const PANEL_ID = "quick-help-panel";
 const TITLE_ID = "quick-help-title";
 const ANSWER_ID = "quick-help-answer";
 
-export function QuickHelp() {
+export function QuickHelp({ localePrefix = "" }: { localePrefix?: string }) {
   const [open, setOpen] = useState(false);
   const [nodeId, setNodeId] = useState(QUICK_HELP_ROOT_ID);
   const [history, setHistory] = useState<string[]>([]);
@@ -58,6 +58,7 @@ export function QuickHelp() {
   }
 
   const atRoot = nodeId === QUICK_HELP_ROOT_ID && history.length === 0;
+  const ctaHref = node.cta?.href && node.cta.href.startsWith("/") ? `${localePrefix}${node.cta.href}` : node.cta?.href;
 
   return (
     <aside className="quickHelp" aria-label="Free Korea Quick Help">
@@ -87,7 +88,7 @@ export function QuickHelp() {
                 ))}
               </div>
             ) : null}
-            {node.cta ? <Link className="quickHelpCta" href={node.cta.href} onClick={close}>{node.cta.label} →</Link> : null}
+            {node.cta && ctaHref ? <Link className="quickHelpCta" href={ctaHref} onClick={close}>{node.cta.label} →</Link> : null}
           </div>
 
           <div className="quickHelpFooter">
