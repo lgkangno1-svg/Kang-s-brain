@@ -1,179 +1,125 @@
 # Korea Concierge — Open Source / Model Discovery Log
 
-This log records the required GitHub + Hugging Face discovery pass performed before major feature implementations or material revisions.
-
-The rule is not “use open source whenever possible.” The rule is to discover first, then adopt only when license, maintenance, privacy, quality, cost and architecture fit the product.
+This is the required discovery record before material feature implementation/revision. The rule is not “use open source whenever possible”; search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
 ## 2026-08-26 — Credits, wallet and pricing architecture
 
-### GitHub reviewed
+### GitHub
+`amirhf/creditLedger` — MIT. Useful patterns: immutable history, idempotency, auditable balance projection, transactional thinking.  
+**Decision:** adopt the accounting patterns, not the Go/Kafka/CQRS stack. Launch should use Postgres transactions, immutable ledger, idempotency keys and derived balance.
 
-#### `amirhf/creditLedger`
-- MIT licensed reference implementation.
-- Relevant patterns: immutable history, double-entry-style thinking, idempotency, transactional outbox, auditable balance projection.
-- Decision: **adopt the architectural patterns, not the full stack**. Use Postgres transactions, immutable credit ledger, idempotency keys and derived balance at launch rather than its Go/Kafka/CQRS stack.
+### Hugging Face
+`PranavSharma/dynamic-pricing-model` and `iioos/dynamic-pricing-model` were reviewed.  
+**Decision:** reject for launch pricing. Training domains do not match tourism credit economics and ML-personalized pricing harms explainability. Use fixed public prices and controlled experiments later.
 
-### Hugging Face reviewed
-- `PranavSharma/dynamic-pricing-model` — Apache-2.0 ride-hailing regression model.
-- `iioos/dynamic-pricing-model` — MIT-tagged ecommerce pricing model with little adoption evidence.
-- Decision: **reject both for launch pricing**. Domains do not match tourism credit economics and personalized ML pricing would reduce explainability. Use fixed public prices and controlled experiments later.
+## 2026-08-26 — Free Quick Help
 
-## 2026-08-26 — Free Quick Help chatbot
+### GitHub
+FAQ/RAG chatbot repositories including `arnobt78/Embeddable-FAQ-Seed-RAG-Chatbot-Widget--NextJS-FullStack` and `vpnsin/react-faq-chatbot`.  
+**Decision:** reject runtime chatbot/RAG dependency for v1. Typed local state machine is cheaper, faster, more private and easier to localize.
 
-### GitHub reviewed
-FAQ chatbot implementations including `arnobt78/Embeddable-FAQ-Seed-RAG-Chatbot-Widget--NextJS-FullStack` and `vpnsin/react-faq-chatbot`.
+### Hugging Face
+Multilingual E5-style embeddings considered.  
+**Decision:** defer until corpus size plus measured retrieval UX justifies embeddings.
 
-Decision: **do not adopt a chatbot/RAG dependency for v1**. A typed local state machine is cheaper, faster, more private and easier to localize for a fixed-answer 0-credit helper.
+## 2026-08-26 — Internationalization architecture
 
-### Hugging Face reviewed
-Multilingual E5-style embedding models were considered for future semantic FAQ retrieval.
+### GitHub
+`amannn/next-intl` — MIT, mature Next.js App Router support, locale routing, Server Components, formatting, navigation. Fresh version correction established `4.13.4` as the latest verifiable stable version at the time and it is exactly pinned.  
+**Decision:** adopt and keep one i18n stack. Browser-language handling remains suggestion/negotiation only after route parity; explicit user choice always wins.
 
-Decision: **defer** until the FAQ corpus is large enough to justify measured browser/server retrieval complexity.
+### Hugging Face
+`facebook/nllb-200-distilled-600M` — broad language coverage but CC-BY-NC and model card is research-oriented/not production release.  
+**Decision:** reject for commercial runtime localization. Use reviewed static dictionaries.
 
-## 2026-08-26 — Internationalization and translation architecture
+## 2026-08-26 — Locale navigation / Quick Help / public localization QA
 
-### GitHub reviewed
+### GitHub
+Re-checks of `next-intl` App Router navigation, request messages and metadata patterns continued to fit the architecture better than adding another routing/i18n package. Dependency-free Node scripts were preferred for dictionary parity, Quick Help graph-key checking and later route-specific message contracts.  
+**Decision:** adapt existing stack, keep deterministic local build gates, no second i18n/SEO dependency.
 
-#### `amannn/next-intl`
-- MIT licensed, mature Next.js-specific i18n library with locale routing, ICU messages, Server Component support, formatting and localized pathnames.
-- **Fresh re-verification correction:** the prior note claiming `4.13.7` was latest was incorrect. GitHub releases/changelog show **`4.13.4` (2026-07-23) as the latest stable release currently verifiable**.
-- `4.13.3` explicitly prepared compatibility with Next.js 16.3 locale-cookie behavior; the project/course documentation was updated on 2026-08-04 for stable Next.js 16.3 `next/root-params` support.
-- Decision: **adopt and exactly pin `next-intl@4.13.4`** for Step 2. Do not float minor versions during the migration.
-- Implementation slice 2A adds the plugin, P0 `defineRouting` registry and validated request-time message loader, but deliberately does not activate redirect/proxy behavior until `[locale]` pages exist. This avoids turning working unprefixed routes into 404s mid-migration.
-- Browser-language handling will be suggestion/negotiation only; explicit user choice always wins. No nationality/IP inference.
+### Hugging Face
+`Unbabel/wmt20-comet-qe-da`, `Unbabel/wmt22-comet-da`, `Unbabel/eamt22-cometinho-da` (Apache-2.0) and `Unbabel/wmt22-cometkiwi-da` (non-commercial license) were reviewed for translation QA.  
+**Decision:** no runtime/build integration while the static P0 corpus is small. Python/model downloads/CI and supply-chain weight exceed current value. Non-commercial variants are excluded from commercial workflow.
 
-### Hugging Face reviewed
+## 2026-08-26 — Gyeongbokgung localization + metadata + text expansion
 
-#### `facebook/nllb-200-distilled-600M`
-- Covers 196 languages but Hugging Face currently labels it **CC-BY-NC-4.0 / CC-BY-NC**.
-- Model card describes research-oriented machine translation and says it is not released for production deployment.
-- Decision: **reject for Korea Concierge production/commercial localization**. Static reviewed dictionaries remain the safer, lower-cost path.
+### GitHub
+`next-intl` server translation and async metadata patterns rechecked.  
+**Decision:** keep `getTranslations`/Server Component pattern and locale-scoped CSS for text expansion rather than adding libraries. Do not enable canonical/hreflang/x-default before route parity and executable build evidence.
 
-#### multilingual E5 variants
-Decision: **defer for locale/FAQ routing**; no benefit for deterministic routing at current corpus size.
+### Hugging Face
+COMET translation QA models rechecked.  
+**Decision:** unchanged; static reviewed P0 copy + deterministic parity remains cheaper and lower risk.
 
-## 2026-08-26 — Step 2B-1 locale navigation re-check
-
-### GitHub / upstream documentation reviewed
-- Fresh repository search found several App Router localization examples, but none provided stronger maintenance or product fit than the already selected first-party-focused `next-intl` approach.
-- Current `next-intl` learning material explicitly covers top-level locale routing, navigation APIs that preserve locales, locale switching, static rendering/404 handling, and Next.js 16 updates including stable `next/root-params` guidance dated 2026-08-04.
-- Decision: **continue with `next-intl` and use its `createNavigation(routing)` API** rather than adding a second routing/i18n dependency or maintaining hand-written URL replacement logic.
-- Migration decision: retain existing unprefixed routes temporarily and isolate them behind a migration-only shell while locale-prefixed routes are introduced incrementally. Do not activate middleware/proxy redirects before destination route parity and build verification.
-
-### Hugging Face re-check
-- `facebook/nllb-200-distilled-600M` remains CC-BY-NC-4.0 and its current model card continues to say it is research-oriented and not released for production deployment.
-- Decision unchanged: **do not add runtime translation ML**. It would add model/runtime cost, latency, privacy surface and licensing risk while reviewed static dictionaries meet the current product need at zero per-request inference cost.
-
-### Security / performance implications
-- No new network service, AI provider, embedding database or translation API was added.
-- Locale switching is deterministic client navigation over an allowlisted P0 locale registry.
-- Unsupported request locales continue to fail closed through the validated request config.
-- The temporary legacy-shell client boundary adds some migration-time JavaScript overhead and should be removed at the Step 2C cutover rather than becoming permanent architecture.
-
-### Current sources
-- https://github.com/amannn/next-intl/releases
-- https://github.com/amannn/next-intl/blob/main/CHANGELOG.md
-- https://learn.next-intl.dev/changelog
-- https://learn.next-intl.dev/chapters/06-routing/01-setup
-- https://learn.next-intl.dev/chapters/06-routing/04-navigation-apis
-- https://learn.next-intl.dev/chapters/06-routing/05-locale-switcher
-- https://huggingface.co/facebook/nllb-200-distilled-600M
-
-## 2026-08-26 — Step 2B-2 Quick Help localization + translation QA
+## 2026-08-26 — Step 2C-1A Personal Color native locale surface
 
 ### GitHub reviewed
-- Fresh search for i18n message-key validation/parity tooling returned only weak or low-signal candidates and no maintained dependency that justified increasing supply-chain surface for a simple six-file invariant.
-- Decision: **use a dependency-free Node parity checker** that flattens the English dictionary as the reference schema, then fails on missing, extra or blank P0 message leaves. The production `build` command now runs this check first.
-- Quick Help's decision graph now stores message keys only; every title, answer, choice, CTA and accessibility label resolves through the active `next-intl` dictionary. This removes the previous English hard-coded second-level answers.
+Fresh search covered personal-color and skin-tone analysis projects, including:
+
+- `JungWooGeon/personal_color_app` — React Native/Expo + Teachable Machine era implementation; useful as historical UX/reference, but small adoption, older architecture and external model workflow do not justify production adoption.
+- `starbucksdolcelatte/ShowMeTheColor` — research-style Python personal-color diagnosis using facial-region color features, Lab/HSV calculations and weighted comparison. Useful algorithmic reference, but not a browser-first maintained web component and lacks the product/privacy validation needed to replace current implementation.
+- `PSY222/Colorinsight` and similar face/segmentation/image-classification personal-color projects — demonstrate heavier ML alternatives but add model/backend complexity and require representative validation.
+- broader React/Flask skin-tone/skincare projects such as `Randon-Myntra-HackerRamp-21/Skyn` use face detection/CNN pipelines and solve a different product problem.
+
+**Decision: adapt current in-repo deterministic browser implementation, do not adopt an external repository or model in Step 2C.** Reasons:
+- current preview already avoids image upload and provider cost;
+- external projects do not provide strong evidence of current maintenance, representative cross-market validation or materially better user outcomes;
+- adding face recognition/segmentation/model packages increases bundle/runtime/supply-chain/privacy surface;
+- locale migration should not silently turn a zero-cost preview into remote AI;
+- manual correction plus clear “lighting-dependent styling estimate, not professional diagnosis” wording is safer for the current maturity level.
+
+Implementation adaptation in this slice:
+- analyzer warnings/errors are now stable typed codes rather than English text;
+- palette data uses stable IDs + hex values; localized names/notes live in dictionaries;
+- complete scanner UI is P0-localized;
+- a dependency-free Color message contract checker is included in `check:i18n`.
 
 ### Hugging Face reviewed
-- `Unbabel/wmt20-comet-qe-da` is an Apache-2.0 multilingual translation quality-estimation model and is technically usable for offline translation QA.
-- `Unbabel/wmt22-cometkiwi-da` is CC-BY-NC-SA-4.0 and unsuitable for the commercial production workflow.
-- Decision: **do not add either model to the application or build pipeline now**. COMET would add model downloads, Python/runtime complexity and CI time for a tiny reviewed static corpus. Human/native review plus deterministic key parity provides better cost/complexity fit today. Reconsider an Apache-2.0 COMET-class evaluator only when localization volume becomes large enough to justify offline automated QA.
+Search for personal-color/skin-tone image classifiers returned general skin/image classification options including `driboune/skin_type`, while general image-classification guidance points to ViT/DeiT/ConvNeXt-class models. Google `derm-foundation` is a research foundation model for dermatology embeddings and explicitly discusses population/generalization limitations; it does not directly provide a validated personal-color styling classifier.
 
-### Security / token / margin implications
-- Quick Help remains 0 credits, 0 AI API calls and sends no question externally.
-- No new runtime dependency, model, embedding store or translation API was added.
-- Message parity uses local filesystem reads only and therefore adds no provider cost or sensitive-data surface.
-- Localized fixed answers reduce accidental paid-model routing for common questions and preserve gross margin.
+**Decision: reject remote/bundled Hugging Face model adoption for this preview.** Reasons:
+- task mismatch: skin type/dermatology/general classification is not validated personal-color styling;
+- personal-color outputs are sensitive to lighting, white balance and image capture conditions;
+- external inference would introduce image-transfer/privacy obligations and supplier cost;
+- bundled models add download/bundle/latency burden on international mobile visitors;
+- fairness/provenance/generalization require representative validation before claiming improved quality.
 
-### Sources
-- https://github.com/amannn/next-intl
-- https://huggingface.co/Unbabel/wmt20-comet-qe-da
-- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
+Revisit at Step 6 only if a premium vision path shows measurable incremental value. Any remote media analysis must require explicit consent, ZDR/data-collection restrictions, EXIF stripping/minimization, bounded supplier cost, representative evaluation and a free/manual fallback.
 
-## 2026-08-26 — Step 2B-3 localized public surfaces + graph QA
+### Security / privacy / token / margin implications
+- AI/model/provider calls added: **0**.
+- External selfie transfer added: **0**.
+- Runtime dependencies added: **0**.
+- Incremental inference cost: **0**.
+- Browser-local sampling remains the default and avoids identity recognition.
+- No race, ethnicity, nationality, religion, health or attractiveness inference is permitted.
+- Manual correction remains available to reduce overconfidence in heuristic output.
+- Gross-margin effect is favorable/neutral because localization improves usefulness without supplier cost.
 
-### GitHub / upstream reviewed
-- Re-checked the latest `amannn/next-intl` App Router guidance and example layout before editing. Current guidance continues to support validated locale segments, request messages and locale-aware navigation; the first-party example remains a better fit than adding a second i18n stack.
-- `next-intl` also supports TypeScript augmentation for locale/message typing, but this slice intentionally **defers** augmentation until a verified build environment exists. Adding type augmentation now would enlarge the blast radius without solving the immediate public-copy migration.
-- Decision: **adapt the existing static-dictionary architecture** by splitting growing public marketing copy into `messages/public/{locale}.json`, then merging it with the core dictionary at request time. This keeps files reviewable while preserving one runtime message object and adds no package.
-- Decision: **adopt a small dependency-free graph/message checker** for Quick Help. It reads the state-machine source and fails when a referenced title/answer/choice key is absent from the English schema, complementing P0 parity checks.
-
-### Hugging Face reviewed
-- `Unbabel/wmt20-comet-qe-da` — Apache-2.0 multilingual QE model, source + translation scoring.
-- `Unbabel/wmt22-comet-da` and `Unbabel/eamt22-cometinho-da` — Apache-2.0 reference-based multilingual translation evaluation models.
-- `Unbabel/wmt22-cometkiwi-da` — CC-BY-NC-SA-4.0, unsuitable for the commercial workflow.
-- Decision: **reject runtime/build integration for this slice**. The new corpus is still small static product copy. Installing COMET/Python/models would add CI/runtime weight and supply-chain surface with no user-visible gain. Revisit Apache-2.0 offline QA once localization volume and native-review cost justify it.
-
-### Security / performance / margin implications
-- No runtime translation, AI API, RAG, embeddings or external user-data transfer was added.
-- Public copy is loaded from allowlisted locale files only after locale validation.
-- K-Culture copy reinforces that unknown birth time is valid and must never be guessed.
-- Added checks are filesystem-only build gates; marginal provider cost is zero.
-- Static localization and zero-AI Quick Help preserve gross margin and reduce the chance that common informational queries are routed to paid inference.
-
-### Sources
-- https://github.com/amannn/next-intl/blob/main/docs/src/pages/docs/usage/configuration.mdx
-- https://github.com/amannn/next-intl/blob/main/examples/example-app-router/src/app/%5Blocale%5D/layout.tsx
-- https://github.com/amannn/next-intl/blob/main/docs/src/pages/docs/workflows/typescript.mdx
-- https://huggingface.co/Unbabel/wmt20-comet-qe-da
-- https://huggingface.co/Unbabel/wmt22-comet-da
-- https://huggingface.co/Unbabel/eamt22-cometinho-da
-- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
-
-## 2026-08-26 — Step 2B-4 Gyeongbokgung localization, metadata and text-expansion QA
-
-### GitHub / upstream reviewed
-- Re-searched GitHub for `next-intl` and current App Router localization references before editing. `amannn/next-intl` remains the maintained, first-party-focused dependency already used by the project; adding a second i18n/SEO package would duplicate routing and message ownership.
-- Current `next-intl` learning material, updated for Next.js 16.3, explicitly supports `getTranslations` inside async `generateMetadata`, matching the existing Server Component architecture.
-- Decision: **adapt the existing `next-intl` server pattern** for localized title/description metadata on native locale pages. Do not enable canonical/hreflang/x-default yet because locale cutover and remaining route parity are not complete.
-- Decision: use a small locale-scoped CSS safety layer for long CJK/Vietnamese/Thai strings (`min-width: 0`, overflow wrapping, language-aware line breaking and narrow-screen button/headline handling) rather than adding a layout library.
-- TypeScript message augmentation remains deferred until a real build can be proven; it is not necessary to safely complete this slice.
-
-### Hugging Face reviewed
-- `Unbabel/wmt20-comet-qe-da` — Apache-2.0 quality-estimation model covering multilingual translation evaluation.
-- `Unbabel/wmt22-comet-da` — Apache-2.0 reference-based COMET evaluator.
-- `Unbabel/wmt22-cometkiwi-da` — CC-BY-NC-SA-4.0 and unsuitable for the commercial workflow.
-- Decision: **do not add COMET or any translation model to runtime/build**. Static P0 copy remains small enough for deterministic parity checks and human review; Python/model downloads would add CI weight and supply-chain surface without improving runtime UX or margin.
-
-### Implementation / safety implications
-- `/[locale]/explore/gyeongbokgung` is now native localized content instead of re-exporting the English legacy page.
-- Home, Culture and Gyeongbokgung native locale pages now expose localized title/description metadata only; canonical/hreflang cutover stays deferred.
-- Gyeongbokgung editorial copy avoids asserting live hours/closures/ticket/shop status and instead explicitly tells users to verify time-sensitive facts before departure.
-- P0 dictionaries add the same `Gyeongbokgung` and `Meta` schema, preserving parity-check compatibility.
-- No new runtime dependency, AI call, translation API, embedding store or external user-data flow was added; marginal AI/provider cost remains zero.
-
-### Sources
-- https://github.com/amannn/next-intl
-- https://learn.next-intl.dev/chapters/03-translations/02-server-client-components
-- https://learn.next-intl.dev/changelog
-- https://huggingface.co/Unbabel/wmt20-comet-qe-da
-- https://huggingface.co/Unbabel/wmt22-comet-da
-- https://huggingface.co/Unbabel/wmt22-cometkiwi-da
+### Sources reviewed
+- https://github.com/JungWooGeon/personal_color_app
+- https://github.com/starbucksdolcelatte/ShowMeTheColor
+- https://github.com/PSY222/Colorinsight
+- https://github.com/Randon-Myntra-HackerRamp-21/Skyn
+- https://huggingface.co/driboune/skin_type
+- https://huggingface.co/google/derm-foundation
+- https://huggingface.co/docs/inference-providers/tasks/image-classification
 
 ## Discovery rules for future entries
 
-For every major feature, record:
+For every major feature/subfeature record:
 1. feature/subfeature;
 2. GitHub repositories/libraries reviewed;
 3. Hugging Face models/datasets/Spaces reviewed;
-4. license and commercial-use status;
+4. commercial license status;
 5. maintenance/recency/adoption signals;
-6. privacy/data-provenance concerns;
-7. measured or expected inference/runtime cost;
-8. latency and browser/mobile suitability;
-9. multilingual quality where relevant;
-10. adopt / adapt / reject decision and rationale.
+6. privacy/data provenance;
+7. inference/runtime cost and latency;
+8. browser/mobile fit;
+9. multilingual/market fit;
+10. security/supply-chain risk;
+11. expected user/margin benefit;
+12. adopt / adapt / reject decision and rationale.
 
-Re-run discovery when revisiting features. Do not assume the previous best option is still best.
+Re-search whenever revisiting a feature. Never assume the previous best option remains best.
