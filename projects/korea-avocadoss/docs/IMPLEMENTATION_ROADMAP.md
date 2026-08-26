@@ -4,132 +4,79 @@
 **Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer.
 
 ## Step 0 — Product baselines ✅
-- PRD
-- architecture
-- AI routing/cost policy
-- credit economics
-- SEO/AEO/GEO baseline
-- open-source discovery gate
-- international market/localization strategy
-- security/token-efficiency baseline
+PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discovery gate, international markets, security/token-efficiency.
 
 ## Step 1 — Free Quick Help + market/locale registry ✅
 - zero-API button-driven Quick Help mounted globally;
-- initial English FAQ tree;
-- prioritized locale registry committed;
+- P0 seed dictionaries: English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese, Thai;
 - no runtime AI/embedding dependency;
-- keyboard/accessibility hardening: correct dialog controls, Escape close, focus return and explicit cost labelling;
-- P0 seed dictionaries committed for English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese and Thai;
-- dictionaries include global navigation, Quick Help shell/root topics, credit explanations and privacy/consent copy needed by later flows;
-- mobile panel already uses viewport-bounded width/height; full CJK/Thai/Vietnamese overflow QA moves to Step 2 when the dictionaries are actually wired.
+- keyboard/focus/accessibility hardening;
+- free/consent/credit copy seeded.
 
-**Step 1 gate result:** PASS by static review. Quick Help remains 0-credit and 0-AI, collects no sensitive input, and existing route targets were not changed. A local production build was attempted from the automation sandbox but external DNS to GitHub was unavailable, so Step 2 must rerun `npm install`/`npm run build` after the i18n dependency is added in an environment with repository/network access.
+**Gate:** PASS by static review. Quick Help remains 0-credit/0-AI and collects no sensitive input.
 
-## Step 2 — Internationalized routing and language selector ← next
-- pin/review `next-intl@4.13.7` compatible release;
-- introduce `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` routes without breaking migration;
-- functional language switcher;
-- browser-language suggestion, never forced nationality/IP redirect;
-- translated global navigation, consent, credit explanations and Quick Help;
-- hreflang/x-default/canonical/sitemap updates;
-- verify mobile clipping and layout for CJK/Thai/Vietnamese text.
+## Step 2 — Internationalized routing and language selector ← in progress
 
-**Gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates.
+### Step 2A — dependency + request/routing foundation ✅
+- fresh upstream verification corrected the planned dependency from nonexistent/unverified `4.13.7` to **exact `next-intl@4.13.4`**;
+- plugin wired through `next.config.ts` while preserving existing security headers;
+- P0-only `defineRouting` registry created with `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` target locales and explicit default `en`;
+- request config validates locale before loading a dictionary and returns 404 for unsupported locale values;
+- no proxy/redirect was activated yet because `[locale]` pages do not exist; this intentionally prevents migration-time 404 regressions;
+- no AI/API/token cost added; static dictionaries remain the production localization source;
+- NLLB-200 remains rejected for commercial production because current Hugging Face metadata/model card identify CC-BY-NC and non-production intended use.
+
+**2A verification:** static code/dependency review only. This environment did not provide a checked-out runtime with installed npm dependencies, so `npm install`/`npm run build` remains a required 2B gate before locale cutover. Do not claim production readiness yet.
+
+### Step 2B — next slice
+- create `[locale]` root layout/page migration without removing old routes prematurely;
+- wire translated global navigation and Quick Help to `next-intl`;
+- add locale-preserving navigation helper + functional language selector;
+- browser-language suggestion/negotiation, never nationality/IP inference and never overriding explicit selection;
+- run install/build/type validation before enabling proxy redirects.
+
+### Step 2C
+- activate safe locale negotiation/cutover only after 2B routes build;
+- canonical + hreflang + x-default metadata;
+- locale-aware sitemap;
+- migrate remaining public route families and eliminate English-only paid-flow dead ends;
+- mobile overflow QA for CJK/Thai/Vietnamese.
+
+**Step 2 gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates and existing links do not regress.
 
 ## Step 3 — Saju input and deterministic cultural core
 - exact / approximate / unknown birth-time paths;
 - never fabricate missing birth hour;
-- timezone/city requested only when calculation needs it;
-- deterministic zodiac/calendar/pillar calculation architecture;
-- 3-pillar scoped result when birth time is unknown;
-- reduced/appropriate credit pricing for reduced-scope output;
+- timezone/city only when calculation needs it;
+- deterministic zodiac/calendar/pillar architecture;
+- 3-pillar scoped result when birth time unknown;
+- reduced credit pricing for reduced scope;
 - raw birth inputs never sent to LLM;
-- culture/entertainment framing and deletion controls.
-
-**Gate:** deterministic test vectors; unknown-time cases cannot accidentally produce a full hour-pillar claim.
+- entertainment/culture framing and deletion controls.
 
 ## Step 4 — Auth + authoritative wallet
-- guest/free browsing;
-- account creation for purchases/saved results;
-- immutable credit ledger;
-- reserve/capture/release/refund transactions;
-- idempotency and authorization tests;
-- rate limiting and audit telemetry.
+Guest browsing; immutable ledger; reserve/capture/release/refund; idempotency, authorization, rate limits and audit telemetry.
 
 ## Step 5 — International payment foundation
-- Korea-compatible provider abstraction;
-- foreign cards + PayPal target;
-- server-authoritative pricing;
-- signed/verified payment callbacks;
-- receipts/history/refunds;
-- finalize CSP after real payment origins are known.
-
-**User dependency likely begins here:** merchant/payment-provider credentials and business onboarding.
+Provider abstraction; foreign cards + PayPal target; server-authoritative pricing; verified callbacks; receipts/refunds; CSP finalized only after real provider origins are known.
 
 ## Step 6 — Personal-color v1
-- browser/local analysis first;
-- lighting quality check;
-- manual correction;
-- no sensitive-identity inference;
-- premium remote vision only with explicit consent + ZDR/privacy gates;
-- multilingual results.
+Browser/local first, lighting checks, manual correction, no sensitive identity inference, premium remote vision only with consent/ZDR, multilingual results.
 
 ## Step 7 — Hanbok recommendation v1
-- deterministic ranker first;
-- color/mood/weather/comfort/party inputs;
-- structured result reasons;
-- connect personal color → Hanbok;
-- defer large AI-generated visual asset project until user requests it separately.
+Deterministic ranker first; color/mood/weather/comfort inputs; structured reasons; no bulk visual asset project until separately requested.
 
 ## Step 8 — Gyeongbokgung area discovery
-- verified place data model;
-- attraction/restaurant/café filters;
-- walking-time and route-position ranking;
-- time-sensitive facts separated from editorial copy;
-- dietary/accessibility/language-service filters only when verified.
+Verified place model, filters, walking/route ranking, time-sensitive facts separated from editorial copy, dietary/accessibility/language-service claims only when verified.
 
 ## Step 9 — Itinerary + premium concierge
-- deterministic candidate filtering;
-- compact structured prompt to DeepSeek/Qwen tier;
-- partial re-plan sends only affected itinerary block;
-- hard token/cost ceilings;
-- source-fact validator prevents hallucinated businesses/details.
+Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings, source-fact validation.
 
 ## Step 10 — Analytics, market adaptation and expansion
-- locale/topic conversion metrics;
-- payment/feature margin dashboards;
-- zero-AI resolution rate;
-- p50/p95 AI cost/tokens;
-- market-level UI ordering experiments;
-- expand P1/P2 languages from actual demand;
-- expand Seoul areas and then other Korean destinations.
+Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, market experiments, P1/P2 expansion from demand.
 
 ## Every-step regression checklist
-
-Before moving on, check:
-- mobile + desktop navigation;
-- accessibility/keyboard/focus;
-- locale overflow/text direction assumptions;
-- security boundaries;
-- sensitive-data handling;
-- token/API-cost impact;
-- credit/margin impact;
-- SEO/AEO/GEO and indexability;
-- structured data/crawler behavior;
-- performance/bundle impact;
-- error/failure/refund path;
-- dependency/license risk;
-- whether a GitHub/Hugging Face candidate is now better than custom code.
+Mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
 
 ## Current user actions required
-
-**None immediately.** Continue architecture and frontend/backend scaffolding first.
-
-Later, the user will likely need to provide or complete:
-1. payment provider merchant onboarding/keys (Toss Payments international/PayPal or final chosen provider);
-2. production hosting/DNS access for `korea.avocadoss.co.kr` cutover if not already connected to the deploy environment;
-3. OpenRouter production API key/limits, kept server-side;
-4. analytics/search-console verification credentials or DNS records;
-5. business/legal copy review for privacy/refund/terms before paid production launch.
-
-Do not request these until the implementation reaches the corresponding gate.
+**None immediately.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review are deferred until their corresponding gates.
