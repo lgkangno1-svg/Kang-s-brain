@@ -46,16 +46,32 @@ test('Vision batch integrity rejects missing, duplicate, and unexpected ids', ()
   assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 'alien' }]), /unexpected=\[alien\]/);
 });
 
-test('Planner integrity accepts exactly one choice per expected beat regardless of response order', () => {
+test('Planner integrity accepts exactly one complete choice per expected beat regardless of response order', () => {
   const beats = [{ id: 'b1' }, { id: 'b2' }];
-  const parsed = { choices: [{ beatId: 'b2', segmentId: 's2' }, { beatId: 'b1', segmentId: 's1' }] };
+  const parsed = { choices: [
+    { beatId: 'b2', segmentId: 's2', sourceStart: 1.25, score: 88, reason: 'two', alternatives: ['s3'] },
+    { beatId: 'b1', segmentId: 's1', sourceStart: 0, score: 91, reason: 'one', alternatives: [] }
+  ] };
   assert.equal(validatePlannerResponse(beats, parsed), parsed);
 });
 
 test('Planner integrity rejects missing, duplicate, unexpected, and malformed beat coverage', () => {
   const beats = [{ id: 'b1' }, { id: 'b2' }];
-  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }] }), /missing=\[b2\]/);
-  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }, { beatId: 'b1' }] }), /duplicate=\[b1\]/);
-  assert.throws(() => validatePlannerResponse(beats, { choices: [{ beatId: 'b1' }, { beatId: 'alien' }] }), /unexpected=\[alien\]/);
+  const valid = (beatId, segmentId) => ({ beatId, segmentId, sourceStart: 0, score: 90, reason: 'ok', alternatives: [] });
+  assert.throws(() => validatePlannerResponse(beats, { choices: [valid('b1', 's1')] }), /missing=\[b2\]/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [valid('b1', 's1'), valid('b1', 's2')] }), /duplicate=\[b1\]/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [valid('b1', 's1'), valid('alien', 's2')] }), /unexpected=\[alien\]/);
   assert.throws(() => validatePlannerResponse(beats, {}), /choices array/);
+});
+
+test('Planner integrity rejects malformed operational choice fields before deterministic repair', () => {
+  const beats = [{ id: 'b1' }];
+  const base = { beatId: 'b1', segmentId: 's1', sourceStart: 0, score: 90, reason: 'ok', alternatives: [] };
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, segmentId: '' }] }), /b1\.segmentId/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, sourceStart: '0' }] }), /b1\.sourceStart/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, sourceStart: Number.NaN }] }), /b1\.sourceStart/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, score: '90' }] }), /b1\.score/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, score: 101 }] }), /b1\.score/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, alternatives: null }] }), /b1\.alternatives/);
+  assert.throws(() => validatePlannerResponse(beats, { choices: [{ ...base, alternatives: ['s2', ''] }] }), /b1\.alternatives/);
 });
