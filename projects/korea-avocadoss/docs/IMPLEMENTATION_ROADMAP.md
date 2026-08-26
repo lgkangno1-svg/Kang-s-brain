@@ -1,6 +1,6 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
-**Date:** 2026-08-26  
+**Date:** 2026-08-27  
 **Rule:** implement one reviewable slice at a time. Before every material change inspect latest `main`, recent commits, project tree, this roadmap and `PROJECT_HANDOFF.md` because another AI/developer may have changed the repository. Update `PROJECT_HANDOFF.md` in the same run.
 
 ## Step 0 — Product baselines ✅
@@ -34,36 +34,39 @@ Native localized Gyeongbokgung surface, P0 copy, freshness warning for live fact
 ### Step 2C — locale parity, cutover and SEO completion
 
 #### Step 2C-1A — Personal Color native P0 surface ✅ by source/data-shape review
+- native localized `/[locale]/color` plus localized metadata;
+- full P0 interactive scanner localization;
+- locale-neutral typed analyzer warning/error codes and stable palette IDs;
+- browser-local deterministic preview only, no upload/AI/provider cost;
+- message contract build gate and legacy `/color` provider regression fix.
+
+#### Step 2C-1B — Hanbok native P0 surface ✅ by source/data-shape review
 Completed this run:
-- re-inspected latest `main`, recent commits and living handoff before editing;
-- replaced `/[locale]/color` English bridge with native localized Server Component and locale title/description metadata;
-- localized the entire interactive browser-side ColorScanner for all P0 locales: upload instructions, controls, result labels, warnings, errors, privacy copy and nine Hanbok palettes;
-- refactored analysis warnings/errors from English strings into typed stable codes so engine logic is locale-neutral;
-- refactored palette recommendations from English names/notes into stable IDs + color values, with copy owned by dictionaries;
-- retained the scan as browser-local deterministic pixel analysis: no image upload, AI provider, model, API call, RAG or embedding dependency;
-- kept explicit disclaimer that the result is styling guidance under current lighting, not professional diagnosis;
-- preserved explicit sensitive-trait boundary: no identity, race, ethnicity, nationality, religion, health or attractiveness inference;
-- added dependency-free `check-color-message-keys.mjs` and added it to `check:i18n`, complementing cross-locale parity checks;
-- no canonical/hreflang/redirect cutover yet.
+- re-inspected latest `main`, recent commits, roadmap, handoff and Hanbok source before editing;
+- replaced the 87-byte `/[locale]/hanbok` English bridge with a native localized Server Component and locale title/description metadata;
+- added a free deterministic `HanbokMatcher` for all P0 locales covering user-selected color direction, mood and trip/walking priority;
+- user choices explicitly outrank market defaults; no nationality/ethnicity/religion/profile inference is used;
+- recommendation output is rule-based and local: 0 credits, 0 AI/model calls, no photo upload, no external user-data transfer;
+- free-vs-paid boundary is explicit: any future premium virtual try-on/AI styling must show fixed credits and media/privacy terms before confirmation;
+- added separate `messages/hanbok/{locale}.json` bundles for all six P0 locales to keep the growing public dictionary modular;
+- request loader merges the Hanbok bundle only after locale allowlist validation;
+- P0 dictionary parity now includes Hanbok messages and `check-hanbok-message-keys.mjs` is part of `check:i18n`;
+- locale CSS now protects Hanbok fieldsets, radio labels and result facts against CJK/Thai/Vietnamese text expansion;
+- no bulk Hanbok visual asset generation/collection was started.
 
-**Discovery decision:** personal-color GitHub projects and general Hugging Face skin/image classifiers were re-reviewed. No external model/library had sufficient validated fit to justify image-transfer, runtime cost, fairness/provenance risk or supply-chain complexity for this preview. Keep browser-local deterministic v1 and revisit premium remote vision only at Step 6 with consent/ZDR and representative validation.
+**Discovery decision:** Hanbok-specific GitHub results were either unrelated language-learning software or image-upload/AI virtual try-on stacks. Hugging Face search showed generic fashion classifiers, fashion embeddings, virtual-try-on Spaces and small Hanbok datasets, but none justify privacy, provenance, latency, dependency and supplier-cost expansion at this migration stage. Keep deterministic preview; revisit premium visual try-on only at its later product gate with explicit consent, license/provenance review and fixed credit economics.
 
-**Verification limitation:** source writes and message-schema review are available. The execution shell still cannot resolve `github.com`, so clean clone → install → `npm run check:i18n` → `npm run build` cannot yet be executed here. Production build/deployment is not claimed.
+**Verification limitation:** clean clone → install → `npm run check:i18n` → build was attempted again on 2026-08-27, but the execution shell still cannot resolve `github.com`. Production build/deployment is not claimed.
 
-#### Step 2C-1B — next slice
+#### Step 2C-1C — next slice
 - re-inspect latest repository state first;
-- convert `/[locale]/hanbok` from English bridge to native P0 content;
-- localize all interactive Hanbok controls/results, not only the page heading;
-- preserve deterministic ranking first and explicit free-vs-paid boundaries;
-- add locale metadata and message-contract checks where useful;
-- re-run GitHub + Hugging Face discovery before modifying recommendation logic;
-- continue CJK/Thai/Vietnamese mobile overflow/accessibility review.
-
-#### Step 2C-1C
 - convert `/[locale]/credits` to native P0 content;
 - use `CREDIT_ECONOMICS.md` as the sole pricing/pack authority;
-- show fixed credits before every paid action;
-- do not introduce ML personalized pricing.
+- show fixed credits before every paid action and keep server-authoritative pricing language clear;
+- do not introduce ML personalized pricing or premature subscriptions;
+- add localized metadata/message-contract checks where useful;
+- continue CJK/Thai/Vietnamese mobile/accessibility review;
+- re-run GitHub + Hugging Face discovery for wallet/credit UX before material implementation changes.
 
 #### Step 2C-2 — cutover only after parity/build evidence
 - activate safe locale negotiation only after all required destinations build;
@@ -88,7 +91,7 @@ Provider abstraction, foreign cards + PayPal target, server-authoritative pricin
 Browser/local first, lighting checks, manual correction, fairness/representative validation, no sensitive identity inference. Premium remote vision only if it creates measured incremental value and only with consent/ZDR, strict cost ceilings and no raw-media retention beyond the defined policy.
 
 ## Step 7 — Hanbok recommendation v1
-Deterministic ranker first; color/mood/weather/comfort inputs; structured reasons; no bulk visual asset project until separately requested.
+Deterministic ranker first; color/mood/weather/comfort inputs; structured reasons; no bulk visual asset project until separately requested. Step 2C's matcher is only the localized zero-cost preview, not the final Step 7 engine.
 
 ## Step 8 — Gyeongbokgung area discovery
 Verified place model, filters, walking/route ranking, time-sensitive facts separated from editorial copy, dietary/accessibility/language claims only when verified.
