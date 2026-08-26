@@ -3,7 +3,7 @@ import path from 'node:path';
 import { assertMediaTools, analyzeSourceLocally, probe } from './media.mjs';
 import { buildBeats, adaptBeatsToAvailableSegments } from './beats.mjs';
 import { analyzeSegmentsVision, UsageTracker, validateVisionBatchResponse } from './opencode.mjs';
-import { buildEdl, renderEdl, validateEdl } from './editor.mjs';
+import { alternativesAfterReplacement, buildEdl, renderEdl, validateEdl } from './editor.mjs';
 import { ensureDir, readJson, writeJson, sha256Text } from './utils.mjs';
 
 export const DEFAULT_SETTINGS = {
@@ -55,6 +55,11 @@ export function isVisionCachePayloadValid(allSegments, cached) {
 export function assertManualReplacementAvailable(clips, beatId, segmentId) {
   const owner = clips.find((clip) => clip.beatId !== beatId && clip.segmentId === segmentId);
   if (owner) throw new Error(`Selected alternative is already used by ${owner.beatId}.`);
+}
+
+export function refreshManualReplacementAlternatives(clip, previousSegmentId, replacementSegmentId) {
+  clip.alternatives = alternativesAfterReplacement(clip.alternatives, previousSegmentId, replacementSegmentId);
+  return clip.alternatives;
 }
 
 export async function runProject({ projectDir, videoPaths, script, srtPath, ttsPath, apiKey, settings = {}, onStatus = () => {} }) {
@@ -153,9 +158,11 @@ export async function replaceClipAndRerender({ projectDir, project, beatId, segm
   const sourceIndex = Number(String(seg.sourceId).replace(/^V/, '')) - 1;
   const sourcePath = seg.sourcePath || project.videos?.[sourceIndex];
   if (!sourcePath) throw new Error('Source video path could not be resolved.');
+  const previousSegmentId = clip.segmentId;
   clip.segmentId = seg.id; clip.sourceId = seg.sourceId; clip.sourcePath = sourcePath;
   clip.sourceStart = seg.start; clip.sourceEnd = Math.round((seg.start + beat.duration) * 1000) / 1000;
   clip.reason = 'Manual alternative selected; no AI call used.'; clip.score = null; clip.judgeScore = null; clip.locked = true;
+  refreshManualReplacementAlternatives(clip, previousSegmentId, seg.id);
   await writeJson(path.join(workDir, 'edl.json'), edlDoc);
   onStatus('선택한 컷으로 AI 호출 없이 재렌더링 중');
   const settings = resolveSettings(project.settings || {});
