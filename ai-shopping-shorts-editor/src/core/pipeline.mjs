@@ -62,6 +62,23 @@ export function refreshManualReplacementAlternatives(clip, previousSegmentId, re
   return clip.alternatives;
 }
 
+export function makeStagedOutputPath(outputPath, nonce = `${process.pid}-${Date.now()}`) {
+  const ext = path.extname(outputPath);
+  const stem = path.basename(outputPath, ext);
+  return path.join(path.dirname(outputPath), `.${stem}.${nonce}.tmp${ext}`);
+}
+
+export async function renderReplacementStaged({ edl, outputPath, ttsPath, fitMode, render = renderEdl, nonce }) {
+  const stagedPath = makeStagedOutputPath(outputPath, nonce);
+  try {
+    const outputMeta = await render({ edl, outputPath: stagedPath, ttsPath, fitMode });
+    return { stagedPath, outputMeta };
+  } catch (error) {
+    await fs.rm(stagedPath, { force: true }).catch(() => {});
+    throw error;
+  }
+}
+
 export async function runProject({ projectDir, videoPaths, script, srtPath, ttsPath, apiKey, settings = {}, onStatus = () => {} }) {
   settings = resolveSettings(settings);
   const cacheDir = await ensureDir(path.join(projectDir, 'cache'));
@@ -145,7 +162,9 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
 export async function replaceClipAndRerender({ projectDir, project, beatId, segmentId, onStatus = () => {} }) {
   const workDir = path.join(projectDir, 'work');
   const outputDir = path.join(projectDir, 'output');
-  const edlDoc = await readJson(path.join(workDir, 'edl.json'), null);
+  const edlPath = path.join(workDir, 'edl.json');
+  const qaPath = path.join(outputDir, 'qa.json');
+  const edlDoc = await readJson(edlPath, null);
   const beats = await readJson(path.join(workDir, 'beats.json'), []);
   const segments = await readJson(path.join(workDir, 'segments.json'), []);
   if (!edlDoc?.clips?.length) throw new Error('EDL not found. Run automatic edit first.');
@@ -163,17 +182,24 @@ export async function replaceClipAndRerender({ projectDir, project, beatId, segm
   clip.sourceStart = seg.start; clip.sourceEnd = Math.round((seg.start + beat.duration) * 1000) / 1000;
   clip.reason = 'Manual alternative selected; no AI call used.'; clip.score = null; clip.judgeScore = null; clip.locked = true;
   refreshManualReplacementAlternatives(clip, previousSegmentId, seg.id);
-  await writeJson(path.join(workDir, 'edl.json'), edlDoc);
-  onStatus('선택한 컷으로 AI 호출 없이 재렌더링 중');
-  const settings = resolveSettings(project.settings || {});
-  const outputPath = path.join(outputDir, 'shorts.mp4');
-  const outputMeta = await renderEdl({ edl: edlDoc.clips, outputPath, ttsPath: project.ttsPath, fitMode: settings.fitMode });
-  const expectedDuration = beats.at(-1)?.end || edlDoc.clips.at(-1)?.programEnd || 0;
-  const durationError = Math.abs(outputMeta.duration - expectedDuration);
+
   const sourceMeta = new Map();
   for (let i = 0; i < (project.videos || []).length; i++) sourceMeta.set(`V${i+1}`, await probe(project.videos[i]));
   const validation = validateEdl(edlDoc.clips, sourceMeta);
-  const priorQa = await readJson(path.join(outputDir, 'qa.json'), {});
+  if (!validation.ok) throw new Error(`Replacement EDL validation failed: ${validation.errors.join('; ')}`);
+
+  onStatus('선택한 컷으로 AI 호출 없이 재렌더링 중');
+  const settings = resolveSettings(project.settings || {});
+  const outputPath = path.join(outputDir, 'shorts.mp4');
+  const { stagedPath, outputMeta } = await renderReplacementStaged({
+    edl: edlDoc.clips,
+    outputPath,
+    ttsPath: project.ttsPath,
+    fitMode: settings.fitMode
+  });
+  const expectedDuration = beats.at(-1)?.end || edlDoc.clips.at(-1)?.programEnd || 0;
+  const durationError = Math.abs(outputMeta.duration - expectedDuration);
+  const priorQa = await readJson(qaPath, {});
   const qa = {
     ...priorQa,
     ok: validation.ok && outputMeta.width === 1080 && outputMeta.height === 1920 && durationError <= 0.25,
@@ -182,7 +208,16 @@ export async function replaceClipAndRerender({ projectDir, project, beatId, segm
     edl: validation, clips: edlDoc.clips.length,
     lastManualReplace: { beatId, segmentId, at: new Date().toISOString(), apiCallsAdded: 0 }
   };
-  await writeJson(path.join(outputDir, 'qa.json'), qa);
+
+  try {
+    await fs.rename(stagedPath, outputPath);
+    await writeJson(edlPath, edlDoc);
+    await writeJson(qaPath, qa);
+  } catch (error) {
+    await fs.rm(stagedPath, { force: true }).catch(() => {});
+    throw error;
+  }
+
   onStatus(qa.ok ? '재렌더 완료: QA 통과' : '재렌더 완료: QA 경고');
   return { outputPath, qa };
 }
