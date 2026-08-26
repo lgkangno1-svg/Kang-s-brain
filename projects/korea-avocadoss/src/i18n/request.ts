@@ -4,9 +4,9 @@ import {notFound} from 'next/navigation';
 
 import {routing} from './routing';
 
-type Messages = Record<string, unknown>;
+type Messages = {[key: string]: string | Messages};
 
-function isMessageObject(value: unknown): value is Messages {
+function isMessageObject(value: string | Messages | undefined): value is Messages {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
