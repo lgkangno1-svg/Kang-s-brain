@@ -29,55 +29,45 @@ Native localized route/metadata; free user-choice deterministic matcher; modular
 Native P0 Credits route/metadata; authoritative numeric pricing only in `src/lib/credits/economics.ts`; fixed credits visible before paid actions; no fake checkout, subscription or ML personalized pricing.
 
 #### Step 2C-2 — executable verification ✅
-Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and 46/46 static/SSG pages. No npm lockfile exists yet; dependency reproducibility remains a separate supply-chain follow-up and a lockfile must never be fabricated manually.
+Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and generated pages. No npm lockfile exists yet; dependency reproducibility remains a separate supply-chain follow-up and a lockfile must never be fabricated manually.
 
 #### Step 2C-3 — P0 SEO locale cutover ✅
-- centralized `SITE_ORIGIN`, complete public route shapes, BCP47 hreflang mapping and localized URL generation;
-- self-canonical metadata for each complete P0 Home/Color/Hanbok/Gyeongbokgung/Culture/Credits URL;
-- reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` alternates plus `x-default` → English;
-- sitemap contains 36 canonical localized URLs (6 public route shapes × 6 P0 locales) with reciprocal language alternates;
-- false build-time freshness claims removed;
-- robots protects unprefixed and P0-prefixed future account/saved/checkout/personal-result paths;
-- browser-language auto-routing and legacy removal intentionally excluded;
-- PR #3 CI passed before merge.
+Centralized origin/public route/hreflang helpers; self-canonicals; reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` + `x-default`; 36 canonical localized sitemap URLs; truthful freshness; protected future private/result paths.
 
 #### Step 2C-4 — locale-correct document language ✅
-- removed the shared top-level document root that forced `<html lang="en">` onto every locale;
-- adopted official Next.js multiple-root-layout architecture: locale-prefixed routes own their document in `[locale]/layout.tsx`, while migration-only unprefixed routes live in the URL-neutral `(legacy)` route group with their own English document shell;
-- public URL shapes were preserved; route groups do not appear in URLs;
-- locale documents now emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` from the existing P0 locale registry;
-- unprefixed legacy URLs remain functional and English; browser-language inference/redirect and legacy deletion were not included;
-- added `scripts/check-built-document-languages.mjs` and a least-privilege CI step that checks generated `.next` HTML after production build, rather than trusting source structure alone;
-- CI caught a route-depth regression after moving legacy Color into a group: its relative English message import was one level short. The import was repaired before completion;
-- PR #4 run `33005536571` passed P0 i18n contracts, Next.js 16.3.3 optimized build, TypeScript, 46/46 generated pages and generated-document language verification for all six P0 locales.
+P0 root documents now emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generated HTML is checked after production build. Multiple root layouts are used without browser-language or nationality inference.
 
 #### Step 2C-5 — deterministic legacy duplicate retirement ✅
-- current Next.js 16 redirect semantics and Google Search migration guidance were rechecked before changing the boundary;
-- six known unprefixed public duplicates now map directly to their English canonical equivalents: `/→/en`, `/color→/en/color`, `/hanbok→/en/hanbok`, `/credits→/en/credits`, `/culture→/en/culture`, `/explore/gyeongbokgung→/en/explore/gyeongbokgung`;
-- mappings are explicit static data in `config/legacy-redirects.json`; no IP, browser-language, nationality, market, name or face inference participates;
-- `next.config.ts` uses `permanent: true`, producing server-side HTTP 308 redirects before filesystem routing;
-- legacy route source files remain temporarily in the tree as a rollback reserve, but incoming requests are retired at the routing boundary;
-- `scripts/check-legacy-redirects.mjs` and CI start the built production server and verify every source returns 308, the exact canonical target returns 200, and query parameters are preserved;
-- initial PR #5 executable run `33010469160` passed P0 contracts, production build, generated document-language verification and redirect verification;
-- market-priority evidence was refreshed from KTO/MCST; no evidence justified changing P0/P1 order, and 2026 Thailand/Vietnam K-culture programming remains directionally consistent with `vi`/`th` P0.
+Six known unprefixed public duplicates permanently redirect to their English canonical equivalents via explicit static map; production-server CI verifies HTTP 308, exact destination 200 and query preservation.
 
-#### Step 2C-6 — next slice: remove shadowed legacy implementation safely
-Now that the routing boundary has executable 308 evidence, remove only the implementation that has become unreachable, without changing canonical locale behavior.
+#### Step 2C-6 — remove shadowed legacy implementation safely ✅ pending CI merge
+- fresh main/PR #5 state inspected before editing;
+- current Next.js multiple-root-layout rules rechecked: when there is no top-level `app/layout.tsx`, `/` should remain owned by a root group;
+- removed the now-unreachable legacy Color, Hanbok, Credits, Culture and Gyeongbokgung page implementations;
+- removed `LegacyShell` and its legacy-only English `NextIntlClientProvider` / Quick Help instance;
+- retained only a minimal `(legacy)` root layout plus `/` fallback page because it is structural support for the multiple-root architecture; the fallback uses `permanentRedirect('/en')`, while `config/legacy-redirects.json` remains the public routing authority and CI still verifies it first;
+- no browser-language negotiation, IP geolocation, nationality/market inference, new dependency, AI/model call, wallet/payment change or customer-data transfer was introduced;
+- generated-document validation remains locale-driven and does not hardcode the old 46-page total.
 
-Scope for the next slice:
-- inspect fresh `main` and PR #5 merge state first;
-- verify redirect mappings remain green and are still the only intended unprefixed public behavior;
-- remove shadowed `(legacy)` page implementations, `LegacyShell` and the legacy-only English provider only where no live code still imports them;
-- keep the explicit redirect map as backwards-compatible URL support;
-- update generated-page/document-language checks to the new expected page set rather than assuming the old 46-page count;
-- do not add browser-language negotiation, IP geolocation or market inference in this cleanup;
-- keep sitemap/canonical/hreflang, locale switching, Quick Help, mobile/accessibility and production build green;
-- if removal makes root metadata routes or multiple-root layout invalid, stop and preserve the minimal structural shell rather than forcing a risky architecture change.
+#### Step 2C-7 — next slice: supply-chain reproducibility + Step 2 gate closure
+Before starting Saju, close the known package-resolution gap without fabricating dependency state.
 
-**Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; navigation does not regress; executable `check:i18n` + production build remains green.
+Scope:
+- inspect fresh main and Step 2C-6 CI/merge state;
+- re-search GitHub + Hugging Face for supply-chain/tooling alternatives;
+- generate a real npm lockfile only from a trusted executable environment, review resolved package graph/integrity and commit only if evidence is trustworthy;
+- prefer `npm ci --ignore-scripts` after a reviewed lockfile exists;
+- preserve exact runtime pins (`next`, `next-intl`, React) and review whether dev dependency ranges should be narrowed;
+- keep Actions SHA-pinned, least privilege, telemetry off and secrets absent;
+- rerun P0 contracts, production build, document-language and legacy redirect checks;
+- close Step 2 only when all gate criteria are executable-green.
+
+**Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; shadowed legacy UI is retired; navigation does not regress; executable `check:i18n` + production build remains green.
 
 ## Step 3 — Saju deterministic cultural core
 Exact / approximate / unknown birth time; never fabricate missing hour; timezone/city only when required; deterministic calendar/pillar computation; reduced-scope three-pillar result and lower pricing when hour unknown; raw birth inputs never sent to LLM; cultural/entertainment framing and deletion controls.
+
+**Design rule:** when Step 3 or later work creates/revises user-facing UI, use Stitch MCP first for design exploration when the connector is available, then implement the selected design in the existing Next.js architecture. Never claim Stitch was used if no Stitch MCP endpoint is actually available.
 
 ## Step 4 — Auth + authoritative wallet
 Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits, audit telemetry.
