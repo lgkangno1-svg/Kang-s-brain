@@ -50,6 +50,23 @@ test('cleanupStaleUploadParts validates age policy', async () => {
   );
 });
 
+test('publishStagedUpload opportunistically removes old staging debris', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'shorts-upload-publish-cleanup-'));
+  const stalePath = path.join(dir, '.upload-stale-token.part');
+  const stagedPath = path.join(dir, '.upload-current-token.part');
+  const finalPath = path.join(dir, '01-current-token-clip.mp4');
+  await fs.writeFile(stalePath, 'stale');
+  await fs.writeFile(stagedPath, 'current');
+  const oldTime = new Date(Date.now() - (25 * 60 * 60 * 1000));
+  await fs.utimes(stalePath, oldTime, oldTime);
+
+  await publishStagedUpload({ fs, stagedPath, finalPath, persist: async () => {} });
+
+  await assert.rejects(fs.stat(stalePath), { code: 'ENOENT' });
+  assert.equal(await fs.readFile(finalPath, 'utf8'), 'current');
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
 test('publishStagedUpload removes published file when metadata persistence fails', async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'shorts-upload-'));
   const stagedPath = path.join(dir, '.upload-test.part');
