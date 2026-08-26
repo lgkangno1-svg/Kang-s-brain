@@ -13,17 +13,20 @@
 - international market/localization strategy
 - security/token-efficiency baseline
 
-## Step 1 — Free Quick Help + market/locale registry ✅ / in progress
+## Step 1 — Free Quick Help + market/locale registry ✅
 - zero-API button-driven Quick Help mounted globally;
 - initial English FAQ tree;
 - prioritized locale registry committed;
 - no runtime AI/embedding dependency;
-- next: complete accessibility/mobile QA and prepare localized dictionaries.
+- keyboard/accessibility hardening: correct dialog controls, Escape close, focus return and explicit cost labelling;
+- P0 seed dictionaries committed for English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese and Thai;
+- dictionaries include global navigation, Quick Help shell/root topics, credit explanations and privacy/consent copy needed by later flows;
+- mobile panel already uses viewport-bounded width/height; full CJK/Thai/Vietnamese overflow QA moves to Step 2 when the dictionaries are actually wired.
 
-**Gate before Step 2:** no broken navigation; Quick Help remains 0-credit and 0-AI; no sensitive data is collected.
+**Step 1 gate result:** PASS by static review. Quick Help remains 0-credit and 0-AI, collects no sensitive input, and existing route targets were not changed. A local production build was attempted from the automation sandbox but external DNS to GitHub was unavailable, so Step 2 must rerun `npm install`/`npm run build` after the i18n dependency is added in an environment with repository/network access.
 
-## Step 2 — Internationalized routing and language selector
-- pin/review `next-intl` compatible release;
+## Step 2 — Internationalized routing and language selector ← next
+- pin/review `next-intl@4.13.7` compatible release;
 - introduce `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th` routes without breaking migration;
 - functional language switcher;
 - browser-language suggestion, never forced nationality/IP redirect;
