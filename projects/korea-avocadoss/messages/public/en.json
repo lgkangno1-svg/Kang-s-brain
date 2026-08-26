@@ -43,12 +43,65 @@
     "fourHourText": "Add Seochon or Bukchon plus a café or meal based on your walking comfort and available time.",
     "freshnessNote": "Opening hours, closures, ticket rules and shop availability can change. Time-sensitive details should be verified before departure."
   },
+  "Color": {
+    "eyebrow": "Personal Color · Free browser preview",
+    "title": "Find colors worth trying in Korea.",
+    "intro": "Start with a private browser-side selfie scan, review the estimate, then carry the palette into your Hanbok recommendation. The preview is styling guidance, not a professional diagnosis."
+  },
+  "ColorScanner": {
+    "photoAlt": "Uploaded selfie preview",
+    "emptyTitle": "Add a clear selfie",
+    "emptyText": "Face forward in natural light. Avoid strong filters, colored lighting and deep shadows.",
+    "chooseAnother": "Choose another photo",
+    "uploadSelfie": "Upload or take a selfie",
+    "running": "Reading visible colors…",
+    "analyzeFree": "Analyze my colors — free preview",
+    "resultTitle": "Your visible color tendency",
+    "resultPlaceholder": "Your result will appear here",
+    "resultDisclaimer": "This is a photo-based estimate under the current lighting, not a professional personal-color diagnosis. You can correct the result before using it for Hanbok matching.",
+    "undertoneLabel": "Undertone tendency",
+    "depthLabel": "Visible depth",
+    "contrastLabel": "Contrast",
+    "confidence": "Estimate confidence {confidence}% · lightness index {lightness}/100",
+    "browserPrivacy": "Your selfie stays in this browser for this free preview.",
+    "correctUndertone": "Correct undertone",
+    "correctDepth": "Correct visible depth",
+    "hanbokColors": "Hanbok colors to try",
+    "paletteAria": "{name} colors",
+    "sensitiveTraitNote": "The scan uses visible color pixels only for styling guidance. It does not identify you or infer race, ethnicity, nationality, religion, health or attractiveness.",
+    "undertone": {"warm": "Warm", "neutral": "Neutral", "cool": "Cool"},
+    "depth": {"light": "Light", "medium": "Medium", "deep": "Deep"},
+    "contrast": {"soft": "Soft", "medium": "Medium", "high": "High"},
+    "warnings": {
+      "darkPhoto": "The photo looks dark. Daylight may give a more reliable result.",
+      "overexposedPhoto": "The face area looks overexposed. Try softer natural light.",
+      "limitedPixels": "We found limited face-like color pixels, so please review the estimate manually."
+    },
+    "errors": {
+      "canvasUnavailable": "This browser cannot run the local photo scan.",
+      "insufficientPixels": "We could not read enough usable pixels. Try a brighter, front-facing photo.",
+      "unknown": "We could not analyze this photo. Try another clear selfie."
+    },
+    "palettes": {
+      "jadeWarmIvory": {"name": "Jade & Warm Ivory", "note": "A classic palace-friendly combination with warmth near the face."},
+      "peachSage": {"name": "Peach & Sage", "note": "Soft and friendly for daylight photos and quieter neighborhood walks."},
+      "creamCrimson": {"name": "Cream & Crimson", "note": "Stronger contrast for palace architecture and formal Hanbok styling."},
+      "softWhiteJade": {"name": "Soft White & Jade", "note": "Balanced and flexible across traditional and modern Hanbok looks."},
+      "dustyRoseNavy": {"name": "Dusty Rose & Navy", "note": "A refined combination that photographs well against palace stone and wood."},
+      "mutedPlumIvory": {"name": "Muted Plum & Ivory", "note": "A calm romantic palette without relying on very bright saturation."},
+      "moonBlueSoftWhite": {"name": "Moon Blue & Soft White", "note": "Clean contrast for palace courtyards and stone backgrounds."},
+      "lilacPlum": {"name": "Lilac & Plum", "note": "A polished modern-romantic Hanbok direction."},
+      "roseDeepNavy": {"name": "Rose & Deep Navy", "note": "A stronger photo palette with cool depth and restrained warmth."}
+    }
+  },
   "Meta": {
     "homeTitle": "Korea Concierge — Personal Korea Guide",
     "homeDescription": "Multilingual Korea travel and culture guidance for international visitors, with free local discovery and optional personalized experiences.",
     "cultureTitle": "K-Culture Lab — Saju, Zodiac and Korean Traditions",
     "cultureDescription": "Explore Korean zodiac, Saju and traditional color stories as optional cultural and entertainment experiences with privacy-first inputs.",
     "gyeongbokgungTitle": "Gyeongbokgung Guide — Routes, Hanbok and Nearby Stops",
-    "gyeongbokgungDescription": "Plan a time-aware Gyeongbokgung visit with Hanbok return buffers, photo priorities, walking comfort and nearby food or café stops."
+    "gyeongbokgungDescription": "Plan a time-aware Gyeongbokgung visit with Hanbok return buffers, photo priorities, walking comfort and nearby food or café stops.",
+    "colorTitle": "Personal Color Preview — Private Browser Scan",
+    "colorDescription": "Try a free browser-side personal-color preview for Hanbok styling. Your selfie stays on your device and the result can be corrected manually."
   }
 }
