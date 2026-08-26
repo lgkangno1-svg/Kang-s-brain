@@ -8,6 +8,7 @@ import { projectId, ensureDir, safeFilename, parseByteRange, writeJson, readJson
 import { runProject, replaceClipAndRerender, resolveSettings } from './core/pipeline.mjs';
 import { beginProjectJob, abandonProjectJob } from './core/project-job.mjs';
 import { beginProjectMutation, endProjectMutation } from './core/project-mutation.mjs';
+import { createUploadPaths, publishStagedUpload } from './core/upload-staging.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -83,15 +84,27 @@ const server = http.createServer(async (req, res) => {
         const mutation = beginProjectMutation(activeMutations, id, `upload:${kind}`);
         if (!mutation) return json(res, 409, { error: 'Project is busy' });
         const prefix = kind === 'video' ? `${String(project.videos.length + 1).padStart(2, '0')}-` : `${kind}-`;
-        const out = path.join(dir, 'inputs', prefix + name);
+        const { stagedPath, finalPath } = createUploadPaths(path.join(dir, 'inputs'), prefix, name);
         const maxBytes = kind === 'video' ? 8 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
         let bytes = 0;
         const limiter = new Transform({ transform(chunk, enc, cb) { bytes += chunk.length; if (bytes > maxBytes) cb(new Error('Upload exceeds size limit.')); else cb(null, chunk); } });
         try {
-          try { await streamPipeline(req, limiter, createWriteStream(out, { flags: 'wx' })); } catch (error) { await fs.rm(out, { force: true }); throw error; }
-          if (kind === 'video') project.videos.push(out); else project[`${kind}Path`] = out;
-          await writeJson(projectPath, project);
-          return json(res, 200, { ok: true, path: path.basename(out), bytes });
+          try {
+            await streamPipeline(req, limiter, createWriteStream(stagedPath, { flags: 'wx' }));
+          } catch (error) {
+            await fs.rm(stagedPath, { force: true }).catch(() => {});
+            throw error;
+          }
+          await publishStagedUpload({
+            fs,
+            stagedPath,
+            finalPath,
+            persist: async (publishedPath) => {
+              if (kind === 'video') project.videos.push(publishedPath); else project[`${kind}Path`] = publishedPath;
+              await writeJson(projectPath, project);
+            }
+          });
+          return json(res, 200, { ok: true, path: path.basename(finalPath), bytes });
         } finally {
           endProjectMutation(activeMutations, id, mutation);
         }
