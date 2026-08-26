@@ -1,0 +1,57 @@
+{
+  "Hanbok": {
+    "eyebrow": "Hanbok Match · Free rule-based preview",
+    "title": "Choose a Hanbok direction that fits your colors and your actual day.",
+    "intro": "Start with color, mood and walking comfort. This free preview uses simple on-device rules, not AI, and does not upload a photo or charge credits."
+  },
+  "HanbokMatcher": {
+    "freeEyebrow": "0 credits · 0 AI calls",
+    "title": "Build a practical Hanbok direction",
+    "intro": "Pick what matters most to you. Your explicit choices always outrank any market default.",
+    "colorLegend": "1. Color direction",
+    "colorHelp": "Use your Personal Color result if you have one, or simply choose the palette you like.",
+    "moodLegend": "2. Mood",
+    "moodHelp": "Choose the look you want, not what we assume from your language or nationality.",
+    "comfortLegend": "3. Trip priority",
+    "comfortHelp": "A palace outfit should still work for your rental time and walking plan.",
+    "colors": {
+      "jadeIvory": "Jade & warm ivory",
+      "roseNavy": "Dusty rose & navy",
+      "moonBlue": "Moon blue & soft white"
+    },
+    "moods": {
+      "elegant": "Traditional elegant",
+      "royal": "Royal / dramatic",
+      "romantic": "Soft romantic",
+      "minimal": "Modern minimal",
+      "kdrama": "K-drama inspired"
+    },
+    "comfort": {
+      "walking": "Walking first",
+      "balanced": "Balanced photos + comfort",
+      "photoFirst": "Photos first"
+    },
+    "resultEyebrow": "Free match preview",
+    "resultPalette": "Palette",
+    "resultTripPriority": "Trip priority",
+    "directions": {
+      "elegant": {"name": "Classic palace elegance", "reason": "Favor clean traditional lines and restrained contrast so the outfit works naturally with palace architecture."},
+      "royal": {"name": "Structured royal statement", "reason": "Favor stronger contrast and more formal visual weight for a dramatic palace-photo direction."},
+      "romantic": {"name": "Soft romantic Hanbok", "reason": "Favor gentler contrast, graceful layers and a softer visual rhythm for daylight photos."},
+      "minimal": {"name": "Modern minimal Hanbok", "reason": "Favor a quieter two-color story and less visual ornament for a clean contemporary direction."},
+      "kdrama": {"name": "K-drama inspired look", "reason": "Favor a recognizable cinematic silhouette while keeping the final rental choice practical for the day."}
+    },
+    "comfortNotes": {
+      "walking": "Prioritize lighter layers, manageable volume and easy movement before decorative detail.",
+      "balanced": "Keep enough structure for photos while avoiding volume or accessories that make a longer walk inconvenient.",
+      "photoFirst": "You can accept more structure or volume for photos, but still leave a realistic changing and return-time buffer."
+    },
+    "freeBoundaryTitle": "What this free matcher does",
+    "freeBoundaryText": "It combines only the choices you made above with deterministic rules. No AI model, profile inference or external data transfer is used.",
+    "paidBoundaryText": "If premium visual try-on or AI styling is added later, its fixed credit cost and photo/privacy terms will be shown before you confirm."
+  },
+  "Meta": {
+    "hanbokTitle": "Hanbok Match — Free Rule-Based Styling Preview",
+    "hanbokDescription": "Choose a Hanbok direction from color, mood and walking comfort with a free multilingual rule-based preview. No AI call or photo upload is required."
+  }
+}
