@@ -29,6 +29,7 @@
 - Vision 응답의 segment ID만 맞는다고 semantic metadata까지 정상이라고 가정하지 않는다. `description`, string-array 의미 필드, `shotType`, 0~1 품질/가시성/동작/confidence 숫자 필드를 프롬프트 스키마 그대로 검증하고 malformed batch는 Planner 입력 전에 거부해야 문자열 강제 변환이나 잘못된 의미 증거가 유료 분석 결과로 굳는 것을 막을 수 있다.
 - Vision 응답 계약을 강화했으면 캐시 키도 계약 버전을 포함해야 한다. source hash/model/분석 설정만 같은 과거 캐시는 새 semantic schema를 우회할 수 있으므로, cache fingerprint에 명시적 schema version을 넣어 계약 변경 시 이전 캐시를 자동 무효화하고 새 분석 결과만 재사용한다.
 - 캐시 key가 현재 schema와 일치해도 cache payload 자체를 신뢰하지 않는다. 파일이 수동 수정·부분 손상되거나 중복 ID가 누락 ID를 가리는 경우가 있으므로, cache hit 직전에 라이브 Vision 응답과 동일한 ID/semantic-field validator를 다시 적용하고 실패한 캐시는 재분석 대상으로 취급한다.
+- Vision 캐시와 EDL/QA 같은 재사용 가능한 JSON 상태는 목적 파일에 직접 덮어쓰지 않는다. 쓰기 중 프로세스 종료·직렬화/디스크 오류가 발생하면 이전 정상 상태까지 잘릴 수 있으므로, 같은 디렉터리의 임시 파일을 완성한 뒤 atomic rename으로 교체하고 실패 시 임시 파일만 정리해 마지막 정상 파일을 보존한다.
 - 유료 Planner 응답도 `choices` 배열이라는 이유만으로 정상 계획으로 취급하지 않는다. 요청한 beat ID가 정확히 한 번씩 모두 존재하는지 먼저 검증하고, 누락·중복·예상 밖 beat는 프로토콜 실패로 처리한다. 반면 segment 길이·중복·sourceStart 같은 선택 품질/제약 문제는 기존 deterministic repair 단계가 다루게 해 프로토콜 오류와 정상 auto-repair를 구분한다.
 - Planner choice의 실행 필드는 타입 계약도 검증한다. `segmentId`는 비어 있지 않은 문자열, `sourceStart`는 유한한 number, `score`는 0~100 범위의 유한한 number, `alternatives`는 비어 있지 않은 문자열 ID 배열이어야 한다. 문자열 숫자·NaN·null 같은 malformed 응답을 repair 단계까지 흘리면 JavaScript 강제 변환이나 iterable 오류로 실패 원인이 숨겨질 수 있으므로, 값의 실제 범위/중복/segment 길이 같은 선택 품질 문제와 타입 프로토콜 오류를 분리한다.
 - 유료 Quality Judge 응답도 부분 결과를 정상 검수처럼 적용하지 않는다. 요청한 각 beat에 대해 정확히 하나의 judgment가 있어야 하며, 누락·중복·예상 밖 beat가 있으면 해당 batch의 2차 검수를 실패로 취급해 부분 score가 조용히 EDL에 섞이는 것을 막는다.
