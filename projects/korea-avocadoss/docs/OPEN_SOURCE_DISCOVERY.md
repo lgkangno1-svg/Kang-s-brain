@@ -2,6 +2,50 @@
 
 This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
+## 2026-08-27 — Step 2C-5 deterministic legacy duplicate retirement
+
+### GitHub / framework review
+The maintained `vercel/next.js` repository and current Next.js 16 redirect documentation were rechecked. The framework's `next.config.ts` `redirects()` facility is designed for known URL moves, runs before filesystem routing, and emits HTTP 308 when `permanent: true`. This is a better fit than Proxy/middleware or per-page redirect components because the six legacy paths are known statically and must not depend on user attributes.
+
+Google Search Central's current redirect/site-move guidance was also reviewed. It recommends server-side permanent redirects for URLs that have permanently moved, direct old→final mappings, and avoiding redirect chains. This matches the existing SEO decision that locale-prefixed pages are canonical and the unprefixed pages are migration-only duplicates.
+
+**Decision:** adopt framework-native permanent redirects with one explicit data map. No new routing dependency, Proxy, browser-language detection or IP/market logic. Keep the legacy source pages for one additional rollback-aware slice while the redirect boundary proves itself in executable CI.
+
+### Hugging Face review
+The installed Hugging Face connector was attempted for URL/SEO redirect discovery but returned an unavailable-tool error. Public Hugging Face fallback search did not surface a model, dataset or Space that can improve deterministic HTTP redirect correctness or SEO canonical migration.
+
+**Decision:** reject model involvement. Redirect correctness is exact protocol/configuration behavior, not an inference task. An ML dependency would add supply-chain/provenance/inference cost without improving the required 308/Location semantics.
+
+### Implementation / executable gate
+- `config/legacy-redirects.json` is the single redirect map consumed by Next.js and the verification script.
+- Known duplicates map directly to English canonical destinations: `/`, `/color`, `/hanbok`, `/credits`, `/culture`, `/explore/gyeongbokgung`.
+- `scripts/check-legacy-redirects.mjs` starts from the same map and probes the built production server with redirect following disabled.
+- It requires HTTP 308, exact destination pathname, destination HTTP 200, and query-string preservation.
+- Initial PR #5 workflow run `33010469160` passed existing P0 localization contracts, production build, generated-document language verification and all redirect checks.
+
+### Market evidence refresh
+KTO's Foreign Tourist Survey methodology remains an annual aggregate evidence source covering information channels, travel activities, spend, satisfaction and friction. MCST's 2026 Korea Season programming in Thailand and Vietnam includes Korean food, Hanbok and other K-culture programming. This review does not justify changing the existing P0/P1 order; `vi` and `th` remain P0. Aggregate evidence remains a hypothesis input only and never overrides an explicit user locale/preference.
+
+### Security / privacy / cost impact
+- production AI/model calls added: **0**;
+- CI AI/model calls added: **0**;
+- runtime dependencies added: **0**;
+- customer data transfer added: **0**;
+- browser-language/IP/nationality inference added: **0**;
+- payment/wallet/credit behavior changed: **0**;
+- incremental supplier inference cost: **0**.
+
+### Sources reviewed
+- https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/redirects.mdx
+- https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/redirecting.mdx
+- https://nextjs.org/docs/app/api-reference/config/next-config-js/redirects
+- https://nextjs.org/docs/app/guides/redirecting
+- https://developers.google.com/search/docs/crawling-indexing/301-redirects
+- https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes
+- https://kto.visitkorea.or.kr/coding/popup/popSearchSummary.jsp
+- https://www.mcst.go.kr/site/s_policy/govPolicy/performTotal.jsp
+- Hugging Face Hub search attempted; no suitable deterministic redirect asset adopted.
+
 ## 2026-08-27 — Step 2C-4 locale-correct document language
 
 ### GitHub / framework review
