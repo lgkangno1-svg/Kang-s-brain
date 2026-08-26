@@ -86,17 +86,23 @@ export function validatePlannerResponse(beats, parsed) {
   const seen = new Set();
   const duplicate = [];
   const unexpected = [];
+  const invalidFields = [];
 
   for (const choice of parsed.choices) {
     const beatId = String(choice?.beatId || '');
     if (!expected.has(beatId)) unexpected.push(beatId || '(missing beatId)');
     else if (seen.has(beatId)) duplicate.push(beatId);
     else seen.add(beatId);
+
+    if (typeof choice?.segmentId !== 'string' || !choice.segmentId.trim()) invalidFields.push(`${beatId || '(missing beatId)'}.segmentId`);
+    if (typeof choice?.sourceStart !== 'number' || !Number.isFinite(choice.sourceStart)) invalidFields.push(`${beatId || '(missing beatId)'}.sourceStart`);
+    if (typeof choice?.score !== 'number' || !Number.isFinite(choice.score) || choice.score < 0 || choice.score > 100) invalidFields.push(`${beatId || '(missing beatId)'}.score`);
+    if (!Array.isArray(choice?.alternatives) || choice.alternatives.some((id) => typeof id !== 'string' || !id.trim())) invalidFields.push(`${beatId || '(missing beatId)'}.alternatives`);
   }
 
   const missing = expectedIds.filter((id) => !seen.has(id));
-  if (parsed.choices.length !== beats.length || missing.length || duplicate.length || unexpected.length) {
-    throw new Error(`Planner beat integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  if (parsed.choices.length !== beats.length || missing.length || duplicate.length || unexpected.length || invalidFields.length) {
+    throw new Error(`Planner beat integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}] invalidFields=[${invalidFields.join(', ')}]`);
   }
 
   return parsed;
