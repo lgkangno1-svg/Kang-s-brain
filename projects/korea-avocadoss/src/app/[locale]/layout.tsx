@@ -54,7 +54,7 @@ export default async function LocaleLayout({
           <p>{t('footerTagline')}</p>
           <span>korea.avocadoss.co.kr</span>
         </footer>
-        <QuickHelp />
+        <QuickHelp localePrefix={`/${locale}`} />
       </div>
     </NextIntlClientProvider>
   );
