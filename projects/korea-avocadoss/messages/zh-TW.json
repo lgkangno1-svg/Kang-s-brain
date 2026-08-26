@@ -1,0 +1,43 @@
+{
+  "Global": {
+    "nav": {
+      "myColor": "我的個人色彩",
+      "hanbok": "韓服",
+      "gyeongbokgung": "景福宮",
+      "kCulture": "韓國文化",
+      "credits": "點數"
+    },
+    "language": "語言",
+    "footerTagline": "為國際旅客打造的個人化韓國旅行與文化體驗。"
+  },
+  "QuickHelp": {
+    "ariaLabel": "免費韓國旅行快速協助",
+    "badge": "免費 · 不呼叫 AI API",
+    "launcherTitle": "快速協助",
+    "launcherSubtitle": "免費解答",
+    "close": "關閉快速協助",
+    "back": "返回",
+    "topics": "主題",
+    "zeroCredits": "0 點數",
+    "rootTitle": "韓國旅行快速協助",
+    "rootAnswer": "你好！請選擇想了解的主題，我會立即提供答案。這項功能完全免費，也不會呼叫 AI API。",
+    "rootTopics": {
+      "palace": "景福宮",
+      "hanbok": "韓服",
+      "color": "個人色彩",
+      "food": "美食與咖啡廳",
+      "culture": "韓國文化",
+      "credits": "點數與付款",
+      "privacy": "隱私"
+    }
+  },
+  "Consent": {
+    "photo": "僅將我的照片用於我主動要求的個人色彩功能。",
+    "birth": "僅將我的出生資料用於我主動要求的文化解讀。",
+    "optionalBirthTime": "出生時間不是必填。如果不確定，可以選擇「我不知道」。"
+  },
+  "Credits": {
+    "freeHelp": "快速協助免費使用，而且不會呼叫 AI API。",
+    "beforeCharge": "任何付費功能都會在確認前清楚顯示固定點數費用。"
+  }
+}
