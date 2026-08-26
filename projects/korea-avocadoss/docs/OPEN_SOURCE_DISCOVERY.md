@@ -72,27 +72,34 @@ Reconsider only when the FAQ set grows enough that button/topic navigation becom
 #### `amannn/next-intl`
 - MIT licensed.
 - Mature Next.js-specific i18n project with internationalized routing, ICU messages, date/number formatting, Server Component support and localized pathnames.
-- Current 4.13.x releases include explicit Next.js 16.3 compatibility work.
+- npm currently reports `4.13.7` as latest; the 4.13.x changelog includes explicit Next.js 16.3 compatibility work.
+- npm reports multi-million weekly downloads, which is a materially stronger maintenance/adoption signal than small template repositories found in the same search.
 
-Decision: **planned adoption for the locale-routing implementation step**, after the locale registry and URL migration plan are committed.
+Decision: **adopt and pin `next-intl@4.13.7` in Step 2**, not in the Step 1 dictionary-preparation patch.
 
 Cautions:
 - keep sensitive/admin-only copy out of client translation bundles;
 - load only namespaces required by a route where practical;
-- verify the exact 4.13.x release and Next.js 16.3 behavior before pinning;
-- add routing without breaking existing non-prefixed URLs before production cutover.
+- use locale-prefixed public URLs with explicit user switching and browser-language suggestion, never forced nationality/IP redirection;
+- add routing without breaking existing non-prefixed URLs before production cutover;
+- rerun build/security checks immediately after adding the dependency.
 
 ### Hugging Face reviewed
 
 #### `facebook/nllb-200-distilled-600M`
-- supports a broad multilingual set including Korean, Japanese, Simplified/Traditional Chinese, Vietnamese, Thai, Indonesian/related Malay coverage and many additional languages.
+- broad translation coverage across the P0/P1 language families;
+- Hugging Face model metadata/model card currently identifies the license as **CC-BY-NC-4.0 / CC-BY-NC**;
+- the model card states it is a research model and not released for production deployment.
 
-Decision: **do not use as a runtime website-translation dependency at launch**.
+Decision: **reject for Korea Concierge production and commercial translation work**.
 
 Why:
-- static product copy should be reviewed, versioned and shipped as dictionaries, not translated on every page request;
-- a 600M translation model adds operational/runtime complexity and does not remove the need for native-quality QA of payment, privacy and travel copy;
-- it may remain useful offline as one candidate in translation drafting/evaluation, subject to license/model-card review and human QA.
+- the non-commercial license is incompatible with the intended commercial service;
+- the model card itself does not position the model for production deployment;
+- static product copy should be reviewed, versioned and shipped as dictionaries rather than translated at request time;
+- a 600M runtime model would add compute, latency and operational complexity without eliminating native-language QA for payment, privacy and travel copy.
+
+This supersedes the earlier softer “offline drafting candidate” note: do not incorporate NLLB-200 outputs into the commercial localization pipeline unless licensing terms materially change and are re-reviewed.
 
 #### multilingual E5 variants
 
@@ -100,6 +107,7 @@ Decision: **defer for locale/FAQ routing**. They may later help multilingual sem
 
 ### Sources
 - https://github.com/amannn/next-intl
+- https://www.npmjs.com/package/next-intl
 - https://huggingface.co/facebook/nllb-200-distilled-600M
 
 ## Discovery rules for future entries
