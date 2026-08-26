@@ -84,6 +84,16 @@ export function chooseJudgeReplacement(clip, beat, segMap, occupiedSegmentIds = 
       && !occupiedSegmentIds.has(s.id)) || null;
 }
 
+export function alternativesAfterReplacement(alternatives, previousSegmentId, replacementSegmentId, limit = 4) {
+  const ordered = [previousSegmentId, ...(alternatives || [])];
+  const seen = new Set();
+  return ordered.filter((id) => {
+    if (typeof id !== 'string' || !id || id === replacementSegmentId || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  }).slice(0, limit);
+}
+
 export function validateEdl(edl, sourceMeta = new Map()) {
   const errors = [];
   let cursor = 0;
@@ -151,9 +161,11 @@ export async function buildEdl({ beats, segments, apiKey, settings, usage, workD
           occupiedSegmentIds.delete(clip.segmentId);
           const replacement = chooseJudgeReplacement(clip, beat, segMap, occupiedSegmentIds);
           if (replacement) {
+            const previousSegmentId = clip.segmentId;
             clip.segmentId = replacement.id; clip.sourceId = replacement.sourceId; clip.sourcePath = replacement.sourcePath;
             clip.sourceStart = replacement.start; clip.sourceEnd = round3(replacement.start + beat.duration);
             clip.reason = `Judge ${j.score}: replaced with alternative`;
+            clip.alternatives = alternativesAfterReplacement(clip.alternatives, previousSegmentId, replacement.id);
           }
           occupiedSegmentIds.add(clip.segmentId);
         }
