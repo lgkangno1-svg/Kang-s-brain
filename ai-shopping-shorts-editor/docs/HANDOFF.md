@@ -10,9 +10,9 @@
 
 핵심은 원본 영상을 통째로 연결하는 것이 아니라, 작은 semantic segment로 나눈 뒤 narration Beat마다 가장 적합한 장면을 여러 source에서 골라 EDL(Edit Decision List)을 만드는 것이다.
 
-## 2. 개발 의도
+## 2. 개발 의도와 최종 목표
 
-사용자는 자막 디자인, 효과, 음악 등 후반 작업을 직접 할 수 있다. 반복 비용이 큰 부분은 장면 탐색, 장면 의미 파악, TTS/SRT 타이밍에 맞춘 컷 길이 결정, 소스 다양성 유지, 최종 일부 컷 재검수다.
+사용자는 자막 디자인, 효과, 음악 등 후반 작업은 다른 툴에서 할 수 있다. 반복 비용이 큰 부분은 장면 탐색, 장면 의미 파악, TTS/SRT 타이밍에 맞춘 컷 길이 결정, 소스 다양성 유지, 일부 저품질 컷 재검수다.
 
 따라서 설계 원칙은 다음과 같다.
 
@@ -21,14 +21,14 @@
 - **validated EDL = AI와 renderer 사이의 계약**
 - 목표는 생성형 영상 제작이 아니라 **AI가 좋은 EDL을 안정적이고 저비용으로 만드는 것**이다.
 
-## 3. 최종 사용자 경험 목표
+최종 사용 흐름 목표:
 
 1. 원본 영상 2~6개 입력
 2. 대본 + TTS 입력, 가능하면 SRT 입력
 3. Economy / Balanced / Quality 선택
 4. 자동 컷 편집 실행
 5. 결과 MP4 + QA + timeline 검토
-6. 마음에 들지 않는 beat의 대체 컷 선택
+6. 마음에 들지 않는 beat의 alternative 선택
 7. **추가 AI 호출 없이** 재렌더
 
 품질 목표:
@@ -39,8 +39,9 @@
 - 동일 segment 중복 사용을 기본 금지한다.
 - 불필요한 동일 source 연속 사용을 줄인다.
 - MP4, EDL, QA가 항상 같은 cut version을 가리킨다.
+- 실패한 AI 응답, 손상 cache, 부분 저장, 동시 mutation이 정상 결과처럼 남지 않는다.
 
-## 4. 제품 범위 — CUT ONLY
+## 3. 제품 범위 — CUT ONLY
 
 포함:
 
@@ -67,19 +68,20 @@
 
 새 기능은 CUT ONLY 범위를 깨지 않는지 먼저 확인한다.
 
-## 5. 저장소 / 현재 작업 위치
+## 4. 저장소 / 현재 작업 위치
 
 - Repository: `lgkangno1-svg/Kang-s-brain`
 - Project directory: `ai-shopping-shorts-editor/`
 - Active PR: `#1 — feat: bootstrap AI Shopping Shorts Editor MVP`
 - Active branch: `feat/ai-shopping-shorts-editor-bootstrap`
 - Base: `main`
-- Loop 26 시작 시 확인한 HEAD: `ebab6c33a9d327cdde3b5649bf4aa276744648a6`
-- Loop 26 제품 코드/테스트 반영 후 확인 가능한 code/test commit: `871ac990c026e1e215695d132ce41aa0adc3cd3f`
+- Loop 27 시작 HEAD: `62119d0237ee43fb38ced03dce567a4e0384c2ca`
+- Loop 27 code/test 완료 시점 HEAD: `06e14321b5f5cae55ebbee7996d618d5512c0fe8`
+- Loop 27 history commit: `837aa9bd43c56beccc65480522e358489d1770bd`
 
-위 SHA는 snapshot이다. 다음 작업자는 반드시 PR 최신 HEAD를 다시 확인한다.
+위 SHA는 snapshot이다. 이 HANDOFF 자체의 commit 때문에 최신 HEAD는 달라질 수 있으므로 다음 작업자는 반드시 PR 최신 HEAD를 다시 확인한다.
 
-## 6. 현재 아키텍처
+## 5. 현재 아키텍처
 
 ```text
 Browser UI
@@ -111,9 +113,29 @@ Review UI
   -> staged + transactional MP4/EDL/QA publish
 ```
 
-동일 project의 장시간 mutating 작업은 server의 per-project job slot으로 보호한다. `/run`과 `/replace`는 첫 asynchronous request parse 전에 동기적으로 project slot을 선점한다. 서로 다른 project는 병렬 실행 가능하다.
+### Same-project mutation boundary
 
-## 7. AI 모델 / 연동
+`jobs` Map은 사용자에게 보이는 작업 상태/결과 저장소다. 별도의 `activeMutations` Map은 프로젝트 파일 mutation의 소유권을 관리한다.
+
+동일 project에서 다음 mutation은 서로 겹칠 수 없다.
+
+- `POST /upload`
+- `POST /run`
+- `POST /replace`
+
+각 mutation은 첫 장시간 asynchronous 작업 전에 owner token을 동기적으로 claim한다. 동일 project의 다음 mutation은 HTTP 409로 거부한다. cleanup은 현재 owner token이 일치할 때만 lock을 해제한다. 다른 project ID는 계속 병렬 실행 가능하다.
+
+읽기 전용 `status`, `edl`, `segments`, `qa`, `video` endpoint는 이 lock으로 막지 않는다.
+
+관련 파일:
+
+- `src/core/project-job.mjs` — run/replace 상태 claim
+- `src/core/project-mutation.mjs` — upload/run/replace 공통 mutation ownership
+- `src/server.mjs`
+- `test/project-job.test.mjs`
+- `test/project-mutation.test.mjs`
+
+## 6. AI 모델 / 연동
 
 기본 설정:
 
@@ -123,9 +145,9 @@ Review UI
 
 모델 ID는 편집 로직과 분리된 설정값이다. renderer는 free-form AI prose를 실행하지 않고 validated EDL만 소비한다.
 
-API key가 제공된 실제 AI 모드의 Vision/Planner 실패를 정상 AI 성공처럼 숨기지 않는다. API key가 없는 테스트 모드의 deterministic fallback은 유지한다.
+API key가 제공된 실제 AI 모드의 Vision/Planner/Judge protocol failure를 정상 AI 성공처럼 숨기지 않는다. API key가 없는 테스트 모드의 deterministic fallback은 유지한다.
 
-## 8. 품질/비용 모드
+## 7. 품질 / 비용 모드
 
 ### Economy
 - 약 384px 대표 프레임
@@ -156,10 +178,11 @@ API key가 제공된 실제 AI 모드의 Vision/Planner 실패를 정상 AI 성�
 3. 동일 분석 조건은 Vision cache를 재사용한다.
 4. Economy/Balanced에서는 Judge를 생략한다.
 5. 수동 컷 교체는 AI 호출 0회다.
-6. malformed AI 응답을 조용히 캐시하지 않는다.
+6. malformed AI 응답을 조용히 cache하지 않는다.
 7. AI 호출/토큰 증가에는 측정 가능한 품질 개선 근거가 필요하다.
+8. correctness/reliability guard는 가능한 한 deterministic local logic으로 해결한다.
 
-## 9. 구현 완료 상태
+## 8. 현재 구현 완료 상태
 
 현재 구현됨:
 
@@ -197,9 +220,10 @@ API key가 제공된 실제 AI 모드의 Vision/Planner 실패를 정상 AI 성�
 - Windows launcher
 - Mini PC self-hosted runner 설치/상태/제거 도구
 - public repo 외부 fork PR의 개인 self-hosted runner 실행 방지
-- **동일 project `/run` + `/replace` 동시 실행 race 차단**
+- 동일 project `/run` + `/replace` 동시 실행 race 차단
+- **동일 project `/upload` + `/run` + `/replace` 전체 mutation serialization**
 
-## 10. 완료된 Loop Engineering 핵심 마일스톤
+## 9. 완료된 Loop Engineering 마일스톤
 
 세부 근거는 `docs/loop-history/`가 authoritative history다.
 
@@ -228,31 +252,29 @@ API key가 제공된 실제 AI 모드의 Vision/Planner 실패를 정상 AI 성�
 23. manual rerender staging
 24. MP4/EDL/QA transactional publish/rollback
 25. living HANDOFF 체계 도입
-26. **same-project run/replace synchronous serialization**
+26. same-project run/replace synchronous serialization
+27. **upload/run/replace 공통 mutation serialization**
 
-## 11. Loop 26 — 현재 reliability invariant
+## 10. Loop 27 변경 요약
 
 문제:
 
-기존 `/run`과 `/replace`는 `jobs.get(id)?.running` 검사 뒤 `await bodyJson(req)`을 수행하고 나서야 `jobs.set()`을 했다. 거의 동시에 요청 두 개가 들어오면 둘 다 idle 상태를 보고 통과할 수 있었다.
+`/upload`가 project lock 밖에서 input 파일과 `project.json`을 수정했다. 장시간 upload 중 `/run`이 시작되거나, run/replace 중 upload가 project metadata를 바꾸면 active pipeline이 사용하는 snapshot과 disk 상태가 달라질 수 있었다.
 
-현재:
+해결:
 
-- `beginProjectJob()`이 첫 `await` 전에 동기적으로 `jobs` Map에 running state를 넣는다.
-- 동일 project의 두 번째 `/run` 또는 `/replace`는 즉시 409 대상이 된다.
-- request parse / 초기 run setup이 실패하면 `abandonProjectJob()`으로 slot을 해제한다.
-- 해제는 해당 state가 여전히 slot owner일 때만 수행해 오래된 cleanup이 새 작업을 지우지 못한다.
-- 다른 project는 서로 독립적으로 실행할 수 있다.
-- AI/FFmpeg 비용은 증가하지 않는다.
+- `activeMutations`를 `jobs` 상태 저장소와 분리했다.
+- upload는 request stream을 받기 전에 project mutation을 claim한다.
+- run/replace도 같은 mutation을 claim한 뒤 body parse / pipeline으로 진행한다.
+- 동일 project 충돌은 409로 즉시 거부한다.
+- 다른 project는 독립적으로 실행된다.
+- stale cleanup은 새 owner를 해제하지 못한다.
+- upload가 last run QA/status를 덮어쓰지 않는다.
+- AI/FFmpeg 비용 증가는 없다.
 
-관련 파일:
+상세 기록: `docs/loop-history/2026-08-26-27-upload-mutation-serialization.md`
 
-- `src/core/project-job.mjs`
-- `src/server.mjs`
-- `test/project-job.test.mjs`
-- `docs/loop-history/2026-08-26-26-project-job-serialization.md`
-
-## 12. 검증 체계
+## 11. 검증 체계
 
 핵심 명령:
 
@@ -269,15 +291,17 @@ npm run demo
 
 초기 synthetic E2E 검증 이력: 3개 테스트 영상 → 4 beats → 1080x1920 H.264 → 9.000s, duration error 0, EDL error 0.
 
-Loop 26 targeted validation:
+최근 targeted validation:
 
-- project-job helper syntax check: PASS
-- same-project exclusion / safe abandon / different-project independence regression: **3/3 PASS**
-- full repo `npm run check` / `npm run demo`는 이번 회차에서 실행했다고 주장하지 않는다.
+- Loop 26 project-job helper: 3/3 PASS
+- Loop 27 project-mutation helper `node --check`: PASS
+- Loop 27 same-project exclusion / owner-safe release / different-project independence: **3/3 PASS**
 
-GitHub Actions는 추가 evidence일 뿐 코드 commit의 필수 gate가 아니다.
+Loop 27에서 full repository clone → `node --check src/server.mjs` → `npm run check`를 시도했으나 현재 자동 실행 컨테이너가 `github.com` DNS를 resolve하지 못해 clone 단계에서 실패했다. 따라서 full repo check/demo를 이번 회차에서 실행했다고 주장하지 않는다.
 
-## 13. Mini PC self-hosted CI
+GitHub Actions는 추가 evidence일 뿐 코드 commit의 필수 gate가 아니다. Mini PC self-hosted runner가 online이면 실제 repo/FFmpeg 검증을 추가로 수행한다.
+
+## 12. Mini PC self-hosted CI
 
 관련 파일:
 
@@ -287,7 +311,7 @@ GitHub Actions는 추가 evidence일 뿐 코드 commit의 필수 gate가 아니�
 - `tools/minipc-runner/remove.sh`
 - `docs/MINIPC_SELF_HOSTED_RUNNER.md`
 
-workflow:
+workflow 핵심:
 
 ```yaml
 runs-on: [self-hosted, linux, x64, minipc]
@@ -295,7 +319,7 @@ runs-on: [self-hosted, linux, x64, minipc]
 
 목표는 GitHub-hosted minutes에 의존하지 않고 실제 Ubuntu Mini PC에서 Node + FFmpeg E2E를 실행하는 것이다. 외부 fork PR은 개인 runner에서 실행하지 않고 `GITHUB_TOKEN`은 최소 권한을 사용한다.
 
-## 14. 보안 / 데이터 원칙
+## 13. 보안 / 데이터 원칙
 
 절대 commit 금지:
 
@@ -313,8 +337,9 @@ runs-on: [self-hosted, linux, x64, minipc]
 - AI JSON은 ID/타입/범위를 검증한다.
 - cache도 schema + payload를 검증한다.
 - public repo self-hosted runner에서 외부 기여 코드를 자동 실행하지 않는다.
+- 같은 project의 mutating endpoint는 explicit owner lock 없이 병렬 실행하지 않는다.
 
-## 15. 알려진 한계
+## 14. 알려진 한계
 
 ### TTS alignment
 SRT가 없으면 완전한 forced alignment가 아니다. 현재는 TTS duration/무음구간 + 문장 길이 기반 근사다.
@@ -331,19 +356,19 @@ SRT가 없으면 완전한 forced alignment가 아니다. 현재는 TTS duration
 ### Timeline UX
 beat lock, 일부 beat regenerate, undo/redo, richer comparison UI는 아직 후속 단계다.
 
-### Remaining project mutation concurrency
-Loop 26은 `/run`과 `/replace`를 직렬화했다. **`/upload`는 아직 같은 project job slot을 사용하지 않는다.** upload 중 `project.json`을 수정하므로, run 중 upload가 실제 UI/API에서 가능한지와 snapshot 일관성 문제가 있는지 다음 reliability 후보로 확인해야 한다.
+### Crash / stale persisted state recovery
+동일-process mutation concurrency는 현재 upload/run/replace 전체에 대해 차단됐다. 그러나 프로세스/OS가 upload 또는 render 도중 종료되면 in-memory mutation lock은 재시작 시 정상적으로 사라지는 대신, 디스크에 부분 input/staging/work 파일이 남을 수 있다. 다음 reliability 단계에서는 **정상 사용자 media를 지우지 않으면서 interrupted/stale artifact를 판별하고 복구하는 정책**이 필요하다.
 
-## 16. 개발 로드맵
+## 15. 개발 로드맵
 
 ### Phase A — 현재: Correctness & Reliability
 
-목표: 잘못된 EDL/캐시/AI 응답/파일 상태가 정상처럼 남는 경로 제거.
+목표: 잘못된 EDL/cache/AI 응답/file state가 정상처럼 남는 경로 제거.
 
 남은 후보:
 
-- upload/project metadata mutation vs active run/replace
-- transactional publish의 남은 crash window
+- interrupted upload / stale staging/work artifact recovery
+- transactional publish의 process-crash window
 - corrupt/stale project state recovery
 - renderer/QA invariant 누락
 - server/project path safety
@@ -396,21 +421,20 @@ MVP 안정화 이후:
 - project export/import
 - 사용자 편의 개선
 
-## 17. 현재 다음 최우선 가설
+## 16. 현재 다음 최우선 가설
 
-**활성 `/run` 또는 `/replace` 동안 `/upload`가 같은 project의 `project.json`과 inputs를 수정할 수 있는지 확인한다.**
+**프로세스/OS가 upload 또는 render 도중 종료됐을 때 남는 partial/stale 파일이 다음 실행에서 정상 project state로 오인되는지 확인한다.**
 
 검토 기준:
 
-- 실제 UI에서 가능한가
-- API를 직접 호출하면 가능한가
-- run이 읽은 project snapshot과 disk `project.json`이 달라질 수 있는가
-- video prefix 계산(`project.videos.length + 1`)의 concurrent collision 가능성이 있는가
-- 가장 작은 해결책이 upload 거부(409)인지, staging인지, 더 넓은 mutator lock인지
+- upload 실패 경로는 현재 같은 요청 내 오류에서는 `out` 파일을 제거하지만 process kill/power loss에서는 cleanup이 실행되지 않는다.
+- `flags: 'wx'` 때문에 같은 계산 filename의 partial file이 남으면 재업로드가 막힐 수 있는가.
+- project.json에는 아직 등록되지 않은 orphan input을 안전하게 구분할 수 있는가.
+- `.tmp`, `.stage`, `.backup` 파일이 재시작 후 남았을 때 자동 삭제 가능한 것과 복구 근거로 보존해야 하는 것을 구분할 수 있는가.
+- 사용자 원본 영상을 자동 삭제하는 공격적인 cleanup은 금지한다.
+- 가장 작은 해결책은 startup cleanup이 아니라 **명확한 staging naming + commit point + orphan classification**일 가능성이 높다.
 
-읽기 전용 status/preview와 다른 project까지 불필요하게 막는 broad global lock은 피한다.
-
-## 18. 작업 시작 체크리스트
+## 17. 작업 시작 체크리스트
 
 1. PR #1 또는 successor 최신 HEAD 확인
 2. 이 `docs/HANDOFF.md` 확인
@@ -425,7 +449,7 @@ MVP 안정화 이후:
 11. loop-history 작성
 12. **HANDOFF 동시 갱신**
 
-## 19. 중요 파일 지도
+## 18. 중요 파일 지도
 
 ```text
 ai-shopping-shorts-editor/
@@ -440,14 +464,16 @@ ai-shopping-shorts-editor/
 │   │   ├── opencode.mjs
 │   │   ├── pipeline.mjs
 │   │   ├── process.mjs
-│   │   ├── project-job.mjs      # same-project long-job serialization
+│   │   ├── project-job.mjs       # user-visible run/replace job state
+│   │   ├── project-mutation.mjs  # upload/run/replace same-project ownership
 │   │   └── utils.mjs
 │   └── public/
 ├── scripts/
 │   ├── demo.mjs
 │   └── doctor.mjs
 ├── test/
-│   └── project-job.test.mjs
+│   ├── project-job.test.mjs
+│   └── project-mutation.test.mjs
 ├── tools/minipc-runner/
 ├── docs/
 │   ├── HANDOFF.md               # 현재 상태/목표/로드맵 source of truth
@@ -459,7 +485,7 @@ ai-shopping-shorts-editor/
 └── workspace/                   # local generated data; commit 금지
 ```
 
-## 20. 현재 사용자에게 필요한 수동 작업
+## 19. 현재 사용자에게 필요한 수동 작업
 
 제품 코드 개선은 가능한 한 GitHub에서 진행한다.
 
