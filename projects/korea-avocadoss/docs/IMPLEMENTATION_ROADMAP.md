@@ -14,52 +14,46 @@ PRD, architecture, AI routing/cost, credit economics, SEO/AEO/GEO, discovery gat
 ### Step 2A — i18n foundation ✅
 Exact `next-intl@4.13.4`; P0 `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`; fail-closed locale validation; static reviewed dictionaries; no runtime translation ML.
 
-### Step 2B — localized app migration ✅ by source/data-shape review
-- 2B-1 ✅ locale shell/navigation/language selector, migration-safe legacy shell, locale-preserving Quick Help CTAs.
-- 2B-2 ✅ full P0 Quick Help + deterministic dictionary/graph build gates.
-- 2B-3 ✅ native P0 Home/Culture; Saju copy accepts unknown birth time and never guesses it.
-- 2B-4 ✅ native P0 Gyeongbokgung, freshness warning, locale text-expansion safeguards and localized metadata.
+### Step 2B — localized app migration ✅
+Native P0 Home/Culture/Gyeongbokgung, locale-preserving navigation, full Quick Help localization, localized metadata and text-expansion safeguards.
 
 ### Step 2C — locale parity, executable verification and cutover
 
-#### Step 2C-1A — Personal Color native P0 ✅ by source/data-shape review
-Native scanner/content/metadata; browser-local deterministic preview; stable locale-neutral analyzer codes/palette IDs; no image upload/AI/provider cost; message contract and legacy-route regression fix.
+#### Step 2C-1A — Personal Color native P0 ✅
+Native scanner/content/metadata; browser-local deterministic preview; no image upload/AI/provider cost; message contracts and legacy-route compatibility.
 
-#### Step 2C-1B — Hanbok native P0 ✅ by source/data-shape review
-Native localized route/metadata; free user-choice-driven deterministic matcher; modular P0 Hanbok bundles; recursive message merge; P0 parity/contract checks; no photo upload/model/provider; bulk visual asset project remains deferred.
+#### Step 2C-1B — Hanbok native P0 ✅
+Native localized route/metadata; free user-choice deterministic matcher; modular P0 messages; no photo/model/provider; bulk visual asset project remains deferred.
 
-#### Step 2C-1C — Credits native P0 ✅ by source/data-shape review
-Native P0 Credits route/metadata; authoritative numeric pricing remains only in `src/lib/credits/economics.ts`; modular copy-only locale bundles; fixed credits shown before paid actions; no fake checkout before wallet/payment gates; no subscription/ML personalized pricing.
+#### Step 2C-1C — Credits native P0 ✅
+Native P0 Credits route/metadata; authoritative numeric pricing only in `src/lib/credits/economics.ts`; fixed credits visible before paid actions; no fake checkout, subscription or ML personalized pricing.
 
-#### Step 2C-2 — executable verification ← in progress
+#### Step 2C-2 — executable verification ✅
+Established a minimal GitHub Actions build gate and used it to find/fix real regressions.
 
-Completed in this slice:
-- re-inspected latest main, recent commits, tree, roadmap, handoff and confirmed no pre-existing GitHub Actions workflow;
-- re-ran GitHub + Hugging Face discovery for the verification feature;
-- added minimal `.github/workflows/korea-concierge-ci.yml` scoped to Korea Concierge paths;
-- pinned official `actions/checkout` v7.0.1 and `actions/setup-node` v7.0.0 to full verified commit SHAs;
-- workflow permissions are `contents: read`, checkout credentials are not persisted, no repository secrets are used, CI/Next telemetry is disabled, timeout is 15 minutes and concurrent superseded runs are cancelled;
-- first GitHub-hosted run successfully checked out, installed 53 packages under Node 22, and passed all P0 i18n contracts: 6 locales × 283 leaf keys; Quick Help 65; Personal Color 38; Hanbok 44; Credits 3 plans + 11 paid-feature labels;
-- production build compiled successfully but TypeScript caught a real locale-boundary bug: `DEFAULT_LOCALE` was typed as broad `SupportedLocale` including P1/P2 candidates while `defineRouting` intentionally accepts P0 only;
-- fixed the source model by adding `P0Locale = typeof P0_LOCALES[number]` and typing `DEFAULT_LOCALE` as `P0Locale`. P1/P2 remain in the market registry but cannot widen production routing accidentally.
+Evidence and fixes:
+- official `actions/checkout` v7.0.1 and `actions/setup-node` v7.0.0 are pinned to full reviewed commit SHAs;
+- workflow is scoped to Korea Concierge paths, has `contents: read`, no repository secrets, no persisted checkout credentials, a 15-minute timeout, concurrency cancellation and disabled Next telemetry;
+- first run `32994639016` proved checkout/install/P0 i18n, then caught a TypeScript boundary bug: broad P0/P1/P2 `SupportedLocale` was being used for P0-only production routing;
+- added explicit `P0Locale` and typed `DEFAULT_LOCALE` accordingly;
+- second PR run `32995135203` passed TypeScript and exposed prerender failure because migration-only unprefixed routes rendered Quick Help without a client intl provider;
+- legacy Quick Help now receives only its English message namespace through `NextIntlClientProvider`, preserving locale-prefixed routes unchanged;
+- successful PR run `32995294201` passed install, all P0 i18n contracts, compilation, TypeScript, page-data collection and generation of all 46 static/SSG pages;
+- exact successful i18n evidence: 6 locales × 283 leaf keys, Quick Help 65 keys, Personal Color 38, Hanbok 44, Credits 3 plans + 11 paid feature labels;
+- build output confirmed P0 Home, Color, Credits, Culture, Gyeongbokgung and Hanbok paths;
+- next-intl `ENVIRONMENT_FALLBACK` console noise on the legacy client provider was traced to an unspecified client timezone; `Asia/Seoul` is now explicit for this Korea-local legacy fallback and is being kept under the same CI gate.
 
-Known verification/reproducibility note:
-- no committed npm lockfile exists yet, so CI currently uses `npm install --ignore-scripts --no-audit --no-fund`; this avoids lifecycle scripts but dependency resolution is not fully reproducible. A trusted generated/reviewed lockfile should be added in a later small supply-chain slice before calling dependency resolution deterministic.
+Known supply-chain follow-up:
+- no npm lockfile is committed yet. CI therefore uses `npm install --ignore-scripts --no-audit --no-fund`. Before dependency resolution is called deterministic, generate/review/commit a lockfile from a trusted executable environment in a separate small slice; never fabricate one manually.
 
-Current gate:
-1. obtain a green CI run on the locale-type fix (PR verification path if connector-origin main commits do not emit new push runs);
-2. if the compiler reveals another regression, fix only that regression and rerun;
-3. after green `check:i18n` + production build evidence, update handoff/discovery and mark executable build proof established;
-4. do **not** enable redirects/canonical/hreflang/x-default in this same verification slice.
-
-#### Step 2C-3 — SEO/locale cutover after green build
-Only after Step 2C-2 is green:
+#### Step 2C-3 — next slice: SEO/locale cutover
+Now that executable build proof exists, perform as a separate reviewable slice:
 - add canonical/hreflang/x-default for complete P0 public routes;
-- add locale-aware sitemap/robots;
-- verify alternate URLs/indexability and public/private noindex boundaries;
-- keep browser-language auto-routing and legacy-shell removal as a later rollback-aware slice.
+- make sitemap/robots locale-aware and verify alternate URLs/indexability;
+- preserve public/private noindex boundaries;
+- do not combine browser-language auto-routing or legacy-shell removal into the same cutover; those remain later rollback-aware work.
 
-**Step 2 gate:** no English-only core public/paid-flow dead end; locale URLs have correct SEO alternates after cutover; existing navigation does not regress; executable `check:i18n` + production build evidence exists before redirect/canonical activation.
+**Step 2 gate:** no English-only core public/paid-flow dead end; locale URLs have correct SEO alternates after cutover; navigation does not regress; executable `check:i18n` + production build evidence remains green.
 
 ## Step 3 — Saju deterministic cultural core
 Exact / approximate / unknown birth time; never fabricate missing hour; timezone/city only when required; deterministic calendar/pillar computation; reduced-scope three-pillar result and lower pricing when hour unknown; raw birth inputs never sent to LLM; cultural/entertainment framing and deletion controls.
