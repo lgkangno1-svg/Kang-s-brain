@@ -40,6 +40,68 @@ We will instead use fixed public Trip Pass/feature prices and optimize them thro
 - https://huggingface.co/PranavSharma/dynamic-pricing-model
 - https://huggingface.co/iioos/dynamic-pricing-model
 
+## 2026-08-26 — Free Quick Help chatbot
+
+### GitHub reviewed
+
+Searches for React/Next.js FAQ chatbots surfaced implementations such as:
+- `arnobt78/Embeddable-FAQ-Seed-RAG-Chatbot-Widget--NextJS-FullStack`
+- `vpnsin/react-faq-chatbot`
+
+Decision: **do not adopt a chatbot/RAG dependency for the first version**.
+
+Why:
+- the requested feature is intentionally fixed-answer and zero-API;
+- RAG, vector databases and generative chat add cost, privacy surface, latency and hallucination risk without improving the current button-driven use case;
+- a small typed React state machine is easier to audit, localize and keep free.
+
+Implementation: `src/features/quick-help/` contains a local conversation tree and client widget. No OpenRouter/Hugging Face request is required at runtime.
+
+### Hugging Face reviewed
+
+Multilingual E5-style embedding models can support semantic FAQ retrieval when the knowledge base becomes much larger.
+
+Decision: **defer**.
+
+Reconsider only when the FAQ set grows enough that button/topic navigation becomes cumbersome. At that point benchmark browser-local search vs. server embeddings, bundle size, latency and multilingual retrieval quality before adoption.
+
+## 2026-08-26 — Internationalization and translation architecture
+
+### GitHub reviewed
+
+#### `amannn/next-intl`
+- MIT licensed.
+- Mature Next.js-specific i18n project with internationalized routing, ICU messages, date/number formatting, Server Component support and localized pathnames.
+- Current 4.13.x releases include explicit Next.js 16.3 compatibility work.
+
+Decision: **planned adoption for the locale-routing implementation step**, after the locale registry and URL migration plan are committed.
+
+Cautions:
+- keep sensitive/admin-only copy out of client translation bundles;
+- load only namespaces required by a route where practical;
+- verify the exact 4.13.x release and Next.js 16.3 behavior before pinning;
+- add routing without breaking existing non-prefixed URLs before production cutover.
+
+### Hugging Face reviewed
+
+#### `facebook/nllb-200-distilled-600M`
+- supports a broad multilingual set including Korean, Japanese, Simplified/Traditional Chinese, Vietnamese, Thai, Indonesian/related Malay coverage and many additional languages.
+
+Decision: **do not use as a runtime website-translation dependency at launch**.
+
+Why:
+- static product copy should be reviewed, versioned and shipped as dictionaries, not translated on every page request;
+- a 600M translation model adds operational/runtime complexity and does not remove the need for native-quality QA of payment, privacy and travel copy;
+- it may remain useful offline as one candidate in translation drafting/evaluation, subject to license/model-card review and human QA.
+
+#### multilingual E5 variants
+
+Decision: **defer for locale/FAQ routing**. They may later help multilingual semantic search, but are unnecessary for the initial deterministic Quick Help and locale architecture.
+
+### Sources
+- https://github.com/amannn/next-intl
+- https://huggingface.co/facebook/nllb-200-distilled-600M
+
 ## Discovery rules for future entries
 
 For every major feature, record:
