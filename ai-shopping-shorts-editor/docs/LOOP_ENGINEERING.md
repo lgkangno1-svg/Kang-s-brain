@@ -26,6 +26,7 @@
 - SRT를 편집 타임라인의 source of truth로 사용할 때는 단순 공백뿐 아니라 겹치는 cue도 EDL 생성 전에 정규화해야 한다. 부분 겹침은 자막 순서를 보존한 채 다음 cue의 시작점을 직전 cue 끝으로 당기고, 완전히 직전 cue 안에 포함된 cue는 텍스트를 직전 beat에 흡수해 0/음수 길이 beat와 program overlap을 만들지 않는다.
 - SRT 파일의 블록/번호 순서를 시간 순서라고 가정하지 않는다. 내보내기·수정 과정에서 cue 블록이 뒤섞여도 정상 타임라인을 겹침으로 오판하지 않도록 gap/overlap 정규화 전에 `start` 오름차순으로 정렬하고, 같은 시작 시각은 더 긴 cue를 먼저 처리한다.
 - 유료 Vision batch 응답은 배열이라는 이유만으로 신뢰하지 않는다. 요청한 segment ID가 정확히 한 번씩 모두 돌아왔는지 검증하고, 누락·중복·예상 밖 ID가 하나라도 있으면 조용히 로컬 기본 메타데이터와 섞지 말고 실패로 처리해야 Planner가 부분적으로 미분석된 장면을 정상 AI 분석 결과처럼 사용하지 않는다.
+- Vision 응답의 segment ID만 맞는다고 semantic metadata까지 정상이라고 가정하지 않는다. `description`, string-array 의미 필드, `shotType`, 0~1 품질/가시성/동작/confidence 숫자 필드를 프롬프트 스키마 그대로 검증하고 malformed batch는 Planner 입력 전에 거부해야 문자열 강제 변환이나 잘못된 의미 증거가 유료 분석 결과로 굳는 것을 막을 수 있다.
 - 유료 Planner 응답도 `choices` 배열이라는 이유만으로 정상 계획으로 취급하지 않는다. 요청한 beat ID가 정확히 한 번씩 모두 존재하는지 먼저 검증하고, 누락·중복·예상 밖 beat는 프로토콜 실패로 처리한다. 반면 segment 길이·중복·sourceStart 같은 선택 품질/제약 문제는 기존 deterministic repair 단계가 다루게 해 프로토콜 오류와 정상 auto-repair를 구분한다.
 - Planner choice의 실행 필드는 타입 계약도 검증한다. `segmentId`는 비어 있지 않은 문자열, `sourceStart`는 유한한 number, `score`는 0~100 범위의 유한한 number, `alternatives`는 비어 있지 않은 문자열 ID 배열이어야 한다. 문자열 숫자·NaN·null 같은 malformed 응답을 repair 단계까지 흘리면 JavaScript 강제 변환이나 iterable 오류로 실패 원인이 숨겨질 수 있으므로, 값의 실제 범위/중복/segment 길이 같은 선택 품질 문제와 타입 프로토콜 오류를 분리한다.
 - 유료 Quality Judge 응답도 부분 결과를 정상 검수처럼 적용하지 않는다. 요청한 각 beat에 대해 정확히 하나의 judgment가 있어야 하며, 누락·중복·예상 밖 beat가 있으면 해당 batch의 2차 검수를 실패로 취급해 부분 score가 조용히 EDL에 섞이는 것을 막는다.
