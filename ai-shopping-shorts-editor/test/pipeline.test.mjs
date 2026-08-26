@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeVisionCacheFingerprint, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
+import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeVisionCacheFingerprint, refreshManualReplacementAlternatives, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
 
 test('manual replacement rejects a segment already used by another beat before rerender', () => {
   const clips = [
@@ -22,6 +22,16 @@ test('manual replacement allows the current beat segment and an unused segment',
 
   assert.doesNotThrow(() => assertManualReplacementAvailable(clips, 'b1', 's1'));
   assert.doesNotThrow(() => assertManualReplacementAvailable(clips, 'b1', 's3'));
+});
+
+test('manual replacement alternatives exclude the new current segment and preserve the previous choice', () => {
+  const clip = { alternatives: ['s2', 's3', 's2', 's4'] };
+
+  const alternatives = refreshManualReplacementAlternatives(clip, 's1', 's2');
+
+  assert.deepEqual(alternatives, ['s1', 's3', 's4']);
+  assert.deepEqual(clip.alternatives, ['s1', 's3', 's4']);
+  assert.equal(clip.alternatives.includes('s2'), false);
 });
 
 test('Vision cache fingerprint changes when the semantic cache schema changes', () => {
