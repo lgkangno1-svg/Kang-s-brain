@@ -63,17 +63,31 @@ export function validateVisionBatchResponse(batch, parsed) {
   const seen = new Set();
   const duplicate = [];
   const unexpected = [];
+  const invalidFields = [];
+  const allowedShotTypes = new Set(['close_up', 'medium', 'wide', 'macro', 'unknown']);
+  const isStringArray = (value) => Array.isArray(value) && value.every((item) => typeof item === 'string' && item.trim());
+  const isUnitNumber = (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
 
   for (const row of parsed) {
     const id = String(row?.id || '');
     if (!expected.has(id)) unexpected.push(id || '(missing id)');
     else if (seen.has(id)) duplicate.push(id);
     else seen.add(id);
+
+    const label = id || '(missing id)';
+    if (typeof row?.description !== 'string' || !row.description.trim()) invalidFields.push(`${label}.description`);
+    if (!isStringArray(row?.subjects)) invalidFields.push(`${label}.subjects`);
+    if (!isStringArray(row?.actions)) invalidFields.push(`${label}.actions`);
+    if (!isStringArray(row?.usabilityTags)) invalidFields.push(`${label}.usabilityTags`);
+    if (typeof row?.shotType !== 'string' || !allowedShotTypes.has(row.shotType)) invalidFields.push(`${label}.shotType`);
+    for (const field of ['productVisibility', 'visualQuality', 'motionLevel', 'confidence']) {
+      if (!isUnitNumber(row?.[field])) invalidFields.push(`${label}.${field}`);
+    }
   }
 
   const missing = expectedIds.filter((id) => !seen.has(id));
-  if (parsed.length !== batch.length || missing.length || duplicate.length || unexpected.length) {
-    throw new Error(`Vision analysis batch integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  if (parsed.length !== batch.length || missing.length || duplicate.length || unexpected.length || invalidFields.length) {
+    throw new Error(`Vision analysis batch integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}] invalidFields=[${invalidFields.join(', ')}]`);
   }
 
   return new Map(parsed.map((row) => [row.id, row]));
