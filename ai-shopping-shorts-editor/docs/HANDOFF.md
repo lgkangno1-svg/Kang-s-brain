@@ -12,16 +12,17 @@
 
 ## 2. 개발 의도 / 최종 목표
 
-사용자가 가장 반복적으로 시간을 쓰는 부분은 장면 탐색, 의미 파악, 자막/TTS 경계에 맞춘 컷 길이 결정, 여러 원본 간 장면 선택, 저품질 컷 검수다. 자막 디자인·효과·음악 등은 다른 후반 툴에서 수행할 수 있으므로 현재 범위는 CUT ONLY로 제한한다.
+사용자가 반복적으로 시간을 쓰는 장면 탐색, 의미 파악, 자막/TTS 경계에 맞춘 컷 길이 결정, 여러 원본 간 장면 선택, 저품질 컷 검수를 자동화한다. 자막 디자인·효과·음악은 다른 후반 툴이 담당할 수 있으므로 현재 범위는 CUT ONLY다.
 
 설계 원칙:
 
 - **AI = 의미 판단 / 편집 결정**
 - **FFmpeg = 미디어 실행 엔진**
 - **validated EDL = AI와 renderer 사이의 계약**
-- **deterministic guard first**: 비용이 들지 않는 로컬 검증으로 막을 수 있는 오류는 AI 재호출로 해결하지 않는다.
-- **recoverable local state**: 실패한 upload/render/save가 마지막 정상 결과를 훼손하지 않아야 한다.
-- **low-cost iteration**: 같은 source/analysis 조건은 cache하고 manual replacement는 AI 0-call로 처리한다.
+- **deterministic guard first**: 로컬 규칙으로 막을 수 있는 오류는 AI 재호출로 해결하지 않는다.
+- **recoverable local state**: 실패한 upload/render/save가 마지막 정상 상태를 훼손하지 않아야 한다.
+- **low-cost iteration**: 같은 분석 조건은 cache하고 manual replacement는 AI 0-call로 처리한다.
+- **provenance before cleanup**: crash 복구에서 파일을 지울 때는 프로그램이 만든 파일임을 확실히 식별하고 age/race 조건을 보수적으로 적용한다.
 
 최종 사용자 흐름 목표:
 
@@ -33,15 +34,15 @@
 6. 마음에 들지 않는 beat의 alternative 선택
 7. 추가 AI 호출 없이 재렌더
 
-품질 목표:
+품질/신뢰성 목표:
 
 - narration 의미 경계와 컷 전환이 자연스럽다.
-- 시각 변화는 대략 1.5~3.2초를 지향하되 고정 길이보다 의미 경계를 우선한다.
+- 시각 변화는 대략 1.5~3.2초를 지향하되 의미 경계를 우선한다.
 - 의미 일치 > 소스 다양성 > 미학적 다양성 순으로 판단한다.
 - 동일 segment 중복 사용을 기본 금지한다.
-- 불필요한 동일 source 연속 사용을 줄인다.
 - MP4, EDL, QA가 항상 같은 cut version을 가리킨다.
 - malformed AI 응답, 손상 cache, partial upload, 부분 저장, 동시 mutation, stale metadata snapshot이 정상 결과처럼 남지 않는다.
+- crash 잔재 cleanup이 사용자 원본이나 현재 진행 중인 업로드를 추정으로 삭제하지 않는다.
 
 ## 3. 제품 범위 — CUT ONLY
 
@@ -57,9 +58,9 @@
 - Economy/Balanced/Quality 비용·품질 모드
 - 자동 QA
 - alternative 검토 / manual replacement / no-AI rerender
-- local cache / telemetry / crash-safe persistence
+- local cache / telemetry / crash-safe persistence/recovery
 
-현재 비포함:
+비포함:
 
 - 자동 자막 스타일링
 - 스티커/그래픽
@@ -69,8 +70,6 @@
 - YouTube 자동 업로드
 - 생성형 영상 제작
 
-새 기능은 CUT ONLY 범위를 깨지 않는지 먼저 확인한다.
-
 ## 4. 저장소 / 현재 작업 위치
 
 - Repository: `lgkangno1-svg/Kang-s-brain`
@@ -78,8 +77,8 @@
 - Active PR: `#1 — feat: bootstrap AI Shopping Shorts Editor MVP`
 - Active branch: `feat/ai-shopping-shorts-editor-bootstrap`
 - Base: `main`
-- Loop 29 시작 HEAD: `cf890f8b83f31e8554925734c9749b221e06c0ee`
-- Loop 29 fresh-snapshot code/test HEAD: `9fc47d803d8e9bbf3300c3a296d5df7150b1c313`
+- Loop 30 시작 HEAD: `531e3cf4e208e261a7a5b84acf7a063923241d2e`
+- Loop 30 stale-cleanup code/test HEAD: `52b956afb32952ef7c340ae2a1de08d3c6219f4d`
 
 SHA는 snapshot이다. 다음 작업자는 반드시 PR 최신 HEAD를 다시 확인한다.
 
@@ -91,7 +90,9 @@ Browser UI
     -> same-project mutation claim
       -> fresh project.json snapshot read
     -> streaming uploads
-      -> hidden unique .part staging file
+      -> hidden unique .upload-<token>.part staging file
+      -> successful stream completion
+      -> opportunistic stale staging cleanup (exact pattern + >=24h only)
       -> completed upload rename
       -> project.json publish
     -> FFprobe metadata
@@ -122,7 +123,7 @@ Review UI
 
 ### Same-project mutation boundary
 
-`jobs` Map은 사용자에게 보이는 작업 상태/결과 저장소이고, 별도 `activeMutations` Map은 프로젝트 파일 mutation 소유권을 관리한다.
+`jobs` Map은 사용자에게 보이는 작업 상태/결과이고, 별도 `activeMutations` Map은 프로젝트 파일 mutation 소유권을 관리한다.
 
 동일 project에서 다음 mutation은 서로 겹칠 수 없다.
 
@@ -130,9 +131,9 @@ Review UI
 - `POST /run`
 - `POST /replace`
 
-충돌 시 HTTP 409. 서로 다른 project는 병렬 실행 가능하다. read-only status/EDL/segments/QA/video endpoint는 이 lock으로 막지 않는다.
+충돌 시 HTTP 409. 서로 다른 project 및 read-only endpoint는 불필요하게 직렬화하지 않는다.
 
-**Loop 29 이후 추가 불변조건:** mutation lock을 잡았다는 사실만으로 충분하지 않다. mutating route는 lock 획득 후 `project.json`을 다시 읽은 **fresh snapshot**만 수정/실행에 사용한다. pre-lock common route snapshot은 존재 확인용일 뿐 mutation source of truth가 아니다. snapshot read 자체가 실패하면 owner token을 해제한다.
+**Loop 29 이후 불변조건:** mutating route는 lock 획득 후 `project.json`을 다시 읽은 **fresh snapshot**만 수정/실행에 사용한다. pre-lock snapshot은 존재 확인용일 뿐 mutation source of truth가 아니다.
 
 관련 파일:
 
@@ -141,19 +142,29 @@ Review UI
 - `src/server.mjs`
 - `test/project-mutation.test.mjs`
 
-### Upload durability boundary — Loop 28
+### Upload durability / recovery boundary — Loops 28 + 30
 
-업로드 bytes를 더 이상 최종 input filename으로 직접 쓰지 않는다.
+업로드 bytes는 최종 input filename으로 직접 쓰지 않는다.
 
 1. `createUploadPaths()`가 hidden `.upload-<token>.part` staging path와 고유 final path를 만든다.
 2. HTTP request stream은 staging file에만 기록한다.
-3. stream이 정상 완료된 뒤 `rename(staged, final)` 한다.
-4. 그 다음에만 `project.json`에 final path를 등록한다.
-5. metadata persistence가 실패하면 final file도 rollback 삭제한다.
-6. 강제 종료가 stream 중 발생하면 project metadata는 그 partial file을 참조하지 않는다.
-7. final filename에 고유 token이 포함되어 이전 orphan이 다음 upload를 `EEXIST`로 막지 않는다.
+3. stream이 정상 완료된 뒤 publish 단계로 들어간다.
+4. publish 직전에 같은 `inputs/`에서 **정확히 `.upload-[safe-token].part` 패턴이며 24시간 이상 지난 regular file만** best-effort cleanup한다.
+5. fresh/current staging file, `customer-video.part` 같은 사용자 파일, final media는 cleanup 대상이 아니다.
+6. cleanup 실패는 정상 upload를 실패시키지 않는다.
+7. 그 다음 `rename(staged, final)` 한다.
+8. 그 다음에만 `project.json`에 final path를 등록한다.
+9. metadata persistence가 실패하면 final file도 rollback 삭제한다.
+10. 강제 종료가 stream 중 발생하면 project metadata는 partial file을 참조하지 않는다.
+11. final filename은 고유 token을 포함해 이전 orphan이 다음 upload를 `EEXIST`로 막지 않는다.
 
-강제 종료가 **final rename 직후~project.json commit 직전** 발생하면 완전한 orphan final file이 남을 수는 있다. 하지만 project metadata가 참조하지 않고 이름 충돌도 일으키지 않으므로 정상 input으로 오인되지 않는다. stale orphan cleanup은 별도 recovery 정책으로 다뤄야 하며, 사용자 media를 추정으로 삭제하지 않는다.
+왜 startup에서 모든 `.part`를 즉시 지우지 않는가:
+
+- 동일 workspace를 다른 서버 프로세스가 사용할 가능성을 완전히 배제할 수 없다.
+- 현재 진행 중인 다른 프로세스의 업로드를 지우면 데이터 손상이 된다.
+- 따라서 exact tool-owned naming + 24h age threshold + successful new upload publish 시점의 opportunistic cleanup을 선택했다.
+
+강제 종료가 **final rename 직후~project.json commit 직전** 발생하면 완전한 unreferenced final media가 남을 수 있다. 이 파일은 자동 삭제하지 않는다. metadata에 없는 full media의 provenance/age 정책은 별도 설계 대상이다.
 
 관련 파일:
 
@@ -171,7 +182,7 @@ Review UI
 
 모델 ID는 편집 로직과 분리된 설정값이다. renderer는 free-form AI prose를 실행하지 않고 validated EDL만 소비한다.
 
-API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failure를 정상 AI 성공처럼 숨기지 않는다. API key가 없는 테스트 모드의 deterministic fallback은 유지한다.
+실제 AI 모드에서는 Vision/Planner/Judge protocol failure를 정상 AI 성공처럼 숨기지 않는다. API key 없는 테스트 모드의 deterministic fallback은 유지한다.
 
 ## 7. 품질 / 비용 모드
 
@@ -204,7 +215,9 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 5. manual replacement는 AI 호출 0회다.
 6. malformed AI 응답을 cache하지 않는다.
 7. AI 호출/토큰 증가에는 측정 가능한 품질 개선 근거가 필요하다.
-8. correctness/reliability guard는 deterministic local logic을 우선한다.
+8. correctness/reliability/recovery guard는 deterministic local logic을 우선한다.
+
+Loop 30은 filesystem maintenance만 추가하며 OpenCode Go call/token과 FFmpeg 작업량을 늘리지 않는다.
 
 ## 8. 현재 구현 완료 상태
 
@@ -214,6 +227,7 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 - disk streaming upload
 - hidden unique staging upload + completed-file publish
 - metadata persistence 실패 시 published upload rollback
+- **24시간 이상 된 tool-owned `.upload-*.part` opportunistic cleanup**
 - FFprobe metadata 검사
 - FFmpeg scene-score 기반 장면 탐지
 - 쇼츠용 segment normalization
@@ -247,7 +261,7 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 - Mini PC self-hosted runner 설치/상태/제거 도구
 - public repo 외부 fork PR의 개인 self-hosted runner 실행 방지
 - 동일 project upload/run/replace mutation serialization
-- **mutation claim 이후 fresh project snapshot 재조회**
+- mutation claim 이후 fresh project snapshot 재조회
 - living HANDOFF 체계
 
 ## 9. Loop Engineering 마일스톤
@@ -282,32 +296,33 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 26. same-project run/replace synchronous serialization
 27. upload/run/replace 공통 mutation serialization
 28. upload staging + unique publish path + metadata-failure rollback
-29. **mutation claim 후 fresh `project.json` snapshot 재조회로 stale overwrite 차단**
+29. mutation claim 후 fresh `project.json` snapshot 재조회로 stale overwrite 차단
+30. **tool-owned stale `.upload-*.part` age/provenance cleanup 정책 구현**
 
-## 10. Loop 29 변경 요약
+## 10. Loop 30 변경 요약
 
 ### 문제
 
-`server.mjs`는 project route에 들어오면 `/upload`, `/run`, `/replace`가 mutation token을 얻기 전에 공통 `project.json` snapshot을 먼저 읽었다. 따라서 요청 B가 revision 1을 먼저 읽은 뒤 기다리는 동안 요청 A가 lock을 잡고 video를 추가해 revision 2를 저장·해제하고, 이후 B가 lock을 얻어도 revision 1 객체를 그대로 persist하면 A의 최신 metadata를 지울 수 있었다.
-
-즉 기존 lock은 **동시 write**는 막았지만 **serialized stale write**까지 막지는 못했다.
+Loop 28의 staging 구조 덕분에 crash 중 partial file이 정상 input metadata로 등록되지는 않지만, 프로세스가 강제 종료되면 hidden `.upload-*.part`가 디스크에 계속 남을 수 있다. 반복 crash가 있으면 workspace가 불필요하게 증가한다.
 
 ### 해결
 
-- `beginProjectMutationWithFreshSnapshot()` 추가
-- mutation token을 먼저 선점한 뒤 supplied `readProject()` 실행
-- read 실패 시 owner-aware token release
-- `/upload`, `/run`, `/replace` 모두 post-claim fresh snapshot 사용
-- upload prefix/video list, run script/settings/pipeline inputs, replacement project 모두 fresh object 기준
-- pre-lock common snapshot은 존재 확인용으로만 남김
+- `cleanupStaleUploadParts()` 추가
+- exact filename pattern: `.upload-[a-zA-Z0-9_-]+.part`
+- regular file만 대상
+- 기본 최소 age: 24시간
+- 현재/fresh staging 및 사용자 이름의 `.part`, final media는 보존
+- 새 업로드가 stream을 정상 완료하고 publish할 때 opportunistic cleanup 실행
+- cleanup 자체의 오류는 정상 업로드를 막지 않음
+- full unreferenced final media는 여전히 자동 삭제하지 않음
 
 ### 비용 영향
 
 - OpenCode Go call/token 증가 없음
 - FFmpeg 증가 없음
-- mutating request마다 작은 `project.json` read 1회 추가
+- successful upload당 작은 directory scan/stat 비용만 추가
 
-상세 기록: `docs/loop-history/2026-08-27-29-fresh-project-snapshot.md`
+상세 기록: `docs/loop-history/2026-08-27-30-stale-upload-part-cleanup.md`
 
 ## 11. 검증 체계
 
@@ -324,20 +339,18 @@ npm run demo
 - `npm run demo`: synthetic videos → 실제 FFmpeg end-to-end render/QA
 - `npm run doctor`: 로컬 환경 확인
 
-초기 synthetic E2E 이력: 3개 테스트 영상 → 4 beats → 1080x1920 H.264 → 9.000s, duration error 0, EDL error 0.
-
 최근 targeted validation:
 
-- Loop 26 project-job helper: 3/3 PASS
-- Loop 27 project-mutation helper: 3/3 PASS
-- Loop 28 upload staging targeted validation: PASS
-- Loop 29 fresh-snapshot isolated Node regression: PASS
-  - token is owned during snapshot read
-  - stale revision 1 vs fresh revision 2 distinguished
-  - latest uploaded video visible in fresh snapshot
-  - read failure releases mutation ownership
+- Loop 26 project-job helper: PASS
+- Loop 27 project-mutation helper: PASS
+- Loop 28 upload staging: PASS
+- Loop 29 fresh snapshot: PASS
+- Loop 30 upload cleanup isolated Node validation: **2/2 PASS**
+  - old tool-owned staging removed while fresh/user files remain
+  - publish path removes stale debris and preserves current upload
+- Loop 30 `node --check` on updated helper logic: PASS
 
-현재 자동 실행환경에서 full repository clone/npm check/demo가 항상 가능한 것은 아니다. 실행하지 못한 full check를 성공했다고 주장하지 않는다. GitHub Actions는 추가 evidence이지 제품 patch의 필수 gate가 아니다. Mini PC runner가 online이면 `npm run check`와 실제 FFmpeg `npm run demo`를 수행한다.
+현재 자동 실행환경에서 fresh repository clone 기반 full `npm run check`/`npm run demo`가 항상 가능한 것은 아니다. 실행하지 못한 full check를 성공했다고 주장하지 않는다. GitHub Actions는 추가 evidence이지 patch의 필수 gate가 아니다.
 
 ## 12. Mini PC self-hosted CI
 
@@ -368,6 +381,7 @@ npm run demo
 - AI response는 ID/type/range contract를 검증한 뒤 사용한다.
 - partial upload는 project metadata에 publish하지 않는다.
 - mutating route는 lock 전 snapshot을 persist source로 사용하지 않는다.
+- cleanup은 exact tool-owned staging pattern과 충분한 age 조건 없이 사용자 media를 삭제하지 않는다.
 
 ## 14. 알려진 한계 / 리스크
 
@@ -376,16 +390,15 @@ npm run demo
 3. Quality Judge는 제한된 replacement 정책이며 다단 재평가 loop는 없다.
 4. 사용자 manual 선택을 장기 학습하는 preference model은 없다.
 5. process restart 후 in-memory job/mutation status는 사라진다.
-6. crash가 upload final rename 직후 project metadata commit 전에 발생하면 **완전하지만 unreferenced orphan input**이 남을 수 있다. 현재는 정상 input으로 오인되거나 다음 upload를 막지 않지만 stale cleanup 정책은 미구현이다.
-7. 오래된 hidden `.upload-*.part`의 startup cleanup 정책은 아직 없다. age/provenance evidence 없이 사용자 media를 자동 삭제하면 안 된다.
-8. interrupted run의 work/output artifact provenance/recovery는 추가 점검이 필요하다.
-9. 전체 실제 상품영상 품질 benchmark corpus는 아직 부족하다.
+6. crash가 upload final rename 직후 project metadata commit 전에 발생하면 **완전하지만 unreferenced orphan input**이 남을 수 있다. 자동 삭제 정책은 아직 없다.
+7. 24h stale staging cleanup은 새 successful upload 시 opportunistic하게 실행되므로, 더 이상 업로드가 없으면 오래된 `.part`는 그대로 남을 수 있다.
+8. 여러 독립 server process가 같은 workspace를 공유하는 것을 막는 cross-process lock은 없다. 24h age threshold는 위험을 줄이지만 cross-process ownership을 증명하지는 않는다.
+9. interrupted run의 work/output artifact provenance/recovery는 추가 점검이 필요하다.
+10. 전체 실제 상품영상 품질 benchmark corpus는 아직 부족하다.
 
 ## 15. 개발 로드맵
 
 ### Phase A — Reliability / state integrity (현재)
-
-목표: AI나 FFmpeg 품질 개선보다 먼저 잘못된 상태가 정상 결과로 남지 않게 한다.
 
 완료:
 
@@ -395,13 +408,14 @@ npm run demo
 - transactional manual rerender
 - project mutation serialization
 - staged upload publish
-- **post-claim fresh project snapshot**
+- post-claim fresh project snapshot
+- **age/provenance 기반 stale staging cleanup**
 
 남은 후보:
 
-- stale `.upload-*.part`의 안전한 startup recovery 정책
 - metadata에 없는 full orphan upload의 provenance/age 정책
 - interrupted run의 work/output artifact provenance 점검
+- cross-process workspace ownership/lock 필요성 평가
 - disk-full/permission failure injection coverage
 
 ### Phase B — Timing quality
@@ -440,17 +454,17 @@ npm run demo
 
 가장 먼저 검토할 후보:
 
-**오래된 hidden `.upload-*.part`를 startup에서 언제 안전하게 삭제할 수 있는지 evidence-based recovery 정책을 설계한다.** 최소한 현재 `project.json`이 참조하지 않는 staging naming pattern, 충분한 age threshold, active process와 충돌하지 않는 startup-only 조건을 요구해야 한다.
+**interrupted run의 `work/`·`output/` artifact가 마지막 정상 결과와 명확히 구분되는지 점검한다.** 특히 자동 `/run` 경로가 manual replacement처럼 staged/transactional publish를 보장하는지 확인하고, 실패한 신규 렌더가 이전 정상 `shorts.mp4`/QA를 손상시킬 수 있다면 최소 범위로 보호한다.
 
 그 다음:
 
 - metadata에 없는 full orphan media는 자동 삭제하지 말고 provenance/age evidence를 먼저 정의
-- interrupted run의 work/output artifact가 마지막 정상 결과와 구분되는지 검증
+- cross-process workspace ownership 문제가 실제 운용에서 필요한지 평가
 
 ## 17. 새 AI/개발자 작업 시작 체크리스트
 
-1. PR #1 또는 successor의 최신 HEAD 확인
-2. 이 `HANDOFF.md` 읽기
+1. PR #1 또는 successor 최신 HEAD 확인
+2. `HANDOFF.md` 읽기
 3. `LOOP_ENGINEERING.md` 읽기
 4. 최신 `docs/loop-history/` 읽기
 5. 변경 대상 source/test 직접 확인
@@ -469,4 +483,4 @@ Mini PC self-hosted CI를 아직 등록하지 않았다면 사용자가 Mini PC�
 
 ## 19. 인수인계 핵심 한 문장
 
-**이 프로젝트는 AI가 의미적으로 좋은 컷을 고르고, 결정론적 검증/캐시/transaction/staging/fresh-snapshot/FFmpeg가 그 결정을 싸고 안전하게 실행하는 CUT ONLY 쇼츠 편집기로 발전시키며, 모든 의미 있는 변경은 GitHub source + loop-history + 이 HANDOFF에 남긴다.**
+**이 프로젝트는 AI가 의미적으로 좋은 컷을 고르고, 결정론적 검증/캐시/transaction/staging/fresh-snapshot/recovery/FFmpeg가 그 결정을 싸고 안전하게 실행하는 CUT ONLY 쇼츠 편집기로 발전시키며, 모든 의미 있는 변경은 GitHub source + loop-history + 이 HANDOFF에 남긴다.**
