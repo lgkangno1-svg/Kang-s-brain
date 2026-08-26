@@ -1,2 +1,33 @@
-export {default} from '../../hanbok/page';
-export {metadata} from '../../hanbok/page';
+import type {Metadata} from 'next';
+import {getTranslations, setRequestLocale} from 'next-intl/server';
+
+import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
+
+export async function generateMetadata({params}: {params: Promise<{locale: string}>}): Promise<Metadata> {
+  const {locale} = await params;
+  const t = await getTranslations({locale, namespace: 'Meta'});
+
+  return {
+    title: t('hanbokTitle'),
+    description: t('hanbokDescription'),
+  };
+}
+
+export default async function HanbokPage({params}: {params: Promise<{locale: string}>}) {
+  const {locale} = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations('Hanbok');
+
+  return (
+    <main>
+      <section className="pageIntro">
+        <p className="eyebrow">{t('eyebrow')}</p>
+        <h1>{t('title')}</h1>
+        <p>{t('intro')}</p>
+      </section>
+      <section className="prototype">
+        <HanbokMatcher />
+      </section>
+    </main>
+  );
+}
