@@ -14,11 +14,7 @@
 
 1. Mini PC에 SSH 접속한다.
 2. 이 branch/repository를 clone 또는 pull한다.
-3. GitHub에서 이 repository의 runner registration token을 하나 만든다.
-   - Repository -> Settings -> Actions -> Runners -> New self-hosted runner
-   - Linux / x64 선택
-   - 화면의 짧은 registration token만 복사한다. 토큰은 만료되므로 저장하거나 commit하지 않는다.
-4. 아래 installer를 일반 사용자 계정으로 실행한다. `sudo bash`로 실행하지 않는다.
+3. 아래 installer를 일반 사용자 계정으로 실행한다. `sudo bash`로 실행하지 않는다.
 
 ```bash
 cd ~/Kang-s-brain/ai-shopping-shorts-editor
@@ -26,7 +22,19 @@ chmod +x tools/minipc-runner/*.sh
 ./tools/minipc-runner/bootstrap.sh
 ```
 
-설치 도중 token 입력창이 나타나면 방금 복사한 token을 붙여넣는다. 입력은 화면에 표시되지 않는다.
+### GitHub CLI가 이미 로그인되어 있으면
+
+`gh auth status`가 성공하는 Mini PC에서는 installer가 GitHub API로 **짧게 유효한 runner registration token을 자동 발급**하므로 별도 token 복사가 필요 없다.
+
+### GitHub CLI 인증이 없으면
+
+installer가 token 입력을 요청할 때 아래 위치에서 한 번만 복사한다.
+
+- Repository -> Settings -> Actions -> Runners -> New self-hosted runner
+- Linux / x64 선택
+- 화면의 짧은 registration token만 복사
+
+토큰은 만료되므로 저장하거나 commit하지 않는다. 입력창은 hidden input이라 화면에 표시되지 않는다.
 
 installer가 자동으로 하는 일:
 
@@ -34,6 +42,7 @@ installer가 자동으로 하는 일:
 - FFmpeg/FFprobe 설치/확인
 - Node.js 22+ 설치/확인
 - GitHub Actions runner 최신 release 조회 및 다운로드
+- 가능한 경우 `gh` 인증으로 registration token 자동 발급
 - repo runner 등록
 - `minipc,video,ffmpeg` label 추가
 - systemd service 설치 및 시작
@@ -81,6 +90,7 @@ GitHub에서 runner 제거 화면을 열고 fresh removal token을 받은 뒤:
 ## 보안 원칙
 
 - OpenCode Go API key, GitHub PAT, runner token을 repository에 저장하지 않는다.
-- public repository runner에서 신뢰하지 않는 임의 PR 코드를 자동 실행하지 않는다. 이 repo는 개인 개발용이므로 외부 contribution을 받을 경우 self-hosted workflow trigger 정책을 별도로 제한해야 한다.
+- public repository runner에서 신뢰하지 않는 임의 fork PR 코드를 자동 실행하지 않는다. workflow는 repository-owned PR head만 self-hosted job을 실행하도록 제한한다.
+- workflow `GITHUB_TOKEN`은 `contents: read` 최소 권한만 사용한다.
 - Mini PC runner user에게 불필요한 root 상시 권한을 주지 않는다. system package/service 단계만 `sudo`를 사용한다.
 - 원본 상품 영상이나 사용자 프로젝트 workspace를 Git repository 또는 Actions artifact로 업로드하지 않는다.
