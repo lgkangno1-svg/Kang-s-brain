@@ -43,12 +43,65 @@
     "fourHourText": "根据步行舒适度和可用时间，加入西村或北村，再安排咖啡馆或一餐。",
     "freshnessNote": "开放时间、临时休馆、票务规则和店铺营业情况可能变化。出发前请确认时效性信息。"
   },
+  "Color": {
+    "eyebrow": "个人色彩 · 免费浏览器预览",
+    "title": "找出值得在韩国尝试的颜色。",
+    "intro": "先在浏览器内私密分析自拍，检查并手动修正估算结果，再把配色带入韩服推荐。此预览仅用于穿搭参考，不是专业个人色彩诊断。"
+  },
+  "ColorScanner": {
+    "photoAlt": "已上传自拍预览",
+    "emptyTitle": "添加一张清晰自拍",
+    "emptyText": "请在自然光下正对镜头，避免强滤镜、彩色灯光和深阴影。",
+    "chooseAnother": "选择另一张照片",
+    "uploadSelfie": "上传或拍摄自拍",
+    "running": "正在读取可见色彩…",
+    "analyzeFree": "分析我的颜色 — 免费预览",
+    "resultTitle": "你的可见色彩倾向",
+    "resultPlaceholder": "结果会显示在这里",
+    "resultDisclaimer": "这是基于当前光线的照片估算，不是专业个人色彩诊断。用于韩服搭配前，你可以手动修正结果。",
+    "undertoneLabel": "底色倾向",
+    "depthLabel": "可见明暗深度",
+    "contrastLabel": "对比度",
+    "confidence": "估算可信度 {confidence}% · 明度指数 {lightness}/100",
+    "browserPrivacy": "此免费预览中，自拍仅保留在你的浏览器内。",
+    "correctUndertone": "修正底色",
+    "correctDepth": "修正可见深度",
+    "hanbokColors": "值得尝试的韩服配色",
+    "paletteAria": "{name} 配色",
+    "sensitiveTraitNote": "扫描只使用可见颜色像素提供穿搭建议，不会识别你的身份，也不会推断种族、民族、国籍、宗教、健康状况或吸引力。",
+    "undertone": {"warm": "暖", "neutral": "中性", "cool": "冷"},
+    "depth": {"light": "浅", "medium": "中等", "deep": "深"},
+    "contrast": {"soft": "柔和", "medium": "中等", "high": "高"},
+    "warnings": {
+      "darkPhoto": "照片偏暗。使用自然日光可能得到更可靠的结果。",
+      "overexposedPhoto": "脸部区域似乎过曝，请尝试更柔和的自然光。",
+      "limitedPixels": "可用的类面部颜色像素较少，请手动检查估算结果。"
+    },
+    "errors": {
+      "canvasUnavailable": "此浏览器无法运行本地照片分析。",
+      "insufficientPixels": "无法读取足够的可用像素。请尝试更明亮、正面的照片。",
+      "unknown": "无法分析这张照片，请尝试另一张清晰自拍。"
+    },
+    "palettes": {
+      "jadeWarmIvory": {"name": "玉色与暖象牙白", "note": "适合宫殿背景的经典组合，脸部附近带有温暖感。"},
+      "peachSage": {"name": "蜜桃与鼠尾草绿", "note": "柔和亲切，适合日光拍照和轻松街区散步。"},
+      "creamCrimson": {"name": "奶油白与绯红", "note": "对比更强，适合宫殿建筑和正式韩服造型。"},
+      "softWhiteJade": {"name": "柔白与玉色", "note": "平衡灵活，传统或现代韩服都容易搭配。"},
+      "dustyRoseNavy": {"name": "灰粉与海军蓝", "note": "精致稳重，在宫殿石材和木质背景前很上镜。"},
+      "mutedPlumIvory": {"name": "柔梅紫与象牙白", "note": "低饱和的安静浪漫配色，不依赖过于鲜艳的颜色。"},
+      "moonBlueSoftWhite": {"name": "月蓝与柔白", "note": "清爽对比，适合宫殿庭院和石质背景。"},
+      "lilacPlum": {"name": "丁香紫与梅紫", "note": "精致的现代浪漫韩服方向。"},
+      "roseDeepNavy": {"name": "玫瑰与深海军蓝", "note": "冷调深色带来更强的拍照对比，同时不过分偏暖。"}
+    }
+  },
   "Meta": {
     "homeTitle": "Korea Concierge — 个性化韩国旅行指南",
     "homeDescription": "面向国际游客的多语言韩国旅行与文化指南，提供免费本地探索和可选个性化体验。",
     "cultureTitle": "K-Culture Lab — 四柱、生肖与韩国传统文化",
     "cultureDescription": "以文化和娱乐体验的方式了解韩国生肖、四柱和传统色彩故事，并采用隐私优先的输入设计。",
     "gyeongbokgungTitle": "景福宫指南 — 路线、韩服与周边停留点",
-    "gyeongbokgungDescription": "按时间规划景福宫行程，兼顾韩服归还缓冲、拍照重点、步行舒适度和周边餐饮。"
+    "gyeongbokgungDescription": "按时间规划景福宫行程，兼顾韩服归还缓冲、拍照重点、步行舒适度和周边餐饮。",
+    "colorTitle": "个人色彩预览 — 私密浏览器分析",
+    "colorDescription": "免费在浏览器内尝试个人色彩预览，用于韩服搭配。自拍保留在设备上，结果可手动修正。"
   }
 }
