@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {getMessages, getTranslations, setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
@@ -7,7 +8,17 @@ import {LanguageSwitcher} from '@/i18n/LanguageSwitcher';
 import {Link} from '@/i18n/navigation';
 import {routing} from '@/i18n/routing';
 import {getLocaleDefinition} from '@/lib/i18n/locales';
+import '../globals.css';
 import '../locale-overflow.css';
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://korea.avocadoss.co.kr'),
+  title: {
+    default: 'Korea Concierge — Your Personal Korea Guide',
+    template: '%s | Korea Concierge',
+  },
+  description: 'Personal color, Hanbok matching, palace routes, food and Korean culture for international visitors.',
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
