@@ -3,98 +3,51 @@
 **Last updated:** 2026-08-26  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current implementation phase:** Step 2 — Internationalized routing and language selector  
-**Last completed slice:** Step 2B-4  
-**Current next slice:** Step 2C-1 — native localization of remaining bridge pages (`/color`, `/hanbok`, `/credits`)  
-**Status authority:** `docs/IMPLEMENTATION_ROADMAP.md` for ordered gates; this file for cross-session/cross-AI implementation context.
+**Current phase:** Step 2 — internationalized routing / locale parity  
+**Last completed slice:** Step 2C-1A — native P0 Personal Color  
+**Exact next slice:** Step 2C-1B — native P0 Hanbok route and controls
 
-> This is a living handoff file. Every material run must inspect the latest `main`, recent commits and current project files before editing, assume another AI/developer may have changed the code, and update this file in the same run. Never restore an older remembered implementation over newer work without first understanding the newer change.
+> This is the cross-session/cross-AI state file. Before every material run inspect latest `main`, recent commits, current project tree, this file and `IMPLEMENTATION_ROADMAP.md`. Assume another AI/developer may have changed the repository. Never restore remembered older code over newer work without understanding it. Update this file in the same run whenever implementation status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or next step changes.
 
-## 1. Product intent
+## 1. Product intent and end goal
 
-Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should reduce common Korea travel/culture friction and monetize only the parts where personalization or computation creates clear incremental value.
+Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should connect practical Korea travel discovery, Gyeongbokgung planning, personal-color/Hanbok styling and K-Culture experiences without turning into an expensive generic chatbot.
 
-The intended product combines:
+The target product should be:
+- genuinely localized for international visitors, not just translated;
+- useful for free before asking for payment;
+- deterministic/browser-local whenever practical;
+- privacy-first for photos and birth information;
+- strict about source validation for changing travel/business facts;
+- server-authoritative for credits/payments;
+- aggressively optimized for AI token/provider cost and gross margin;
+- crawlable and answer-first on public pages, noindex where private/personal/payment content requires it.
 
-- free deterministic Quick Help for common questions and routing;
-- localized Korea travel and cultural guidance;
-- Gyeongbokgung-area discovery and time-aware planning;
-- personal-color and Hanbok recommendation experiences;
-- a K-Culture Lab including deterministic Saju/zodiac experiences;
-- an authoritative credit wallet and international-friendly payments;
-- bounded AI only after deterministic/static/cache/rule/browser-local options are exhausted.
+## 2. Non-negotiable requirements
 
-The product must **not** become an expensive generic chatbot. Gross margin, privacy, security, speed and factual reliability are first-class product requirements.
+### International visitors
+P0 locales: English (`en`), Simplified Chinese (`zh-CN`), Japanese (`ja`), Traditional Chinese (`zh-TW`), Vietnamese (`vi`), Thai (`th`). P1: Indonesian and Malay. Expand further only from measured demand/current Korea tourism evidence.
 
-## 2. Product goal / success conditions
-
-Success means all of the following hold together:
-
-1. International visitors can understand and navigate core experiences in their language.
-2. Common questions resolve without AI whenever practical.
-3. Paid actions show a fixed credit price before execution and maintain bounded supplier cost.
-4. Sensitive inputs are minimized and are not unnecessarily sent to LLMs.
-5. Time-sensitive place/business facts are verified rather than treated as true merely because AI/editorial copy says so.
-6. Public pages are answer-first, crawlable and locale-aware; private/account/payment/personal-result pages are noindex where appropriate.
-7. Mobile layouts remain usable under CJK, Vietnamese and Thai text expansion.
-8. Production is not claimed or cut over until executable build/deployment evidence and rollback readiness exist.
-
-## 3. Non-negotiable requirements
-
-### International visitors / locales
-
-P0: English (`en`), Simplified Chinese (`zh-CN`), Japanese (`ja`), Traditional Chinese (`zh-TW`), Vietnamese (`vi`), Thai (`th`).  
-P1: Indonesian, Malay.  
-Further expansion is based on measured demand and current Korea tourism evidence.
-
-Explicit user choices always outrank market defaults. Do not infer nationality, ethnicity, religion or individual preferences from names, faces or locale. Taiwan and Hong Kong analytics remain separable even if both use Traditional Chinese. English is the global fallback, not a US-only product.
-
-Localization means adapting practical travel friction, content structure, dietary filters, payment expectations and acquisition/search needs where evidence supports it. Do not turn aggregate market observations into assumptions about an individual.
+Explicit user preference always outranks market defaults. Never infer nationality, ethnicity, religion or sensitive identity from name, face or locale. Keep Taiwan/Hong Kong analytics separable even when both use Traditional Chinese. English is a global fallback, not US-only.
 
 ### Saju
-
-Birth time is optional: exact time, rough time band and `I don't know` are all valid paths. Never fabricate a missing birth hour and never ask AI to infer it from personality.
-
-Unknown birth time must produce only deterministic components that do not require the hour pillar, clearly labelled reduced-scope / birth time not provided, with lower pricing than full scope when monetized. Approximate time must disclose boundary uncertainty. Request city/timezone only when deterministic conversion requires it and explain why.
-
-Calendar/pillars are computed deterministically before narrative AI. Raw birth date/time/city/name/account identifiers must never be sent to an LLM; only minimum non-identifying derived structures may be sent.
+Birth time supports exact, approximate band and `I don't know`. Never fabricate or AI-guess a missing hour. Unknown time returns only deterministic components that do not require the hour pillar and must be clearly reduced-scope and priced lower when monetized. Ask city/timezone only when deterministic conversion needs it and explain why. Raw birth date/time/city/name/account identifiers must never be sent to an LLM; only minimal non-identifying derived structures may be sent.
 
 ### Free Quick Help
+Must remain 0 credits, 0 AI calls, no external question transfer, P0 localized and button/topic-tree based. No RAG/embeddings/LLM until corpus size plus measured UX proves a need.
 
-Must remain 0 credits, 0 AI API calls, no external question transfer, button/topic-tree based, P0-localized and a router into the correct free or paid feature. Do not add RAG/embeddings/LLM unless corpus size and measured UX later justify it.
+### Security / privacy
+Strict server authorization and validation; immutable/idempotent wallet operations; verified payment callbacks; rate limits on auth/payment/AI; dependency pinning/review; data minimization; EXIF stripping before any remote sensitive-media use; ZDR/data-collection restrictions; safe logs without sensitive prompt bodies; instruction/data separation for prompt-injection resistance; source verification for AI-returned place/business facts. Secrets stay server-only and never in `NEXT_PUBLIC_*`. Do not guess CSP origins before real integrations exist.
 
-### Security
-
-Strict server authorization, input validation, immutable/idempotent wallet operations, signed/verified payment callbacks, auth/payment/AI rate limits, dependency pinning/review, data minimization, EXIF stripping for remote images, ZDR/data-collection restrictions for sensitive media, safe logging without sensitive prompt bodies, prompt-injection-resistant instruction/data separation and source validation for AI-returned place/business facts.
-
-Do not guess CSP origins before real hosting/payment/analytics integrations exist. Secrets are server-only and never exposed through `NEXT_PUBLIC_*`.
-
-### Token / supplier-cost efficiency
-
-Before every AI call: deterministic calculation → curated/static answer → safe cache → rule ranking/filtering → browser-local computation → cheapest qualified Chinese OpenRouter model.
-
-Send compact IDs/enums/derived facts, normally pre-filter candidates to <=5–8, use short feature-specific system prompts and structured outputs, bound history, avoid resending whole itineraries for partial replans, and allow one bounded retry by default. Same-model provider fallback precedes model escalation.
-
-Record `usage.cost`, tokens, provider, latency, retry and fallback without sensitive prompt bodies. Monitor p50/p95 tokens and cost, retry/escalation rates and supplier cost per captured credit.
+### Token / margin efficiency
+Before AI: deterministic calculation → static/curated answer → safe cache → rule ranking/filtering → browser-local compute → cheapest qualified Chinese OpenRouter model. Compact IDs/enums/derived facts only; normally <=5–8 candidates; short feature prompts; structured output; bounded history; partial replans instead of resending whole itineraries; one bounded retry by default; same-model provider fallback before escalation. Record cost/tokens/provider/latency/retry/fallback without sensitive prompt bodies and monitor p50/p95 supplier cost and cost per captured credit.
 
 ### Credit economics
+`CREDIT_ECONOMICS.md` is authoritative. Launch assumption: one-time Basic / Advanced / Ultra Trip Passes + optional top-ups; no subscriptions or ML personalized pricing without evidence. Fixed credits shown before every paid action. Wallet uses immutable server-authoritative reserve/capture/release/refund semantics and idempotency.
 
-`docs/CREDIT_ECONOMICS.md` is authoritative and supersedes older PRD credit-pack hypotheses. Launch assumption: one-time Basic / Advanced / Ultra Trip Passes plus optional top-ups; no subscription or ML-personalized pricing at launch.
-
-Every paid action shows fixed credits before execution. Wallet mutations use an immutable server-authoritative ledger with atomic reserve/capture/release/refund and idempotency. Supplier-cost analysis includes payment fees, retries/fallbacks and conservative FX/payment reserves.
-
-### SEO / AEO / GEO
-
-Crawlability, canonicalization, sitemap/robots, locale-prefixed URLs, hreflang/x-default, metadata, internal links, Core Web Vitals, semantic HTML, media optimization, rendering/indexability, valid structured data, local-intent content and AI-crawler access are product requirements. Do not prematurely activate canonical/hreflang/locale redirect behavior before route parity and build evidence.
-
-### Open-source discovery gate
-
-Before materially implementing/revising a feature, search GitHub and Hugging Face. Evaluate license/commercial use, maintenance, provenance, privacy, runtime cost, latency, bundle/compute requirements, mobile fit, multilingual quality, benchmark evidence, supply-chain risk and user/margin benefit. Record adopt/adapt/reject in `docs/OPEN_SOURCE_DISCOVERY.md`.
-
-## 4. Source-of-truth documents
+## 3. Source-of-truth documents
 
 Read before material changes:
-
 - `docs/PRD.md`
 - `docs/ARCHITECTURE.md`
 - `docs/AI_ROUTING.md`
@@ -106,160 +59,123 @@ Read before material changes:
 - `docs/IMPLEMENTATION_ROADMAP.md`
 - `docs/PROJECT_HANDOFF.md`
 
-## 5. Current architecture snapshot
+## 4. Current architecture snapshot
 
-Next.js app under `projects/korea-avocadoss`, with exact `next-intl@4.13.4` pin. P0 locale URLs are `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`. Locale values are allowlisted before dictionary loading. Reviewed static dictionaries are the production localization source; runtime translation ML is intentionally absent.
+Next.js 16.3.3 application with exact `next-intl@4.13.4` pin. P0 locale URLs: `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`. Locale is allowlisted before dictionary loading. Localization uses reviewed static dictionaries; runtime translation ML is intentionally absent.
 
-Unprefixed routes remain temporarily available behind a migration-only legacy shell. Locale-aware navigation preserves locale. Some locale routes are still temporary bridges and must be converted before cutover.
+Migration-only unprefixed legacy routes still exist. Locale-aware navigation preserves locale. Redirect/browser-language negotiation/canonical/hreflang/x-default are intentionally disabled until route parity plus executable build evidence exist.
 
-Quick Help is a deterministic message-key state machine. P0 dictionary parity and Quick Help message references are deterministic build gates.
+`check:i18n` currently runs:
+1. P0 core/public dictionary parity;
+2. Quick Help graph/message contract;
+3. Personal Color message contract.
 
-Native locale surfaces currently include Home, Culture and Gyeongbokgung. These pages use localized `title`/`description` metadata, but canonical/hreflang/x-default is intentionally not enabled yet.
+Locale text-expansion CSS is loaded for localized surfaces to reduce CJK/Vietnamese/Thai overflow.
 
-`src/app/locale-overflow.css` supplies locale-scoped text-expansion safety for long CJK/Vietnamese/Thai content.
-
-## 6. Completed implementation status
+## 5. Completed status
 
 ### Step 0 ✅
-Product/architecture/AI routing/credit economics/SEO/internationalization/security baselines established.
+Product/architecture/AI routing/credit economics/SEO/internationalization/security baselines.
 
 ### Step 1 ✅
-Free Quick Help + P0 locale registry. Quick Help remains 0-credit / 0-AI / no sensitive input. Keyboard/focus/ARIA hardening completed.
+Free deterministic Quick Help, P0 seed dictionaries, 0-AI/0-credit/no sensitive-input path, focus/keyboard/ARIA hardening.
 
 ### Step 2A ✅
-`next-intl@4.13.4` pinned; validated P0 routing/request loader; static localization architecture; no runtime translation model.
+Pinned i18n dependency, P0 locale registry, validated request loader, no runtime translation model.
 
-### Step 2B-1 ✅ by static review
-Locale-aware navigation, language selector, `[locale]` shell, legacy migration shell, locale-preserving Quick Help CTAs, temporary route bridges. Redirect cutover remains disabled.
+### Step 2B ✅ by source/data-shape review
+- locale shell, language selector and locale-preserving navigation;
+- full P0 Quick Help localization and deterministic parity checks;
+- native localized Home and Culture;
+- native localized Gyeongbokgung with localized metadata and freshness warning for live facts;
+- locale overflow safeguards;
+- canonical/hreflang/redirect cutover deferred.
 
-### Step 2B-2 ✅ by source/data-shape review
-Quick Help fully localized in P0; hard-coded English removed from graph; dictionary parity + graph/message checker wired before build.
+### Step 2C-1A ✅ by source/data-shape review — Personal Color
+Completed in the latest run:
+- inspected latest main/recent commits/handoff before editing; no concurrent external product change was observed before the slice;
+- replaced `/[locale]/color` English legacy re-export with native localized Server Component;
+- added locale-specific title/description metadata;
+- localized **all interactive ColorScanner UI**, not only the page heading, in all six P0 locales;
+- translated upload instructions, result labels, manual corrections, warnings, errors, privacy notice and nine Hanbok palette names/notes;
+- changed analysis warnings/errors from English strings into stable typed codes, keeping the calculation engine locale-neutral;
+- changed palette data to stable IDs + hex colors, moving human-facing names/notes to dictionaries;
+- added `scripts/check-color-message-keys.mjs` and included it in `check:i18n`;
+- retained browser-local pixel analysis: selfie is represented by local object URL and sampled on local Canvas; no AI/model/API/image upload was introduced;
+- kept explicit statement that this is a lighting-dependent styling estimate rather than a professional diagnosis;
+- kept explicit prohibition on identity, race, ethnicity, nationality, religion, health or attractiveness inference.
 
-### Step 2B-3 ✅ by source review
-P0 localized landing copy; native `/[locale]/culture`; Saju copy explicitly accepts unknown birth time; public dictionaries included in parity checks.
+## 6. Latest open-source/model decision
 
-### Step 2B-4 ✅ by source/data-shape review
-Completed in this run:
+GitHub personal-color projects reviewed included older React Native/Teachable Machine approaches and Python/Lab/HSV research-style implementations. They demonstrate possible season-classification approaches but do not justify replacing the current local preview due to maintenance/validation/dependency/privacy concerns.
 
-- Inspected latest main/recent commits/handoff/target files before editing. Pre-run latest main was `9021cd1fd973e6d3bbf6c93ba5635304d61f62c8`; no intervening external product commit was observed before implementation.
-- Replaced `/[locale]/explore/gyeongbokgung` English legacy re-export with native localized Server Component.
-- Added matching `Gyeongbokgung` and `Meta` message schemas to all six P0 `messages/public/*.json` files.
-- Added localized title/description metadata to native Home, Culture and Gyeongbokgung pages using `getTranslations` in `generateMetadata`.
-- Did **not** add canonical/hreflang/x-default or redirects yet.
-- Added explicit freshness warning: opening hours, closures, ticket rules and shop availability are time-sensitive and must be verified before departure.
-- Added `src/app/locale-overflow.css` and loaded it only in locale layout. It adds zero-min-width grid children, safe overflow wrapping, CJK/Thai line breaking and narrow-screen heading/button safeguards.
-- TypeScript message augmentation remains deferred because no executable build environment is currently available and it is not needed to complete this slice safely.
-- Updated `docs/OPEN_SOURCE_DISCOVERY.md` and `docs/IMPLEMENTATION_ROADMAP.md`.
+Hugging Face search found general skin/image classification models, including skin-type classifiers, but they are not validated specifically for personal-color styling and would add image-transfer/model/fairness/provenance cost. **Decision: do not add a remote or bundled ML model during locale migration.** Revisit at Step 6 only if a premium vision path shows measurable incremental value, with consent/ZDR and representative validation.
 
-## 7. Step 2B-4 discovery decisions
-
-GitHub: re-searched `amannn/next-intl`; current Next.js 16.3-oriented material continues to support the project's Server Component/request-message architecture and `getTranslations` in async `generateMetadata`. **Decision: keep/adapt existing next-intl stack; add no second i18n/SEO dependency.**
-
-Hugging Face: re-reviewed COMET translation QA models. `Unbabel/wmt20-comet-qe-da` and `Unbabel/wmt22-comet-da` are Apache-2.0 and technically usable offline; `Unbabel/wmt22-cometkiwi-da` is CC-BY-NC-SA-4.0. **Decision: no runtime/build integration now** because current static corpus is small and COMET would add Python/model-download/CI/supply-chain cost without runtime benefit.
-
-## 8. Verification / evidence
+## 7. Verification state / blockers
 
 Available evidence:
+- GitHub writes for native Color page, localized scanner refactor, locale-neutral analyzer codes, palette IDs, six P0 dictionaries and message-contract build gate;
+- source review confirms the scanner still uses local `createImageBitmap`, Canvas sampling and local object URLs, with no provider/API integration added;
+- P0 dictionary schemas were updated with matching Color/ColorScanner/Meta structures by source review.
 
-- successful GitHub source writes for native Gyeongbokgung route, metadata, six P0 dictionaries and locale overflow CSS;
-- same intended `Gyeongbokgung` + `Meta` schema added across all six P0 dictionaries, preserving the existing parity-check contract by source review;
-- recent-commit inspection after implementation showed only this run's sequential commits through the roadmap update, with no observed concurrent external overwrite.
+Executable limitation:
+- the available shell still cannot resolve `github.com` (`Could not resolve host: github.com`);
+- therefore clean clone → `npm install` → `npm run check:i18n` → `npm run build` cannot be proven in this environment;
+- production build success and production deployment are **not claimed**.
 
-Executable verification limitation:
+A future run with a working checkout/network must execute those commands before any build-dependent Step 2 cutover gate is upgraded.
 
-- attempted clean `git clone` → `npm install` → `npm run check:i18n` → `npm run build` again;
-- shell failed at clone because `github.com` could not resolve (`Could not resolve host: github.com`);
-- therefore `npm run check:i18n` and `next build` were not executed in this environment;
-- **production build success and deployment are not claimed.**
+## 8. Security / privacy / token / margin impact of latest slice
 
-A future run with a working checkout/network must execute install/check/build before any build-dependent gate or locale cutover is upgraded.
+- New AI calls: **0**.
+- New translation/model calls: **0**.
+- New runtime dependency: **0**.
+- New external image/user-data transfer: **0**.
+- Credit/payment behavior: unchanged.
+- Incremental inference/provider cost: **0**.
+- Margin impact: favorable/neutral; localized free local computation resolves more user need without supplier cost.
+- Privacy impact: improved clarity; engine now emits non-human codes rather than English text and the UI explicitly says the selfie remains in-browser for the preview.
+- Fairness/safety: no demographic/sensitive inference was added; manual correction remains available because lighting and simple pixel heuristics can be wrong.
 
-## 9. Security / privacy / cost / margin impact of latest slice
+## 9. Exact next slice
 
-- New AI API calls: **0**.
-- Runtime translation/model calls: **0**.
-- New runtime dependencies: **0**.
-- New external user-data flows: **0**.
-- Credit behavior/payment behavior: unchanged.
-- Supplier/token cost impact: effectively **0 incremental inference cost**.
-- Margin implication: favorable/neutral; localized deterministic content resolves more user needs without paid inference.
-- Security: no secret, auth, payment or AI boundary changed. Locale files remain selected only through the existing allowlisted request path.
-- Factual reliability: time-sensitive palace/shop facts are explicitly separated from evergreen copy rather than hard-coded as current truth.
-- Accessibility/mobile: locale text-expansion resilience improved; executable visual regression remains pending a working build environment.
+**Step 2C-1B — native P0 Hanbok.** Do not jump to Saju/wallet/payment unless a regression/security problem forces it.
 
-## 10. Current work position / exact next slice
+Next run should:
+1. inspect latest main, recent commits, project tree and this handoff;
+2. inspect current `/[locale]/hanbok`, legacy Hanbok components/data and all user-facing strings;
+3. rerun GitHub + Hugging Face discovery for Hanbok/recommendation logic;
+4. convert the locale route and every interactive Hanbok control/result to P0 native copy;
+5. keep recommendation deterministic before AI and do not start bulk visual asset generation;
+6. add localized metadata and a message-contract checker if useful;
+7. review CJK/Thai/Vietnamese overflow, keyboard use and form labels;
+8. keep paid/free boundaries explicit and do not enable locale/canonical cutover;
+9. update `OPEN_SOURCE_DISCOVERY.md`, roadmap and this handoff.
 
-**Next: Step 2C-1.** Do not jump to Saju core, wallet/payment or later features before Step 2 parity unless a security/regression issue forces an exception.
+After Hanbok, Step 2C-1C localizes Credits using `CREDIT_ECONOMICS.md`. Only after all required locale routes plus executable build evidence should Step 2C-2 enable canonical/hreflang/x-default, locale sitemap and safe locale negotiation/remove legacy shell.
 
-Implement in this order:
+## 10. Later roadmap
 
-1. Re-inspect latest main/recent commits/handoff/project tree.
-2. Re-run GitHub + Hugging Face discovery for the selected route work.
-3. Convert remaining high-value locale bridge pages to native localized content, starting with `/color`, `/hanbok`, `/credits`.
-4. Preserve explicit free-vs-paid boundaries and fixed-credit-before-action messaging.
-5. Add localized metadata as each route becomes native.
-6. Apply/QA locale overflow safety on each new surface.
-7. Keep browser-language negotiation, redirects, canonical/hreflang/x-default and locale cutover disabled until route parity and executable build evidence exist.
-8. Update discovery log, roadmap and this handoff in the same run.
+- Step 3 deterministic Saju core;
+- Step 4 auth + immutable authoritative wallet;
+- Step 5 international payment foundation;
+- Step 6 Personal Color validation/premium boundary;
+- Step 7 deterministic Hanbok recommendation v1;
+- Step 8 verified Gyeongbokgung place model/routing;
+- Step 9 compact-cost itinerary/premium concierge;
+- Step 10 analytics, p50/p95 cost/margin monitoring and P1/P2 expansion.
 
-### Step 2 gate before cutover
+## 11. Deferred / do not start yet
 
-- no paid flow has an English-only dead end;
-- locale URLs have valid SEO alternates when enabled;
-- existing navigation does not regress;
-- executable i18n/build evidence exists;
-- only then remove temporary legacy shell / activate locale negotiation and SEO alternates.
-
-## 11. Later roadmap
-
-- Step 3: deterministic Saju core with exact/approximate/unknown time and privacy-preserving derived AI payloads.
-- Step 4: auth + immutable authoritative wallet.
-- Step 5: international payment foundation with verified callbacks.
-- Step 6: personal-color v1, browser/local first.
-- Step 7: deterministic Hanbok recommendation; **bulk Hanbok visual asset generation remains deferred until separately requested.**
-- Step 8: verified Gyeongbokgung place model and route ranking.
-- Step 9: itinerary/premium concierge with compact prompts and hard cost ceilings.
-- Step 10: analytics, market adaptation, p50/p95 AI-cost monitoring and P1/P2 locale expansion.
-
-## 12. Deferred / do not start yet
-
-- bulk Hanbok visual asset generation/collection;
+- bulk Hanbok visual asset generation/collection unless user separately requests it;
 - subscriptions without conversion evidence;
-- ML-personalized pricing;
+- ML personalized pricing;
 - runtime translation models;
 - RAG/embeddings/LLM for current Quick Help;
 - guessed CSP origins;
-- automatic locale redirect/browser-language routing before parity/build evidence;
-- production-deployment claims without evidence.
+- automatic locale redirect/canonical cutover before parity + build evidence;
+- production claims without executable evidence.
 
-## 13. Mandatory workflow for every future run
+## 12. Current user action required
 
-1. Inspect latest main, project tree, target files and recent commits before editing.
-2. Read this handoff + roadmap and identify changes from other agents.
-3. Preserve completed gates unless a real regression requires reopening them.
-4. Search GitHub + Hugging Face before material feature revision; log decision.
-5. Implement one reviewable roadmap slice only.
-6. Review navigation/mobile/accessibility/i18n/privacy/security/credits/payment/performance/SEO/AI cost/analytics/dependency risk.
-7. Run real tests/build where possible; never present static review as executable proof.
-8. Update relevant docs and **this handoff in the same run**.
-9. Commit clearly and do not overwrite concurrent improvements.
-
-## 14. User action required
-
-**None currently.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred until their corresponding gates.
-
-## 15. Change log
-
-### 2026-08-26 — Step 2B-4 completed
-
-Key implementation commits in this slice include:
-
-- `08792ee0d100e6f872f9ef75869a7dd684d09827` — native localized Gyeongbokgung route
-- `30cb138dd78bd5f6eb007bef277ff3500bcdb8fe` — localized Home metadata
-- `d77c96985c11ce45e2b1f6b025d00f8a44d281de` — localized Culture metadata
-- `ad846182d6c4c63fa2a1382022ff78731f7229ca` through `ef7be876f9400eb6b919f7c290dc17c2d17dd744` — P0 Gyeongbokgung/metadata dictionaries
-- `b32786cf17da9aeb656017298ac182c0535123ca` + `354671314d2f0dd956df24741c8392ca2aba64fb` — locale overflow safeguards
-- `cfe4eafcdb4abfd00d447cf3adce8749f6ada023` — discovery log
-- `6b41044aa8537b2db718b46bdbc38c0256badc22` — roadmap updated to Step 2C-1
-
-Known blocker remains executable build verification due shell DNS failure. User action required: None. Next exact slice: Step 2C-1.
+**None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred to their corresponding gates.
