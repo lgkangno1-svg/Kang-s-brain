@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
 import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
+import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}): Promise<Metadata> {
   const {locale} = await params;
@@ -10,6 +11,7 @@ export async function generateMetadata({params}: {params: Promise<{locale: strin
   return {
     title: t('hanbokTitle'),
     description: t('hanbokDescription'),
+    alternates: localizedAlternates(locale, '/hanbok'),
   };
 }
 
