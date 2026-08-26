@@ -1,43 +1,24 @@
 {
-  "Global": {
-    "nav": {
-      "myColor": "Màu cá nhân",
-      "hanbok": "Hanbok",
-      "gyeongbokgung": "Gyeongbokgung",
-      "kCulture": "Văn hóa Hàn Quốc",
-      "credits": "Tín dụng"
-    },
-    "language": "Ngôn ngữ",
-    "footerTagline": "Trải nghiệm du lịch và văn hóa Hàn Quốc được cá nhân hóa cho du khách quốc tế."
-  },
-  "QuickHelp": {
-    "ariaLabel": "Trợ giúp nhanh về Hàn Quốc miễn phí",
-    "badge": "MIỄN PHÍ · KHÔNG DÙNG AI API",
-    "launcherTitle": "Trợ giúp nhanh",
-    "launcherSubtitle": "Giải đáp miễn phí",
-    "close": "Đóng Trợ giúp nhanh",
-    "back": "Quay lại",
-    "topics": "Chủ đề",
-    "zeroCredits": "0 tín dụng",
-    "rootTitle": "Trợ giúp nhanh về Hàn Quốc",
-    "rootAnswer": "Xin chào! Hãy chọn chủ đề bạn muốn biết và tôi sẽ trả lời ngay. Tính năng này miễn phí và không gọi AI API.",
-    "rootTopics": {
-      "palace": "Gyeongbokgung",
-      "hanbok": "Hanbok",
-      "color": "Màu cá nhân",
-      "food": "Ẩm thực & quán cà phê",
-      "culture": "Văn hóa Hàn Quốc",
-      "credits": "Tín dụng & thanh toán",
-      "privacy": "Quyền riêng tư"
-    }
-  },
-  "Consent": {
-    "photo": "Chỉ sử dụng ảnh của tôi cho tính năng màu cá nhân mà tôi đã yêu cầu.",
-    "birth": "Chỉ sử dụng thông tin sinh của tôi cho phần diễn giải văn hóa mà tôi đã yêu cầu.",
-    "optionalBirthTime": "Giờ sinh là tùy chọn. Nếu không chắc, hãy chọn “Tôi không biết”."
-  },
-  "Credits": {
-    "freeHelp": "Trợ giúp nhanh hoàn toàn miễn phí và không sử dụng AI API.",
-    "beforeCharge": "Mọi tính năng trả phí đều hiển thị số tín dụng cố định trước khi bạn xác nhận."
-  }
+  "Global":{"nav":{"myColor":"Màu cá nhân","hanbok":"Hanbok","gyeongbokgung":"Gyeongbokgung","kCulture":"Văn hóa Hàn Quốc","credits":"Tín dụng"},"language":"Ngôn ngữ","footerTagline":"Trải nghiệm du lịch và văn hóa Hàn Quốc được cá nhân hóa cho du khách quốc tế."},
+  "QuickHelp":{"ariaLabel":"Trợ giúp nhanh về Hàn Quốc miễn phí","badge":"MIỄN PHÍ · KHÔNG DÙNG AI API","launcherTitle":"Trợ giúp nhanh","launcherSubtitle":"Giải đáp miễn phí","close":"Đóng Trợ giúp nhanh","back":"Quay lại","topics":"Chủ đề","zeroCredits":"0 tín dụng","questionsAbout":"Câu hỏi về {title}","costAria":"Chi phí: 0 tín dụng","nodes":{
+    "root":{"title":"Trợ giúp nhanh về Hàn Quốc","answer":"Xin chào! Hãy chọn chủ đề bạn muốn biết và tôi sẽ trả lời ngay. Tính năng này miễn phí và không gọi AI API.","choices":{"palace":"Gyeongbokgung","hanbok":"Hanbok","color":"Màu cá nhân","food":"Ẩm thực & quán cà phê","culture":"Văn hóa Hàn Quốc","credits":"Tín dụng & thanh toán","privacy":"Quyền riêng tư"}},
+    "palace":{"title":"Gyeongbokgung","answer":"Hãy chọn phần bạn muốn được hỗ trợ khi tham quan cung điện.","choices":{"hanbok":"Có cần mặc Hanbok không?","time":"Nên dành bao lâu?","nearby":"Gần đây có gì để đi?"},"cta":"Mở hướng dẫn Gyeongbokgung"},
+    "palaceHanbok":{"title":"Có cần mặc Hanbok không?","answer":"Không. Hanbok là lựa chọn tự nguyện. Nhiều du khách thuê để trải nghiệm và chụp ảnh, nhưng mặc trang phục bình thường hoàn toàn ổn. Giá vé và giờ mở cửa có thể thay đổi, vì vậy hãy kiểm tra thông tin chính thức mới nhất trước khi đi.","cta":"Tìm phong cách Hanbok"},
+    "palaceTime":{"title":"Nên dành bao lâu?","answer":"Nếu chỉ tham quan các điểm chính trong cung điện, khoảng 1–2 giờ là hợp lý. Nếu muốn thuê Hanbok, chụp ảnh, ăn uống, đi cà phê và khám phá khu vực lân cận, khoảng nửa ngày sẽ thoải mái hơn.","cta":"Khám phá khu vực cung điện"},
+    "palaceNearby":{"title":"Gần đây có gì để đi?","answer":"Seochon, Bukchon, Anguk, Insadong và Gwanghwamun đều ở gần. Thứ tự phù hợp nhất phụ thuộc vào thời gian còn lại, khả năng đi bộ và việc bạn có cần trả Hanbok đúng giờ hay không.","cta":"Khám phá xung quanh"},
+    "hanbok":{"title":"Trợ giúp Hanbok","answer":"Một lựa chọn Hanbok tốt nên cân bằng màu sắc, không khí ảnh, thời tiết, độ thuận tiện khi di chuyển và thời gian mặc.","choices":{"colors":"Nên thử màu nào?","style":"Truyền thống hay hiện đại?","comfort":"Làm sao mặc thoải mái?"},"cta":"Mở công cụ ghép Hanbok"},
+    "hanbokColors":{"title":"Nên thử màu nào?","answer":"Bắt đầu với những màu trông hài hòa gần khuôn mặt, rồi chọn phần dưới theo phong cách ảnh bạn muốn. Tương phản nhẹ tạo cảm giác dịu dàng, lãng mạn; tương phản mạnh nổi bật hơn trong ảnh cung điện. Màu cá nhân chỉ là gợi ý, không phải danh sách màu bị cấm.","cta":"Tìm màu của tôi"},
+    "hanbokStyle":{"title":"Truyền thống hay hiện đại?","answer":"Hãy chọn theo trải nghiệm bạn muốn. Dáng truyền thống hợp với chuyến tham quan thiên về di sản, còn kiểu hiện đại hoặc fusion phù hợp với ngày chụp ảnh thời trang. Chúng tôi sẽ ghi rõ nhóm phong cách để bạn dễ so sánh.","cta":"So sánh phong cách Hanbok"},
+    "hanbokComfort":{"title":"Làm sao mặc thoải mái?","answer":"Nếu thuê lâu, hãy cân nhắc thời tiết, độ dài tay áo, độ phồng của váy, giày dép, mức độ che phủ và quãng đường đi bộ trước các chi tiết trang trí. Sau giờ đầu tiên, sự thoải mái thường quan trọng hơn lúc thử đồ.","cta":"Mở công cụ ghép Hanbok"},
+    "color":{"title":"Màu cá nhân","answer":"Tính năng màu chỉ tập trung vào các đặc điểm màu nhìn thấy được dưới ánh sáng hiện tại.","choices":{"what":"Phân tích những gì?","correct":"Nếu kết quả không đúng thì sao?","sensitive":"Có xác định chủng tộc hay dân tộc không?"},"cta":"Bắt đầu màu cá nhân"},
+    "colorWhat":{"title":"Phân tích những gì?","answer":"Mục tiêu là ước tính xu hướng ấm/trung tính/lạnh, độ sáng sâu và độ tương phản có thể nhìn thấy, sau đó gợi ý các màu đáng thử gần khuôn mặt. Ánh sáng có thể thay đổi kết quả, nên độ tin cậy và chỉnh sửa thủ công rất quan trọng.","cta":"Bắt đầu màu cá nhân"},
+    "colorCorrect":{"title":"Nếu kết quả không đúng thì sao?","answer":"Hãy dùng chỉnh sửa thủ công hoặc chụp lại trong ánh sáng trung tính hơn. Kết quả chỉ là công cụ hỗ trợ phối đồ, không phải chẩn đoán khách quan, nên sở thích của bạn luôn được ưu tiên.","cta":"Mở công cụ màu"},
+    "colorSensitive":{"title":"Có xác định chủng tộc hay dân tộc không?","answer":"Không. Sản phẩm không được thiết kế để suy đoán chủng tộc, dân tộc, quốc tịch, tôn giáo, sức khỏe hoặc mức độ hấp dẫn từ ảnh selfie. Phân tích ảnh chỉ giới hạn ở tín hiệu tạo kiểu cần cho hướng dẫn màu sắc.","cta":"Xem nguyên tắc phân tích màu"},
+    "food":{"title":"Ẩm thực & quán cà phê","answer":"Khám phá miễn phí giúp thu hẹp lựa chọn gần bạn theo quãng đường đi bộ, ngân sách, kiểu món và vị trí trên tuyến đi. Giờ mở cửa, thực đơn và thông tin ăn kiêng phải đến từ dữ liệu đã xác minh, không phải suy đoán của AI.","cta":"Khám phá ẩm thực quanh Gyeongbokgung"},
+    "culture":{"title":"Văn hóa Hàn Quốc","answer":"Korea Concierge giới thiệu con giáp Hàn Quốc và Saju như trải nghiệm văn hóa và giải trí. Phần tính toán Saju phải dùng quy tắc xác định; AI chỉ dùng cho phần diễn giải tùy chọn, không dùng cho lời khuyên có ảnh hưởng lớn đến cuộc sống.","cta":"Mở phòng trải nghiệm K-Culture"},
+    "credits":{"title":"Tín dụng & thanh toán","answer":"Khám phá du lịch cơ bản và Trợ giúp nhanh là miễn phí. Tín dụng dành cho cá nhân hóa chuyên sâu. Mọi thao tác trả phí đều hiển thị chi phí tín dụng cố định trước khi xác nhận; tác vụ thất bại phải giải phóng hoặc hoàn lại tín dụng đã giữ.","cta":"Xem Trip Pass"},
+    "privacy":{"title":"Quyền riêng tư","answer":"Trợ giúp nhanh chạy hoàn toàn bằng nội dung cố định trên website và không gửi câu hỏi cho nhà cung cấp AI. Ảnh selfie và thông tin sinh có quy tắc riêng về quyền riêng tư, sự đồng ý rõ ràng và xử lý dữ liệu tối thiểu."}
+  }},
+  "Consent":{"photo":"Chỉ sử dụng ảnh của tôi cho tính năng màu cá nhân mà tôi đã yêu cầu.","birth":"Chỉ sử dụng thông tin sinh của tôi cho phần diễn giải văn hóa mà tôi đã yêu cầu.","optionalBirthTime":"Giờ sinh là tùy chọn. Nếu không chắc, hãy chọn “Tôi không biết”."},
+  "Credits":{"freeHelp":"Trợ giúp nhanh hoàn toàn miễn phí và không sử dụng AI API.","beforeCharge":"Mọi tính năng trả phí đều hiển thị số tín dụng cố định trước khi bạn xác nhận."}
 }
