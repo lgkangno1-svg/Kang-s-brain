@@ -1,6 +1,5 @@
 import type {Metadata} from 'next';
 
-import {LegacyShell} from './LegacyShell';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -12,12 +11,9 @@ export const metadata: Metadata = {
   description: 'Personal color, Hanbok matching, palace routes, food and Korean culture for international visitors.',
 };
 
+// Document shells live in the locale and legacy route groups so each tree can
+// own the correct <html lang>. Keep this top-level layout as a shared metadata
+// and global-style boundary only.
 export default function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
-  return (
-    <html lang="en">
-      <body>
-        <LegacyShell>{children}</LegacyShell>
-      </body>
-    </html>
-  );
+  return children;
 }

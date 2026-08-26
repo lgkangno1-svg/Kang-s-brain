@@ -40,23 +40,27 @@ export default async function LocaleLayout({
   ] as const;
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <div lang={definition.htmlLang} data-locale={locale}>
-        <header className="siteHeader">
-          <Link className="brand" href="/">KOREA CONCIERGE</Link>
-          <nav aria-label="Primary navigation">
-            {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-          </nav>
-          <LanguageSwitcher />
-        </header>
-        {children}
-        <footer className="siteFooter">
-          <strong>Korea Concierge</strong>
-          <p>{t('footerTagline')}</p>
-          <span>korea.avocadoss.co.kr</span>
-        </footer>
-        <QuickHelp localePrefix={`/${locale}`} />
-      </div>
-    </NextIntlClientProvider>
+    <html lang={definition.htmlLang}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          <div data-locale={locale}>
+            <header className="siteHeader">
+              <Link className="brand" href="/">KOREA CONCIERGE</Link>
+              <nav aria-label="Primary navigation">
+                {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+              </nav>
+              <LanguageSwitcher />
+            </header>
+            {children}
+            <footer className="siteFooter">
+              <strong>Korea Concierge</strong>
+              <p>{t('footerTagline')}</p>
+              <span>korea.avocadoss.co.kr</span>
+            </footer>
+            <QuickHelp localePrefix={`/${locale}`} />
+          </div>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
