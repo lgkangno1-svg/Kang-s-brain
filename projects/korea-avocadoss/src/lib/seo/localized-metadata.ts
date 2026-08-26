@@ -36,16 +36,19 @@ export function localizedPublicUrl(locale: P0Locale, path: PublicLocalePath): st
   return `${SITE_ORIGIN}/${locale}${path}`;
 }
 
-export function localizedAlternates(locale: string, path: PublicLocalePath): Metadata['alternates'] {
-  const currentLocale = requireP0Locale(locale);
-  const languages = Object.fromEntries(
+export function localizedLanguageAlternates(path: PublicLocalePath): Record<string, string> {
+  return Object.fromEntries(
     P0_LOCALES.map((candidate) => [HREFLANG[candidate], localizedPublicUrl(candidate, path)]),
   );
+}
+
+export function localizedAlternates(locale: string, path: PublicLocalePath): Metadata['alternates'] {
+  const currentLocale = requireP0Locale(locale);
 
   return {
     canonical: localizedPublicUrl(currentLocale, path),
     languages: {
-      ...languages,
+      ...localizedLanguageAlternates(path),
       'x-default': localizedPublicUrl(DEFAULT_LOCALE, path),
     },
   };
