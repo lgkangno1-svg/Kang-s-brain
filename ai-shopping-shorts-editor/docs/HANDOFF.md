@@ -41,7 +41,7 @@
 - 동일 segment 중복 사용을 기본 금지한다.
 - 불필요한 동일 source 연속 사용을 줄인다.
 - MP4, EDL, QA가 항상 같은 cut version을 가리킨다.
-- malformed AI 응답, 손상 cache, partial upload, 부분 저장, 동시 mutation이 정상 결과처럼 남지 않는다.
+- malformed AI 응답, 손상 cache, partial upload, 부분 저장, 동시 mutation, stale metadata snapshot이 정상 결과처럼 남지 않는다.
 
 ## 3. 제품 범위 — CUT ONLY
 
@@ -78,8 +78,8 @@
 - Active PR: `#1 — feat: bootstrap AI Shopping Shorts Editor MVP`
 - Active branch: `feat/ai-shopping-shorts-editor-bootstrap`
 - Base: `main`
-- Loop 28 시작 HEAD: `7dffc379b05f0cf3c05ea09fe323c8f762bdb4eb`
-- Loop 28 staged-upload code HEAD: `7ba489d80f6b0a4a97fa9ca6747a100113e44ec8`
+- Loop 29 시작 HEAD: `cf890f8b83f31e8554925734c9749b221e06c0ee`
+- Loop 29 fresh-snapshot code/test HEAD: `9fc47d803d8e9bbf3300c3a296d5df7150b1c313`
 
 SHA는 snapshot이다. 다음 작업자는 반드시 PR 최신 HEAD를 다시 확인한다.
 
@@ -88,6 +88,8 @@ SHA는 snapshot이다. 다음 작업자는 반드시 PR 최신 HEAD를 다시 �
 ```text
 Browser UI
   -> local Node HTTP server
+    -> same-project mutation claim
+      -> fresh project.json snapshot read
     -> streaming uploads
       -> hidden unique .part staging file
       -> completed upload rename
@@ -130,11 +132,14 @@ Review UI
 
 충돌 시 HTTP 409. 서로 다른 project는 병렬 실행 가능하다. read-only status/EDL/segments/QA/video endpoint는 이 lock으로 막지 않는다.
 
+**Loop 29 이후 추가 불변조건:** mutation lock을 잡았다는 사실만으로 충분하지 않다. mutating route는 lock 획득 후 `project.json`을 다시 읽은 **fresh snapshot**만 수정/실행에 사용한다. pre-lock common route snapshot은 존재 확인용일 뿐 mutation source of truth가 아니다. snapshot read 자체가 실패하면 owner token을 해제한다.
+
 관련 파일:
 
 - `src/core/project-job.mjs`
 - `src/core/project-mutation.mjs`
 - `src/server.mjs`
+- `test/project-mutation.test.mjs`
 
 ### Upload durability boundary — Loop 28
 
@@ -207,8 +212,8 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 
 - 2~6개 영상 업로드
 - disk streaming upload
-- **hidden unique staging upload + completed-file publish**
-- **metadata persistence 실패 시 published upload rollback**
+- hidden unique staging upload + completed-file publish
+- metadata persistence 실패 시 published upload rollback
 - FFprobe metadata 검사
 - FFmpeg scene-score 기반 장면 탐지
 - 쇼츠용 segment normalization
@@ -242,6 +247,7 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 - Mini PC self-hosted runner 설치/상태/제거 도구
 - public repo 외부 fork PR의 개인 self-hosted runner 실행 방지
 - 동일 project upload/run/replace mutation serialization
+- **mutation claim 이후 fresh project snapshot 재조회**
 - living HANDOFF 체계
 
 ## 9. Loop Engineering 마일스톤
@@ -275,33 +281,33 @@ API key가 있는 실제 AI 모드에서는 Vision/Planner/Judge protocol failur
 25. living HANDOFF 체계 도입
 26. same-project run/replace synchronous serialization
 27. upload/run/replace 공통 mutation serialization
-28. **upload staging + unique publish path + metadata-failure rollback**
+28. upload staging + unique publish path + metadata-failure rollback
+29. **mutation claim 후 fresh `project.json` snapshot 재조회로 stale overwrite 차단**
 
-## 10. Loop 28 변경 요약
+## 10. Loop 29 변경 요약
 
 ### 문제
 
-기존 upload는 HTTP stream을 곧바로 `inputs/<final-name>`에 `wx`로 기록했다. 예외가 발생하면 삭제했지만 프로세스 종료/전원 장애는 catch/finally를 실행하지 않으므로 partial file이 final filename으로 남을 수 있었다. project.json에는 없더라도 다음 동일 upload path와 충돌해 `EEXIST`를 만들 가능성이 있었다.
+`server.mjs`는 project route에 들어오면 `/upload`, `/run`, `/replace`가 mutation token을 얻기 전에 공통 `project.json` snapshot을 먼저 읽었다. 따라서 요청 B가 revision 1을 먼저 읽은 뒤 기다리는 동안 요청 A가 lock을 잡고 video를 추가해 revision 2를 저장·해제하고, 이후 B가 lock을 얻어도 revision 1 객체를 그대로 persist하면 A의 최신 metadata를 지울 수 있었다.
+
+즉 기존 lock은 **동시 write**는 막았지만 **serialized stale write**까지 막지는 못했다.
 
 ### 해결
 
-- `src/core/upload-staging.mjs` 추가
-- upload를 hidden unique `.part`에 먼저 기록
-- stream 완료 후에만 final filename으로 rename
-- final filename에 고유 token 포함
-- rename 후 project metadata commit
-- metadata commit 실패 시 final file rollback
-- 실패한 staging은 best-effort 삭제
-- 사용자 원본/AI secret에는 변화 없음
+- `beginProjectMutationWithFreshSnapshot()` 추가
+- mutation token을 먼저 선점한 뒤 supplied `readProject()` 실행
+- read 실패 시 owner-aware token release
+- `/upload`, `/run`, `/replace` 모두 post-claim fresh snapshot 사용
+- upload prefix/video list, run script/settings/pipeline inputs, replacement project 모두 fresh object 기준
+- pre-lock common snapshot은 존재 확인용으로만 남김
 
 ### 비용 영향
 
 - OpenCode Go call/token 증가 없음
 - FFmpeg 증가 없음
-- 동일 파일시스템 rename 1회 추가
-- 작은 local filesystem bookkeeping만 증가
+- mutating request마다 작은 `project.json` read 1회 추가
 
-상세 기록: `docs/loop-history/2026-08-27-28-upload-staging-durability.md`
+상세 기록: `docs/loop-history/2026-08-27-29-fresh-project-snapshot.md`
 
 ## 11. 검증 체계
 
@@ -324,11 +330,12 @@ npm run demo
 
 - Loop 26 project-job helper: 3/3 PASS
 - Loop 27 project-mutation helper: 3/3 PASS
-- Loop 28 `upload-staging.mjs` syntax: PASS
-- Loop 28 targeted runtime:
-  - unique staging/final path: PASS
-  - metadata persistence failure removes staged/final artifact: PASS
-  - successful persistence keeps final artifact: PASS
+- Loop 28 upload staging targeted validation: PASS
+- Loop 29 fresh-snapshot isolated Node regression: PASS
+  - token is owned during snapshot read
+  - stale revision 1 vs fresh revision 2 distinguished
+  - latest uploaded video visible in fresh snapshot
+  - read failure releases mutation ownership
 
 현재 자동 실행환경에서 full repository clone/npm check/demo가 항상 가능한 것은 아니다. 실행하지 못한 full check를 성공했다고 주장하지 않는다. GitHub Actions는 추가 evidence이지 제품 patch의 필수 gate가 아니다. Mini PC runner가 online이면 `npm run check`와 실제 FFmpeg `npm run demo`를 수행한다.
 
@@ -360,6 +367,7 @@ npm run demo
 - public repository self-hosted runner에서 외부 fork 코드를 자동 실행하지 않는다.
 - AI response는 ID/type/range contract를 검증한 뒤 사용한다.
 - partial upload는 project metadata에 publish하지 않는다.
+- mutating route는 lock 전 snapshot을 persist source로 사용하지 않는다.
 
 ## 14. 알려진 한계 / 리스크
 
@@ -369,8 +377,9 @@ npm run demo
 4. 사용자 manual 선택을 장기 학습하는 preference model은 없다.
 5. process restart 후 in-memory job/mutation status는 사라진다.
 6. crash가 upload final rename 직후 project metadata commit 전에 발생하면 **완전하지만 unreferenced orphan input**이 남을 수 있다. 현재는 정상 input으로 오인되거나 다음 upload를 막지 않지만 stale cleanup 정책은 미구현이다.
-7. mutation claim보다 앞서 공통 project snapshot을 읽는 server 경로가 있어, 극단적인 interleaving에서 stale project snapshot 가능성이 있는지 재검토할 가치가 있다.
-8. 전체 실제 상품영상 품질 benchmark corpus는 아직 부족하다.
+7. 오래된 hidden `.upload-*.part`의 startup cleanup 정책은 아직 없다. age/provenance evidence 없이 사용자 media를 자동 삭제하면 안 된다.
+8. interrupted run의 work/output artifact provenance/recovery는 추가 점검이 필요하다.
+9. 전체 실제 상품영상 품질 benchmark corpus는 아직 부족하다.
 
 ## 15. 개발 로드맵
 
@@ -386,11 +395,12 @@ npm run demo
 - transactional manual rerender
 - project mutation serialization
 - staged upload publish
+- **post-claim fresh project snapshot**
 
 남은 후보:
 
-- mutation ownership보다 앞선 stale project read 가능성 검토
-- stale `.part` / orphan full upload의 안전한 startup recovery 정책
+- stale `.upload-*.part`의 안전한 startup recovery 정책
+- metadata에 없는 full orphan upload의 provenance/age 정책
 - interrupted run의 work/output artifact provenance 점검
 - disk-full/permission failure injection coverage
 
@@ -430,12 +440,12 @@ npm run demo
 
 가장 먼저 검토할 후보:
 
-**`server.mjs`가 project mutation을 claim하기 전에 `project.json`을 읽는 현재 순서가, 거의 동시에 요청이 들어오는 극단적 interleaving에서 stale project snapshot을 허용하는지 검증한다.** 실제 race가 확인되면 mutation claim 이후 최신 project를 다시 읽는 최소 수정이 우선이다.
+**오래된 hidden `.upload-*.part`를 startup에서 언제 안전하게 삭제할 수 있는지 evidence-based recovery 정책을 설계한다.** 최소한 현재 `project.json`이 참조하지 않는 staging naming pattern, 충분한 age threshold, active process와 충돌하지 않는 startup-only 조건을 요구해야 한다.
 
 그 다음:
 
-- 오래된 `.upload-*.part`를 언제 안전하게 지울 수 있는지 정책화
-- metadata에 없는 full orphan file은 자동 삭제하지 말고 provenance/age evidence를 먼저 정의
+- metadata에 없는 full orphan media는 자동 삭제하지 말고 provenance/age evidence를 먼저 정의
+- interrupted run의 work/output artifact가 마지막 정상 결과와 구분되는지 검증
 
 ## 17. 새 AI/개발자 작업 시작 체크리스트
 
@@ -459,4 +469,4 @@ Mini PC self-hosted CI를 아직 등록하지 않았다면 사용자가 Mini PC�
 
 ## 19. 인수인계 핵심 한 문장
 
-**이 프로젝트는 AI가 의미적으로 좋은 컷을 고르고, 결정론적 검증/캐시/transaction/staging/FFmpeg가 그 결정을 싸고 안전하게 실행하는 CUT ONLY 쇼츠 편집기로 발전시키며, 모든 의미 있는 변경은 GitHub source + loop-history + 이 HANDOFF에 남긴다.**
+**이 프로젝트는 AI가 의미적으로 좋은 컷을 고르고, 결정론적 검증/캐시/transaction/staging/fresh-snapshot/FFmpeg가 그 결정을 싸고 안전하게 실행하는 CUT ONLY 쇼츠 편집기로 발전시키며, 모든 의미 있는 변경은 GitHub source + loop-history + 이 HANDOFF에 남긴다.**
