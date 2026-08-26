@@ -56,11 +56,7 @@ Localization means adapting practical needs, acquisition/search channels, travel
 
 ### Saju
 
-Birth time is optional and supports:
-
-- exact time;
-- rough time band;
-- `I don't know`.
+Birth time is optional and supports exact time, rough time band, and `I don't know`.
 
 Never fabricate a missing birth hour and never ask AI to infer it from personality. Unknown time produces only deterministic components that do not require the hour pillar, is clearly labelled reduced-scope / birth time not provided, and must be priced below full scope when monetized. Approximate time must disclose boundary uncertainty.
 
@@ -68,14 +64,7 @@ Request birth city/timezone only when deterministic calendar/time conversion nee
 
 ### Free Quick Help
 
-Quick Help must remain:
-
-- 0 credits;
-- 0 AI API calls;
-- no external data transfer;
-- button/topic-tree based and conversational in feel;
-- fully localized in P0 languages;
-- a router into the appropriate free or paid feature.
+Quick Help must remain 0 credits, 0 AI API calls, no external data transfer, button/topic-tree based, fully localized in P0 languages, and a router into the appropriate free or paid feature.
 
 Do not add RAG, embeddings or an LLM unless the knowledge base becomes large enough that measured UX data demonstrates a real need.
 
@@ -87,14 +76,7 @@ Do not guess CSP origins before real hosting/payment/analytics integrations are 
 
 ### Token and supplier-cost efficiency
 
-Before every AI call attempt, in order:
-
-1. deterministic calculation;
-2. curated/static answer;
-3. safe cache;
-4. rule-based ranking/filtering;
-5. browser-local computation;
-6. only then the cheapest qualified Chinese OpenRouter model.
+Before every AI call attempt, in order: deterministic calculation; curated/static answer; safe cache; rule-based ranking/filtering; browser-local computation; only then the cheapest qualified Chinese OpenRouter model.
 
 Use compact IDs/enums/derived facts rather than full records or histories. Pre-filter candidates, normally to no more than 5–8. Use feature-specific short system prompts and structured outputs. Do not resend an entire itinerary for a small replan. Bound history and summarize only when continuity genuinely requires it.
 
@@ -104,12 +86,7 @@ Every paid AI path must have hard input/output token ceilings, maximum provider 
 
 `docs/CREDIT_ECONOMICS.md` is the monetization source of truth and supersedes older PRD pack hypotheses.
 
-Launch assumption:
-
-- one-time Basic / Advanced / Ultra Trip Passes;
-- optional top-ups;
-- no subscription unless conversion data later justifies one;
-- no ML-personalized pricing at launch.
+Launch assumption: one-time Basic / Advanced / Ultra Trip Passes, optional top-ups, no subscription unless conversion data later justifies one, and no ML-personalized pricing at launch.
 
 Every paid action shows fixed credits before execution. Wallet mutations must use an immutable server-authoritative ledger with atomic reserve/capture/release/refund semantics. Supplier-cost analysis must include payment funding fees, retries/fallbacks and conservative payment/FX reserves.
 
@@ -160,71 +137,31 @@ Completed baseline documents for product, architecture, AI routing/cost, credit 
 
 ### Step 1 — Free Quick Help + market/locale registry ✅
 
-Completed by static review:
-
-- globally mounted deterministic Quick Help;
-- 0 credits / 0 AI / no sensitive-input collection;
-- P0 seed dictionaries;
-- keyboard `Esc`, focus movement/return and ARIA fixes;
-- free/consent/credit copy including unknown birth-time guidance.
+Completed by static review: globally mounted deterministic Quick Help; 0 credits / 0 AI / no sensitive-input collection; P0 seed dictionaries; keyboard/focus/ARIA fixes; free/consent/credit copy including unknown birth-time guidance.
 
 ### Step 2A — dependency + request/routing foundation ✅
 
-Completed:
-
-- `next-intl@4.13.4` exactly pinned after upstream verification;
-- Next.js plugin wired while retaining security headers;
-- P0 locale registry and default `en`;
-- validated request locale/message loading with fail-closed behavior;
-- runtime translation model rejected for production localization.
+Completed: `next-intl@4.13.4` exactly pinned; Next.js plugin wired while retaining security headers; P0 locale registry/default `en`; validated locale/message loading with fail-closed behavior; runtime translation model rejected.
 
 ### Step 2B-1 — locale routes + navigation shell ✅ by static review
 
-Completed:
-
-- locale-preserving navigation helpers;
-- accessible language selector retaining pathname;
-- validated `[locale]` layout/home shell;
-- temporary `LegacyShell` for unprefixed migration safety;
-- locale-preserving Quick Help CTAs;
-- temporary localized route bridges;
-- redirect/proxy cutover intentionally disabled until parity/build evidence exists.
+Completed: locale-preserving navigation; accessible language selector retaining pathname; validated `[locale]` layout/home shell; temporary `LegacyShell`; locale-preserving Quick Help CTAs; temporary localized route bridges; redirect/proxy cutover intentionally disabled pending parity/build evidence.
 
 ### Step 2B-2 — complete Quick Help localization + QA ✅
 
-Completed:
-
-- removed hard-coded English Quick Help answers/choices/CTA/accessibility strings;
-- graph contains message keys instead of UI copy;
-- full P0 Quick Help tree localized;
-- deterministic missing/extra/blank dictionary-key validation;
-- build command gates on i18n checks;
-- no translation API/model/RAG/embedding added.
+Completed: hard-coded English removed from the Quick Help tree; graph contains message keys; full P0 tree localized; deterministic dictionary validation; build gates on i18n checks; no translation API/model/RAG/embedding added.
 
 ### Step 2B-3 — localized landing + first native public route ✅ by source review
 
-Completed:
-
-- P0 localized landing marketing copy moved to static public dictionaries;
-- locale landing English fallback removed;
-- `/[locale]/culture` converted from English bridge to native localized page;
-- Saju culture copy explicitly states birth time is optional and is never guessed;
-- public-copy dictionaries added to parity validation;
-- deterministic Quick Help graph/message-key checker added;
-- no new runtime AI cost, package or sensitive-data flow.
+Completed: P0 localized landing copy; locale landing English fallback removed; `/[locale]/culture` natively localized; Saju copy states birth time is optional/never guessed; public dictionaries added to parity validation; Quick Help graph/message-key checker added; no new runtime AI cost/package/sensitive-data flow.
 
 ## 7. Current verification state
 
-The source state and commits have been reviewed through GitHub. However, the previous execution environment could not resolve `github.com` from its shell when attempting a clean clone, so a clean `npm install`, `npm run check:i18n` and `next build` have not yet been proven there. GitHub also did not expose a CI status check for the project at that point.
+Source state and commits have been reviewed through GitHub. The previous execution environment could not resolve `github.com` from its shell when attempting a clean clone, so clean `npm install`, `npm run check:i18n` and `next build` have not yet been proven there. GitHub also did not expose a CI status check for the project at that point.
 
-Therefore:
+Therefore static/source review evidence exists, but production build success and production deployment are **not** claimed, and locale redirect/canonical cutover remains deferred.
 
-- static/source review evidence exists;
-- production build success is **not** claimed;
-- production deployment is **not** claimed;
-- locale redirect/canonical cutover remains deferred.
-
-A future agent with a working checkout/network should run the real install/check/build path before upgrading any gate that depends on build evidence.
+A future agent with a working checkout/network should run the real install/check/build path before upgrading any build-dependent gate.
 
 ## 8. Current work position
 
@@ -243,41 +180,32 @@ Do not skip ahead to Saju core, wallet/payment or later features unless Step 2 i
 ## 9. Planned roadmap after the current slice
 
 ### Step 2C — locale cutover and SEO completion
-
-Activate locale negotiation only after localized destinations build. Move document-level language handling to locale-root architecture, remove the temporary legacy shell, add canonical/hreflang/x-default, locale-aware sitemap, migrate remaining public routes and eliminate English-only paid-flow dead ends.
+Activate locale negotiation only after localized destinations build; move language handling to locale-root architecture; remove temporary legacy shell; add canonical/hreflang/x-default and locale sitemap; migrate remaining public routes; eliminate English-only paid-flow dead ends.
 
 **Step 2 gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates; existing links do not regress.
 
 ### Step 3 — Saju deterministic core
-
-Implement exact/approximate/unknown birth-time UX, deterministic calendar/pillar architecture, 3-pillar reduced scope for unknown time, reduced pricing, privacy-preserving derived LLM payloads, culture/entertainment framing and deletion controls.
+Exact/approximate/unknown birth-time UX; deterministic calendar/pillars; 3-pillar reduced scope; reduced pricing; privacy-preserving derived LLM payloads; culture/entertainment framing and deletion controls.
 
 ### Step 4 — Auth + authoritative wallet
-
 Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits and audit telemetry.
 
 ### Step 5 — international payment foundation
-
-Provider abstraction, foreign cards + PayPal target, server-authoritative pricing, verified callbacks, receipts/refunds; finalize CSP origins only after providers are real.
+Provider abstraction, foreign cards + PayPal target, server-authoritative pricing, verified callbacks, receipts/refunds; CSP origins only after providers are real.
 
 ### Step 6 — Personal-color v1
-
 Browser/local-first analysis, lighting checks, manual correction, no sensitive identity inference, consent/ZDR gates for remote vision, multilingual results.
 
 ### Step 7 — Hanbok recommendation v1
-
-Deterministic ranking first with color/mood/weather/comfort inputs and structured reasons. **Do not start deferred bulk Hanbok visual asset generation/collection unless the user separately requests it.**
+Deterministic ranking first with color/mood/weather/comfort and structured reasons. **Do not start deferred bulk Hanbok visual asset generation/collection unless the user separately requests it.**
 
 ### Step 8 — Gyeongbokgung area discovery
-
 Verified place model, filters, walking/route ranking, time-sensitive facts separated from editorial copy and verified dietary/accessibility/language-service claims.
 
 ### Step 9 — itinerary + premium concierge
-
 Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings and source-fact validation.
 
 ### Step 10 — analytics, market adaptation and expansion
-
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, market experiments and P1/P2 expansion from measured demand.
 
 ## 10. Deferred / explicitly out of scope for now
@@ -293,27 +221,23 @@ Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/
 
 ## 11. Mandatory workflow for every future development run
 
-Every agent/developer should execute this sequence:
-
 1. Inspect latest `main`, project tree and recent commits before editing.
-2. Compare current source against `IMPLEMENTATION_ROADMAP.md` and this handoff; assume another AI/developer may have changed it.
-3. Re-evaluate the next roadmap slice from first principles if evidence changed, but preserve completed gates unless a regression requires reopening them.
+2. Compare source against `IMPLEMENTATION_ROADMAP.md` and this handoff; assume another AI/developer may have changed it.
+3. Re-evaluate the next slice if evidence changed, while preserving completed gates unless a regression requires reopening them.
 4. Before materially revising the selected feature/subfeature, search GitHub and Hugging Face and update `OPEN_SOURCE_DISCOVERY.md` with adopt/adapt/reject reasoning.
-5. Implement only the next highest-value reviewable slice; do not build the whole product in one run.
-6. Run all feasible regression checks across navigation, mobile, accessibility, i18n, privacy, security, credits/payment, performance, SEO/AEO/GEO, AI cost routing, analytics and dependency/license risk.
-7. Run real tests/build where the environment permits. Distinguish static review from executable evidence.
+5. Implement only the next highest-value reviewable slice.
+6. Run feasible regression checks across navigation, mobile, accessibility, i18n, privacy, security, credits/payment, performance, SEO/AEO/GEO, AI cost routing, analytics and dependency/license risk.
+7. Run real tests/build where possible and distinguish static review from executable evidence.
 8. Update the relevant source documents.
-9. **Update this `PROJECT_HANDOFF.md` in the same run**: last-updated date, current step, completed work, evidence/tests, decisions, blockers/risks, user action if any and exact next slice.
-10. Commit clearly. Do not overwrite concurrent work or revert another agent's improvements merely to restore an older remembered state.
+9. **Update this `PROJECT_HANDOFF.md` in the same run** with date, current step, completed work, evidence/tests, decisions, blockers/risks, user action and exact next slice.
+10. Commit clearly. Never overwrite concurrent improvements merely to restore an older remembered state.
 
-## 12. Handoff update template
+## 12. Required handoff fields for each material run
 
-For each material implementation run, append or refresh the current-state sections above and add a concise entry below.
-
-Each entry should record:
+Record:
 
 - date and commit SHA(s);
-- roadmap slice completed or revisited;
+- roadmap slice completed/revisited;
 - files/features materially changed;
 - tests/build/static evidence;
 - GitHub/Hugging Face sources reviewed and adopt/adapt/reject result;
@@ -321,17 +245,26 @@ Each entry should record:
 - AI token/API/supplier-cost impact;
 - credit/margin impact;
 - SEO/AEO/GEO/i18n/accessibility impact;
-- known regressions or blockers;
+- known regressions/blockers;
 - smallest user action required, or `None`;
 - next exact roadmap slice.
 
 ## 13. Change log
 
-### 2026-08-26 — Living handoff established
+### 2026-08-26 — Living handoff established and workflow enforced
 
-- Created this document after Step 2B-3.
-- Latest observed `main` before creation: `d0a99b6cb708fa2d2fe149e6134b2696db905cb9` (`docs: record Step 2B-3 discovery and decisions`).
-- Confirmed no prior handoff file existed under the repository search.
+- Latest observed `main` before this documentation run: `d0a99b6cb708fa2d2fe149e6134b2696db905cb9` (`docs: record Step 2B-3 discovery and decisions`).
+- Confirmed no prior handoff file existed.
+- Created `PROJECT_HANDOFF.md` in commit `c0725369d31e25d900423c659eff3bed91291c3a`.
+- Updated `IMPLEMENTATION_ROADMAP.md` to make handoff maintenance mandatory in commit `0f4fcfbeaf27be796a57eac1eca91ec9e9df24be`.
+- Updated project `README.md` so future agents/developers are directed to inspect latest main, read the handoff first, follow the roadmap, and update the handoff in every material run in commit `87082f3f5aab895201fe31662e0942ad67d434fc`.
 - Current next implementation slice remains Step 2B-4.
-- No runtime code, dependency, AI call, payment behavior, credit economics or sensitive-data flow changed by this documentation-only update.
+- Verification for this documentation-only slice: GitHub source/commit inspection and successful repository writes. No runtime code changed, so no new executable behavior was introduced by this slice.
+- Open-source discovery: not rerun because no product feature/subfeature or dependency was implemented/revised; this slice only establishes documentation/process control.
+- Security/privacy impact: no data path or secret handling changed; the handoff makes security/privacy review mandatory on future runs.
+- AI/token/supplier-cost impact: 0 new AI calls, 0 runtime token cost, 0 new provider/model/dependency.
+- Credit/margin impact: none.
+- SEO/AEO/GEO/i18n/accessibility impact: no runtime behavior changed; future-run regression review is now explicitly required.
+- Known blockers: prior clean build/network limitation remains unchanged.
 - User action required: None.
+- Next exact roadmap slice: Step 2B-4 — native localized Gyeongbokgung discovery shell, localized metadata for native routes, safe type-safety improvements, and CJK/Thai/Vietnamese mobile overflow review.
