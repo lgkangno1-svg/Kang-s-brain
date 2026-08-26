@@ -1,0 +1,10 @@
+{
+  "Meta":{"creditsTitle":"クレジットとトリップパス","creditsDescription":"プレミアムなパーソナライズ機能を固定クレジットで利用できる、買い切り型の Korea Concierge トリップパス。"},
+  "Credits":{
+    "eyebrow":"買い切り型トリップパス · 初期リリースでは月額契約なし","title":"クレジットは一度だけ購入。価値のあるプレミアム機能にだけ使えます。","intro":"一般の旅行情報や実用的な文化ガイドは無料のままです。有料機能は実行前に固定クレジット数を表示し、モデルや token 使用量で料金が変動することはありません。","catalogStatus":"料金プレビュー","catalogNotice":"表示価格はリポジトリ内の正式なクレジットカタログに基づきます。現在はライブ決済未対応で、ウォレットと決済制御は後続ステップで実装します。","passesTitle":"トリップパスを選ぶ","passesIntro":"トリップパスは自動更新のない一回購入です。数日間の旅行には Advanced を推奨します。","creditsUnit":"クレジット","perCredit":"1クレジットあたり","tripPass":"トリップパス",
+    "plans":{"basic":{"name":"Basic","badge":"トリップパス","description":"短い旅行で少数のプレミアム機能を使う方向け。"},"advanced":{"name":"Advanced","badge":"おすすめ","description":"数日間の旅行でスタイル、文化、旅程機能を使う方向け。"},"ultra":{"name":"Ultra","badge":"1クレジット単価が最安","description":"カップル、家族、または旅行中にプレミアム機能を繰り返し使う方向け。"}},
+    "refillsTitle":"追加チャージ","refillsIntro":"追加チャージはクレジットの仕組みを理解した後の利用を想定しています。初回はトリップパスの方がお得です。","refillLabel":"一回追加","actionsTitle":"すべてのプレミアム機能で事前に固定クレジットを表示","actionsIntro":"ユーザーが支払うクレジット数は機能ごとに固定です。token 数やプロバイダー価格で予想外の変動請求は発生しません。","beforeConfirmation":"クレジット・確認前に表示",
+    "features":{"color_repeat_scan":"パーソナルカラー再スキャン","color_report":"詳細パーソナルカラーレポート","color_vision":"プレミアム写真カラー確認","hanbok_recommend":"韓服マッチ","travel_itinerary":"AI旅程作成","travel_replan":"旅程の再プラン","culture_saju_quick":"四柱の簡易文化解説","culture_saju":"四柱の詳細文化解説","culture_saju_deep":"四柱の拡張解説","concierge_standard":"韓国コンシェルジュ回答","concierge_premium":"プレミアム複数ステップ回答"},
+    "predictableTitle":"予測しやすい料金設計","serverTitle":"サーバー主導の料金とウォレット","serverBody":"ブラウザからクレジット発行、価格変更、残高編集はできません。本番ウォレットの変更はサーバーで認可します。","reserveTitle":"予約・確定・解放","reserveBody":"有料処理では固定クレジットを先に予約し、成功時のみ確定、失敗時は自動で解放します。","paymentTitle":"国際決済は後続ステップで対応","paymentBody":"海外カードと PayPal を、韓国事業者に対応した決済プロバイダー経由で提供する予定です。このページはライブ決済を意味しません。","pricingTitle":"個別の動的価格設定はしません","pricingBody":"初期価格は公開された固定価格です。国籍、プロフィール情報、ML価格モデルによって旅行者ごとの価格を変えません。","freeTitle":"役立つ無料機能は無料のまま","freeBody":"現在の方針では、一般の旅行探索、最初の基本パーソナルカラースキャン、基本の干支体験は無料です。","technicalNote":"内部のモデル・プロバイダー費用は別途監視します。旅行者が購入するのは token ではなく有用な結果です。"
+  }
+}
