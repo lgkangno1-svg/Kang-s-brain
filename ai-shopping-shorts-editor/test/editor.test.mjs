@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEdl, buildRenderArgs, chooseJudgeReplacement } from '../src/core/editor.mjs';
+import { buildEdl, buildRenderArgs, chooseJudgeReplacement, validateEdl } from '../src/core/editor.mjs';
 
 test('fallback editor keeps choosing the best remaining eligible scene', async () => {
   const beats = [
@@ -30,6 +30,19 @@ test('quality judge replacement skips segments already occupied by another beat'
   const replacement = chooseJudgeReplacement(clip, beat, segments, new Set(['s2']));
 
   assert.equal(replacement?.id, 's4');
+});
+
+test('EDL validation rejects source/program duration mismatches before render', () => {
+  const result = validateEdl([
+    {
+      beatId: 'b1', segmentId: 's1', sourceId: 'V1',
+      programStart: 0, programEnd: 1.5,
+      sourceStart: 2, sourceEnd: 3
+    }
+  ], new Map([['V1', { duration: 10 }]]));
+
+  assert.equal(result.ok, false);
+  assert.match(result.errors.join('\n'), /source\/program duration mismatch/);
 });
 
 test('renderer pins output duration to the EDL timeline instead of shortest TTS input', () => {
