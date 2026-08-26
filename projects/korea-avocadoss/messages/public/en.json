@@ -29,5 +29,26 @@
     "sajuText": "Birth time is optional. Exact time, a rough time band and ‘I don’t know’ are all valid paths; missing time is never guessed.",
     "colorTitle": "Color connection",
     "colorText": "Traditional lucky-color storytelling stays clearly separate from personal-color styling guidance."
+  },
+  "Gyeongbokgung": {
+    "eyebrow": "Gyeongbokgung · Launch area",
+    "title": "Rent, photograph, explore and eat — without losing your return time.",
+    "intro": "Build a realistic palace visit around your available time, Hanbok rental return, photo priorities, walking comfort and nearby food or café stops.",
+    "routeModes": "Route modes",
+    "oneHourTitle": "Photo sprint",
+    "oneHourText": "A short palace route with a safe Hanbok rental-return buffer.",
+    "twoHourTitle": "Palace + signature photos",
+    "twoHourText": "A balanced route for first-time visitors with time for key photo stops.",
+    "fourHourTitle": "Palace + neighborhood + food",
+    "fourHourText": "Add Seochon or Bukchon plus a café or meal based on your walking comfort and available time.",
+    "freshnessNote": "Opening hours, closures, ticket rules and shop availability can change. Time-sensitive details should be verified before departure."
+  },
+  "Meta": {
+    "homeTitle": "Korea Concierge — Personal Korea Guide",
+    "homeDescription": "Multilingual Korea travel and culture guidance for international visitors, with free local discovery and optional personalized experiences.",
+    "cultureTitle": "K-Culture Lab — Saju, Zodiac and Korean Traditions",
+    "cultureDescription": "Explore Korean zodiac, Saju and traditional color stories as optional cultural and entertainment experiences with privacy-first inputs.",
+    "gyeongbokgungTitle": "Gyeongbokgung Guide — Routes, Hanbok and Nearby Stops",
+    "gyeongbokgungDescription": "Plan a time-aware Gyeongbokgung visit with Hanbok return buffers, photo priorities, walking comfort and nearby food or café stops."
   }
 }
