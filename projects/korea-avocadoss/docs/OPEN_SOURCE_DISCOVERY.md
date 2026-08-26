@@ -1,47 +1,58 @@
-# Korea Concierge — Open Source Discovery Log
+# Korea Concierge — Open Source / Model Discovery Log
 
-This log records the mandatory GitHub + Hugging Face discovery pass performed before implementing or materially revising a feature. It is intentionally lightweight; candidates are re-checked when a feature is revisited.
+This log records the required GitHub + Hugging Face discovery pass performed before major feature implementations or material revisions.
 
-## 2026-08-26 — Credit economy / AI cost metering
+The rule is not “use open source whenever possible.” The rule is to discover first, then adopt only when license, maintenance, privacy, quality, cost and architecture fit the product.
 
-### GitHub candidates reviewed
+## 2026-08-26 — Credits, wallet and pricing architecture
 
-#### OpenMeter — `openmeterio/openmeter`
-- Purpose: real-time usage metering, billing, entitlements, prepaid credits and LLM cost tracking.
-- License/maintenance: open-source project; active 2026 development/release activity observed.
-- Useful patterns: immutable usage events, separate metering from billing, prepaid grants, feature entitlements, LLM token/cost dimensions.
-- Decision: **pattern adopted; platform not integrated yet**.
-- Why: Korea Concierge needs a small, auditable prepaid ledger first. Adding a full external billing/metering service during MVP would increase operational complexity without enough usage volume to justify it.
-- Revisit when: usage volume, B2B merchant billing, subscriptions or multiple metered products make an external meter economical.
-- Cost/latency impact: no runtime dependency added; zero incremental request latency.
+### GitHub reviewed
 
-#### Lago — `getlago/lago`
-- Purpose: open-source metering/usage billing with prepaid credits and hybrid pricing.
-- Useful patterns: prepaid funds reduce AI bad-debt risk; separate pricing configuration from payment execution; usage-event-driven charging.
-- Decision: **pattern adopted; no dependency added**.
-- Why: reinforces prepaid credits and configurable pricing, but is broader than launch needs.
+#### `amirhf/creditLedger`
+- URL: https://github.com/amirhf/creditLedger
+- README identifies the project as MIT licensed.
+- Relevant patterns: immutable history, double-entry-style thinking, idempotency, transactional outbox, auditable balance projection.
+- Decision: **adopt the architectural patterns, not the full stack**.
+- Why: the reference implementation uses Go + Kafka/Redpanda + CQRS/microservices, which is unnecessary complexity for the Korea Concierge launch volume.
+- Korea Concierge launch implementation should use Postgres transactions, an immutable credit ledger, idempotency keys and a derived wallet balance. Add an outbox/event pipeline later only if scale or integration reliability requires it.
+- Expected benefit: fewer double-charge/double-credit bugs, easier refunds/disputes, auditable support history.
+- Cost/latency impact: negligible at launch; materially lower ops complexity than copying the full reference architecture.
 
-### Hugging Face candidates reviewed
+### Hugging Face reviewed
 
-#### `Qwen/Qwen3-30B-A3B-Instruct-2507`
-- License: Apache-2.0 on the Hugging Face model card.
-- Architecture: 30.5B total / ~3.3B activated MoE, 262K native context, non-thinking instruction model.
-- Decision: **retain as low-cost default text candidate through OpenRouter**, not self-hosted for MVP.
-- Why: permissive model license and strong multilingual/instruction/tool capabilities; self-hosting the weight footprint would add GPU/ops cost that is unnecessary at current scale.
-- Cost/latency impact: OpenRouter observed price on 2026-08-26 is substantially below premium frontier models; hard feature caps remain required.
+Dynamic-pricing models were found, including:
 
-#### DeepSeek V3.2
-- Decision: **retain as escalation/reasoning candidate through OpenRouter**.
-- Why: current OpenRouter route is inexpensive for multi-constraint reasoning, but more costly than Qwen Tier 1 and therefore not the default for simple copy.
+- `PranavSharma/dynamic-pricing-model` — Apache-2.0, regression model designed around ride-hailing variables; model card explicitly notes real-world limitations.
+- `iioos/dynamic-pricing-model` — MIT-tagged ecommerce pricing model with little adoption evidence.
 
-### Implementation resulting from discovery
+Decision: **reject both for launch pricing**.
 
-- Added `src/lib/credits/economics.ts` with centralized Basic / Advanced / Ultra pack configuration, feature credit prices, conservative cost assumptions and a margin-protection floor.
-- Added `docs/CREDIT_ECONOMY.md` with cost accounting, p95 margin guardrails and repricing rules.
-- Chose not to add OpenMeter/Lago dependencies during MVP; their event/ledger separation is incorporated into the architecture instead.
+Why:
+- training domains do not match tourism AI-credit economics;
+- no evidence they optimize this product's conversion, retention or margin;
+- ML-driven customer-specific pricing would make checkout harder to explain and audit;
+- authoritative credit accounting and public feature pricing should be deterministic.
 
-### Sources re-check
+We will instead use fixed public Trip Pass/feature prices and optimize them through controlled A/B tests after enough first-party conversion and usage data exists.
 
-- GitHub: `openmeterio/openmeter`, `getlago/lago`
-- Hugging Face: `Qwen/Qwen3-30B-A3B-Instruct-2507`
-- OpenRouter model pricing pages for Qwen3 30B A3B Instruct 2507 and DeepSeek V3.2
+### Sources
+- https://github.com/amirhf/creditLedger
+- https://huggingface.co/PranavSharma/dynamic-pricing-model
+- https://huggingface.co/iioos/dynamic-pricing-model
+
+## Discovery rules for future entries
+
+For every major feature, record:
+
+1. feature/subfeature;
+2. GitHub repositories/libraries reviewed;
+3. Hugging Face models/datasets/Spaces reviewed;
+4. license and commercial-use status;
+5. maintenance/recency/adoption signals;
+6. privacy/data-provenance concerns;
+7. measured or expected inference/runtime cost;
+8. latency and browser/mobile suitability;
+9. multilingual quality where relevant;
+10. adopt / adapt / reject decision and rationale.
+
+Re-run discovery when revisiting a feature. Do not assume the previous best option is still best.

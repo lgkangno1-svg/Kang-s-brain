@@ -1,58 +1,54 @@
-import { CREDIT_PLANS, FEATURE_CREDIT_PRICES, effectiveUsdPerCredit } from "@/lib/credits/economics";
+import {
+  CREDIT_PLANS,
+  FEATURE_CREDIT_PRICES,
+  effectiveUsdPerCredit,
+} from '@/lib/credits/economics';
 
-export const metadata = {
-  title: "Credits & plans",
-  description: "Top up Korea Concierge credits for personal color, Hanbok matching, trip planning and K-culture experiences.",
-  robots: { index: false, follow: false },
-};
+export const metadata = { title: 'Credits' };
 
-const visibleFeatures = FEATURE_CREDIT_PRICES.filter((item) => item.feature !== "color.basic");
+const featuredActions = FEATURE_CREDIT_PRICES.filter((feature) => feature.credits > 0).slice(0, 8);
 
 export default function CreditsPage() {
   return (
     <main>
       <section className="pageIntro">
-        <p className="eyebrow">Credits · One-time top-up</p>
-        <h1>Choose how much Korea you want to personalize.</h1>
+        <p className="eyebrow">One-time Trip Passes · No monthly subscription at launch</p>
+        <h1>Buy credits once. Spend them only when personalization is worth it.</h1>
         <p>
-          Browsing places, food and travel guides stays useful for free. Credits unlock personalized reports,
-          premium photo review, smarter itineraries and K-culture experiences. No subscription is required.
+          Travel guides, places and basic discovery stay useful for free. Credits are for personalized reports,
+          AI planning and deeper K-culture experiences. Every paid action shows its exact credit cost before you run it.
         </p>
       </section>
 
-      <section className="prototype" aria-labelledby="credit-plans-heading">
+      <section className="prototype">
         <div className="prototypePanel">
-          <h2 id="credit-plans-heading">Credit packs</h2>
-          <p>Buy once and use credits across premium features. Larger packs lower the cost per credit.</p>
+          <h2>Choose a Trip Pass</h2>
+          <p>Advanced is designed as the default fit for a multi-day Seoul visit. Prices are launch hypotheses and remain server-configurable.</p>
           <div className="creditPacks">
             {CREDIT_PLANS.map((plan) => (
-              <article className="creditPack" key={plan.id}>
-                <small>{plan.badge ?? plan.name}</small>
-                <h3>{plan.name}</h3>
-                <p><strong>{plan.credits.toLocaleString("en-US")}</strong> credits</p>
+              <div className="creditPack" key={plan.id}>
+                <small>{plan.badge ?? 'Trip Pass'}</small>
+                <p><strong>{plan.name}</strong></p>
+                <p><strong>{plan.credits}</strong> credits</p>
                 <b>${plan.priceUsd.toFixed(2)}</b>
                 <p>${effectiveUsdPerCredit(plan).toFixed(3)} / credit</p>
-                <p>{plan.description}</p>
-                <button type="button" disabled aria-label={`${plan.name} checkout coming soon`}>
-                  Checkout coming soon
-                </button>
-              </article>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="prototype" aria-labelledby="feature-cost-heading">
+      <section className="prototype">
         <div className="prototypePanel">
-          <h2 id="feature-cost-heading">What credits can unlock</h2>
-          <p>Every paid action shows its exact credit price before you confirm it.</p>
+          <h2>What credits can unlock</h2>
+          <p>Feature prices are fixed per action, not variable token billing. Failed paid jobs release their reserved credits automatically.</p>
           <div className="stepList">
-            {visibleFeatures.map((item) => (
-              <div className="step" key={item.feature}>
-                <b>{item.credits}</b>
+            {featuredActions.map((feature) => (
+              <div className="step" key={feature.feature}>
+                <b>{feature.credits}</b>
                 <div>
-                  <strong>{item.label}</strong>
-                  <p>{item.credits} credits · Failed paid jobs automatically release reserved credits.</p>
+                  <strong>{feature.label}</strong>
+                  <p>{feature.credits} credits before confirmation</p>
                 </div>
               </div>
             ))}
@@ -60,13 +56,14 @@ export default function CreditsPage() {
         </div>
       </section>
 
-      <section className="prototype" aria-labelledby="wallet-safety-heading">
+      <section className="prototype">
         <div className="prototypePanel">
-          <h2 id="wallet-safety-heading">Simple and failure-safe</h2>
+          <h2>Built to be predictable</h2>
           <div className="stepList">
-            <div className="step"><b>01</b><div><strong>Server-authoritative wallet</strong><p>Your browser cannot mint or directly change credits.</p></div></div>
-            <div className="step"><b>02</b><div><strong>International-friendly checkout</strong><p>Planned launch support targets overseas cards and PayPal through a Korea-compatible payment provider.</p></div></div>
-            <div className="step"><b>03</b><div><strong>No charge for failed work</strong><p>Credits are reserved before a paid feature and released automatically if the job fails or times out.</p></div></div>
+            <div className="step"><b>01</b><div><strong>Server-authoritative wallet</strong><p>The browser cannot mint credits, change prices or edit balances.</p></div></div>
+            <div className="step"><b>02</b><div><strong>International checkout</strong><p>Target: overseas cards and PayPal through a Korea-compatible payment provider.</p></div></div>
+            <div className="step"><b>03</b><div><strong>Cost shown first</strong><p>You see the exact credit charge and remaining balance before a premium action.</p></div></div>
+            <div className="step"><b>04</b><div><strong>Failure-safe usage</strong><p>If a paid generation fails, reserved credits are released instead of disappearing.</p></div></div>
           </div>
         </div>
       </section>
