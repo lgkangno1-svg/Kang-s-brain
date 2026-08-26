@@ -3,6 +3,8 @@
 **Date:** 2026-08-26  
 **Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer. Always inspect the latest GitHub main/project tree and recent commits before editing because another AI or developer may have changed the repository.
 
+**Mandatory handoff rule:** `docs/PROJECT_HANDOFF.md` is the living cross-session/cross-AI handoff. Every material development run must read it after inspecting latest `main`, and must update it in the same run whenever implementation status, decisions, tests/evidence, blockers, risks, dependencies, security/privacy posture, AI/token/supplier-cost implications, credit/margin implications, user actions, or the exact next step changes. A feature implementation run is not considered fully documented until the handoff is current.
+
 ## Step 0 — Product baselines ✅
 PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discovery gate, international markets, security/token-efficiency.
 
@@ -103,7 +105,7 @@ Deterministic filtering, compact prompts, partial replans, hard token/cost ceili
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, market experiments, P1/P2 expansion from demand.
 
 ## Every-step regression checklist
-Latest GitHub state/conflict check; mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
+Latest GitHub state/conflict check; read/update `PROJECT_HANDOFF.md`; mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
 
 ## Current user actions required
 **None immediately.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review are deferred until their corresponding gates.
