@@ -1,0 +1,10 @@
+{
+  "Meta":{"creditsTitle":"积分与旅行通行证","creditsDescription":"一次性 Korea Concierge 旅行通行证，高级个性化功能采用固定积分价格。"},
+  "Credits":{
+    "eyebrow":"一次性旅行通行证 · 上线初期无月度订阅","title":"一次购买积分，只在值得的高级个性化服务中使用。","intro":"公共旅行探索和实用文化内容保持免费。高级操作会在确认前显示固定积分，不会因模型或 token 用量而临时加价。","catalogStatus":"价格预览","catalogNotice":"以下价格来自仓库内的权威积分目录。实时结账尚未开放；钱包与支付控制将在后续开发阶段上线。","passesTitle":"选择旅行通行证","passesIntro":"旅行通行证为一次性购买，不会自动续费。多日旅行建议从 Advanced 开始。","creditsUnit":"积分","perCredit":"每积分","tripPass":"旅行通行证",
+    "plans":{"basic":{"name":"Basic","badge":"旅行通行证","description":"适合短途旅行和少量高级个性化操作。"},"advanced":{"name":"Advanced","badge":"推荐","description":"适合多日旅行中使用穿搭、文化和行程功能。"},"ultra":{"name":"Ultra","badge":"单积分成本最低","description":"适合情侣、家庭或一次旅行中频繁使用高级个性化服务。"}},
+    "refillsTitle":"可选补充积分","refillsIntro":"补充包适合已经了解积分使用方式的用户。首次购买仍以主要旅行通行证更划算。","refillLabel":"一次性补充","actionsTitle":"每项高级操作都会提前显示固定积分","actionsIntro":"用户支付的积分按功能固定。token 数量和供应商价格不会造成意外的浮动收费。","beforeConfirmation":"积分，确认前显示",
+    "features":{"color_repeat_scan":"再次进行个人色彩扫描","color_report":"详细个人色彩报告","color_vision":"高级照片色彩复核","hanbok_recommend":"韩服搭配","travel_itinerary":"AI 行程规划","travel_replan":"行程重新规划","culture_saju_quick":"四柱快速文化解读","culture_saju":"完整四柱文化解读","culture_saju_deep":"扩展四柱解读","concierge_standard":"韩国旅行管家问答","concierge_premium":"高级多步骤旅行管家问答"},
+    "predictableTitle":"价格设计以可预测为原则","serverTitle":"服务器权威定价与钱包","serverBody":"浏览器不能生成积分、修改目录价格或余额。正式钱包变更必须由服务器授权。","reserveTitle":"预留、扣除、释放","reserveBody":"付费操作先预留固定积分，成功后才扣除；失败则自动释放。","paymentTitle":"国际支付将在后续开放","paymentBody":"后续支付基础将支持海外银行卡和 PayPal，并通过兼容韩国商户的支付服务商接入。本页不代表结账已上线。","pricingTitle":"不采用个性化动态定价","pricingBody":"上线价格公开且固定。不会根据国籍、个人特征或机器学习定价模型给不同游客设置不同价格。","freeTitle":"有用的免费层继续免费","freeBody":"按照当前上线政策，公共探索、首次基础个人色彩扫描和基础生肖体验保持免费。","technicalNote":"内部模型和供应商成本会单独监控。游客购买的是有用结果，而不是原始 token。"
+  }
+}
