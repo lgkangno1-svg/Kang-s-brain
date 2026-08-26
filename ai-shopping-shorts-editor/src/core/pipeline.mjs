@@ -5,6 +5,7 @@ import { buildBeats, adaptBeatsToAvailableSegments } from './beats.mjs';
 import { analyzeSegmentsVision, UsageTracker, validateVisionBatchResponse } from './opencode.mjs';
 import { alternativesAfterReplacement, buildEdl, renderEdl, validateEdl } from './editor.mjs';
 import { ensureDir, readJson, writeJson, sha256Text } from './utils.mjs';
+import { commitReplacementArtifacts } from './artifact-commit.mjs';
 
 export const DEFAULT_SETTINGS = {
   qualityMode: 'balanced',
@@ -209,14 +210,14 @@ export async function replaceClipAndRerender({ projectDir, project, beatId, segm
     lastManualReplace: { beatId, segmentId, at: new Date().toISOString(), apiCallsAdded: 0 }
   };
 
-  try {
-    await fs.rename(stagedPath, outputPath);
-    await writeJson(edlPath, edlDoc);
-    await writeJson(qaPath, qa);
-  } catch (error) {
-    await fs.rm(stagedPath, { force: true }).catch(() => {});
-    throw error;
-  }
+  await commitReplacementArtifacts({
+    stagedVideoPath: stagedPath,
+    outputPath,
+    edlPath,
+    qaPath,
+    edlDoc,
+    qa
+  });
 
   onStatus(qa.ok ? '재렌더 완료: QA 통과' : '재렌더 완료: QA 경고');
   return { outputPath, qa };
