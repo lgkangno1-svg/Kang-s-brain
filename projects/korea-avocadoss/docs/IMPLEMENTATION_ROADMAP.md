@@ -1,9 +1,7 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
 **Date:** 2026-08-26  
-**Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer. Always inspect the latest GitHub main/project tree and recent commits before editing because another AI or developer may have changed the repository.
-
-**Mandatory handoff rule:** `docs/PROJECT_HANDOFF.md` is the living cross-session/cross-AI handoff. Every material development run must read it after inspecting latest `main`, and must update it in the same run whenever implementation status, decisions, tests/evidence, blockers, risks, dependencies, security/privacy posture, AI/token/supplier-cost implications, credit/margin implications, user actions, or the exact next step changes. A feature implementation run is not considered fully documented until the handoff is current.
+**Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer. Always inspect the latest GitHub main/project tree and recent commits before editing because another AI or developer may have changed the repository. Every material development run must also update `docs/PROJECT_HANDOFF.md` in the same run.
 
 ## Step 0 — Product baselines ✅
 PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discovery gate, international markets, security/token-efficiency.
@@ -45,33 +43,47 @@ PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discov
 - no translation API, model, RAG or embedding dependency added.
 
 #### Step 2B-3 — localized landing + first native public route ✅ by source review
-- inspected latest main/project tree and recent commits before editing; no concurrent project commit was detected during the slice;
-- moved locale landing-page marketing copy into reviewed P0 static dictionaries under `messages/public/` and merged them through the request loader;
+- inspected latest main/project tree and recent commits before editing;
+- moved locale landing-page copy into P0 static dictionaries under `messages/public/`;
 - removed English marketing fallback from the locale landing surface;
-- converted `/[locale]/culture` from a temporary English bridge into a native localized K-Culture page;
-- culture copy now explicitly states that birth time is optional and unknown birth time is never guessed;
-- expanded message parity to include the public-copy dictionaries;
-- added a deterministic Quick Help graph/message-key checker so referenced keys missing from the English schema fail `check:i18n` before build;
-- retained zero runtime translation/model cost and did not add a new package, API, model or sensitive-data flow.
+- converted `/[locale]/culture` into a native localized K-Culture page;
+- culture copy states that birth time is optional and unknown birth time is never guessed;
+- expanded message parity to include public-copy dictionaries;
+- added deterministic Quick Help graph/message-key validation.
 
-**2B-3 verification limitation:** a clean clone + `npm install` / `npm run check:i18n` / `next build` was attempted again, but the available shell still cannot resolve `github.com`. GitHub currently exposes no CI status checks for the project. Build success is therefore not claimed; source and commit state were reviewed through the GitHub connector.
+#### Step 2B-4 — Gyeongbokgung native locale surface + metadata + text-expansion safety ✅ by source/data-shape review
+- re-inspected latest `main`, recent commits, handoff and target source before editing; no concurrent product commit was observed before this slice;
+- converted `/[locale]/explore/gyeongbokgung` from the English legacy re-export into a native P0-localized Server Component;
+- added identical `Gyeongbokgung` and `Meta` schemas to all six P0 public dictionaries;
+- added localized title/description metadata for native Home, Culture and Gyeongbokgung pages using the existing `next-intl` server pattern;
+- deliberately did **not** enable canonical/hreflang/x-default or locale redirects before remaining destination parity/build evidence;
+- separated time-sensitive Gyeongbokgung facts from evergreen editorial copy by warning that opening hours, closures, ticket rules and shop availability must be re-verified;
+- added a locale-scoped CSS safety layer for CJK/Vietnamese/Thai text expansion: zero-min-width grid children, overflow wrapping, language-aware line breaking and narrow-screen headline/button handling;
+- no new runtime library, translation API, model, RAG, embedding store or sensitive-data flow was added;
+- TypeScript message augmentation remains deferred until a real build is available because it is not required for this slice and would expand build-coupling risk.
 
-#### Step 2B-4 — next slice
-- migrate the next highest-value public route from temporary bridge content to native localized content (prefer Gyeongbokgung discovery shell before paid flows);
-- add localized page metadata for the already-native home/culture routes without prematurely enabling canonical/hreflang cutover;
-- tighten type safety for locale/message usage if it can be done without creating fragile build coupling;
-- review CJK/Thai/Vietnamese mobile overflow as localized surfaces grow;
-- keep browser-language suggestion/negotiation deferred until explicit locale destinations are proven.
+**2B-4 verification limitation:** clean clone → `npm install` → `npm run check:i18n` → `npm run build` was attempted again, but the available shell still cannot resolve `github.com`; clone failed before executable checks. Build success is not claimed. GitHub write/source review and schema-level review are the available evidence.
 
-### Step 2C
-- activate safe locale negotiation/cutover only after localized destination routes build;
+### Step 2C — locale parity, cutover and SEO completion
+
+#### Step 2C-1 — next slice
+- inspect latest main/recent commits/handoff before editing;
+- migrate remaining high-value locale bridge pages in a reviewable order, starting with `/color`, `/hanbok` and `/credits`, so locale users no longer fall back to English content;
+- keep paid-flow copy explicit about fixed credits before action and preserve free-vs-paid separation;
+- add localized metadata to each page as it becomes native;
+- keep redirects, canonical/hreflang and browser-language negotiation disabled until destination parity and an executable build are proven;
+- continue CJK/Thai/Vietnamese mobile overflow review on each newly native page;
+- rerun GitHub + Hugging Face discovery before material feature revisions.
+
+#### Step 2C-2 — cutover only after parity/build evidence
+- activate safe locale negotiation/cutover;
 - move document-level language handling to locale-root architecture and remove temporary legacy shell;
 - canonical + hreflang + x-default metadata;
 - locale-aware sitemap;
-- migrate remaining public routes and eliminate English-only paid-flow dead ends;
-- mobile overflow QA for CJK/Thai/Vietnamese.
+- eliminate remaining English-only public/paid-flow dead ends;
+- run mobile/desktop/accessibility/indexability regression QA.
 
-**Step 2 gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates and existing links do not regress.
+**Step 2 gate:** no paid flow has an English-only dead end; locale URLs have valid SEO alternates; existing links do not regress; executable build evidence exists before redirect/canonical cutover.
 
 ## Step 3 — Saju input and deterministic cultural core
 - exact / approximate / unknown birth-time paths;
@@ -105,7 +117,7 @@ Deterministic filtering, compact prompts, partial replans, hard token/cost ceili
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, market experiments, P1/P2 expansion from demand.
 
 ## Every-step regression checklist
-Latest GitHub state/conflict check; read/update `PROJECT_HANDOFF.md`; mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
+Latest GitHub state/conflict check; `PROJECT_HANDOFF.md` read/update; mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable build evidence.
 
 ## Current user actions required
 **None immediately.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review are deferred until their corresponding gates.
