@@ -29,5 +29,26 @@
     "sajuText": "出生时间可选。准确时间、大致时段和“我不知道”都是有效路径；系统绝不会猜测缺失的出生时间。",
     "colorTitle": "颜色连接",
     "colorText": "传统幸运色故事会与个人色彩穿搭建议明确分开。"
+  },
+  "Gyeongbokgung": {
+    "eyebrow": "景福宫 · 首发区域",
+    "title": "租韩服、拍照、逛宫殿、吃美食，也别错过归还时间。",
+    "intro": "根据可用时间、韩服归还时间、拍照重点、步行舒适度和附近餐饮，安排现实可行的景福宫路线。",
+    "routeModes": "路线模式",
+    "oneHourTitle": "1小时拍照速游",
+    "oneHourText": "简短宫殿路线，并预留安全的韩服归还缓冲时间。",
+    "twoHourTitle": "宫殿 + 经典拍照点",
+    "twoHourText": "适合第一次来访的均衡路线，并留出主要拍照点的时间。",
+    "fourHourTitle": "宫殿 + 街区 + 美食",
+    "fourHourText": "根据步行舒适度和可用时间，加入西村或北村，再安排咖啡馆或一餐。",
+    "freshnessNote": "开放时间、临时休馆、票务规则和店铺营业情况可能变化。出发前请确认时效性信息。"
+  },
+  "Meta": {
+    "homeTitle": "Korea Concierge — 个性化韩国旅行指南",
+    "homeDescription": "面向国际游客的多语言韩国旅行与文化指南，提供免费本地探索和可选个性化体验。",
+    "cultureTitle": "K-Culture Lab — 四柱、生肖与韩国传统文化",
+    "cultureDescription": "以文化和娱乐体验的方式了解韩国生肖、四柱和传统色彩故事，并采用隐私优先的输入设计。",
+    "gyeongbokgungTitle": "景福宫指南 — 路线、韩服与周边停留点",
+    "gyeongbokgungDescription": "按时间规划景福宫行程，兼顾韩服归还缓冲、拍照重点、步行舒适度和周边餐饮。"
   }
 }
