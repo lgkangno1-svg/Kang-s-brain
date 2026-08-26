@@ -18,31 +18,12 @@ async function exists(filePath, fileOps = fs) {
   }
 }
 
-export async function commitReplacementArtifacts({
-  stagedVideoPath,
-  outputPath,
-  edlPath,
-  qaPath,
-  edlDoc,
-  qa,
-  nonce = `${process.pid}-${Date.now()}`,
-  fileOps = fs
-}) {
-  const stagedEdlPath = stagedSibling(edlPath, nonce);
-  const stagedQaPath = stagedSibling(qaPath, nonce);
-  const artifacts = [
-    { finalPath: outputPath, stagedPath: stagedVideoPath },
-    { finalPath: edlPath, stagedPath: stagedEdlPath },
-    { finalPath: qaPath, stagedPath: stagedQaPath }
-  ];
+async function commitArtifactSet({ stagedArtifacts, nonce, fileOps = fs }) {
   const backups = [];
   const committed = [];
 
-  await writeJson(stagedEdlPath, edlDoc);
-  await writeJson(stagedQaPath, qa);
-
   try {
-    for (const artifact of artifacts) {
+    for (const artifact of stagedArtifacts) {
       if (await exists(artifact.finalPath, fileOps)) {
         const backupPath = stagedSibling(artifact.finalPath, nonce, 'bak');
         await fileOps.copyFile(artifact.finalPath, backupPath);
@@ -50,7 +31,7 @@ export async function commitReplacementArtifacts({
       }
     }
 
-    for (const artifact of artifacts) {
+    for (const artifact of stagedArtifacts) {
       await fileOps.rename(artifact.stagedPath, artifact.finalPath);
       committed.push(artifact.finalPath);
     }
@@ -64,10 +45,83 @@ export async function commitReplacementArtifacts({
     throw error;
   } finally {
     await Promise.allSettled([
-      fileOps.rm(stagedVideoPath, { force: true }),
-      fileOps.rm(stagedEdlPath, { force: true }),
-      fileOps.rm(stagedQaPath, { force: true }),
+      ...stagedArtifacts.map((artifact) => fileOps.rm(artifact.stagedPath, { force: true })),
       ...backups.map((backup) => fileOps.rm(backup.backupPath, { force: true }))
     ]);
   }
+}
+
+export async function commitReplacementArtifacts({
+  stagedVideoPath,
+  outputPath,
+  edlPath,
+  qaPath,
+  edlDoc,
+  qa,
+  nonce = `${process.pid}-${Date.now()}`,
+  fileOps = fs
+}) {
+  const stagedEdlPath = stagedSibling(edlPath, nonce);
+  const stagedQaPath = stagedSibling(qaPath, nonce);
+
+  await writeJson(stagedEdlPath, edlDoc);
+  await writeJson(stagedQaPath, qa);
+
+  await commitArtifactSet({
+    stagedArtifacts: [
+      { finalPath: outputPath, stagedPath: stagedVideoPath },
+      { finalPath: edlPath, stagedPath: stagedEdlPath },
+      { finalPath: qaPath, stagedPath: stagedQaPath }
+    ],
+    nonce,
+    fileOps
+  });
+}
+
+export async function commitRunArtifacts({
+  stagedVideoPath,
+  outputPath,
+  beatsPath,
+  segmentsPath,
+  edlPath,
+  qaPath,
+  beats,
+  segments,
+  edlDoc,
+  qa,
+  nonce = `${process.pid}-${Date.now()}`,
+  fileOps = fs
+}) {
+  const stagedBeatsPath = stagedSibling(beatsPath, nonce);
+  const stagedSegmentsPath = stagedSibling(segmentsPath, nonce);
+  const stagedEdlPath = stagedSibling(edlPath, nonce);
+  const stagedQaPath = stagedSibling(qaPath, nonce);
+
+  await Promise.all([
+    writeJson(stagedBeatsPath, beats),
+    writeJson(stagedSegmentsPath, segments),
+    writeJson(stagedEdlPath, edlDoc),
+    writeJson(stagedQaPath, qa)
+  ]).catch(async (error) => {
+    await Promise.allSettled([
+      fs.rm(stagedBeatsPath, { force: true }),
+      fs.rm(stagedSegmentsPath, { force: true }),
+      fs.rm(stagedEdlPath, { force: true }),
+      fs.rm(stagedQaPath, { force: true }),
+      fs.rm(stagedVideoPath, { force: true })
+    ]);
+    throw error;
+  });
+
+  await commitArtifactSet({
+    stagedArtifacts: [
+      { finalPath: outputPath, stagedPath: stagedVideoPath },
+      { finalPath: beatsPath, stagedPath: stagedBeatsPath },
+      { finalPath: segmentsPath, stagedPath: stagedSegmentsPath },
+      { finalPath: edlPath, stagedPath: stagedEdlPath },
+      { finalPath: qaPath, stagedPath: stagedQaPath }
+    ],
+    nonce,
+    fileOps
+  });
 }
