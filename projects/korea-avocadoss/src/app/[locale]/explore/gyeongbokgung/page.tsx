@@ -1,6 +1,8 @@
 import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
+import {localizedAlternates} from '@/lib/seo/localized-metadata';
+
 type PageProps = {params: Promise<{locale: string}>};
 
 export async function generateMetadata({params}: PageProps): Promise<Metadata> {
@@ -11,6 +13,7 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
   return {
     title: meta('gyeongbokgungTitle'),
     description: meta('gyeongbokgungDescription'),
+    alternates: localizedAlternates(locale, '/explore/gyeongbokgung'),
   };
 }
 
