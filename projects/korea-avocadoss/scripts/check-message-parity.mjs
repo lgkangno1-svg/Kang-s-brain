@@ -22,12 +22,14 @@ function flatten(value, prefix = "", output = new Map()) {
   return output;
 }
 
-const dictionaries = new Map();
-for (const locale of locales) {
-  const path = resolve(root, "messages", `${locale}.json`);
-  const raw = await readFile(path, "utf8");
-  dictionaries.set(locale, flatten(JSON.parse(raw)));
+async function loadLocale(locale) {
+  const core = JSON.parse(await readFile(resolve(root, "messages", `${locale}.json`), "utf8"));
+  const publicCopy = JSON.parse(await readFile(resolve(root, "messages", "public", `${locale}.json`), "utf8"));
+  return flatten({...core, ...publicCopy});
 }
+
+const dictionaries = new Map();
+for (const locale of locales) dictionaries.set(locale, await loadLocale(locale));
 
 const reference = dictionaries.get("en");
 const referenceKeys = new Set(reference.keys());
