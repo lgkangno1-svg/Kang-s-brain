@@ -20,6 +20,7 @@
 ## Durable lessons
 - AI를 쓰지 않는 deterministic fallback도 품질 점수 정렬을 실제 선택에 그대로 반영해야 한다. 후보를 품질순으로 정렬한 뒤 beat index로 회전 선택하면 낮은 품질 장면을 의도적으로 고를 수 있으므로, duration/중복/diversity 제약을 적용한 뒤 최고 점수의 남은 후보를 우선한다.
 - Quality Judge가 낮은 점수 컷을 대체할 때도 초기 EDL의 불변조건을 보존해야 한다. 특히 다른 beat가 이미 사용 중인 segment를 대체 후보로 다시 선택하면 Judge API 비용을 지불한 뒤 최종 EDL 검증에서 실패할 수 있으므로, 대체 선택 시 현재 점유 segment 집합을 유지하고 중복 후보를 사전에 제외한다.
+- Quality Judge가 실제 선택 segment를 바꾼 뒤에는 review용 `alternatives`도 새 현재 상태에 맞춰 갱신한다. 새 current segment를 alternatives에 남겨 자기 자신을 교체 후보로 보여주지 말고, 직전 정상 선택은 첫 rollback 후보로 보존하며 중복 ID를 제거한다.
 - 수동 컷 교체도 자동 편집과 같은 EDL 불변조건을 렌더 전에 확인해야 한다. 다른 beat가 이미 쓰는 segment를 사용자가 선택한 경우 EDL을 저장하거나 FFmpeg를 실행하기 전에 거부해야 불필요한 재렌더와 사후 QA 실패를 막을 수 있다.
 - EDL의 program timeline 길이와 실제 source trim 길이는 clip마다 같은 불변조건으로 검증한다. 둘이 다르면 concat 결과가 의도한 beat 길이를 보장하지 못하고 FFmpeg를 돌린 뒤 duration QA에서야 실패가 드러날 수 있으므로, 렌더 전에 허용 가능한 rounding tolerance 안에서 `programEnd-programStart === sourceEnd-sourceStart`를 확인한다.
 - TTS가 있는 렌더에서는 오디오 길이를 전체 출력 길이의 기준으로 사용하지 않는다. `-shortest`는 TTS 파일이 beat/EDL 타임라인보다 조금만 짧아도 영상 자체를 조기 종료시킬 수 있으므로, 최종 출력 길이는 EDL의 program timeline으로 고정하고 오디오는 그 길이 안에서 매핑한다.
