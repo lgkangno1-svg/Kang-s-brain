@@ -1,0 +1,33 @@
+{
+  "Home": {
+    "eyebrow": "Your personal Korea companion",
+    "titleBefore": "Experience Korea in a way that",
+    "titleEmphasis": "fits you.",
+    "intro": "Personal colors, Hanbok styling, palace routes, local food and Korean culture — connected into one trip instead of six separate searches.",
+    "primaryAction": "Find my colors",
+    "secondaryAction": "Explore Gyeongbokgung",
+    "context": "Launching around Gyeongbokgung first. Free local discovery stays useful; credits unlock computation-heavy personalized features.",
+    "modulesTitle": "One profile, one Korea journey.",
+    "modulesIntro": "Each module can feed the next: color guidance can shape Hanbok choices, Hanbok can shape a photo route, and available time can shape food and nearby stops.",
+    "travelerTitle": "Built for travelers, not profiles.",
+    "travelerIntro": "Your explicit choices always outrank market defaults. We do not infer nationality, ethnicity, religion or other sensitive identity traits from names, faces or language.",
+    "freeTitle": "Free discovery",
+    "freeText": "Destinations, basic place browsing, cultural explainers and Quick Help stay accessible without buying credits.",
+    "paidTitle": "Credits for premium work",
+    "paidText": "AI-heavy reports, visual generation and premium planning show a fixed credit cost before you confirm.",
+    "internationalTitle": "Designed for international visitors",
+    "internationalText": "Language, route friction, food filters and practical travel information are localized without stereotyping individual travelers."
+  },
+  "Culture": {
+    "eyebrow": "K-Culture Lab",
+    "title": "Explore traditions as culture, not certainty.",
+    "intro": "Korean zodiac and Saju are presented as cultural and entertainment experiences. Birth details use separate consent and are not used for professional or high-impact advice.",
+    "planned": "Planned experiences",
+    "zodiacTitle": "Korean zodiac",
+    "zodiacText": "A lightweight free cultural entry point.",
+    "sajuTitle": "Saju / Four Pillars",
+    "sajuText": "Birth time is optional. Exact time, a rough time band and ‘I don’t know’ are all valid paths; missing time is never guessed.",
+    "colorTitle": "Color connection",
+    "colorText": "Traditional lucky-color storytelling stays clearly separate from personal-color styling guidance."
+  }
+}
