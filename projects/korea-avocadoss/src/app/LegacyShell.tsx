@@ -44,7 +44,11 @@ export function LegacyShell({children}: {children: ReactNode}) {
         <p>Personalized Korea travel and culture, designed for international visitors.</p>
         <span>Production target: korea.avocadoss.co.kr</span>
       </footer>
-      <NextIntlClientProvider locale="en" messages={{QuickHelp: coreEnglishMessages.QuickHelp}}>
+      <NextIntlClientProvider
+        locale="en"
+        timeZone="Asia/Seoul"
+        messages={{QuickHelp: coreEnglishMessages.QuickHelp}}
+      >
         <QuickHelp />
       </NextIntlClientProvider>
     </>
