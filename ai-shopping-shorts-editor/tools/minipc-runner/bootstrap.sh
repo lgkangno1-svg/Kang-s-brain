@@ -27,8 +27,9 @@ Options:
   -h, --help              Show this help
 
 Security:
-  Prefer omitting --token so the token is entered with hidden terminal input.
-  The token is never written to repository files by this script.
+  Prefer omitting --token. If GitHub CLI is already authenticated, the script
+  requests a short-lived runner token automatically. Otherwise it prompts with
+  hidden terminal input. The token is never written to repository files.
 USAGE
 }
 
@@ -120,9 +121,15 @@ fi
 asset="actions-runner-linux-${runner_arch}-${runner_version}.tar.gz"
 asset_url="https://github.com/actions/runner/releases/download/v${runner_version}/${asset}"
 
+if [[ -z "$REG_TOKEN" ]] && command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  echo "Authenticated GitHub CLI detected; requesting a short-lived runner token automatically..."
+  REG_TOKEN="$(gh api --method POST "repos/${REPO}/actions/runners/registration-token" --jq .token 2>/dev/null || true)"
+fi
+
 if [[ -z "$REG_TOKEN" ]]; then
   echo
-  echo "GitHub에서 다음 위치의 registration token을 복사하세요:"
+  echo "GitHub CLI 인증이 없어 registration token 한 번만 필요합니다."
+  echo "다음 위치에서 token을 복사하세요:"
   echo "  https://github.com/${REPO}/settings/actions/runners/new"
   echo "토큰은 보통 약 1시간 동안 유효합니다."
   read -r -s -p "Runner registration token: " REG_TOKEN
