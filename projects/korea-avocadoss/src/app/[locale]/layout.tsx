@@ -7,6 +7,7 @@ import {LanguageSwitcher} from '@/i18n/LanguageSwitcher';
 import {Link} from '@/i18n/navigation';
 import {routing} from '@/i18n/routing';
 import {getLocaleDefinition} from '@/lib/i18n/locales';
+import '../locale-overflow.css';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
