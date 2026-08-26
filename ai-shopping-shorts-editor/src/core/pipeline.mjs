@@ -19,6 +19,8 @@ export const DEFAULT_SETTINGS = {
   segmenting: { min: 1.0, ideal: 3.0, max: 5.2, maxSegments: 80 }
 };
 
+export const VISION_CACHE_SCHEMA = 2;
+
 const MODE_PRESETS = {
   economy: { analysisWidth: 384, visionBatchSize: 14, sceneThreshold: 0.36, segmenting: { maxSegments: 60 } },
   balanced: { analysisWidth: 512, visionBatchSize: 10, sceneThreshold: 0.32, segmenting: { maxSegments: 80 } },
@@ -35,6 +37,10 @@ export function resolveSettings(input = {}) {
     qualityMode: mode,
     segmenting: { ...DEFAULT_SETTINGS.segmenting, ...(preset.segmenting || {}), ...(input.segmenting || {}) }
   };
+}
+
+export function makeVisionCacheFingerprint({ model, sourceHashes, analysisWidth, sceneThreshold, segmenting }, schema = VISION_CACHE_SCHEMA) {
+  return sha256Text(JSON.stringify({ schema, model, sourceHashes, analysisWidth, sceneThreshold, segmenting })).slice(0, 20);
 }
 
 export function assertManualReplacementAvailable(clips, beatId, segmentId) {
@@ -64,7 +70,7 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
   }
 
   let segments = allSegments;
-  const cacheFingerprint = sha256Text(JSON.stringify({ model: settings.visionModel, sourceHashes, analysisWidth: settings.analysisWidth, sceneThreshold: settings.sceneThreshold, segmenting: settings.segmenting })).slice(0, 20);
+  const cacheFingerprint = makeVisionCacheFingerprint({ model: settings.visionModel, sourceHashes, analysisWidth: settings.analysisWidth, sceneThreshold: settings.sceneThreshold, segmenting: settings.segmenting });
   const visionCachePath = path.join(cacheDir, `vision-${cacheFingerprint}.json`);
   if (apiKey) {
     const cached = await readJson(visionCachePath, null);
