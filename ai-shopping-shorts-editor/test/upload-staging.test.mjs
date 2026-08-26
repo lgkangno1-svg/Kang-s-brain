@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import os from 'node:os';
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
-import { createUploadPaths, publishStagedUpload } from '../src/core/upload-staging.mjs';
+import { cleanupStaleUploadParts, createUploadPaths, publishStagedUpload } from '../src/core/upload-staging.mjs';
 
 test('createUploadPaths uses hidden unique staging and unique final names', () => {
   const a = createUploadPaths('/tmp/inputs', '01-', 'clip.mp4', 'token-a');
@@ -11,6 +11,43 @@ test('createUploadPaths uses hidden unique staging and unique final names', () =
   assert.equal(path.basename(a.stagedPath), '.upload-token-a.part');
   assert.equal(path.basename(a.finalPath), '01-token-a-clip.mp4');
   assert.notEqual(a.finalPath, b.finalPath);
+});
+
+test('cleanupStaleUploadParts removes only old tool-owned staging files', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'shorts-upload-cleanup-'));
+  const oldPart = path.join(dir, '.upload-old-token.part');
+  const freshPart = path.join(dir, '.upload-fresh-token.part');
+  const userPart = path.join(dir, 'customer-video.part');
+  const finalMedia = path.join(dir, '01-token-clip.mp4');
+  await Promise.all([
+    fs.writeFile(oldPart, 'old'),
+    fs.writeFile(freshPart, 'fresh'),
+    fs.writeFile(userPart, 'user'),
+    fs.writeFile(finalMedia, 'final')
+  ]);
+  const now = Date.now();
+  const oldTime = new Date(now - (25 * 60 * 60 * 1000));
+  const freshTime = new Date(now - (60 * 60 * 1000));
+  await fs.utimes(oldPart, oldTime, oldTime);
+  await fs.utimes(freshPart, freshTime, freshTime);
+  await fs.utimes(userPart, oldTime, oldTime);
+  await fs.utimes(finalMedia, oldTime, oldTime);
+
+  const removed = await cleanupStaleUploadParts({ fs, inputsDir: dir, now });
+
+  assert.deepEqual(removed, [oldPart]);
+  await assert.rejects(fs.stat(oldPart), { code: 'ENOENT' });
+  assert.equal(await fs.readFile(freshPart, 'utf8'), 'fresh');
+  assert.equal(await fs.readFile(userPart, 'utf8'), 'user');
+  assert.equal(await fs.readFile(finalMedia, 'utf8'), 'final');
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
+test('cleanupStaleUploadParts validates age policy', async () => {
+  await assert.rejects(
+    cleanupStaleUploadParts({ fs, inputsDir: '/tmp', minAgeMs: -1 }),
+    /minAgeMs must be a non-negative finite number/
+  );
 });
 
 test('publishStagedUpload removes published file when metadata persistence fails', async () => {
