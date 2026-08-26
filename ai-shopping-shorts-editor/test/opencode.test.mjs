@@ -34,16 +34,32 @@ test('OpenCode compatible vision and planner protocol', async()=>{
 
 test('Vision batch integrity accepts every expected id exactly once regardless of response order', () => {
   const batch = [{ id: 's1' }, { id: 's2' }];
-  const byId = validateVisionBatchResponse(batch, [{ id: 's2', description: 'two' }, { id: 's1', description: 'one' }]);
+  const valid = (id, description) => ({ id, description, subjects: [], actions: [], usabilityTags: [], shotType: 'unknown', productVisibility: 0, visualQuality: 0, motionLevel: 0, confidence: 0 });
+  const byId = validateVisionBatchResponse(batch, [valid('s2', 'two'), valid('s1', 'one')]);
   assert.equal(byId.get('s1').description, 'one');
   assert.equal(byId.get('s2').description, 'two');
 });
 
 test('Vision batch integrity rejects missing, duplicate, and unexpected ids', () => {
   const batch = [{ id: 's1' }, { id: 's2' }];
-  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }]), /missing=\[s2\]/);
-  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 's1' }]), /duplicate=\[s1\]/);
-  assert.throws(() => validateVisionBatchResponse(batch, [{ id: 's1' }, { id: 'alien' }]), /unexpected=\[alien\]/);
+  const valid = (id) => ({ id, description: 'ok', subjects: [], actions: [], usabilityTags: [], shotType: 'unknown', productVisibility: 0, visualQuality: 0, motionLevel: 0, confidence: 0 });
+  assert.throws(() => validateVisionBatchResponse(batch, [valid('s1')]), /missing=\[s2\]/);
+  assert.throws(() => validateVisionBatchResponse(batch, [valid('s1'), valid('s1')]), /duplicate=\[s1\]/);
+  assert.throws(() => validateVisionBatchResponse(batch, [valid('s1'), valid('alien')]), /unexpected=\[alien\]/);
+});
+
+test('Vision batch integrity rejects malformed semantic metadata before planner use', () => {
+  const batch = [{ id: 's1' }];
+  const base = { id: 's1', description: '제품을 손에 들고 있음', subjects: ['제품'], actions: ['들기'], usabilityTags: ['디테일'], shotType: 'close_up', productVisibility: 0.9, visualQuality: 0.8, motionLevel: 0.3, confidence: 0.95 };
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, description: '' }]), /s1\.description/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, actions: 'holding' }]), /s1\.actions/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, subjects: ['제품', ''] }]), /s1\.subjects/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, usabilityTags: null }]), /s1\.usabilityTags/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, shotType: 'portrait' }]), /s1\.shotType/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, productVisibility: '0.9' }]), /s1\.productVisibility/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, visualQuality: 1.2 }]), /s1\.visualQuality/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, motionLevel: Number.NaN }]), /s1\.motionLevel/);
+  assert.throws(() => validateVisionBatchResponse(batch, [{ ...base, confidence: -0.1 }]), /s1\.confidence/);
 });
 
 test('Planner integrity accepts exactly one complete choice per expected beat regardless of response order', () => {
