@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ColorScanner } from '@/features/color/color-scanner';
+import { localizedAlternates } from '@/lib/seo/localized-metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -9,6 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t('colorTitle'),
     description: t('colorDescription'),
+    alternates: localizedAlternates(locale, '/color'),
   };
 }
 
