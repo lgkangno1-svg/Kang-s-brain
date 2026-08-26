@@ -1,0 +1,54 @@
+{
+  "Meta": {
+    "creditsTitle": "Credits and Trip Passes",
+    "creditsDescription": "One-time Korea Concierge Trip Passes with fixed credit prices for premium personalization."
+  },
+  "Credits": {
+    "eyebrow": "One-time Trip Passes · No monthly subscription at launch",
+    "title": "Buy credits once. Use them only when premium personalization is worth it.",
+    "intro": "Public travel discovery and useful cultural guidance stay free. Premium actions use fixed credits shown before confirmation, so model or token usage never changes what you pay for that action.",
+    "catalogStatus": "Pricing preview",
+    "catalogNotice": "These launch prices come from the authoritative in-repo credit catalog. Live checkout is not enabled yet; wallet and payment controls arrive in later gated steps.",
+    "passesTitle": "Choose a Trip Pass",
+    "passesIntro": "Trip Passes are one-time purchases, not auto-renewing subscriptions. Advanced is the recommended starting point for a multi-day trip.",
+    "creditsUnit": "credits",
+    "perCredit": "per credit",
+    "tripPass": "Trip Pass",
+    "plans": {
+      "basic": {"name": "Basic", "badge": "Trip Pass", "description": "For a short trip with a few premium personalized actions."},
+      "advanced": {"name": "Advanced", "badge": "Recommended", "description": "For a multi-day trip using styling, culture and itinerary features."},
+      "ultra": {"name": "Ultra", "badge": "Lowest cost per credit", "description": "For couples, families or frequent premium personalization during one trip."}
+    },
+    "refillsTitle": "Optional refills",
+    "refillsIntro": "Refills are intended after you already understand how credits work. Main Trip Passes remain the better initial value.",
+    "refillLabel": "One-time refill",
+    "actionsTitle": "Fixed credit prices before every premium action",
+    "actionsIntro": "Customer charges are fixed by feature. Token counts and provider prices never create surprise variable billing.",
+    "beforeConfirmation": "credits before confirmation",
+    "features": {
+      "color_repeat_scan": "Repeat personal-color scan",
+      "color_report": "Detailed personal-color report",
+      "color_vision": "Premium photo color review",
+      "hanbok_recommend": "Hanbok match",
+      "travel_itinerary": "AI itinerary",
+      "travel_replan": "Itinerary re-plan",
+      "culture_saju_quick": "Saju quick cultural summary",
+      "culture_saju": "Full Saju cultural reading",
+      "culture_saju_deep": "Extended Saju reading",
+      "concierge_standard": "Korea concierge answer",
+      "concierge_premium": "Premium multi-step concierge answer"
+    },
+    "predictableTitle": "Built to be predictable",
+    "serverTitle": "Server-authoritative pricing and wallet",
+    "serverBody": "The browser must never mint credits, change catalog prices or edit balances. Production wallet mutations will be authorized on the server.",
+    "reserveTitle": "Reserve, capture, release",
+    "reserveBody": "A paid action will reserve its fixed credits, capture them only on success, and release them automatically on failure.",
+    "paymentTitle": "International checkout later",
+    "paymentBody": "The payment foundation will target overseas cards and PayPal through a Korea-compatible provider. No live checkout is implied on this preview page.",
+    "pricingTitle": "No personalized dynamic pricing",
+    "pricingBody": "Launch prices are public and fixed. We will not use nationality, profile traits or an ML pricing model to change what one traveler pays versus another.",
+    "freeTitle": "Useful free layer stays free",
+    "freeBody": "Public discovery, first basic personal-color scan and basic zodiac experiences remain free according to the current launch policy.",
+    "technicalNote": "Internal model/provider costs are monitored separately. Travelers buy useful outcomes, not raw tokens."
+  }
+}
