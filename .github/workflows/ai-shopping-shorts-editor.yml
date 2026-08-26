@@ -11,6 +11,9 @@ on:
       - 'ai-shopping-shorts-editor/**'
       - '.github/workflows/ai-shopping-shorts-editor.yml'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ai-shopping-shorts-editor-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -18,6 +21,7 @@ concurrency:
 jobs:
   test:
     name: Mini PC self-hosted QA
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, linux, x64, minipc]
     timeout-minutes: 25
     defaults:
