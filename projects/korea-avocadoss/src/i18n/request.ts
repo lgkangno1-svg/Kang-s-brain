@@ -11,8 +11,16 @@ export default getRequestConfig(async ({requestLocale}) => {
     notFound();
   }
 
+  const [core, publicCopy] = await Promise.all([
+    import(`../../messages/${requested}.json`),
+    import(`../../messages/public/${requested}.json`),
+  ]);
+
   return {
     locale: requested,
-    messages: (await import(`../../messages/${requested}.json`)).default,
+    messages: {
+      ...core.default,
+      ...publicCopy.default,
+    },
   };
 });
