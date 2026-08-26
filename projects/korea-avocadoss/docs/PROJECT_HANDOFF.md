@@ -1,11 +1,11 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-08-26  
+**Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 2 — internationalized routing / locale parity  
-**Last completed slice:** Step 2C-1A — native P0 Personal Color  
-**Exact next slice:** Step 2C-1B — native P0 Hanbok route and controls
+**Last completed slice:** Step 2C-1B — native P0 Hanbok route + deterministic matcher  
+**Exact next slice:** Step 2C-1C — native P0 Credits route using authoritative credit economics
 
 > Cross-session/cross-AI state file. Before every material run inspect latest `main`, recent commits, current project tree, this file and `IMPLEMENTATION_ROADMAP.md`. Assume another AI/developer may have changed the repository. Never restore remembered older code over newer work without understanding it. Update this file in the same run whenever implementation status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or next step changes.
 
@@ -34,7 +34,7 @@ Next.js 16.3.3 + exact `next-intl@4.13.4`. P0 locale URLs: `/en`, `/zh-CN`, `/ja
 
 Migration-only unprefixed legacy routes remain. Locale-aware navigation preserves locale. Redirect/browser-language negotiation/canonical/hreflang/x-default stay disabled until route parity + executable build evidence.
 
-`check:i18n` runs P0 dictionary parity, Quick Help graph/message contract and Personal Color message contract. Locale overflow CSS protects CJK/Vietnamese/Thai surfaces.
+`check:i18n` now runs P0 dictionary parity, Quick Help contract, Personal Color contract and Hanbok contract. Hanbok copy is modularized under `messages/hanbok/{locale}.json`. Locale overflow CSS protects CJK/Vietnamese/Thai surfaces including Hanbok fieldsets/labels/results.
 
 ## 5. Completed status
 
@@ -42,59 +42,69 @@ Migration-only unprefixed legacy routes remain. Locale-aware navigation preserve
 - Step 1 ✅ deterministic P0 Quick Help, 0-AI/0-credit/no sensitive input, accessibility hardening.
 - Step 2A ✅ pinned i18n, validated P0 routing/request loader.
 - Step 2B ✅ locale shell/navigation, full P0 Quick Help, native Home/Culture/Gyeongbokgung, metadata/freshness warning/text-expansion safeguards.
+- Step 2C-1A ✅ native P0 Personal Color: entire scanner localized; browser-local deterministic analysis; locale-neutral analyzer codes/palette IDs; message contract; legacy `/color` provider regression fixed.
 
-### Step 2C-1A ✅ Personal Color — source/data-shape review
+### Step 2C-1B ✅ Hanbok — source/data-shape review
 
 Latest run completed:
-- inspected latest main/recent commits/handoff first; no pre-run concurrent external product change observed;
-- `/[locale]/color` converted from English re-export to native localized Server Component with localized title/description metadata;
-- entire interactive `ColorScanner` localized across six P0 locales: upload guidance, controls, result labels, corrections, warnings/errors, privacy copy and nine Hanbok palettes;
-- analyzer warnings/errors changed from English strings to stable typed codes;
-- palette data changed to stable IDs + hex values, with human copy in dictionaries;
-- added `check-color-message-keys.mjs` and wired it into `check:i18n`;
-- browser-local pixel analysis preserved: local object URL + `createImageBitmap` + Canvas sampling; no AI/model/API/image upload;
-- explicit “lighting-dependent styling estimate, not professional diagnosis” and no identity/race/ethnicity/nationality/religion/health/attractiveness inference;
-- regression review found that the legacy unprefixed `/color` route would otherwise render `ColorScanner` without a `next-intl` provider. Fixed by wrapping only that legacy scanner in an English `NextIntlClientProvider`, preserving the migration promise that old links keep working until cutover.
+- inspected latest main/recent commits/roadmap/handoff/Hanbok source first; pre-run main was `1a1047d4...` and no unexplained concurrent project change was observed;
+- replaced `/[locale]/hanbok` English re-export bridge with a native localized Server Component and locale-specific metadata;
+- added `HanbokMatcher`, a free client-side deterministic preview with three explicit inputs: color direction, mood, and trip/walking priority;
+- matcher result is derived from stable option IDs and rules only; no AI/model/provider call, no photo upload, no external user-data transfer and no credit charge;
+- all P0 locales have dedicated `messages/hanbok/{locale}.json` bundles; request loader merges them after locale allowlist validation;
+- explicit user choice outranks market defaults; matcher does not infer nationality, ethnicity, religion or profile traits;
+- free/paid boundary is explicit: future premium virtual try-on/AI styling must show fixed credit price and photo/privacy terms before confirmation;
+- added Hanbok bundle to cross-locale parity validation and added `check-hanbok-message-keys.mjs` to `check:i18n`;
+- hardened Hanbok responsive layout for CJK, Thai and Vietnamese expansion;
+- did **not** start the deferred bulk Hanbok visual asset project;
+- Step 7 remains the gate for a fuller Hanbok recommendation engine; this is only the zero-cost localized preview needed for Step 2 parity.
 
 ## 6. Latest discovery decision
 
-GitHub personal-color repositories reviewed include older React Native/Teachable Machine and Python Lab/HSV research implementations. They provide algorithmic references but do not justify replacing the current local preview due to maintenance, validation, dependency and privacy concerns.
+### GitHub
+`JamesAC42/hanbok` was inspected and is primarily a language-learning product, not Hanbok styling recommendation. `seungboAn/try-on-hanbok` is a relevant virtual-fitting UX reference but depends on image upload, AI fitting and Supabase/backend services.
 
-Hugging Face search found general skin/image classifiers, including skin-type models, but not a clearly validated personal-color styling model with representative cross-market evidence. Remote inference would add image-transfer/privacy obligations and provider cost; bundled models add mobile download/latency and fairness/provenance risk.
+### Hugging Face
+Fresh search found generic fashion classifiers/embeddings, multiple virtual try-on Spaces, `daeunn/hanbok-dataset` (784-row image/caption dataset visible in viewer) and very small Hanbok LoRA datasets such as `AIARTCHAN/lora-Hanbok_LoRA_V2`.
 
-**Decision:** keep deterministic browser-local preview now. Revisit premium remote vision only at Step 6 if it creates measurable incremental value, with explicit consent, ZDR/data-collection controls, EXIF minimization, representative validation, bounded supplier cost and free/manual fallback.
+**Decision:** adopt none for the current matcher. None provides enough Hanbok-specific recommendation validation and commercial provenance to justify remote-media privacy, large-model latency, runtime/supply-chain complexity or supplier cost. Revisit premium virtual try-on later only after explicit consent, commercial license/data provenance review, representative Hanbok coverage, ZDR/EXIF controls, latency targets and fixed-credit economics are proven.
+
+Full record: `docs/OPEN_SOURCE_DISCOVERY.md`.
 
 ## 7. Verification / blocker
 
-Evidence: GitHub source writes for native Color page, scanner localization, locale-neutral analyzer codes, palette IDs, all six P0 dictionaries, message-contract gate and legacy-route provider fix.
+Evidence available: GitHub source writes for native Hanbok route, deterministic matcher, six P0 Hanbok bundles, request loader merge, parity/contract gates, responsive CSS, roadmap/discovery/handoff updates.
 
-Execution limitation: current shell still cannot resolve `github.com` (`Could not resolve host: github.com`), so clean clone → `npm install` → `npm run check:i18n` → `npm run build` cannot be proven here. Production build/deployment is **not claimed**. A future environment with working checkout/network must run these before Step 2 cutover.
+Executable verification was attempted again on 2026-08-27 using clean clone → install → `npm run check:i18n` → build. The shell failed at clone with `Could not resolve host: github.com`. Therefore executable i18n/build success and production deployment are **not claimed**. A future environment with working GitHub DNS must run the full path before Step 2 cutover.
 
-## 8. Security / privacy / cost / margin impact
+## 8. Security / privacy / token / margin impact
 
 - New AI calls: 0.
 - Runtime translation/model calls: 0.
 - New runtime dependencies: 0.
-- New external selfie/user-data transfer: 0.
-- Credit/payment behavior: unchanged.
+- New external image/user-data transfer: 0.
+- Credits charged by Hanbok preview: 0.
+- Credit/payment behavior otherwise: unchanged.
 - Incremental inference/provider cost: 0.
-- Margin: favorable/neutral; localized free local compute improves utility without supplier cost.
-- Manual correction remains because lighting/simple heuristics can be wrong.
+- Gross-margin effect: favorable/neutral; localized interactive utility increased without supplier cost.
+- No identity/nationality/ethnicity/religion profiling introduced.
 
-## 9. Exact next slice — Step 2C-1B native P0 Hanbok
+## 9. Exact next slice — Step 2C-1C native P0 Credits
 
 Next run:
-1. inspect latest main/recent commits/tree/handoff;
-2. inspect `/[locale]/hanbok`, legacy Hanbok components/data and every user-facing string;
-3. rerun GitHub + Hugging Face discovery for Hanbok/recommendation logic;
-4. convert locale route and every interactive control/result to P0 native copy;
-5. keep deterministic ranking before AI and **do not start bulk Hanbok visual assets**;
-6. add localized metadata/message-contract checks where useful;
-7. review CJK/Thai/Vietnamese overflow, keyboard use and form labels;
-8. keep paid/free boundaries explicit and keep locale/canonical cutover disabled;
-9. update discovery log, roadmap and this handoff.
+1. inspect latest main/recent commits/tree/handoff first;
+2. read `CREDIT_ECONOMICS.md` in full before changing credits UI;
+3. inspect legacy `/credits`, localized bridge and every displayed pack/feature price;
+4. re-run GitHub + Hugging Face discovery for wallet/credit UX patterns; do not adopt ML pricing;
+5. convert `/[locale]/credits` to native P0 content with localized metadata and controls/content;
+6. keep public pack/action credit values deterministic and sourced from one in-repo authority rather than duplicated ad-hoc numbers;
+7. make fixed credit cost visible before any paid action; clearly distinguish currently implemented preview/architecture from future live checkout;
+8. preserve server-authoritative ledger/reserve/capture/release/refund requirements for later auth/payment steps;
+9. add message-contract/parity checks and mobile/accessibility hardening as needed;
+10. keep locale redirect/canonical/hreflang cutover disabled until executable build evidence and route parity;
+11. update discovery log, roadmap and this handoff.
 
-Then Step 2C-1C localizes Credits using `CREDIT_ECONOMICS.md`. Only after all required routes plus executable build evidence should Step 2C-2 enable canonical/hreflang/x-default, locale sitemap, safe locale negotiation and remove legacy shell.
+Only after Step 2C-1C plus executable build evidence should Step 2C-2 consider canonical/hreflang/x-default, locale sitemap/negotiation and legacy-shell removal.
 
 ## 10. Later roadmap / deferred
 
