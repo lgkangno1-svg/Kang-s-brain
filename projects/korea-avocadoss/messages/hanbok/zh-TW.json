@@ -1,0 +1,43 @@
+{
+  "Hanbok": {
+    "eyebrow": "韓服配對 · 免費規則預覽",
+    "title": "選出既適合你的色彩，也適合當天行程的韓服方向。",
+    "intro": "從色彩、風格與步行舒適度開始。這個免費預覽只使用裝置內的簡單規則，不呼叫 AI、不上傳照片，也不扣點數。"
+  },
+  "HanbokMatcher": {
+    "freeEyebrow": "0 點數 · 0 次 AI 呼叫",
+    "title": "建立實用的韓服方向",
+    "intro": "請選擇你真正重視的條件。你的明確選擇永遠高於任何市場預設值。",
+    "colorLegend": "1. 配色方向",
+    "colorHelp": "如果已有個人色彩結果可以直接參考；沒有也可以只選你喜歡的配色。",
+    "moodLegend": "2. 風格氛圍",
+    "moodHelp": "請選擇自己想穿的感覺，而不是讓系統依語言或國籍替你判斷。",
+    "comfortLegend": "3. 行程優先順序",
+    "comfortHelp": "宮殿造型不只要上鏡，也要符合租借時間與步行計畫。",
+    "colors": {"jadeIvory": "玉色與暖象牙白", "roseNavy": "灰粉與海軍藍", "moonBlue": "月藍與柔白"},
+    "moods": {"elegant": "傳統優雅", "royal": "王室感 / 戲劇感", "romantic": "柔和浪漫", "minimal": "現代極簡", "kdrama": "韓劇感"},
+    "comfort": {"walking": "步行優先", "balanced": "拍照與舒適平衡", "photoFirst": "拍照優先"},
+    "resultEyebrow": "免費配對預覽",
+    "resultPalette": "配色",
+    "resultTripPriority": "行程優先順序",
+    "directions": {
+      "elegant": {"name": "經典宮廷優雅", "reason": "優先傳統線條與克制對比，讓整體更自然地融入宮殿建築背景。"},
+      "royal": {"name": "有結構感的王室造型", "reason": "使用更強對比與更正式的視覺重量，適合需要戲劇感的宮殿照片。"},
+      "romantic": {"name": "柔和浪漫韓服", "reason": "使用更柔和的對比與輕盈層次，讓白天拍照更溫和。"},
+      "minimal": {"name": "現代極簡韓服", "reason": "減少色彩與裝飾數量，保持乾淨、現代的視覺方向。"},
+      "kdrama": {"name": "韓劇感造型", "reason": "保留有辨識度的影視輪廓，同時讓實際租借與當天活動保持可行。"}
+    },
+    "comfortNotes": {
+      "walking": "優先輕量層次、適中的衣量與活動自由度，再考慮裝飾細節。",
+      "balanced": "保留拍照需要的結構感，同時避免讓較長步行變得不方便的體積與配件。",
+      "photoFirst": "可以為拍照接受更強結構或更大體積，但仍要替換裝與歸還預留實際緩衝時間。"
+    },
+    "freeBoundaryTitle": "這個免費配對會做什麼",
+    "freeBoundaryText": "只把你上面主動選擇的條件透過確定性規則組合起來，不使用 AI、個人輪廓推測或外部資料傳輸。",
+    "paidBoundaryText": "如果未來加入進階虛擬試穿或 AI 造型，會在確認前顯示固定點數費用，以及照片與隱私條款。"
+  },
+  "Meta": {
+    "hanbokTitle": "韓服配對 — 免費規則式造型預覽",
+    "hanbokDescription": "依配色、風格與步行舒適度選擇韓服方向的多語免費預覽，不需 AI 呼叫或上傳照片。"
+  }
+}
