@@ -52,11 +52,31 @@ Decision: **defer** until the FAQ corpus is large enough to justify measured bro
 #### multilingual E5 variants
 Decision: **defer for locale/FAQ routing**; no benefit for deterministic routing at current corpus size.
 
+## 2026-08-26 — Step 2B-1 locale navigation re-check
+
+### GitHub / upstream documentation reviewed
+- Fresh repository search found several App Router localization examples, but none provided stronger maintenance or product fit than the already selected first-party-focused `next-intl` approach.
+- Current `next-intl` learning material explicitly covers top-level locale routing, navigation APIs that preserve locales, locale switching, static rendering/404 handling, and Next.js 16 updates including stable `next/root-params` guidance dated 2026-08-04.
+- Decision: **continue with `next-intl` and use its `createNavigation(routing)` API** rather than adding a second routing/i18n dependency or maintaining hand-written URL replacement logic.
+- Migration decision: retain existing unprefixed routes temporarily and isolate them behind a migration-only shell while locale-prefixed routes are introduced incrementally. Do not activate middleware/proxy redirects before destination route parity and build verification.
+
+### Hugging Face re-check
+- `facebook/nllb-200-distilled-600M` remains CC-BY-NC-4.0 and its current model card continues to say it is research-oriented and not released for production deployment.
+- Decision unchanged: **do not add runtime translation ML**. It would add model/runtime cost, latency, privacy surface and licensing risk while reviewed static dictionaries meet the current product need at zero per-request inference cost.
+
+### Security / performance implications
+- No new network service, AI provider, embedding database or translation API was added.
+- Locale switching is deterministic client navigation over an allowlisted P0 locale registry.
+- Unsupported request locales continue to fail closed through the validated request config.
+- The temporary legacy-shell client boundary adds some migration-time JavaScript overhead and should be removed at the Step 2C cutover rather than becoming permanent architecture.
+
 ### Current sources
 - https://github.com/amannn/next-intl/releases
 - https://github.com/amannn/next-intl/blob/main/CHANGELOG.md
 - https://learn.next-intl.dev/changelog
-- https://next-intl.dev/
+- https://learn.next-intl.dev/chapters/06-routing/01-setup
+- https://learn.next-intl.dev/chapters/06-routing/04-navigation-apis
+- https://learn.next-intl.dev/chapters/06-routing/05-locale-switcher
 - https://huggingface.co/facebook/nllb-200-distilled-600M
 
 ## Discovery rules for future entries
