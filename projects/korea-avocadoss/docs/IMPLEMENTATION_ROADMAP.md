@@ -20,7 +20,7 @@ Exact `next-intl@4.13.4`; P0 `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`; fai
 - 2B-3 ✅ native P0 Home/Culture; Saju copy accepts unknown birth time and never guesses it.
 - 2B-4 ✅ native P0 Gyeongbokgung, freshness warning, locale text-expansion safeguards and localized metadata.
 
-### Step 2C — locale parity, verification and cutover
+### Step 2C — locale parity, executable verification and cutover
 
 #### Step 2C-1A — Personal Color native P0 ✅ by source/data-shape review
 Native scanner/content/metadata; browser-local deterministic preview; stable locale-neutral analyzer codes/palette IDs; no image upload/AI/provider cost; message contract and legacy-route regression fix.
@@ -29,31 +29,35 @@ Native scanner/content/metadata; browser-local deterministic preview; stable loc
 Native localized route/metadata; free user-choice-driven deterministic matcher; modular P0 Hanbok bundles; recursive message merge; P0 parity/contract checks; no photo upload/model/provider; bulk visual asset project remains deferred.
 
 #### Step 2C-1C — Credits native P0 ✅ by source/data-shape review
-Completed this run:
-- inspected latest `main`, recent commits, roadmap/handoff, `CREDIT_ECONOMICS.md`, legacy/localized Credits code and `economics.ts` before editing;
-- confirmed authoritative launch catalog remains Basic `$7.99 / 120`, Advanced `$14.99 / 400`, Ultra `$24.99 / 1,000`, plus the documented refill and feature-credit catalog;
-- replaced `/[locale]/credits` English re-export with native P0 content and locale metadata;
-- added six modular `messages/credits/{locale}.json` dictionaries containing copy only — authoritative numeric pack/refill/feature prices remain in `src/lib/credits/economics.ts`;
-- localized Trip Pass descriptions, refill explanation, all paid feature labels, fixed-credit-before-confirmation language, free layer, server-authoritative wallet semantics, reserve/capture/release behavior, payment roadmap and no-dynamic-pricing promise;
-- intentionally did **not** add a checkout button or payment mutation surface before Step 4/5; the page explicitly states that live checkout is not yet enabled;
-- `Intl.NumberFormat(locale, {currency: 'USD'})` provides locale-appropriate display while USD remains the current launch catalog currency;
-- request loader deep-merges the credits bundle after locale allowlist validation;
-- P0 message parity includes credits; `check-credits-message-keys.mjs` derives launch plan IDs and paid feature IDs from `economics.ts` and fails if matching copy keys are absent;
-- production `check:i18n` now includes the credits contract;
-- no subscription, ML personalized pricing, runtime model, API or new runtime dependency added.
+Native P0 Credits route/metadata; authoritative numeric pricing remains only in `src/lib/credits/economics.ts`; modular copy-only locale bundles; fixed credits shown before paid actions; no fake checkout before wallet/payment gates; no subscription/ML personalized pricing.
 
-**Discovery decision:** modern ledger projects reinforce immutable reserve/settle/top-up patterns but are deferred until Step 4 rather than adding a backend/service during localization. Hugging Face dynamic-pricing models remain rejected because their domains do not match tourism credits and they reduce trust/auditability versus public fixed prices.
+#### Step 2C-2 — executable verification ← in progress
 
-**Verification limitation:** executable clean install/check/build is still not proven in the available shell because prior attempts cannot resolve `github.com`. Production build/deployment is not claimed.
+Completed in this slice:
+- re-inspected latest main, recent commits, tree, roadmap, handoff and confirmed no pre-existing GitHub Actions workflow;
+- re-ran GitHub + Hugging Face discovery for the verification feature;
+- added minimal `.github/workflows/korea-concierge-ci.yml` scoped to Korea Concierge paths;
+- pinned official `actions/checkout` v7.0.1 and `actions/setup-node` v7.0.0 to full verified commit SHAs;
+- workflow permissions are `contents: read`, checkout credentials are not persisted, no repository secrets are used, CI/Next telemetry is disabled, timeout is 15 minutes and concurrent superseded runs are cancelled;
+- first GitHub-hosted run successfully checked out, installed 53 packages under Node 22, and passed all P0 i18n contracts: 6 locales × 283 leaf keys; Quick Help 65; Personal Color 38; Hanbok 44; Credits 3 plans + 11 paid-feature labels;
+- production build compiled successfully but TypeScript caught a real locale-boundary bug: `DEFAULT_LOCALE` was typed as broad `SupportedLocale` including P1/P2 candidates while `defineRouting` intentionally accepts P0 only;
+- fixed the source model by adding `P0Locale = typeof P0_LOCALES[number]` and typing `DEFAULT_LOCALE` as `P0Locale`. P1/P2 remain in the market registry but cannot widen production routing accidentally.
 
-#### Step 2C-2 — next gate: executable verification before locale cutover
-Do **not** turn on redirects/canonical/hreflang yet. Next highest-value slice:
-1. re-inspect latest repository state and concurrent changes;
-2. establish or use an executable verification path for `npm install` → `npm run check:i18n` → `npm run build` (prefer a minimal pinned GitHub Actions CI if no existing CI is present and discovery/security review supports it);
-3. fix any TypeScript/i18n/build regressions revealed by real execution;
-4. verify P0 routes Home/Color/Hanbok/Gyeongbokgung/Culture/Credits on mobile/desktop and keyboard navigation as far as tooling permits;
-5. only after green executable evidence, add canonical/hreflang/x-default and locale-aware sitemap/robots in a separate reviewable cutover slice;
-6. browser-language negotiation/legacy-shell removal remain after destination parity and rollback readiness.
+Known verification/reproducibility note:
+- no committed npm lockfile exists yet, so CI currently uses `npm install --ignore-scripts --no-audit --no-fund`; this avoids lifecycle scripts but dependency resolution is not fully reproducible. A trusted generated/reviewed lockfile should be added in a later small supply-chain slice before calling dependency resolution deterministic.
+
+Current gate:
+1. obtain a green CI run on the locale-type fix (PR verification path if connector-origin main commits do not emit new push runs);
+2. if the compiler reveals another regression, fix only that regression and rerun;
+3. after green `check:i18n` + production build evidence, update handoff/discovery and mark executable build proof established;
+4. do **not** enable redirects/canonical/hreflang/x-default in this same verification slice.
+
+#### Step 2C-3 — SEO/locale cutover after green build
+Only after Step 2C-2 is green:
+- add canonical/hreflang/x-default for complete P0 public routes;
+- add locale-aware sitemap/robots;
+- verify alternate URLs/indexability and public/private noindex boundaries;
+- keep browser-language auto-routing and legacy-shell removal as a later rollback-aware slice.
 
 **Step 2 gate:** no English-only core public/paid-flow dead end; locale URLs have correct SEO alternates after cutover; existing navigation does not regress; executable `check:i18n` + production build evidence exists before redirect/canonical activation.
 
