@@ -2,6 +2,49 @@
 
 This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
+## 2026-08-27 — Step 2C-4 locale-correct document language
+
+### GitHub / framework review
+Current Next.js 16 Route Groups / multiple-root-layout guidance and the current `amannn/next-intl` locale-layout examples were rechecked before changing the document shell.
+
+Key findings:
+- Next.js route groups do not become URL path segments, so they can separate the migration-only legacy tree from locale-prefixed pages without changing public URLs.
+- Next.js supports multiple root layouts when the shared top-level `app/layout.tsx` is removed and each route group/root segment provides its own `<html>` and `<body>`.
+- The current next-intl locale example lets the locale layout own `<html lang={locale}>`; this is preferable to reading pathname/headers in a shared root because it keeps the P0 locale tree statically generated and deterministic.
+- `next/root-params` was also reviewed, but an ancestor `app/layout.tsx` does not provide the locale param needed for this migration shape. Forcing request/header inspection into the shared root would create unnecessary dynamic coupling.
+
+**Decision:** use true multiple root layouts with no new dependency. `[locale]/layout.tsx` owns P0 document language and the URL-neutral `(legacy)` route group owns the temporary English document shell. Do not add browser-language inference or automatic market routing in this slice.
+
+A build-artifact validator was added instead of another testing framework. It inspects generated `.next/server/app/**/*.html` after the production build and fails unless P0 documents use `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` as configured in the existing locale registry.
+
+### Hugging Face review
+The installed Hugging Face connector was attempted for multilingual language-identification discovery but returned an unavailable-tool error in this run. A fresh public fallback search found language-ID models including `HPLT/OpenLID-v3` (GPL-3.0) and `facebook/fasttext-language-identification` (CC-BY-NC-4.0).
+
+**Decision:** reject model involvement. Document `lang` is not an inference problem: it is known deterministically from the validated route locale. A language-ID model would add model/download/runtime and provenance/license complexity, could misclassify short UI copy, and provides no correctness benefit over route-to-BCP47 mapping plus generated-HTML verification. The Meta model is also non-commercially licensed, making it unsuitable for production use here.
+
+### Executable evidence / regression caught
+PR #4 CI runs intentionally acted as the gate:
+- first architecture run exposed a route-depth regression after moving the legacy Personal Color page into `(legacy)`: a relative English message import became one directory too shallow;
+- the import was corrected and all other moved legacy pages were inspected for the same class of relative-path issue;
+- run `33005536571` then passed all P0 localization contracts, Next.js 16.3.3 optimized compilation, TypeScript, 46/46 page generation and `check:document-lang` for all six P0 locales.
+
+### Security / privacy / cost implications
+- production AI/model calls added: **0**;
+- CI AI/model calls added: **0**;
+- runtime dependencies added: **0**;
+- customer data transfer added: **0**;
+- browser-language/nationality inference added: **0**;
+- payment/wallet/credit logic changed: **0**;
+- incremental supplier inference cost: **0**.
+
+### Sources reviewed
+- https://nextjs.org/docs/app/api-reference/file-conventions/route-groups
+- https://nextjs.org/docs/app/api-reference/file-conventions/layout
+- https://github.com/amannn/next-intl/tree/main/examples/example-app-router/src/app/%5Blocale%5D
+- https://github.com/amannn/next-intl/discussions/1627
+- https://huggingface.co/HPLT/OpenLID-v3
+- https://huggingface.co/facebook/fasttext-language-identification
+
 ## 2026-08-26 — Credits, wallet and pricing architecture
 
 ### GitHub

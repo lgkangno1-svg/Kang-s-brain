@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 
-import {LegacyShell} from './LegacyShell';
-import './globals.css';
+import {LegacyShell} from '../LegacyShell';
+import '../globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://korea.avocadoss.co.kr'),
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: 'Personal color, Hanbok matching, palace routes, food and Korean culture for international visitors.',
 };
 
-export default function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
+export default function LegacyLayout({children}: Readonly<{children: React.ReactNode}>) {
   return (
     <html lang="en">
       <body>

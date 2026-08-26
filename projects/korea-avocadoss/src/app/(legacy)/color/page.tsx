@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { ColorScanner } from '@/features/color/color-scanner';
-import publicMessages from '../../../messages/public/en.json';
+import publicMessages from '../../../../messages/public/en.json';
 
 export const metadata = { title: 'My Personal Color' };
 
