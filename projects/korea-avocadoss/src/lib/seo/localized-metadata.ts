@@ -24,17 +24,26 @@ const HREFLANG: Record<P0Locale, string> = {
   th: 'th',
 };
 
+function requireP0Locale(locale: string): P0Locale {
+  if (!(P0_LOCALES as readonly string[]).includes(locale)) {
+    throw new Error(`Unsupported production locale: ${locale}`);
+  }
+
+  return locale as P0Locale;
+}
+
 export function localizedPublicUrl(locale: P0Locale, path: PublicLocalePath): string {
   return `${SITE_ORIGIN}/${locale}${path}`;
 }
 
-export function localizedAlternates(locale: P0Locale, path: PublicLocalePath): Metadata['alternates'] {
+export function localizedAlternates(locale: string, path: PublicLocalePath): Metadata['alternates'] {
+  const currentLocale = requireP0Locale(locale);
   const languages = Object.fromEntries(
     P0_LOCALES.map((candidate) => [HREFLANG[candidate], localizedPublicUrl(candidate, path)]),
   );
 
   return {
-    canonical: localizedPublicUrl(locale, path),
+    canonical: localizedPublicUrl(currentLocale, path),
     languages: {
       ...languages,
       'x-default': localizedPublicUrl(DEFAULT_LOCALE, path),
