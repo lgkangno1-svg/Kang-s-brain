@@ -22,11 +22,28 @@ function flatten(value, prefix = "", output = new Map()) {
   return output;
 }
 
+function isMessageObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function mergeMessages(...sources) {
+  const output = {};
+  for (const source of sources) {
+    for (const [key, value] of Object.entries(source)) {
+      const current = output[key];
+      output[key] = isMessageObject(current) && isMessageObject(value)
+        ? mergeMessages(current, value)
+        : value;
+    }
+  }
+  return output;
+}
+
 async function loadLocale(locale) {
   const core = JSON.parse(await readFile(resolve(root, "messages", `${locale}.json`), "utf8"));
   const publicCopy = JSON.parse(await readFile(resolve(root, "messages", "public", `${locale}.json`), "utf8"));
   const hanbok = JSON.parse(await readFile(resolve(root, "messages", "hanbok", `${locale}.json`), "utf8"));
-  return flatten({...core, ...publicCopy, ...hanbok});
+  return flatten(mergeMessages(core, publicCopy, hanbok));
 }
 
 const dictionaries = new Map();
