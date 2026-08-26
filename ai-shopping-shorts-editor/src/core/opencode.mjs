@@ -79,6 +79,29 @@ export function validateVisionBatchResponse(batch, parsed) {
   return new Map(parsed.map((row) => [row.id, row]));
 }
 
+export function validatePlannerResponse(beats, parsed) {
+  if (!parsed || !Array.isArray(parsed.choices)) throw new Error('Planner did not return a choices array.');
+  const expectedIds = beats.map((beat) => beat.id);
+  const expected = new Set(expectedIds);
+  const seen = new Set();
+  const duplicate = [];
+  const unexpected = [];
+
+  for (const choice of parsed.choices) {
+    const beatId = String(choice?.beatId || '');
+    if (!expected.has(beatId)) unexpected.push(beatId || '(missing beatId)');
+    else if (seen.has(beatId)) duplicate.push(beatId);
+    else seen.add(beatId);
+  }
+
+  const missing = expectedIds.filter((id) => !seen.has(id));
+  if (parsed.choices.length !== beats.length || missing.length || duplicate.length || unexpected.length) {
+    throw new Error(`Planner beat integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  }
+
+  return parsed;
+}
+
 export async function analyzeSegmentsVision(segments, { apiKey, model = 'deepseek-v4-flash-vision-exp', batchSize = 10, usage, onProgress }) {
   const output = [];
   for (let offset = 0; offset < segments.length; offset += batchSize) {
@@ -119,7 +142,7 @@ export async function planTimelineAI(beats, segments, { apiKey, model = 'deepsee
     ],
     maxTokens: Math.max(3500, beats.length * 220)
   });
-  return extractJson(raw);
+  return validatePlannerResponse(beats, extractJson(raw));
 }
 
 export async function judgeSelectionsVision(items, { apiKey, model = 'deepseek-v4-flash-vision-exp', usage, batchSize = 6 }) {
