@@ -3,7 +3,9 @@
 [data-locale] .sectionHead > *,
 [data-locale] .step > *,
 [data-locale] .quickHelpHeader > *,
-[data-locale] .infoBand > * {
+[data-locale] .infoBand > *,
+[data-locale] .hanbokMatcherGrid > *,
+[data-locale] .hanbokResultFacts > * {
   min-width: 0;
 }
 
@@ -17,7 +19,11 @@
 [data-locale] .quickHelpHeader strong,
 [data-locale] .quickHelpBody > p,
 [data-locale] .quickHelpChoices button,
-[data-locale] .siteFooter p {
+[data-locale] .siteFooter p,
+[data-locale] .hanbokChoice span,
+[data-locale] .hanbokFieldHelp,
+[data-locale] .hanbokResult p,
+[data-locale] .hanbokResult dd {
   overflow-wrap: anywhere;
 }
 
@@ -40,6 +46,109 @@
   line-height: 1.6;
 }
 
+.hanbokMatcherHead {
+  margin-bottom: 24px;
+}
+
+.hanbokMatcherGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hanbokFieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+}
+
+.hanbokFieldset legend {
+  padding: 0 6px;
+  font-weight: 800;
+}
+
+.hanbokFieldHelp {
+  margin: 4px 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.hanbokChoiceGrid {
+  display: grid;
+  gap: 8px;
+}
+
+.hanbokChoice {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.hanbokChoice:has(input:checked) {
+  border-color: var(--jade);
+  background: var(--jade-soft);
+}
+
+.hanbokChoice input {
+  margin: 2px 0 0;
+}
+
+.hanbokResult {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.hanbokResult h3 {
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hanbokResult > p:not(.eyebrow) {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hanbokResultFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.hanbokResultFacts > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+}
+
+.hanbokResultFacts dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.hanbokResultFacts dd {
+  margin: 5px 0 0;
+  font-weight: 750;
+}
+
+.hanbokResult .contextBox p {
+  margin: 6px 0 0;
+}
+
+@media (max-width: 860px) {
+  .hanbokMatcherGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 520px) {
   [data-locale] h1 {
     font-size: clamp(42px, 13vw, 62px);
@@ -55,5 +164,13 @@
     max-width: 100%;
     white-space: normal;
     text-align: center;
+  }
+
+  .hanbokFieldset {
+    padding: 16px;
+  }
+
+  .hanbokResultFacts {
+    grid-template-columns: 1fr;
   }
 }
