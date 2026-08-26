@@ -1,7 +1,7 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
 **Date:** 2026-08-26  
-**Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer.
+**Rule:** do not attempt the entire product in one patch. Each step must be reviewable, documented and regression-checked before the next major layer. Always inspect the latest GitHub main/project tree and recent commits before editing because another AI or developer may have changed the repository.
 
 ## Step 0 — Product baselines ✅
 PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discovery gate, international markets, security/token-efficiency.
@@ -38,20 +38,28 @@ PRD, architecture, AI routing/cost policy, credit economics, SEO/AEO/GEO, discov
 #### Step 2B-2 — complete Quick Help localization + message QA ✅ by static/data-shape review
 - removed hard-coded English Quick Help titles, answers, choices, CTAs and accessibility text from the client component;
 - Quick Help decision graph now contains message keys only;
-- completed the full Quick Help tree in all P0 dictionaries: English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese and Thai;
-- added `scripts/check-message-parity.mjs`: English is the reference schema; missing, extra or blank leaves fail the check;
-- production `npm run build` now runs `npm run check:i18n` first;
-- local parity modeling confirms 87 leaf message keys for each of the six P0 dictionaries;
-- no translation API, model, RAG or embedding dependency added; Quick Help remains 0-credit / 0-AI / no external question transfer.
+- completed the full Quick Help tree in all P0 dictionaries;
+- added deterministic message-parity validation; production build runs i18n checks first;
+- no translation API, model, RAG or embedding dependency added.
 
-**2B-2 verification limitation:** the repository cannot currently be clean-cloned in the available shell because `github.com` DNS resolution fails, so the committed Node check and `next build` could not be executed in that shell. Production build success is not claimed. Source-level structure was reviewed through GitHub after commit.
+#### Step 2B-3 — localized landing + first native public route ✅ by source review
+- inspected latest main/project tree and recent commits before editing; no concurrent project commit was detected during the slice;
+- moved locale landing-page marketing copy into reviewed P0 static dictionaries under `messages/public/` and merged them through the request loader;
+- removed English marketing fallback from the locale landing surface;
+- converted `/[locale]/culture` from a temporary English bridge into a native localized K-Culture page;
+- culture copy now explicitly states that birth time is optional and unknown birth time is never guessed;
+- expanded message parity to include the public-copy dictionaries;
+- added a deterministic Quick Help graph/message-key checker so referenced keys missing from the English schema fail `check:i18n` before build;
+- retained zero runtime translation/model cost and did not add a new package, API, model or sensitive-data flow.
 
-#### Step 2B-3 — next slice
-- migrate landing-page marketing copy fully into P0 dictionaries instead of leaving English brand copy as fallback;
-- migrate the next highest-value public route family from temporary bridge content to native localized content;
-- add a small deterministic checker that every Quick Help message key referenced by the graph exists in the English schema, so graph/message drift fails before build;
-- review CJK/Thai/Vietnamese mobile text overflow after the translated public surface grows;
-- browser-language suggestion/negotiation only after explicit locale destinations are proven; never infer nationality from IP/name/face and never override explicit selection.
+**2B-3 verification limitation:** a clean clone + `npm install` / `npm run check:i18n` / `next build` was attempted again, but the available shell still cannot resolve `github.com`. GitHub currently exposes no CI status checks for the project. Build success is therefore not claimed; source and commit state were reviewed through the GitHub connector.
+
+#### Step 2B-4 — next slice
+- migrate the next highest-value public route from temporary bridge content to native localized content (prefer Gyeongbokgung discovery shell before paid flows);
+- add localized page metadata for the already-native home/culture routes without prematurely enabling canonical/hreflang cutover;
+- tighten type safety for locale/message usage if it can be done without creating fragile build coupling;
+- review CJK/Thai/Vietnamese mobile overflow as localized surfaces grow;
+- keep browser-language suggestion/negotiation deferred until explicit locale destinations are proven.
 
 ### Step 2C
 - activate safe locale negotiation/cutover only after localized destination routes build;
@@ -95,7 +103,7 @@ Deterministic filtering, compact prompts, partial replans, hard token/cost ceili
 Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, market experiments, P1/P2 expansion from demand.
 
 ## Every-step regression checklist
-Mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
+Latest GitHub state/conflict check; mobile/desktop navigation; accessibility; locale overflow; security; privacy; token/API cost; credit margin; SEO/AEO/GEO; indexability; performance; failure/refund paths; dependency/license risk; fresh GitHub/Hugging Face alternatives.
 
 ## Current user actions required
 **None immediately.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review are deferred until their corresponding gates.
