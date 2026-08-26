@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { QuickHelp } from '@/features/quick-help/QuickHelp';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <p>Personalized Korea travel and culture, designed for international visitors.</p>
           <span>Production target: korea.avocadoss.co.kr</span>
         </footer>
+        <QuickHelp />
       </body>
     </html>
   );
