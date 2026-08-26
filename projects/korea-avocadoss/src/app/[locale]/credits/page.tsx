@@ -7,6 +7,7 @@ import {
   TOP_UP_PACKS,
   effectiveUsdPerCredit,
 } from '@/lib/credits/economics';
+import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 function featureMessageKey(feature: string) {
   return `features.${feature.replaceAll('.', '_')}` as const;
@@ -19,6 +20,7 @@ export async function generateMetadata({params}: {params: Promise<{locale: strin
   return {
     title: t('creditsTitle'),
     description: t('creditsDescription'),
+    alternates: localizedAlternates(locale, '/credits'),
   };
 }
 
