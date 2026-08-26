@@ -1,8 +1,22 @@
+import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
 import {Link} from '@/i18n/navigation';
 
-export default async function LocalizedHome({params}: {params: Promise<{locale: string}>}) {
+type PageProps = {params: Promise<{locale: string}>};
+
+export async function generateMetadata({params}: PageProps): Promise<Metadata> {
+  const {locale} = await params;
+  setRequestLocale(locale);
+  const meta = await getTranslations('Meta');
+
+  return {
+    title: meta('homeTitle'),
+    description: meta('homeDescription'),
+  };
+}
+
+export default async function LocalizedHome({params}: PageProps) {
   const {locale} = await params;
   setRequestLocale(locale);
 
