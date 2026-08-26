@@ -5,7 +5,7 @@ import { buildBeats, adaptBeatsToAvailableSegments } from './beats.mjs';
 import { analyzeSegmentsVision, UsageTracker, validateVisionBatchResponse } from './opencode.mjs';
 import { alternativesAfterReplacement, buildEdl, renderEdl, validateEdl } from './editor.mjs';
 import { ensureDir, readJson, writeJson, sha256Text } from './utils.mjs';
-import { commitReplacementArtifacts } from './artifact-commit.mjs';
+import { commitReplacementArtifacts, commitRunArtifacts } from './artifact-commit.mjs';
 
 export const DEFAULT_SETTINGS = {
   qualityMode: 'balanced',
@@ -133,17 +133,19 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
   const beforeAdaptiveSplit = beats.length;
   beats = adaptBeatsToAvailableSegments(beats, segments);
   if (beats.length > beforeAdaptiveSplit) onStatus(`짧은 원본 컷에 맞춰 편집 Beat를 ${beforeAdaptiveSplit}개에서 ${beats.length}개로 세분화`);
-  await writeJson(path.join(workDir, 'beats.json'), beats);
-  await writeJson(path.join(workDir, 'segments.json'), segments.map(({ framePath, ...rest }) => rest));
 
   const edl = await buildEdl({ beats, segments, apiKey, settings, usage, workDir, onStatus });
   const validation = validateEdl(edl, sourceMeta);
   if (!validation.ok) throw new Error(`EDL validation failed: ${validation.errors.join('; ')}`);
-  await writeJson(path.join(workDir, 'edl.json'), { version: 1, clips: edl });
 
   onStatus('FFmpeg로 최종 9:16 컷 편집 영상 렌더링 중');
   const outputPath = path.join(outputDir, 'shorts.mp4');
-  const outputMeta = await renderEdl({ edl, outputPath, ttsPath, fitMode: settings.fitMode });
+  const { stagedPath, outputMeta } = await renderReplacementStaged({
+    edl,
+    outputPath,
+    ttsPath,
+    fitMode: settings.fitMode
+  });
   const expectedDuration = beats.at(-1)?.end || validation.duration;
   const durationError = Math.abs(outputMeta.duration - expectedDuration);
   const qa = {
@@ -155,7 +157,20 @@ export async function runProject({ projectDir, videoPaths, script, srtPath, ttsP
     apiUsage: usage.snapshot(),
     settings
   };
-  await writeJson(path.join(outputDir, 'qa.json'), qa);
+
+  await commitRunArtifacts({
+    stagedVideoPath: stagedPath,
+    outputPath,
+    beatsPath: path.join(workDir, 'beats.json'),
+    segmentsPath: path.join(workDir, 'segments.json'),
+    edlPath: path.join(workDir, 'edl.json'),
+    qaPath: path.join(outputDir, 'qa.json'),
+    beats,
+    segments: segments.map(({ framePath, ...rest }) => rest),
+    edlDoc: { version: 1, clips: edl },
+    qa
+  });
+
   onStatus(qa.ok ? '완료: 자동 QA 통과' : '완료: QA 경고 확인 필요');
   return { outputPath, qa, beats, edl, apiUsage: usage.snapshot() };
 }
