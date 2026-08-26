@@ -1,89 +1,171 @@
 # Korea Concierge — OpenRouter AI Routing Policy
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Date:** 2026-08-26  
 **Gateway:** OpenRouter only
 
-## Why this exists
+## Business objective
 
-Korea Concierge must not treat every feature as an LLM problem. The routing policy has four goals:
+The AI stack is optimized for margin, not model prestige. The default rule is:
 
-1. use deterministic/local computation before paid AI;
-2. keep selfie and birth-related workflows privacy-first;
-3. select the least-expensive model that reliably meets the UX quality bar;
-4. make model changes configuration-driven rather than scattered through feature code.
+> deterministic/local code first → ultra-low-cost Chinese model → higher-quality Chinese model → premium fallback only when measured quality requires it.
 
-Model availability and pricing change frequently. The IDs below are a launch baseline, not permanent product truth. Re-benchmark before production and periodically afterward.
+Every feature must earn the right to use a more expensive model through evaluation data. Model choice is configuration-driven and can be changed without rewriting feature code.
 
-## Baseline model pool
+Model availability and pricing change frequently. The prices below are a 2026-08-26 snapshot from OpenRouter and must be re-checked automatically before production changes.
 
-### `google/gemini-2.5-flash-lite`
-Use for inexpensive multilingual text work: short explanations, rewrite/translation assistance, structured summaries, lightweight Hanbok reasoning from already-derived inputs, and low-complexity cultural explanations.
+## Tiered model pool
 
-OpenRouter price snapshot on 2026-08-26: approximately $0.10/M input and $0.40/M output.
+### Tier 0 — no model
+Use deterministic/local computation whenever the task can be calculated or ranked reliably without generative AI.
 
-### `openai/gpt-5.6-luna`
-Use for higher-quality non-sensitive text synthesis where the extra quality materially improves the visitor experience: itinerary composition, multi-constraint recommendation explanation, premium result narratives, and cross-feature concierge responses.
+Examples: basic personal-color measurements, zodiac dates, Saju calendar calculation, Hanbok weighted ranking, nearby-place filtering, distance/time scoring, credit/payment logic.
 
-OpenRouter price snapshot on 2026-08-26: approximately $0.20/M input and $1.20/M output.
+Cost target: $0.
 
-Do not send raw selfies, raw birth profiles, precise location history, payment data, or other sensitive payloads to a route that does not meet the feature privacy policy.
+### Tier 1 — `qwen/qwen3-30b-a3b-instruct-2507`
+Default production text model.
 
-### `google/gemini-2.5-flash`
-Use for opt-in multimodal analysis when an actual image must leave the browser. Require an OpenRouter provider policy that denies data collection and enforces Zero Data Retention.
+Why:
+- very low current OpenRouter price;
+- multilingual instruction following;
+- tool calling;
+- structured JSON-schema outputs;
+- sufficient quality for short explanations, translations and most personalization copy.
 
-OpenRouter price snapshot on 2026-08-26: approximately $0.30/M text/image input and $2.50/M output.
+2026-08-26 observed OpenRouter listed floor: about **$0.04815/M input + $0.1931/M output** at the cheapest provider, with other providers around $0.09–0.13/M input and $0.30–0.52/M output.
+
+Use for:
+- personal-color explanation from derived values;
+- Hanbok recommendation explanation;
+- short UI/support translations;
+- cultural explanations;
+- Saju narrative from derived pillars/elements only;
+- restaurant/attraction reason strings from verified structured facts;
+- low-complexity concierge chat.
+
+### Tier 2 — `deepseek/deepseek-v3.2`
+Quality/cost escalation model for complex text reasoning.
+
+Why:
+- materially stronger reasoning and agent/tool performance than the Tier-1 default;
+- still inexpensive relative to frontier premium models;
+- useful for constrained itinerary composition and difficult cross-feature reasoning.
+
+2026-08-26 observed OpenRouter low provider pricing: roughly **$0.21/M input + $0.31–0.32/M output** on discounted routes, with some providers higher.
+
+Use for:
+- multi-constraint itinerary composition;
+- complex itinerary repair/re-plan;
+- premium cross-feature concierge when Tier 1 fails evaluation thresholds;
+- difficult structured recommendation synthesis.
+
+Reasoning should be disabled or kept low unless the feature genuinely needs it.
+
+### Tier 2V — `qwen/qwen3.5-35b-a3b`
+Primary candidate for remote vision because it is a Chinese multimodal model with favorable input pricing.
+
+2026-08-26 OpenRouter headline pricing: about **$0.14/M input + $1.00/M output**.
+
+Use only for opt-in premium photo analysis when:
+- local/browser analysis is insufficient;
+- the selected OpenRouter endpoint satisfies the required privacy policy;
+- output is tightly capped and structured.
+
+Use for:
+- premium selfie-assisted personal-color review;
+- premium Hanbok photo/style review.
+
+### Tier 3 — `moonshotai/kimi-k2.5`
+Reserve for multimodal or complex reasoning cases where Qwen/DeepSeek do not meet the quality bar.
+
+2026-08-26 OpenRouter pricing is materially higher than the default tiers, around **$0.375–0.45/M input + $2.0–2.25/M output** at lower-priced providers.
+
+Do not use by default. Promotion to this tier requires an evaluation result showing a user-visible improvement worth the extra cost.
+
+### Frontier non-Chinese fallback
+
+No OpenAI/Google/Anthropic model is a normal production default. A non-Chinese frontier model may be added only when an evaluation demonstrates a feature cannot meet its quality, safety, privacy or reliability target with the Chinese model pool. Such fallbacks require a feature-level cost ceiling and explicit documentation.
 
 ## Feature routing
 
-| Feature | Default execution | AI model if needed | Raw sensitive input allowed? |
+| Feature | Default execution | Default AI | Escalation |
 |---|---|---|---|
-| Basic personal color | Browser/local deterministic image statistics | None | No upload |
-| Detailed color explanation | Derived color features only | `google/gemini-2.5-flash-lite` | No |
-| Premium visual color review | Opt-in vision | `google/gemini-2.5-flash` | Selfie only with explicit consent + ZDR |
-| Hanbok ranker | Deterministic weighted scoring | None | No |
-| Hanbok explanation | Structured recommendation facts | `google/gemini-2.5-flash-lite` | No |
-| Hanbok photo-based premium review | Opt-in vision | `google/gemini-2.5-flash` | Photo only with explicit consent + ZDR |
-| Basic attraction/restaurant ranking | Structured place data + deterministic ranking | None | No |
-| Itinerary composition | Ranked place candidates + constraints | `openai/gpt-5.6-luna` | No precise history; use current task location only when necessary |
-| Short translation/helper copy | Text only | `google/gemini-2.5-flash-lite` | Avoid sensitive data |
-| Korean zodiac | Deterministic calculation | None | No |
-| Western zodiac | Deterministic calculation | None | No |
-| Saju pillars/elements | Deterministic calculation on server | None | Raw birth inputs stay server-side |
-| Saju narrative | Derived pillars/elements, no raw date/time/name | `google/gemini-2.5-flash-lite` initially | No raw birth data |
-| Premium cross-feature concierge | Sanitized profile + ranked candidates | `openai/gpt-5.6-luna` | No raw media/payment/birth profile |
+| Basic personal color | browser/local deterministic image statistics | none | none |
+| Detailed color explanation | derived color features | Qwen3 30B A3B Instruct | DeepSeek V3.2 only if eval fails |
+| Premium visual color review | opt-in remote vision | Qwen3.5 35B A3B | Kimi K2.5 if visual eval proves necessary |
+| Hanbok ranker | deterministic weighted scoring | none | none |
+| Hanbok explanation | structured recommendation facts | Qwen3 30B A3B Instruct | DeepSeek V3.2 |
+| Hanbok photo review | opt-in remote vision | Qwen3.5 35B A3B | Kimi K2.5 |
+| Basic attraction/restaurant ranking | structured data + deterministic ranking | none | none |
+| Place recommendation explanation | verified candidate facts | Qwen3 30B A3B Instruct | DeepSeek V3.2 |
+| Itinerary composition | filtered/ranked candidates + constraints | DeepSeek V3.2 | premium fallback only after eval |
+| Partial itinerary re-plan | deterministic validation + AI composition | DeepSeek V3.2 | premium fallback only after eval |
+| Short translation/helper copy | text only | Qwen3 30B A3B Instruct | none normally |
+| Korean zodiac | deterministic calculation | none | none |
+| Western zodiac | deterministic calculation | none | none |
+| Saju pillars/elements | deterministic server calculation | none | none |
+| Saju narrative | derived non-identifying structure only | Qwen3 30B A3B Instruct | DeepSeek V3.2 |
+| Premium cross-feature concierge | sanitized profile + ranked candidates | DeepSeek V3.2 | premium fallback only after eval |
 
 ## Privacy routing rules
 
 ### Selfies and user photos
 
-Default personal-color analysis is local/browser-side. If a premium workflow genuinely requires remote vision:
+Default personal-color analysis remains local/browser-side. Remote vision is a premium, explicit-consent path only.
 
-- obtain explicit purpose-specific consent before upload;
+Before remote vision:
 - resize/crop to the minimum image needed;
 - strip EXIF metadata client-side;
-- do not infer race, ethnicity, nationality, religion, health, attractiveness or identity;
-- call OpenRouter with `provider.zdr = true` and `provider.data_collection = "deny"`;
-- do not enable OpenRouter prompt/content logging for production keys;
-- do not persist source photos unless the user explicitly requests a saved visual feature and retention is disclosed.
+- do not infer identity, race, ethnicity, nationality, religion, health, attractiveness or other unrelated sensitive traits;
+- require OpenRouter `provider.zdr = true`;
+- require `provider.data_collection = "deny"`;
+- require parameter support;
+- do not enable prompt/content logging for production keys;
+- do not persist the source photo unless a separately disclosed saved-photo feature requires it.
 
-If no eligible ZDR provider is available, fail closed and offer the local analysis instead. Never silently relax the privacy constraint to make a request succeed.
+If the requested Chinese vision model has no eligible ZDR endpoint at request time, **fail closed** and offer browser-local analysis instead. Do not silently route the selfie to a weaker privacy endpoint just to save cost.
 
 ### Birth data / Saju
 
-The LLM should never need the user's raw birth date, birth time, name, email or exact birth location. A deterministic server module should calculate the traditional calendar-derived representation first. Only the minimum derived, non-identifying structure needed for an entertainment explanation is sent to AI.
+Raw birth date, birth time, name, account identifiers and exact location must not be sent to the LLM. A deterministic server module computes the traditional calendar representation first. The LLM receives only the minimum derived, non-identifying pillars/elements/zodiac structure needed for entertainment-oriented explanation.
 
 ### Location
 
-Prefer a one-shot current-area input over stored location history. The itinerary prompt should operate on candidate place IDs, walking times and area labels whenever possible instead of raw GPS traces.
+Prefer area labels, place IDs and derived walking times over raw GPS history. Do not send stored movement history to models.
 
-## OpenRouter request policy
+## OpenRouter routing policy
 
-For sensitive multimodal requests:
+### Ordinary non-sensitive text
+
+Use price-aware provider routing with a hard price ceiling and fallbacks among providers for the **same model**.
+
+Conceptual request settings:
 
 ```json
 {
   "provider": {
+    "sort": "price",
+    "allow_fallbacks": true,
+    "data_collection": "deny",
+    "require_parameters": true,
+    "max_price": {
+      "prompt": 0.30,
+      "completion": 1.00
+    }
+  }
+}
+```
+
+The exact max-price limits are feature configuration and must track current OpenRouter units/schema.
+
+### Sensitive photo requests
+
+```json
+{
+  "provider": {
+    "sort": "price",
+    "allow_fallbacks": true,
     "zdr": true,
     "data_collection": "deny",
     "require_parameters": true
@@ -91,54 +173,76 @@ For sensitive multimodal requests:
 }
 ```
 
-For non-sensitive requests, use OpenRouter's normal provider routing unless a benchmark or reliability requirement justifies a stricter route. Provider failover for the same model is preferred over an automatic jump to a much more expensive model.
+Privacy constraints outrank cost savings.
 
-Do not use `openrouter/auto` for credit-priced production features until cost variance and model-quality variance are measured. A fixed feature-to-model policy makes credit economics auditable.
+Do not use `openrouter/auto` for credit-priced production features. Fixed feature tiers make gross margin measurable and prevent surprise model upgrades.
 
-## Cost-control rules
+## Escalation logic
 
-- Never send full place catalogs to the LLM. Rank/filter with code first, then send a small candidate set.
-- Never ask an LLM to calculate deterministic zodiac/Saju calendar values.
-- Cache reusable public explanations and translations.
-- Cap output tokens per feature.
-- Prefer structured JSON outputs for recommendation explanations so UI copy can be rendered without retries.
-- Record model ID, provider, latency, input/output tokens, estimated API cost and feature execution ID for cost analytics; never log sensitive prompt contents.
-- Credit price must be based on a conservative percentile of measured API cost, not a single happy-path request.
-- Expensive fallback models require an explicit feature-level policy and maximum-cost guard.
+A paid feature begins with its configured default tier. Escalation is allowed only when one of these occurs:
 
-## Quality-control rules
+1. validation/schema failure after a bounded retry;
+2. deterministic verifier rejects the output;
+3. a feature-specific confidence/evaluation gate fails;
+4. the user explicitly purchases a higher-quality tier in a future product experiment.
 
-Each AI feature needs a small evaluation set before production. Evaluate:
+Never escalate merely because a provider is temporarily unavailable; first use another provider for the same model.
 
-- correctness against deterministic inputs;
-- multilingual clarity and naturalness;
+## Margin controls
+
+Every feature has:
+- `default_model`;
+- `fallback_model`;
+- `max_input_tokens`;
+- `max_output_tokens`;
+- `max_provider_price`;
+- `max_ai_cost_usd`;
+- credit price;
+- expected p50 and p95 cost;
+- minimum gross-margin target.
+
+Rules:
+- filter/rank place data in code before prompting;
+- cache reusable public copy and translations;
+- use structured outputs to avoid repair calls;
+- keep prompts feature-specific and short;
+- never ask an LLM to perform deterministic zodiac/Saju calendar calculations;
+- record model, provider, latency, token counts and estimated cost by `usage_event` without logging sensitive prompt contents;
+- reprice credits only from measured cost distributions, not anecdotal requests;
+- free model endpoints may be used for development/evaluation but must not be the sole production dependency because of rate limits and availability.
+
+## Evaluation policy
+
+Maintain feature-specific multilingual evaluation sets covering at least English first, then launch-priority languages.
+
+Compare candidate models on:
+- factual adherence to supplied structured data;
+- recommendation usefulness;
+- natural multilingual writing;
+- JSON/schema validity;
 - hallucinated place/shop claims;
 - cultural stereotyping;
 - privacy leakage;
-- JSON/schema adherence;
 - latency;
-- token cost;
-- user usefulness.
+- cost per successful result;
+- retry/escalation rate.
 
-Model promotion is based on measured quality/cost, not leaderboard reputation alone.
+The winning production model is the **cheapest model that clears the quality threshold**, not the highest-scoring model overall.
 
-## OpenRouter operational settings
+## Current decision summary
 
-Production account/key policy should:
+- **Default cheap text:** Qwen3 30B A3B Instruct 2507.
+- **Complex reasoning / itinerary:** DeepSeek V3.2.
+- **Cheap remote vision candidate:** Qwen3.5 35B A3B, ZDR only.
+- **Premium Chinese fallback:** Kimi K2.5, only when benchmarks justify it.
+- **Deterministic/local first:** personal-color measurements, Hanbok scoring, route filtering, zodiac/Saju calculations, payments and credits.
 
-- keep OpenRouter input/output content logging disabled;
-- disable training/data-collection routes where required;
-- apply key budget limits;
-- restrict model allowlists to the models actually used by the application;
-- use separate development and production API keys;
-- rotate compromised keys immediately;
-- keep the API key server-only.
+## Sources to re-check continuously
 
-## Sources to re-check before launch
-
+- OpenRouter model pages/pricing
 - OpenRouter provider routing documentation
 - OpenRouter Zero Data Retention documentation
 - OpenRouter provider/data-policy pages
-- Current model pages and pricing
+- GitHub/Hugging Face model cards and evaluation notes
 
-Never assume the August 2026 model list or prices remain valid at launch.
+Never assume the August 2026 model list, discounts, providers or prices remain valid later.
