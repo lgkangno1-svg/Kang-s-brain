@@ -6,6 +6,7 @@ import { pipeline as streamPipeline } from 'node:stream/promises';
 import { Transform } from 'node:stream';
 import { projectId, ensureDir, safeFilename, parseByteRange, writeJson, readJson } from './core/utils.mjs';
 import { runProject, replaceClipAndRerender, resolveSettings } from './core/pipeline.mjs';
+import { beginProjectJob, abandonProjectJob } from './core/project-job.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -89,13 +90,20 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && parts[3] === 'run') {
-        if (jobs.get(id)?.running) return json(res, 409, { error: 'Project is already running' });
-        const payload = await bodyJson(req);
-        project.script = payload.script || '';
-        project.settings = resolveSettings(payload.settings || {});
-        await writeJson(projectPath, project);
-        const state = { running: true, status: '시작', logs: [], error: null, result: null, updatedAt: new Date().toISOString() };
-        jobs.set(id, state);
+        const state = beginProjectJob(jobs, id, '요청 확인');
+        if (!state) return json(res, 409, { error: 'Project is already running' });
+        let payload;
+        try {
+          payload = await bodyJson(req);
+          project.script = payload.script || '';
+          project.settings = resolveSettings(payload.settings || {});
+          await writeJson(projectPath, project);
+        } catch (error) {
+          abandonProjectJob(jobs, id, state);
+          throw error;
+        }
+        state.status = '시작';
+        state.updatedAt = new Date().toISOString();
         const setStatus = (status) => { state.status = status; state.logs.push({ at: new Date().toISOString(), message: status }); state.updatedAt = new Date().toISOString(); };
         runProject({
           projectDir: dir, videoPaths: project.videos, script: project.script,
@@ -114,10 +122,17 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && parts[3] === 'edl') return json(res, 200, await readJson(path.join(dir, 'work', 'edl.json'), { clips: [] }));
       if (req.method === 'GET' && parts[3] === 'segments') return json(res, 200, await readJson(path.join(dir, 'work', 'segments.json'), []));
       if (req.method === 'POST' && parts[3] === 'replace') {
-        if (jobs.get(id)?.running) return json(res, 409, { error: 'Project is already running' });
-        const payload = await bodyJson(req);
-        const state = { running: true, status: '컷 교체 준비', logs: [], error: null, result: null, updatedAt: new Date().toISOString() };
-        jobs.set(id, state);
+        const state = beginProjectJob(jobs, id, '컷 교체 요청 확인');
+        if (!state) return json(res, 409, { error: 'Project is already running' });
+        let payload;
+        try {
+          payload = await bodyJson(req);
+        } catch (error) {
+          abandonProjectJob(jobs, id, state);
+          throw error;
+        }
+        state.status = '컷 교체 준비';
+        state.updatedAt = new Date().toISOString();
         const setStatus = (status) => { state.status = status; state.logs.push({ at: new Date().toISOString(), message: status }); state.updatedAt = new Date().toISOString(); };
         replaceClipAndRerender({ projectDir: dir, project, beatId: payload.beatId, segmentId: payload.segmentId, onStatus: setStatus })
           .then((result) => { state.running = false; state.result = { qa: result.qa }; state.status = '완료'; state.updatedAt = new Date().toISOString(); })
