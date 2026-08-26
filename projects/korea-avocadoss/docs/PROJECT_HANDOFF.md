@@ -3,10 +3,9 @@
 **Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 2 — internationalized routing / locale parity / SEO and document-language cutover  
-**Last completed slice:** Step 2C-3 — P0 canonical/hreflang/x-default + localized sitemap/robots  
-**Merged Step 2C-3 commit:** `eac3f59869119db047193491681e4993d4d96b96`  
-**Exact next slice:** Step 2C-4 — fix document-level `<html lang>` for P0 locale pages while preserving the migration-only legacy boundary; do not combine browser-language auto-routing or legacy deletion into the same patch.
+**Current phase:** Step 2 — internationalized routing / locale parity / SEO and migration-boundary cleanup  
+**Last completed slice:** Step 2C-4 — locale-correct document `<html lang>` with executable generated-HTML verification  
+**Exact next slice:** Step 2C-5 — decide and implement the migration-only unprefixed duplicate boundary as a separate rollback-aware change; do not mix browser-language inference into deterministic legacy cleanup.
 
 > Cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Assume another AI/developer may have changed the repository. Never restore remembered older code over newer work without understanding it. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or next step changes.
 
@@ -28,11 +27,14 @@ Read before material changes: `PRD.md`, `ARCHITECTURE.md`, `AI_ROUTING.md`, `CRE
 - Next.js **16.3.3** + exact `next-intl@4.13.4`.
 - Production P0 URL trees: `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`.
 - P1/P2 remain research registry values and must not widen production routing until their own localization gate.
-- Locale allowlist runs before dictionary loading; reviewed static dictionaries only; no runtime translation ML.
-- Modular messages use recursive deep merge. `P0Locale` is the production compile-time boundary; broader `SupportedLocale` must not leak into production routing.
-- Migration-only unprefixed legacy routes remain. Locale-aware navigation preserves locale.
-- Legacy Quick Help receives only English messages through a local `NextIntlClientProvider` with `Asia/Seoul`; locale-prefixed routes use their normal locale provider.
-- **Known remaining defect:** shared root layout still renders `<html lang="en">`, so non-English P0 pages have localized URL/content/metadata but incorrect document language. Step 2C-4 exists specifically to fix this safely.
+- Static reviewed dictionaries only; no runtime translation ML. Modular messages use recursive deep merge.
+- `P0Locale` is the production compile-time boundary; broader `SupportedLocale` must not leak into production routing.
+- Complete localized public surfaces: Home, Personal Color, Hanbok, Gyeongbokgung, K-Culture, Credits.
+- Complete P0 public URLs have self-canonical, reciprocal hreflang and `x-default` → English. Sitemap contains 36 canonical P0 URLs.
+- **Document roots now intentionally split:** there is no shared `src/app/layout.tsx`. `[locale]/layout.tsx` is the P0 root document and owns the correct `<html lang>`. `(legacy)/layout.tsx` is the temporary English root for unprefixed duplicate URLs. Route groups do not change public URLs.
+- P0 document mapping is `en→en`, `zh-CN→zh-Hans`, `ja→ja`, `zh-TW→zh-Hant`, `vi→vi`, `th→th` from `src/lib/i18n/locales.ts`.
+- Unprefixed legacy URLs still exist for rollback/migration safety. They are not canonical sitemap targets. Browser-language auto-routing has **not** been introduced.
+- Moving between the two root layouts may cause a full document navigation per Next.js multiple-root behavior; this is acceptable only while the legacy boundary exists and should be considered in Step 2C-5.
 
 ## 5. Completed roadmap
 - Step 0 ✅ baselines.
@@ -41,77 +43,83 @@ Read before material changes: `PRD.md`, `ARCHITECTURE.md`, `AI_ROUTING.md`, `CRE
 - Step 2B ✅ native P0 Home/Culture/Gyeongbokgung, locale navigation, metadata and overflow safeguards.
 - Step 2C-1A ✅ native P0 Personal Color, browser-local deterministic scan.
 - Step 2C-1B ✅ native P0 Hanbok, free deterministic matcher.
-- Step 2C-1C ✅ native P0 Credits, authoritative deterministic economics, no fake checkout.
+- Step 2C-1C ✅ native P0 Credits, deterministic authoritative pricing display, no fake checkout.
 - Step 2C-2 ✅ executable GitHub Actions i18n + production-build gate.
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
+- **Step 2C-4 ✅ correct P0 document language with generated-build verification.**
 
-## 6. CI / verification baseline
+## 6. CI / executable verification baseline
 Workflow: `.github/workflows/korea-concierge-ci.yml`.
 
 Security controls: SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation. Install currently uses `npm install --ignore-scripts --no-audit --no-fund` because no reviewed lockfile exists.
 
-Step 2C-2 baseline run `32995294201` proved all P0 message contracts, TypeScript, production compilation and 46/46 static/SSG pages.
+Existing i18n gate checks:
+- 6 P0 locales × 283 message leaf keys;
+- Quick Help 65 keys;
+- Personal Color 38 keys;
+- Hanbok 44 keys;
+- Credits 3 plans + 11 paid labels sourced from economics.
 
-Step 2C-3 evidence:
-- PR #3 `seo: complete P0 locale canonical and sitemap cutover`;
-- initial code run `32999919664` — **SUCCESS**;
-- final documentation-inclusive run `33000199395` — **SUCCESS** for checkout/setup/install, all P0 localization contracts and Next.js production build;
-- PR #3 squash-merged to `main` as `eac3f59869119db047193491681e4993d4d96b96`.
+Step 2C-4 adds post-build `npm run check:document-lang`, which scans generated `.next/server/app/**/*.html` and verifies all generated P0 HTML uses the route’s configured BCP47 language value.
 
-This is executable build evidence, **not** production deployment/DNS/indexing/Search Console evidence.
+### Step 2C-4 regression evidence
+PR #4: `i18n: fix P0 document language shells`.
+
+The first implementation run failed at production build after the legacy pages moved into `(legacy)`. CI found the legacy Personal Color page still imported `messages/public/en.json` with its old relative depth. This was a real migration regression, not a false alarm. The import was corrected and all other moved legacy pages were inspected for the same class of issue.
+
+Run **`33005536571` — SUCCESS** after the fix:
+- dependency install: success, 53 packages;
+- all existing P0 localization contracts: success;
+- Next.js 16.3.3 optimized compilation: success;
+- TypeScript: success;
+- page data: success;
+- static/SSG generation: **46/46**;
+- existing unprefixed URLs and all P0 Home/Color/Credits/Culture/Gyeongbokgung/Hanbok routes present in output;
+- generated-document verification: **passed for all 6 P0 locales**.
+
+This proves build artifacts have the correct document language. It is **not** production deployment, DNS cutover, live HTTP inspection or search-engine indexing evidence.
 
 No npm lockfile is committed. Dependency resolution is not fully reproducible. Generate/review/commit a lockfile only from a trusted executable environment in a separate supply-chain slice; never fabricate one manually.
 
-## 7. Step 2C-3 implementation
-Centralized SEO helper owns:
-- `https://korea.avocadoss.co.kr` production origin;
-- complete public route shapes: Home, Color, Hanbok, Gyeongbokgung, Culture, Credits;
-- BCP47 hreflang mapping `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`;
-- localized URL generation and reciprocal alternates.
+## 7. Step 2C-4 discovery decision
+Current Next.js Route Groups / multiple-root-layout guidance and current next-intl locale-root examples were rechecked. The chosen architecture uses framework-native route groups and root layouts instead of request pathname/header hacks or another dependency.
 
-Every complete localized public page now emits self canonical, reciprocal P0 hreflang and `x-default` → English.
+The installed Hugging Face connector failed during language-ID discovery, so a fresh public fallback search reviewed `HPLT/OpenLID-v3` and Meta fastText LID. No model was adopted. Document language is known deterministically from a validated locale route; inference adds no correctness and introduces model/license/runtime complexity. Meta’s LID model is also CC-BY-NC-4.0.
 
-`sitemap.ts` emits only **36 canonical P0 URLs** (6 route shapes × 6 locales), removing migration-only unprefixed URLs. Sitemap alternates reuse the same centralized URL map.
+Full sources and rationale are logged in `OPEN_SOURCE_DISCOVERY.md`.
 
-False `lastModified: new Date()` build-time freshness was removed. Add last-modified only from real content-review timestamps.
-
-`robots.ts` permits public crawling including `OAI-SearchBot` and protects both unprefixed/P0-prefixed future account, saved, checkout and personal-result paths.
-
-Browser-language redirect, automatic market inference and LegacyShell deletion were not included.
-
-## 8. Discovery decision
-GitHub review reconfirmed `amannn/next-intl` plus built-in Next.js `Metadata`/`MetadataRoute` APIs are sufficient; no `next-sitemap` or second SEO/i18n dependency was added.
-
-The Hugging Face connector search failed during this slice; fallback public search surfaced examples rather than a model that can deterministically validate canonical/hreflang/sitemap correctness. ML involvement was rejected because this is deterministic configuration/build validation. Full sources/rationale are logged in `OPEN_SOURCE_DISCOVERY.md`.
-
-## 9. Security / privacy / token / margin impact
+## 8. Security / privacy / token / margin impact
 - application AI/model calls added: **0**;
 - CI AI/model calls added: **0**;
 - runtime dependencies added: **0**;
-- new customer-data transfer: **0**;
+- new external customer-data transfer: **0**;
+- browser-language/nationality inference added: **0**;
 - secrets/payment/wallet behavior changed: **0**;
 - ML/dynamic pricing: **0**;
-- incremental supplier inference cost: **0**;
-- public discovery improved while future sensitive route crawler exclusions became stricter.
+- incremental supplier inference cost: **0**.
 
-## 10. Exact next action — Step 2C-4 only
-1. Inspect fresh `main`, recent commits, project tree, handoff and roadmap.
-2. Re-search GitHub + Hugging Face before architecture changes.
-3. Research current Next.js/next-intl patterns for locale-correct document `<html lang>` while legacy routes coexist.
-4. Fix P0 document language (`en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`) without weakening static generation or Quick Help provider boundaries.
-5. Preserve working unprefixed legacy URLs during this slice unless a tested root-layout/route-group architecture proves safe.
-6. Do **not** combine browser-language auto-redirect, legacy deletion and document-language restructuring in one patch.
-7. Re-run P0 i18n + production build and canonical/sitemap regressions; update this handoff.
+The new document-language check adds only deterministic local CI work after an already-required production build.
 
-After document-language correctness is proven, decide in another rollback-aware slice whether unprefixed legacy duplicates should redirect/retire. Explicit user locale choice always outranks browser/market inference.
+## 9. Exact next action — Step 2C-5 only
+1. Inspect fresh `main`, recent commits, project tree, this handoff and roadmap.
+2. Re-search GitHub + Hugging Face before changing the routing boundary.
+3. Research current Next.js redirects and SEO duplicate-retirement guidance.
+4. Decide whether known unprefixed public duplicates should remain temporarily or deterministically redirect to the equivalent **English canonical** path.
+5. If retiring duplicates, use an explicit route map; do not use nationality/market inference and do not silently override a user’s explicit locale.
+6. Keep browser-language suggestion/negotiation separate. Do not combine it with deterministic legacy cleanup.
+7. Add executable redirect/route checks before deleting `LegacyShell`, `(legacy)` pages or the English fallback provider.
+8. Preserve sitemap/canonical/hreflang behavior, Quick Help, language switching, accessibility/mobile overflow and green production build.
+9. Update `OPEN_SOURCE_DISCOVERY.md`, `IMPLEMENTATION_ROADMAP.md` and this handoff in the same run.
 
-## 11. Later / deferred
-Step 3 deterministic Saju; Step 4 auth + immutable wallet; Step 5 international payments; Step 6 Personal Color hardening/premium boundary; Step 7 deterministic Hanbok v1; Step 8 verified Gyeongbokgung data; Step 9 compact-cost itinerary; Step 10 analytics/p50-p95 AI cost + market expansion.
+## 10. Deferred / do not accidentally start
+- bulk Hanbok visual asset generation/collection;
+- subscription or ML-personalized pricing;
+- runtime translation model;
+- RAG/embeddings/LLM for current Quick Help;
+- Saju narrative AI before deterministic calculation/privacy boundary;
+- checkout before authoritative wallet/payment callback foundations;
+- guessed CSP origins;
+- production-deployment claims without evidence.
 
-Deferred: bulk Hanbok visuals unless separately requested; subscriptions without evidence; ML personalized pricing; runtime translation models; current-size Quick Help RAG/LLM; guessed CSP origins; production claims without deployment evidence.
-
-## 12. Mandatory future workflow
-Inspect latest GitHub state → read roadmap/handoff → preserve newer work → run GitHub/Hugging Face discovery → implement one reviewable slice → regression-check navigation/mobile/accessibility/i18n/privacy/security/cost/SEO/dependencies → distinguish source/build/deploy evidence → update source docs + this handoff → commit clearly.
-
-## 13. Current user action required
-**None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred to their gates.
+## 11. User action currently required
+**None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review remain deferred to their corresponding gates.
