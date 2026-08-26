@@ -4,8 +4,9 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 2 — internationalized routing / locale parity / migration cleanup  
-**Last completed slice:** Step 2C-6 — shadowed legacy implementation cleanup (branch implementation complete; CI/merge evidence pending)  
-**Working branch:** `korea-concierge-step-2c6`  
+**Last completed slice:** Step 2C-6 — shadowed legacy implementation cleanup  
+**Working PR:** #6 (`korea-concierge-step-2c6`)  
+**PR CI:** run `33015960301` — SUCCESS  
 **Exact next slice after merge:** Step 2C-7 — supply-chain reproducibility and Step 2 gate closure.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
@@ -24,7 +25,7 @@ Korea Concierge is a mobile-first multilingual Korea companion for international
 ## 3. Design workflow requirement
 For future user-facing screen creation or substantial UI redesign, **Stitch MCP is the design-first tool**. Use Stitch to explore/define the mobile-first UI, then implement the chosen result in the existing Next.js architecture and run accessibility/i18n/performance regression checks.
 
-The currently connected tool/plugin catalog in this execution environment exposes no Stitch MCP endpoint, and installable-plugin search returned no Stitch plugin. Therefore this Step 2C-6 routing cleanup intentionally made **no visual design changes** and does not claim Stitch was used. Re-check Stitch MCP availability before the next UI-design slice rather than silently substituting another design tool.
+The currently connected tool/plugin catalog in this execution environment exposes no Stitch MCP endpoint, and installable-plugin search returned no Stitch plugin. Therefore Step 2C-6 made **no visual design changes** and does not claim Stitch was used. Re-check Stitch MCP availability before the next UI-design slice rather than silently substituting another design tool.
 
 ## 4. Current architecture
 - Next.js **16.3.3** + exact `next-intl@4.13.4`.
@@ -49,49 +50,44 @@ The currently connected tool/plugin catalog in this execution environment expose
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
-- **Step 2C-6 ✅ implementation complete on branch; CI/merge evidence pending.**
+- **Step 2C-6 ✅ implementation + PR CI green; merge pending.**
 
 ## 6. Step 2C-6 implementation
-Fresh `main` was inspected at `62329cc069d1af93951c9518a555ada93124255f`; this is the Step 2C-5 documentation-sync commit and no newer concurrent Korea Concierge change was present at branch creation.
+Fresh `main` was inspected at `62329cc069d1af93951c9518a555ada93124255f`; no newer concurrent Korea Concierge change was present at branch creation.
 
 Next.js 16 Route Groups/root-layout guidance was rechecked. Because there is no shared top-level `app/layout.tsx`, current guidance says the home route `/` should still be owned by a root group. Deleting `(legacy)` wholesale would therefore be an unnecessary architecture risk.
 
 Implemented cleanup:
-- deleted shadowed legacy `/color` page implementation;
-- deleted shadowed legacy `/hanbok` page implementation;
-- deleted shadowed legacy `/credits` page implementation;
-- deleted shadowed legacy `/culture` page implementation;
-- deleted shadowed legacy `/explore/gyeongbokgung` page implementation;
+- deleted shadowed legacy `/color`, `/hanbok`, `/credits`, `/culture` and `/explore/gyeongbokgung` page implementations;
 - deleted `src/app/LegacyShell.tsx`, removing obsolete English navigation/footer and its legacy-only `NextIntlClientProvider` + Quick Help instance;
-- reduced `(legacy)/layout.tsx` to the minimum `<html lang="en"><body>{children}</body></html>` structural root plus global CSS;
+- reduced `(legacy)/layout.tsx` to the minimum English structural root plus global CSS;
 - replaced the old full English home UI in `(legacy)/page.tsx` with a defensive `permanentRedirect('/en')` fallback;
-- retained `config/legacy-redirects.json` unchanged as the public routing authority; `next.config.ts` still handles the actual known old URLs before filesystem routing and the production HTTP CI test remains authoritative.
-
-There is no hard-coded expectation that the production build must still generate the historical 46 pages. `check-built-document-languages.mjs` discovers generated locale HTML and validates the six P0 document languages dynamically.
+- retained `config/legacy-redirects.json` unchanged as the public routing authority;
+- retained dynamic generated-document validation rather than any old fixed page-count assumption.
 
 ## 7. Discovery decision for Step 2C-6
 ### GitHub / Next.js
 Maintained `vercel/next.js` and current Route Groups/root-layout documentation were reviewed. Framework-native structural cleanup is sufficient; no router/migration dependency is justified.
 
 ### Hugging Face
-The installed Hugging Face search action returned a tool-unavailable error. Fresh public fallback review included `dimsavva/nextjs16` and `iamdyeus/ui-instruct-4k`. These are generic documentation/training data and cannot prove file-system route ownership or redirect behavior.
+The installed Hugging Face search action returned a tool-unavailable error. Fresh public fallback review included `dimsavva/nextjs16` and `iamdyeus/ui-instruct-4k`. These generic docs/training datasets cannot prove file-system route ownership or redirect behavior.
 
 **Decision:** no model/dataset/Space adoption. This is deterministic source-graph + framework-contract work.
 
-## 8. Executable verification status
-Existing workflow: `.github/workflows/korea-concierge-ci.yml`.
+## 8. Executable verification
+PR #6 workflow run `33015960301` — **SUCCESS**.
 
-Existing controls remain: SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation.
+Verified on the actual branch head:
+1. dependency install succeeded;
+2. all P0 localization contracts succeeded;
+3. Next.js 16.3.3 production build and TypeScript succeeded;
+4. generated P0 document-language checks succeeded;
+5. built production server still returned HTTP 308 for all six configured old URLs;
+6. canonical destinations returned 200 and query parameters remained preserved.
 
-Expected Step 2C-6 gate after PR creation:
-1. dependency install succeeds;
-2. all P0 message contracts succeed;
-3. Next.js production compilation and TypeScript succeed;
-4. generated P0 document languages succeed;
-5. built production server still returns 308 for all six configured old URLs;
-6. exact destinations still return 200 and query parameters remain preserved.
+Existing workflow security controls remain SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation.
 
-Until this branch receives green CI and is merged, do **not** claim Step 2C-6 as main-branch complete or production deployed.
+This is build/CI evidence, not production deployment or live-domain proof.
 
 ## 9. Security / privacy / token / margin impact
 - application AI/model calls added: **0**;
@@ -103,7 +99,7 @@ Until this branch receives green CI and is merged, do **not** claim Step 2C-6 as
 - ML/dynamic pricing: **0**;
 - incremental supplier inference cost: **0**.
 
-Removing the duplicate legacy Quick Help/provider actually reduces unreachable client-side code and maintenance surface. Public URL behavior remains the deterministic redirect map.
+Removing the duplicate legacy Quick Help/provider reduces unreachable client-side code and maintenance surface. Public URL behavior remains the deterministic redirect map.
 
 ## 10. Known remaining technical risk
 No npm lockfile is committed. Runtime package versions are explicitly pinned, but full transitive dependency resolution is not reproducible. Do not fabricate a lockfile manually. Step 2C-7 should generate/review one only from a trusted executable environment, then move CI to `npm ci --ignore-scripts` if the evidence is sound.
