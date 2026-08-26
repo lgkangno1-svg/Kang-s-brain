@@ -109,17 +109,23 @@ export function validateJudgeResponse(items, parsed) {
   const seen = new Set();
   const duplicate = [];
   const unexpected = [];
+  const invalidScores = [];
 
   for (const judgment of parsed) {
     const beatId = String(judgment?.beatId || '');
     if (!expected.has(beatId)) unexpected.push(beatId || '(missing beatId)');
     else if (seen.has(beatId)) duplicate.push(beatId);
     else seen.add(beatId);
+
+    const score = judgment?.score;
+    if (typeof score !== 'number' || !Number.isFinite(score) || score < 0 || score > 100) {
+      invalidScores.push(`${beatId || '(missing beatId)'}=${String(score)}`);
+    }
   }
 
   const missing = expectedIds.filter((id) => !seen.has(id));
-  if (parsed.length !== items.length || missing.length || duplicate.length || unexpected.length) {
-    throw new Error(`Judge beat integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}]`);
+  if (parsed.length !== items.length || missing.length || duplicate.length || unexpected.length || invalidScores.length) {
+    throw new Error(`Judge response integrity failed: missing=[${missing.join(', ')}] duplicate=[${duplicate.join(', ')}] unexpected=[${unexpected.join(', ')}] invalidScores=[${invalidScores.join(', ')}]`);
   }
 
   return parsed;
