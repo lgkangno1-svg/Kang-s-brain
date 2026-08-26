@@ -7,6 +7,7 @@ import { Transform } from 'node:stream';
 import { projectId, ensureDir, safeFilename, parseByteRange, writeJson, readJson } from './core/utils.mjs';
 import { runProject, replaceClipAndRerender, resolveSettings } from './core/pipeline.mjs';
 import { beginProjectJob, abandonProjectJob } from './core/project-job.mjs';
+import { beginProjectMutation, endProjectMutation } from './core/project-mutation.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -14,6 +15,7 @@ const PUBLIC = path.join(__dirname, 'public');
 const WORKSPACE = path.resolve(process.env.SHORTS_WORKSPACE || path.join(ROOT, 'workspace'));
 const PORT = Number(process.env.PORT || 4317);
 const jobs = new Map();
+const activeMutations = new Map();
 await ensureDir(WORKSPACE);
 
 const json = (res, status, body) => {
@@ -78,20 +80,31 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && parts[3] === 'upload') {
         const kind = url.searchParams.get('kind'); const name = safeFilename(url.searchParams.get('name') || `${kind}.bin`);
         if (!['video', 'tts', 'srt'].includes(kind)) return json(res, 400, { error: 'Invalid kind' });
+        const mutation = beginProjectMutation(activeMutations, id, `upload:${kind}`);
+        if (!mutation) return json(res, 409, { error: 'Project is busy' });
         const prefix = kind === 'video' ? `${String(project.videos.length + 1).padStart(2, '0')}-` : `${kind}-`;
         const out = path.join(dir, 'inputs', prefix + name);
         const maxBytes = kind === 'video' ? 8 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
         let bytes = 0;
         const limiter = new Transform({ transform(chunk, enc, cb) { bytes += chunk.length; if (bytes > maxBytes) cb(new Error('Upload exceeds size limit.')); else cb(null, chunk); } });
-        try { await streamPipeline(req, limiter, createWriteStream(out, { flags: 'wx' })); } catch (error) { await fs.rm(out, { force: true }); throw error; }
-        if (kind === 'video') project.videos.push(out); else project[`${kind}Path`] = out;
-        await writeJson(projectPath, project);
-        return json(res, 200, { ok: true, path: path.basename(out), bytes });
+        try {
+          try { await streamPipeline(req, limiter, createWriteStream(out, { flags: 'wx' })); } catch (error) { await fs.rm(out, { force: true }); throw error; }
+          if (kind === 'video') project.videos.push(out); else project[`${kind}Path`] = out;
+          await writeJson(projectPath, project);
+          return json(res, 200, { ok: true, path: path.basename(out), bytes });
+        } finally {
+          endProjectMutation(activeMutations, id, mutation);
+        }
       }
 
       if (req.method === 'POST' && parts[3] === 'run') {
+        const mutation = beginProjectMutation(activeMutations, id, 'run');
+        if (!mutation) return json(res, 409, { error: 'Project is busy' });
         const state = beginProjectJob(jobs, id, '요청 확인');
-        if (!state) return json(res, 409, { error: 'Project is already running' });
+        if (!state) {
+          endProjectMutation(activeMutations, id, mutation);
+          return json(res, 409, { error: 'Project is already running' });
+        }
         let payload;
         try {
           payload = await bodyJson(req);
@@ -100,6 +113,7 @@ const server = http.createServer(async (req, res) => {
           await writeJson(projectPath, project);
         } catch (error) {
           abandonProjectJob(jobs, id, state);
+          endProjectMutation(activeMutations, id, mutation);
           throw error;
         }
         state.status = '시작';
@@ -112,8 +126,10 @@ const server = http.createServer(async (req, res) => {
           settings: project.settings, onStatus: setStatus
         }).then((result) => {
           state.running = false; state.result = { qa: result.qa, apiUsage: result.apiUsage }; state.status = '완료'; state.updatedAt = new Date().toISOString();
+          endProjectMutation(activeMutations, id, mutation);
         }).catch((error) => {
           state.running = false; state.error = error.stack || error.message; state.status = '실패'; state.updatedAt = new Date().toISOString();
+          endProjectMutation(activeMutations, id, mutation);
         });
         return json(res, 202, { ok: true });
       }
@@ -122,21 +138,33 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && parts[3] === 'edl') return json(res, 200, await readJson(path.join(dir, 'work', 'edl.json'), { clips: [] }));
       if (req.method === 'GET' && parts[3] === 'segments') return json(res, 200, await readJson(path.join(dir, 'work', 'segments.json'), []));
       if (req.method === 'POST' && parts[3] === 'replace') {
+        const mutation = beginProjectMutation(activeMutations, id, 'replace');
+        if (!mutation) return json(res, 409, { error: 'Project is busy' });
         const state = beginProjectJob(jobs, id, '컷 교체 요청 확인');
-        if (!state) return json(res, 409, { error: 'Project is already running' });
+        if (!state) {
+          endProjectMutation(activeMutations, id, mutation);
+          return json(res, 409, { error: 'Project is already running' });
+        }
         let payload;
         try {
           payload = await bodyJson(req);
         } catch (error) {
           abandonProjectJob(jobs, id, state);
+          endProjectMutation(activeMutations, id, mutation);
           throw error;
         }
         state.status = '컷 교체 준비';
         state.updatedAt = new Date().toISOString();
         const setStatus = (status) => { state.status = status; state.logs.push({ at: new Date().toISOString(), message: status }); state.updatedAt = new Date().toISOString(); };
         replaceClipAndRerender({ projectDir: dir, project, beatId: payload.beatId, segmentId: payload.segmentId, onStatus: setStatus })
-          .then((result) => { state.running = false; state.result = { qa: result.qa }; state.status = '완료'; state.updatedAt = new Date().toISOString(); })
-          .catch((error) => { state.running = false; state.error = error.stack || error.message; state.status = '실패'; state.updatedAt = new Date().toISOString(); });
+          .then((result) => {
+            state.running = false; state.result = { qa: result.qa }; state.status = '완료'; state.updatedAt = new Date().toISOString();
+            endProjectMutation(activeMutations, id, mutation);
+          })
+          .catch((error) => {
+            state.running = false; state.error = error.stack || error.message; state.status = '실패'; state.updatedAt = new Date().toISOString();
+            endProjectMutation(activeMutations, id, mutation);
+          });
         return json(res, 202, { ok: true, apiCallsAdded: 0 });
       }
       if (req.method === 'GET' && parts[3] === 'qa') return json(res, 200, await readJson(path.join(dir, 'output', 'qa.json'), {}));
