@@ -3,19 +3,39 @@
 반복 개선은 기능 추가보다 실제 실패를 먼저 줄인다.
 
 ## Every loop
-1. 현재 branch와 최근 변경 검토
-2. `npm run check`
-3. `npm run demo`
-4. 다음 네 축에서 한 가지 이상의 병목을 찾는다.
+1. 현재 branch/PR의 최신 HEAD와 최근 변경을 확인한다. 이전 대화/기억을 최신 코드 상태로 가정하지 않는다.
+2. `docs/HANDOFF.md`, 최신 `docs/loop-history/`, 변경 대상 source를 읽어 다른 AI/개발자의 중간 변경과 회귀 위험을 확인한다.
+3. `npm run check`
+4. `npm run demo`
+5. 다음 네 축에서 한 가지 이상의 병목을 찾는다.
    - semantic match quality
    - cut timing / continuity
    - API calls / token use
-   - runtime / memory / UX
-5. 가장 영향이 큰 한 항목만 또는 서로 독립적인 소수 항목을 수정
-6. unit/integration regression test 추가
-7. demo/QA 재실행
-8. 실패 시 수정 또는 revert
-9. 변경 이유와 trade-off 기록
+   - runtime / memory / UX / security
+6. 가장 영향이 큰 한 항목만 또는 서로 독립적인 소수 항목을 수정한다.
+7. unit/integration regression test를 추가한다.
+8. 가능한 실행환경에서 check/demo/targeted validation을 재실행한다. GitHub Actions unavailable/queued는 제품 patch의 blocker가 아니다.
+9. 실패 시 수정 또는 revert한다.
+10. `docs/loop-history/YYYY-MM-DD-NN-topic.md`에 문제/증거/변경/검증/영향/rollback/다음 가설을 기록한다.
+11. durable lesson이면 이 문서의 `Durable lessons`를 갱신한다.
+12. **코드·설정·테스트·CI·비용·보안·범위·로드맵·현재 상태·다음 우선순위 중 의미 있는 변화가 있으면 같은 회차에서 반드시 `docs/HANDOFF.md`도 갱신한다.** 새 AI가 과거 채팅 없이도 이어갈 수 있어야 한다.
+
+## Living handoff contract
+
+`docs/HANDOFF.md`는 프로젝트의 공식 인수인계/현재 상태 source of truth다. 그러나 그 문서 안의 commit SHA는 snapshot일 수 있으므로 작업 시작 때 GitHub의 최신 branch/PR/source를 항상 다시 확인한다.
+
+다음 항목이 바뀌면 HANDOFF를 같은 작업 회차에 업데이트한다.
+
+- 프로젝트 목표/개발 의도/제품 범위
+- 구현 완료 기능과 제거/변경된 기능
+- 아키텍처/AI 모델/비용 구조
+- 테스트/QA/CI/Mini PC 운영
+- 보안/secret/data handling 정책
+- 주요 loop milestone과 알려진 한계
+- 현재 phase/roadmap/next best hypothesis
+- 사용자에게 필요한 수동 작업
+
+HANDOFF 업데이트를 잊은 제품 변경은 인수인계 관점에서 미완료로 취급한다.
 
 ## Durable lessons
 - AI를 쓰지 않는 deterministic fallback도 품질 점수 정렬을 실제 선택에 그대로 반영해야 한다. 후보를 품질순으로 정렬한 뒤 beat index로 회전 선택하면 낮은 품질 장면을 의도적으로 고를 수 있으므로, duration/중복/diversity 제약을 적용한 뒤 최고 점수의 남은 후보를 우선한다.
@@ -40,6 +60,7 @@
 - 유료 Quality Judge 응답도 부분 결과를 정상 검수처럼 적용하지 않는다. 요청한 각 beat에 대해 정확히 하나의 judgment가 있어야 하며, 누락·중복·예상 밖 beat가 있으면 해당 batch의 2차 검수를 실패로 취급해 부분 score가 조용히 EDL에 섞이는 것을 막는다.
 - Quality Judge의 `score`는 단순히 `Number(...)`로 강제 변환하지 않는다. 문자열·null·비정상 숫자·0~100 범위 밖 값은 threshold 비교를 왜곡하거나 `NaN < threshold === false`로 저품질 컷을 통과시킬 수 있으므로, 유한한 number 타입이면서 0~100 범위인지 응답 계약 단계에서 검증한다.
 - self-hosted CI는 GitHub Actions 성공을 제품 패치의 전제조건으로 만들지 않는다. Mini PC가 offline이거나 workflow가 queued여도 검증 가능한 변경은 branch/history에 저장하고, runner가 온라인일 때 `npm run check`와 실제 FFmpeg `npm run demo`를 추가 증거로 사용한다. 공개 저장소의 개인 self-hosted runner에서는 외부 fork PR 코드를 실행하지 않고 `GITHUB_TOKEN` 권한도 최소화한다.
+- 프로젝트를 여러 AI/개발자가 이어서 수정할 수 있으면 채팅 기억을 인수인계 수단으로 삼지 않는다. 최신 GitHub source와 `docs/HANDOFF.md`를 먼저 읽고, 의미 있는 변경마다 HANDOFF의 완료 상태/로드맵/다음 가설을 함께 갱신해 repository 자체가 현재 맥락을 보존하게 한다.
 
 ## Quality metrics
 - Caption↔visual judge score
@@ -62,3 +83,4 @@
 - API 비용이 늘면 품질 개선 근거 필요
 - UI 기능 때문에 renderer determinism을 희생하지 않는다.
 - 공개 저장소에 API key/원본 영상/개인 데이터를 commit하지 않는다.
+- 의미 있는 프로젝트 변경 후 `docs/HANDOFF.md`가 현재 상태와 모순된 채 남으면 해당 회차를 완료로 간주하지 않는다.
