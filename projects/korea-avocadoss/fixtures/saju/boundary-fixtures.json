@@ -114,13 +114,44 @@
   "calculationBoundaryCases": [
     {
       "id": "ipchun-year-pillar-boundary",
-      "status": "official-instant-verified",
+      "status": "year-pillar-cross-checked",
       "requiredEvidence": ["primary-or-official-calendar-time", "independent-implementation-cross-check"],
       "officialInstant": "2024-02-04T08:27:00Z",
       "officialLocalTime": "2024-02-04T17:27:00+09:00",
       "officialSource": "https://astro.kasi.re.kr/life/post/calendardata",
       "resolutionSeconds": 60,
-      "reason": "KASI officially establishes the 2024 Ipchun instant to minute precision. Expected Saju year-pillar outputs remain intentionally absent until an independent implementation cross-check is completed."
+      "trustedSamples": [
+        {
+          "instant": "2024-02-04T08:26:00Z",
+          "localTime": "2024-02-04T17:26:00+09:00",
+          "expectedYearPillar": "癸卯",
+          "position": "before-official-boundary-minute"
+        },
+        {
+          "instant": "2024-02-04T08:28:00Z",
+          "localTime": "2024-02-04T17:28:00+09:00",
+          "expectedYearPillar": "甲辰",
+          "position": "after-official-boundary-minute"
+        }
+      ],
+      "boundaryMinuteUncertainty": {
+        "startInclusive": "2024-02-04T08:27:00Z",
+        "endExclusive": "2024-02-04T08:28:00Z",
+        "reason": "The direct KASI calendar table publishes Ipchun to minute precision, so this fixture does not invent a second-level cutover inside 17:27 KST."
+      },
+      "independentEvidence": [
+        {
+          "source": "https://github.com/6tail/lunar-javascript/blob/4c45a59f79b856125516f31aefa8295035c16afd/__tests__/Lunar.test.js",
+          "role": "independent-implementation-tests",
+          "finding": "Independent tests distinguish lunar-year GanZhi from exact LiChun-based year GanZhi and verify that the exact year pillar remains the previous cycle before LiChun and switches after the solar-term instant."
+        },
+        {
+          "source": "https://stellium.readthedocs.io/en/latest/cookbooks/bazi.html",
+          "role": "independent-implementation-example",
+          "finding": "An unrelated BaZi implementation documents 2024 pre-LiChun as 癸卯 and post-LiChun as 甲辰."
+        }
+      ],
+      "reason": "KASI supplies the official 2024 Ipchun boundary minute and official 2023/2024 cycle labels; independent implementations agree that BaZi/Saju year-pillar logic switches at LiChun and that 2024 straddles 癸卯→甲辰. Trusted samples stay outside the unresolved source minute instead of fabricating second-level precision."
     },
     {
       "id": "monthly-solar-term-boundary",
