@@ -20,97 +20,166 @@ Native P0 Home/Culture/Gyeongbokgung, locale-preserving navigation, full Quick H
 ### Step 2C — locale parity, executable verification and cutover
 
 #### Step 2C-1A — Personal Color native P0 ✅
-Native scanner/content/metadata; browser-local deterministic preview; no image upload/AI/provider cost; message contracts and legacy-route compatibility.
+Native scanner/content/metadata; browser-local deterministic preview; no image upload/AI/provider cost; message contracts and legacy-route compatibility. This is now explicitly the **free/private preview layer**, not the final product ceiling; the premium product intent is photo-based explainable AI/vision analysis at Step 6.
 
 #### Step 2C-1B — Hanbok native P0 ✅
-Native localized route/metadata; free user-choice deterministic matcher; modular P0 messages; no photo/model/provider; bulk visual asset project remains deferred.
+Native localized route/metadata; free user-choice deterministic matcher; modular P0 messages; no photo/model/provider. This remains the free fallback; Step 7 becomes photo-aware, explainable complete-look recommendation. Bulk visual asset work remains separately gated.
 
 #### Step 2C-1C — Credits native P0 ✅
 Native P0 Credits route/metadata; authoritative numeric pricing only in `src/lib/credits/economics.ts`; fixed credits visible before paid actions; no fake checkout, subscription or ML personalized pricing.
 
 #### Step 2C-2 — executable verification ✅
-Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and generated pages. No npm lockfile exists yet; dependency reproducibility remains a separate supply-chain follow-up and a lockfile must never be fabricated manually.
+Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and generated pages.
 
 #### Step 2C-3 — P0 SEO locale cutover ✅
 Centralized origin/public route/hreflang helpers; self-canonicals; reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` + `x-default`; 36 canonical localized sitemap URLs; truthful freshness; protected future private/result paths.
 
 #### Step 2C-4 — locale-correct document language ✅
-P0 root documents now emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generated HTML is checked after production build. Multiple root layouts are used without browser-language or nationality inference.
+P0 root documents emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generated HTML is checked after production build. Multiple root layouts are used without browser-language or nationality inference.
 
 #### Step 2C-5 — deterministic legacy duplicate retirement ✅
 Six known unprefixed public duplicates permanently redirect to their English canonical equivalents via explicit static map; production-server CI verifies HTTP 308, exact destination 200 and query preservation.
 
 #### Step 2C-6 — remove shadowed legacy implementation safely ✅
-- fresh main/PR #5 state inspected before editing;
-- current Next.js multiple-root-layout rules rechecked: when there is no top-level `app/layout.tsx`, `/` should remain owned by a root group;
-- removed the now-unreachable legacy Color, Hanbok, Credits, Culture and Gyeongbokgung page implementations;
-- removed `LegacyShell` and its legacy-only English `NextIntlClientProvider` / Quick Help instance;
-- retained only a minimal `(legacy)` root layout plus `/` fallback page because it is structural support for the multiple-root architecture; the fallback uses `permanentRedirect('/en')`, while `config/legacy-redirects.json` remains the public routing authority and CI still verifies it first;
-- generated-document validation remains locale-driven and does not hardcode the old 46-page total;
-- PR #6 workflow run `33015960301` passed dependency install, all P0 localization contracts, Next.js production build/TypeScript, generated document-language verification and deterministic legacy redirect/query-preservation checks;
-- no browser-language negotiation, IP geolocation, nationality/market inference, new dependency, AI/model call, wallet/payment change or customer-data transfer was introduced.
+Shadowed legacy feature pages/UI were removed while retaining the minimal structural legacy root fallback; full i18n/build/document-language/redirect verification stayed green and no new AI/provider/customer-data behavior was introduced.
 
 #### Step 2C-7 — supply-chain reproducibility + Step 2 gate closure ✅
-- generated a real npm v3 lockfile in trusted GitHub Actions with lifecycle scripts disabled;
-- deterministic policy requires package.json/root-lock parity, HTTPS npm registry origins and sha512 integrity;
-- reviewed lock graph contains 106 package entries with no missing license metadata; runtime pins remain exact and dev ranges remain intentionally range-based because the committed lockfile freezes the resolved versions;
-- temporary branch-only write permission used only to materialize the generated lockfile was removed before merge; final CI is back to read-only contents permission with persisted checkout credentials disabled;
-- CI now uses frozen `npm ci --ignore-scripts --no-audit --no-fund`;
-- PR #9 workflow run `33069835102` passed lockfile policy, frozen install, all P0 i18n contracts, Next.js production build, generated document-language checks and deterministic legacy redirect/query-preservation checks;
-- no runtime dependency, application AI call, customer-data transfer, wallet/payment behavior or UI behavior was added.
+Real npm v3 lockfile committed; deterministic package/lock parity, HTTPS npm registry origins and sha512 integrity enforced; frozen `npm ci --ignore-scripts --no-audit --no-fund`; final CI returned to least-privilege read-only permissions. Full P0 localization/build/document-language/redirect gate passed before merge.
 
 **Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; shadowed legacy UI is retired; navigation does not regress; executable `check:i18n` + production build remains green.
 
-## Step 3 — Saju deterministic cultural core
-Exact / approximate / unknown birth time; never fabricate missing hour; timezone/city only when required; deterministic calendar/pillar computation; reduced-scope three-pillar result and lower pricing when hour unknown; raw birth inputs never sent to LLM; cultural/entertainment framing and deletion controls.
+## Cross-feature contract — Explainable Personalization
+Authoritative design: `docs/EXPLAINABLE_PERSONALIZATION.md`.
 
-**Design rule:** when Step 3 or later work creates/revises user-facing UI, use Stitch MCP first for design exploration when the connector is available, then implement the selected design in the existing Next.js architecture. Never claim Stitch was used if no Stitch MCP endpoint is actually available.
+Every personalized result must expose a user-inspectable structure rather than an unexplained label:
+1. concise result;
+2. 3–6 concrete evidence/reason cards;
+3. strongest alternative/counterfactual;
+4. uncertainty and what could change the answer;
+5. practical next actions;
+6. method/privacy disclosure.
 
-**Beginner-explanation rule:** assume an international visitor may not know what Saju, Korean zodiac, personal color, Hanbok conventions or other Korea-specific services mean. Every major service must provide a short localized “What is this?” explanation, what the user provides, what they receive, limitations/privacy and an example before asking for sensitive or paid input.
+Do **not** reveal or fabricate model chain-of-thought. Request and expose observable evidence, deterministic calculation factors, source-backed facts and bounded confidence instead. False precision is prohibited; percentages require a defined/calibrated score.
+
+This applies to Personal Color, Hanbok, Saju/Four Pillars, Korean Zodiac, Western Astrology, Daily Fortune, Tarot, food/place discovery and itinerary recommendations.
+
+## Step 3 — K-Culture deterministic core
+Step 3 expands from Saju alone into the deterministic foundation for a coherent K-Culture Lab, without skipping the original Saju gates.
+
+### Step 3A — Saju calculation/input contracts — NEXT
+- exact / approximate / unknown birth time are first-class input states;
+- never fabricate or AI-guess a missing hour;
+- timezone/city only when required for correct conversion;
+- deterministic calendar/pillar computation and privacy-safe fixtures/tests;
+- unknown time returns a reduced-scope three-pillar result and later a lower price;
+- separate calculated chart facts from traditional interpretation;
+- raw birth inputs never go to narrative AI when a minimized derived chart schema suffices;
+- localized beginner explanation before sensitive input.
+
+### Step 3B — Explainable Saju interpretation contract
+- show the calculated pillars/elements first;
+- plain-language explanation of structural themes;
+- label tradition/interpretation separately from calculation;
+- alternate interpretations where conventions/schools can differ;
+- explicitly explain what rough/unknown birth time changes;
+- optional color/Hanbok connections are cultural storytelling, not objective prescriptions;
+- bounded generative narrative may be added only after deterministic chart correctness is executable-tested.
+
+### Step 3C — Korean Zodiac + Western Astrology foundations
+- Korean zodiac sign/animal from deterministic rules plus cultural context;
+- Western sun sign deterministic first;
+- moon/ascendant/full chart only after correct astronomical/timezone implementation exists;
+- no fake ascendant or chart from missing birth time;
+- show “calculated vs conventional interpretation vs uncertainty” distinctly.
+
+### Step 3D — Tarot foundation
+- explicit entertainment/reflective framing;
+- 1-card and 3-card defined spreads first;
+- card selection uses a documented random mechanism independent of the LLM;
+- AI must not secretly choose cards to fit a preferred answer;
+- show card identity, traditional keywords/symbolism, primary interpretation and a second plausible reading;
+- finish with a reflection/action prompt rather than deterministic prophecy;
+- high-stakes medical/legal/financial predictions are not provided.
+
+### Step 3E — Daily Fortune foundation
+- no generic random prose masquerading as calculation;
+- optional deterministic profile seed (Saju/zodiac/astrology selection), date and timezone;
+- rule-based daily theme fixed before any generative wording;
+- visible “Today’s lens” explains which inputs/themes were used;
+- sections may include overall mood, relationships/social, travel/activity, reflection prompt and color/theme of the day;
+- no high-stakes certainty claims.
+
+**Design rule:** use Stitch MCP first for substantial user-facing redesign when actually available, then implement in the existing Next.js architecture. Stitch was rechecked on 2026-08-27 and was not available; never claim it was used when unavailable.
+
+**Beginner-explanation rule:** assume an international visitor may not know Saju, zodiac, astrology, tarot, personal color or Hanbok conventions. Every major service must provide a localized “What is this?”, required input, expected output, limitations/privacy and simple example before sensitive or paid input.
 
 ## Step 4 — Auth + authoritative wallet
-Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits, audit telemetry. Add server-owned entitlement support for Ultra/family benefits and metered allowances; exact family member/device limits are decided here with abuse-control evidence rather than guessed earlier.
+Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits and audit telemetry. Add server-owned entitlement support for Ultra/family benefits and metered allowances. Exact family member/device limits are decided here from abuse-control evidence.
 
 ## Step 5 — International payment foundation
 Provider abstraction, foreign cards + PayPal target, server-authoritative pricing, verified callbacks, receipts/refunds; CSP allowlist finalized only after real provider origins exist.
 
 ### Step 5B — Ultra / Family real-time voice translation
-Implement the approved quality-first translation benefit only after Step 4/5 entitlement and payment foundations exist.
+Implement only after Step 4/5 entitlement/payment foundations.
 
 Approved direction:
-- default model/provider: direct Google Gemini API `gemini-3.5-live-translate-preview`;
-- OpenRouter remains default for ordinary text/vision but the dedicated Live Translate model was not confirmed there at decision time;
-- initial Ultra fair-use hypothesis: **30 included minutes per Ultra Trip Pass**, then **8 credits/min** at a clearly displayed fixed unit rate;
-- backend verifies entitlement/rate limit/remaining allowance before issuing a constrained short-lived Gemini ephemeral token;
-- browser/mobile client connects directly to Gemini Live API over WebSocket to minimize latency; long-lived Google API keys remain server-only;
-- no raw microphone audio/transcript in general logs; no default audio persistence; transcript saving requires separate explicit action;
-- hard session/day ceilings and server-authoritative metering prevent runaway supplier cost;
-- explicit source/target language choice overrides any future optional detection;
-- benchmark Korean↔P0 languages in realistic noisy mobile conditions before launch;
-- use Stitch MCP first for the user-facing translator screen when available;
-- full policy: `docs/LIVE_TRANSLATION.md`.
+- direct Google Gemini API `gemini-3.5-live-translate-preview`;
+- OpenRouter remains ordinary text/vision default;
+- initial Ultra fair-use hypothesis: 30 included minutes per Ultra Trip Pass, then 8 credits/min;
+- backend verifies entitlement/rate limit/allowance before issuing constrained short-lived Gemini credential;
+- client connects directly for low latency while long-lived keys remain server-only;
+- no raw audio/transcript in general logs and no default audio persistence;
+- benchmark Korean↔P0 languages before launch;
+- do not silently degrade translation quality to protect margin.
 
-Do not advertise uncapped “unlimited” usage until measured economics support it. Do not reduce translation quality merely to preserve margin; adjust allowance/unit economics transparently instead.
+## Step 6 — Premium photo-based Personal Color
+The final product intent is **user photo → AI/vision-assisted analysis → explainable styling report**.
 
-## Step 6 — Personal-color v1 hardening/premium boundary
-Browser/local first, representative validation, manual correction, no sensitive identity inference; remote vision only if measured value justifies consent/ZDR/EXIF/privacy and hard supplier-cost ceilings.
+Required architecture:
+- existing browser-local scanner remains free/private preview and fallback;
+- explicit consent before any remote vision call;
+- strip EXIF, enforce type/size/pixel limits and transient-by-default processing;
+- remote vision returns bounded observable fields, not unconstrained personality/identity inference;
+- deterministic typed post-processing produces undertone/depth/contrast/clarity/lighting evidence and palette candidates;
+- no race, ethnicity, nationality, religion, health, emotion, attractiveness or identity inference;
+- result shows multiple color observations, competing interpretation, comparison swatches/pairs, lighting limitations and concrete “try this” guidance;
+- users can correct/disagree and optionally provide a second photo;
+- hard maximum model/provider cost per analysis and measurable quality benchmark across representative lighting/skin appearances;
+- percentages only if calibrated; otherwise use qualitative confidence bands.
 
-## Step 7 — Hanbok recommendation v1
-Deterministic ranker first; color/mood/weather/comfort; structured reasons; no bulk visual asset project until separately requested.
+Remote vision/provider choice remains gated by fresh discovery, privacy/ZDR/retention review and measured value. Do not ship a paid photo transfer before auth/wallet/payment/consent controls exist.
+
+## Step 7 — Photo-aware explainable Hanbok recommendation
+Inputs combine color result, optional consented photo styling observations, desired mood, destination/background, weather/season, comfort/coverage, party context and explicit silhouette preferences.
+
+Outputs are ranked complete looks:
+- jeogori + chima/baji color relationship;
+- saturation/depth balance;
+- silhouette/design family;
+- relevant collar/sleeve/skirt/baji treatment;
+- accessories/hair ornament direction;
+- destination/photo-backdrop fit;
+- verified rental-shop match when inventory evidence exists.
+
+Each look must state why it suits the visitor, destination rationale, trade-off, alternative version and mirror/try-on checks. Do not infer authoritative body measurements from a photo. AI composite/virtual try-on is a later visualization layer, not the recommendation brain.
 
 ## Step 8 — Gyeongbokgung area discovery
-Verified place model, filters, walking/route ranking, time-sensitive facts separated from editorial copy, dietary/accessibility/language claims only when verified.
+Verified place model, filters, walking/route ranking, time-sensitive facts separated from personalization/editorial copy, dietary/accessibility/language claims only when verified.
 
-Food/restaurant discovery must include explicit user-selected dietary filters such as Vegan, Vegetarian, Halal-certified, Muslim-friendly, pork-free, alcohol-free, gluten-free, seafood-free and relevant allergy needs. Never infer religion/diet from locale/name. Keep `Halal-certified`, `Muslim-friendly`, `pork-free` and `alcohol-free` distinct; do not label an unverified restaurant as halal. Store evidence/source and verification date for sensitive dietary claims and disclose cross-contamination/stock/sauce/cooking-alcohol uncertainty where relevant.
+Every recommendation card should distinguish “Why for you”, verified facts/source/date, uncertainty and an alternative trade-off.
+
+Food/restaurant discovery must include explicit user-selected Vegan, Vegetarian, Halal-certified, Muslim-friendly, pork-free, alcohol-free, gluten-free, seafood-free and allergy filters. Never infer religion/diet. Keep Halal-certified, Muslim-friendly, pork-free and alcohol-free distinct. Store evidence/source and verification date and disclose cross-contamination/stock/sauce/cooking-alcohol uncertainty.
 
 ## Step 9 — Itinerary + premium concierge
-Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings, source-fact validation.
+Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings and source-fact validation.
+
+Every stop exposes at least one constraint/reason (route efficiency, interest fit, rental return time, rest balance, dietary/accessibility fit). “Replace this stop” should support reason-specific controls such as closer, quieter, cheaper, more photogenic and better for kids instead of regenerating the entire plan.
 
 ## Step 10 — Analytics, market adaptation and expansion
-Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, market experiments, P1/P2 expansion from measured demand. Include real-time translation p50/p95 minutes per Ultra buyer/family, supplier cost/minute, reconnect rate, latency, allowance-exhaustion rate and satisfaction without storing conversation bodies.
+Track conversion, satisfaction and margin by locale/topic without sensitive content. Include zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, Personal Color rescan/manual-correction/disagreement rate, Hanbok recommendation saves, K-Culture completion/satisfaction, food evidence freshness, itinerary replacement reasons, and live-translation minutes/cost/latency/reconnects.
 
 ## Every-step regression checklist
-Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; redirects/404 behavior; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
+Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; redirects/404 behavior; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; evidence/explanation quality; distinguish static review from executable evidence.
 
 ## Current user action required
-**None.** Merchant credentials, production DNS/hosting, OpenRouter/Google production API credentials, analytics/search verification and legal review remain deferred to their gates.
+**None.** Merchant credentials, payment onboarding, production AI credentials, analytics/search verification and legal review remain deferred to their proper gates.
