@@ -309,3 +309,62 @@ The successful build still logged next-intl `ENVIRONMENT_FALLBACK` noise for the
 - https://docs.github.com/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
 - https://github.com/amannn/next-intl/discussions/670
 - https://huggingface.co/models?other=vulnerability-detection
+- https://huggingface.co/models?other=code-analysis
+
+## 2026-08-27 — Step 2C-3 P0 SEO locale cutover
+
+### GitHub / framework review
+`amannn/next-intl` remains the appropriate i18n dependency; no second SEO/i18n package is justified. Current Next.js Metadata API guidance was rechecked for generated metadata, canonical URLs, robots and sitemap generation. The existing project can express reciprocal language alternates and sitemap alternates with built-in `Metadata` / `MetadataRoute` types.
+
+**Decision:** implement a small in-repo SEO helper instead of adding `next-sitemap` or another runtime/build dependency. Centralize the production origin, six complete public locale paths, BCP47 hreflang mapping and URL generation so page metadata and sitemap cannot drift independently.
+
+### Hugging Face review
+The Hugging Face connector search was attempted but unavailable in this run. A fallback public Hugging Face search surfaced SEO/AEO site examples rather than a model capable of validating canonical/hreflang/sitemap correctness.
+
+**Decision:** reject ML/model involvement. SEO alternate correctness is deterministic configuration and compiler/build validation work; model inference would add cost/provenance risk without improving correctness.
+
+### Implementation / correctness decisions
+- self-canonical URL on each complete P0 localized public page;
+- reciprocal language alternates for `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` plus `x-default` pointing to English;
+- sitemap now contains only the **36 canonical P0 URLs** (6 complete public route shapes × 6 locales), not migration-only unprefixed duplicates;
+- sitemap language alternates use the same centralized URL map as page metadata;
+- removed build-time `lastModified: new Date()` because it falsely implied every stable page changed on every build; truthful last-modified values can be added only when real content-review timestamps exist;
+- robots keeps public content crawlable, explicitly allows `OAI-SearchBot`, and extends sensitive account/saved/checkout/personal-result exclusions to P0-prefixed future paths;
+- browser-language auto-routing and `LegacyShell` removal remain deliberately out of scope for this rollback-sensitive slice.
+
+### Executable evidence
+PR #3 workflow run `32999919664` passed dependency install, all P0 localization contracts and the Next.js 16.3.3 production build. This proves the Metadata/Sitemap/Robots TypeScript shapes compile and static generation remains valid. It is build evidence, not deployment or search-engine indexing evidence.
+
+### Security / privacy / cost impact
+- application AI/model calls: **0**;
+- runtime dependencies added: **0**;
+- customer data transfer added: **0**;
+- secrets/payment/wallet behavior changed: **0**;
+- supplier inference cost: **0**;
+- public crawler access is broadened only through correct localized discovery; private/result route exclusions are stricter.
+
+### Sources reviewed
+- https://github.com/amannn/next-intl
+- https://nextjs.org/learn/dashboard-app/adding-metadata
+- https://nextjs.org/learn/seo/canonical
+- https://nextjs.org/learn/seo/xml-sitemaps
+- https://nextjs.org/learn/seo/metatags
+- https://huggingface.co/spaces/VIDraft/AI/commit/03abde981ce8f3e0efe92c5f878071b561ef6d89
+
+## Discovery rules for future entries
+
+For every major feature/subfeature record:
+1. feature/subfeature;
+2. GitHub repositories/libraries reviewed;
+3. Hugging Face models/datasets/Spaces reviewed;
+4. commercial license status;
+5. maintenance/recency/adoption signals;
+6. privacy/data provenance;
+7. inference/runtime cost and latency;
+8. browser/mobile fit;
+9. multilingual/market fit;
+10. security/supply-chain risk;
+11. expected user/margin benefit;
+12. adopt / adapt / reject decision and rationale.
+
+Re-search whenever revisiting a feature. Never assume the previous best option remains best.
