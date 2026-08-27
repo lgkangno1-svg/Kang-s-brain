@@ -14,18 +14,47 @@
     "moodHelp": "Hãy chọn phong cách bạn thực sự muốn mặc, không phải điều hệ thống suy đoán từ ngôn ngữ hay quốc tịch.",
     "comfortLegend": "3. Ưu tiên chuyến đi",
     "comfortHelp": "Trang phục cung điện cần vừa lên ảnh đẹp vừa phù hợp thời gian thuê và kế hoạch đi bộ.",
-    "colors": {"jadeIvory": "Ngọc bích & ngà ấm", "roseNavy": "Hồng tro & xanh navy", "moonBlue": "Xanh trăng & trắng dịu"},
-    "moods": {"elegant": "Truyền thống thanh lịch", "royal": "Hoàng gia / ấn tượng", "romantic": "Lãng mạn nhẹ nhàng", "minimal": "Tối giản hiện đại", "kdrama": "Cảm hứng K-drama"},
-    "comfort": {"walking": "Ưu tiên đi bộ", "balanced": "Cân bằng ảnh + thoải mái", "photoFirst": "Ưu tiên chụp ảnh"},
+    "colors": {
+      "jadeIvory": "Ngọc bích & ngà ấm",
+      "roseNavy": "Hồng tro & xanh navy",
+      "moonBlue": "Xanh trăng & trắng dịu"
+    },
+    "moods": {
+      "elegant": "Truyền thống thanh lịch",
+      "royal": "Hoàng gia / ấn tượng",
+      "romantic": "Lãng mạn nhẹ nhàng",
+      "minimal": "Tối giản hiện đại",
+      "kdrama": "Cảm hứng K-drama"
+    },
+    "comfort": {
+      "walking": "Ưu tiên đi bộ",
+      "balanced": "Cân bằng ảnh + thoải mái",
+      "photoFirst": "Ưu tiên chụp ảnh"
+    },
     "resultEyebrow": "Xem thử ghép miễn phí",
     "resultPalette": "Bảng màu",
     "resultTripPriority": "Ưu tiên chuyến đi",
     "directions": {
-      "elegant": {"name": "Thanh lịch cổ điển trong cung điện", "reason": "Ưu tiên đường nét truyền thống và độ tương phản vừa phải để trang phục hòa tự nhiên với kiến trúc cung điện."},
-      "royal": {"name": "Phong cách hoàng gia có cấu trúc", "reason": "Ưu tiên tương phản mạnh hơn và cảm giác trang trọng để tạo điểm nhấn rõ trong ảnh cung điện."},
-      "romantic": {"name": "Hanbok lãng mạn nhẹ nhàng", "reason": "Ưu tiên tương phản dịu, lớp vải mềm và nhịp thị giác nhẹ nhàng cho ảnh ban ngày."},
-      "minimal": {"name": "Hanbok tối giản hiện đại", "reason": "Giảm số màu và chi tiết trang trí để giữ hướng hiện đại, sạch và gọn."},
-      "kdrama": {"name": "Phong cách lấy cảm hứng K-drama", "reason": "Giữ đường nét điện ảnh dễ nhận ra nhưng vẫn thực tế cho việc thuê đồ và lịch trình trong ngày."}
+      "elegant": {
+        "name": "Thanh lịch cổ điển trong cung điện",
+        "reason": "Ưu tiên đường nét truyền thống và độ tương phản vừa phải để trang phục hòa tự nhiên với kiến trúc cung điện."
+      },
+      "royal": {
+        "name": "Phong cách hoàng gia có cấu trúc",
+        "reason": "Ưu tiên tương phản mạnh hơn và cảm giác trang trọng để tạo điểm nhấn rõ trong ảnh cung điện."
+      },
+      "romantic": {
+        "name": "Hanbok lãng mạn nhẹ nhàng",
+        "reason": "Ưu tiên tương phản dịu, lớp vải mềm và nhịp thị giác nhẹ nhàng cho ảnh ban ngày."
+      },
+      "minimal": {
+        "name": "Hanbok tối giản hiện đại",
+        "reason": "Giảm số màu và chi tiết trang trí để giữ hướng hiện đại, sạch và gọn."
+      },
+      "kdrama": {
+        "name": "Phong cách lấy cảm hứng K-drama",
+        "reason": "Giữ đường nét điện ảnh dễ nhận ra nhưng vẫn thực tế cho việc thuê đồ và lịch trình trong ngày."
+      }
     },
     "comfortNotes": {
       "walking": "Ưu tiên lớp vải nhẹ, độ phồng vừa phải và khả năng di chuyển trước chi tiết trang trí.",
@@ -34,7 +63,37 @@
     },
     "freeBoundaryTitle": "Bản ghép miễn phí này làm gì",
     "freeBoundaryText": "Chỉ kết hợp những lựa chọn bạn đã tự chọn ở trên bằng quy tắc xác định. Không dùng AI, suy đoán hồ sơ cá nhân hay truyền dữ liệu ra ngoài.",
-    "paidBoundaryText": "Nếu sau này có thử Hanbok ảo hoặc phối đồ AI cao cấp, mức tín dụng cố định cùng điều khoản ảnh và quyền riêng tư sẽ được hiển thị trước khi bạn xác nhận."
+    "paidBoundaryText": "Nếu sau này có thử Hanbok ảo hoặc phối đồ AI cao cấp, mức tín dụng cố định cùng điều khoản ảnh và quyền riêng tư sẽ được hiển thị trước khi bạn xác nhận.",
+    "destinationLegend": "4. Địa điểm chụp ảnh tại hoàng cung",
+    "destinations": {
+      "stoneWall": "Tường đá & Sân chính điện Gyeongbokgung",
+      "hyangwonjeong": "Ao sen & Đình Hyangwonjeong",
+      "bukchon": "Ngõ cổ truyền thống Hanok Bukchon"
+    },
+    "seasonLegend": "5. Mùa & Chất liệu vải",
+    "seasons": {
+      "springAutumn": "Lụa tơ tằm Organza mùa xuân/thu",
+      "summer": "Vải lanh & vải xô nhẹ thoáng mùa hè",
+      "winter": "Gấm chần bông ấm áp mùa đông"
+    },
+    "looksTitle": "Gợi ý phối đồ Hanbok nổi bật",
+    "look1Title": "Hanbok Cung đình Ngọc bích & Ánh trăng Mận chín",
+    "look1Desc": "Áo Jeogori xanh ngọc trời dịu + Váy Chima màu tím mận hoàng gia.",
+    "look2Title": "Lụa Trăng Tối giản Hiện đại",
+    "look2Desc": "Áo Jeogori tím hoa cà nhạt + Váy Chima xanh chàm than.",
+    "look3Title": "Di sản Hoàng gia Dancheong",
+    "look3Desc": "Áo Jeogori lụa trắng ngà + Váy Chima vàng hồng thanh nhã.",
+    "fabricLabel": "Chất liệu vải",
+    "accessoriesLabel": "Phụ kiện gợi ý",
+    "accessoriesValue": "Mặt ngọc Norigae bạc & Dây ruy băng lụa Daenggi cài tóc",
+    "backdropRating": "Độ hòa hợp với khung cảnh",
+    "comfortScore": "Độ thoải mái khi đi bộ",
+    "whySuitsTitle": "Lý do trang phục này hợp với bạn",
+    "why1": "Màu áo ngọc bích hòa hợp với sắc tố da, giúp gương mặt bừng sáng.",
+    "why2": "Váy tông trầm tạo điểm nhấn nổi bật trên nền tường đá cung điện.",
+    "why3": "Chất liệu lụa organza bắt sáng tự nhiên tuyệt đẹp khi dạo bước.",
+    "rentalMapCta": "Lưu trang phục & Tìm tiệm Hanbok gần đây",
+    "walkingTimeNotice": "Cách Ga Cung điện Gyeongbokgung (Cửa 2 & 4) khoảng 4–8 phút đi bộ."
   },
   "Meta": {
     "hanbokTitle": "Ghép Hanbok — Xem thử phối đồ miễn phí theo quy tắc",

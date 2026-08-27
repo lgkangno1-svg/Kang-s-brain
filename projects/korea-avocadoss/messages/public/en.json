@@ -28,7 +28,29 @@
     "sajuTitle": "Saju / Four Pillars",
     "sajuText": "Birth time is optional. Exact time, a rough time band and ‘I don’t know’ are all valid paths; missing time is never guessed.",
     "colorTitle": "Color connection",
-    "colorText": "Traditional lucky-color storytelling stays clearly separate from personal-color styling guidance."
+    "colorText": "Traditional lucky-color storytelling stays clearly separate from personal-color styling guidance.",
+    "heroTitle": "Traditional Korean Wisdom for Modern Travelers",
+    "heroIntro": "Explore seasonal harmony, Five Elements (Ohaeng), and traditional calendar cycles. Designed as an educational, non-mystical companion.",
+    "todayVibeTitle": "Today’s Travel Harmony",
+    "todayEnergyLabel": "Dominant Energy",
+    "todayEnergyValue": "Luminous Wood & Clear Water (Harmonious Refresh)",
+    "luckyDirectionLabel": "Harmonious Direction",
+    "luckyDirectionValue": "North-West (Towards Seochon alleys & Inwangsan view)",
+    "luckyColorLabel": "Energy Accent Color",
+    "luckyColorValue": "Deep Celadon Forest (#2D5A4C)",
+    "harmoniousMealLabel": "Nourishing Meal Direction",
+    "harmoniousMealValue": "Warm comforting broth (Samgyetang / Seolleongtang) to balance the breeze",
+    "sajuExplorerTitle": "Traditional Zodiac & Element Explorer",
+    "sajuExplorerIntro": "Discover your birth year element and traditional seasonal harmony.",
+    "birthYearLabel": "Birth Year",
+    "calculateHarmony": "Explore Cultural Harmony",
+    "privacySeal": "Deterministic calendar calculation · 100% private · No profile tracking",
+    "photoSpotTitle": "Curated Gyeongbokgung Pavilion Moment",
+    "photoSpotName": "Hyangwonjeong & Jipokjae Quiet Walk",
+    "goldenHourLabel": "Golden Hour Window",
+    "goldenHourTime": "16:30 – 17:45 for soft stone reflection",
+    "actionPairColor": "Pair with My Personal Color",
+    "actionExplorePalace": "Explore Palace Guide"
   },
   "Gyeongbokgung": {
     "eyebrow": "Gyeongbokgung · Launch area",
@@ -69,9 +91,21 @@
     "hanbokColors": "Hanbok colors to try",
     "paletteAria": "{name} colors",
     "sensitiveTraitNote": "The scan uses visible color pixels only for styling guidance. It does not identify you or infer race, ethnicity, nationality, religion, health or attractiveness.",
-    "undertone": {"warm": "Warm", "neutral": "Neutral", "cool": "Cool"},
-    "depth": {"light": "Light", "medium": "Medium", "deep": "Deep"},
-    "contrast": {"soft": "Soft", "medium": "Medium", "high": "High"},
+    "undertone": {
+      "warm": "Warm",
+      "neutral": "Neutral",
+      "cool": "Cool"
+    },
+    "depth": {
+      "light": "Light",
+      "medium": "Medium",
+      "deep": "Deep"
+    },
+    "contrast": {
+      "soft": "Soft",
+      "medium": "Medium",
+      "high": "High"
+    },
     "warnings": {
       "darkPhoto": "The photo looks dark. Daylight may give a more reliable result.",
       "overexposedPhoto": "The face area looks overexposed. Try softer natural light.",
@@ -83,16 +117,73 @@
       "unknown": "We could not analyze this photo. Try another clear selfie."
     },
     "palettes": {
-      "jadeWarmIvory": {"name": "Jade & Warm Ivory", "note": "A classic palace-friendly combination with warmth near the face."},
-      "peachSage": {"name": "Peach & Sage", "note": "Soft and friendly for daylight photos and quieter neighborhood walks."},
-      "creamCrimson": {"name": "Cream & Crimson", "note": "Stronger contrast for palace architecture and formal Hanbok styling."},
-      "softWhiteJade": {"name": "Soft White & Jade", "note": "Balanced and flexible across traditional and modern Hanbok looks."},
-      "dustyRoseNavy": {"name": "Dusty Rose & Navy", "note": "A refined combination that photographs well against palace stone and wood."},
-      "mutedPlumIvory": {"name": "Muted Plum & Ivory", "note": "A calm romantic palette without relying on very bright saturation."},
-      "moonBlueSoftWhite": {"name": "Moon Blue & Soft White", "note": "Clean contrast for palace courtyards and stone backgrounds."},
-      "lilacPlum": {"name": "Lilac & Plum", "note": "A polished modern-romantic Hanbok direction."},
-      "roseDeepNavy": {"name": "Rose & Deep Navy", "note": "A stronger photo palette with cool depth and restrained warmth."}
-    }
+      "jadeWarmIvory": {
+        "name": "Jade & Warm Ivory",
+        "note": "A classic palace-friendly combination with warmth near the face."
+      },
+      "peachSage": {
+        "name": "Peach & Sage",
+        "note": "Soft and friendly for daylight photos and quieter neighborhood walks."
+      },
+      "creamCrimson": {
+        "name": "Cream & Crimson",
+        "note": "Stronger contrast for palace architecture and formal Hanbok styling."
+      },
+      "softWhiteJade": {
+        "name": "Soft White & Jade",
+        "note": "Balanced and flexible across traditional and modern Hanbok looks."
+      },
+      "dustyRoseNavy": {
+        "name": "Dusty Rose & Navy",
+        "note": "A refined combination that photographs well against palace stone and wood."
+      },
+      "mutedPlumIvory": {
+        "name": "Muted Plum & Ivory",
+        "note": "A calm romantic palette without relying on very bright saturation."
+      },
+      "moonBlueSoftWhite": {
+        "name": "Moon Blue & Soft White",
+        "note": "Clean contrast for palace courtyards and stone backgrounds."
+      },
+      "lilacPlum": {
+        "name": "Lilac & Plum",
+        "note": "A polished modern-romantic Hanbok direction."
+      },
+      "roseDeepNavy": {
+        "name": "Rose & Deep Navy",
+        "note": "A stronger photo palette with cool depth and restrained warmth."
+      }
+    },
+    "shootingGuideTitle": "Selfie Tips for Best Accuracy",
+    "shootingGuide1": "Face natural, indirect daylight (avoid direct sunlight glare)",
+    "shootingGuide2": "Remove sunglasses and hats; look directly forward",
+    "shootingGuide3": "Avoid heavy beauty filters or colored indoor lighting",
+    "lightingCheck": "Lighting Quality",
+    "lightingBalanced": "Natural daylight detected",
+    "faceCentering": "Face Positioning Guide",
+    "analyzingStep1": "Detecting visible skin tone pixels…",
+    "analyzingStep2": "Evaluating facial contrast and depth…",
+    "analyzingStep3": "Generating explainable palette harmony…",
+    "evidenceTitle": "Why we reached this result",
+    "evidence1Title": "Skin Undertone",
+    "evidence1Body": "Visible overtone tendency under current lighting.",
+    "evidence2Title": "Facial Contrast",
+    "evidence2Body": "Tonal separation between skin, eyes, and hair.",
+    "evidence3Title": "Lightness & Depth",
+    "evidence3Body": "Reflectance range that keeps your features clear.",
+    "evidence4Title": "Saturation Tolerance",
+    "evidence4Body": "Prefers gentle harmonious tones over harsh neon chroma.",
+    "whyColorsTitle": "Why some colors flatter while others feel heavy",
+    "whyNavyWorks": "Harmonious Tone: Creates clear facial definition without casting muddy shadows.",
+    "whyMustardFails": "Challenging Tone: May cast yellowish shadows or compete with natural facial contrast.",
+    "compareTitle": "Warm vs Cool Palette Comparison",
+    "compareWarmLabel": "Warm Autumn Tone",
+    "compareCoolLabel": "Cool Summer Tone",
+    "variationTitle": "What could change this result",
+    "variationText": "Seasonal sun exposure, indoor fluorescent lamps, makeup, or dyed hair can shift visible tones. Retest under clean morning daylight for highest consistency.",
+    "matchHanbokCta": "Find Hanbok for this palette →",
+    "swatchBestTitle": "Harmonious Face-Proximity Swatches",
+    "swatchAvoidTitle": "Challenging Colors to Soften"
   },
   "Meta": {
     "homeTitle": "Korea Concierge — Personal Korea Guide",

@@ -28,7 +28,29 @@
     "sajuTitle": "Saju / Tứ trụ",
     "sajuText": "Giờ sinh là tùy chọn. Giờ chính xác, khoảng thời gian ước chừng và ‘Tôi không biết’ đều là lựa chọn hợp lệ; hệ thống không bao giờ tự đoán giờ còn thiếu.",
     "colorTitle": "Kết nối màu sắc",
-    "colorText": "Câu chuyện về màu may mắn truyền thống luôn được tách rõ khỏi hướng dẫn phối màu cá nhân."
+    "colorText": "Câu chuyện về màu may mắn truyền thống luôn được tách rõ khỏi hướng dẫn phối màu cá nhân.",
+    "heroTitle": "Trí tuệ truyền thống Hàn Quốc dành cho du khách hiện đại",
+    "heroIntro": "Khám phá sự hòa hợp theo mùa, Ngũ hành và chu kỳ âm lịch truyền thống. Được thiết kế như một người bạn đồng hành văn hóa.",
+    "todayVibeTitle": "Hài hòa du lịch hôm nay",
+    "todayEnergyLabel": "Năng lượng chủ đạo",
+    "todayEnergyValue": "Mộc tươi sáng & Thủy trong lành (Thư thái làm mới)",
+    "luckyDirectionLabel": "Hướng thuận lợi",
+    "luckyDirectionValue": "Tây Bắc (Hướng về ngõ nhỏ Seochon & núi Inwangsan)",
+    "luckyColorLabel": "Màu sắc năng lượng",
+    "luckyColorValue": "Xanh ngọc bích rừng sâu (#2D5A4C)",
+    "harmoniousMealLabel": "Món ăn nuôi dưỡng",
+    "harmoniousMealValue": "Canh bổ dưỡng ấm áp (Samgyetang / Seolleongtang) giúp cân bằng tiết trời",
+    "sajuExplorerTitle": "Khám phá Con giáp & Ngũ hành truyền thống",
+    "sajuExplorerIntro": "Tìm hiểu yếu tố năm sinh và sự hòa hợp theo mùa truyền thống.",
+    "birthYearLabel": "Năm sinh",
+    "calculateHarmony": "Khám phá sự hòa hợp",
+    "privacySeal": "Tính toán lịch truyền thống · 100% riêng tư · Không lưu dữ liệu",
+    "photoSpotTitle": "Khoảnh khắc chụp ảnh tại đình Gyeongbokgung",
+    "photoSpotName": "Dạo bước yên bình quanh Hyangwonjeong & Jipokjae",
+    "goldenHourLabel": "Khung giờ vàng",
+    "goldenHourTime": "16:30 – 17:45 (Ánh chiều tà phản chiếu tường đá)",
+    "actionPairColor": "Kết hợp với Màu sắc cá nhân",
+    "actionExplorePalace": "Xem cẩm nang Gyeongbokgung"
   },
   "Gyeongbokgung": {
     "eyebrow": "Gyeongbokgung · Khu vực ra mắt",
@@ -69,9 +91,21 @@
     "hanbokColors": "Màu Hanbok nên thử",
     "paletteAria": "Bảng màu {name}",
     "sensitiveTraitNote": "Quét chỉ dùng các điểm ảnh màu nhìn thấy để gợi ý phối đồ. Hệ thống không nhận dạng bạn hay suy đoán chủng tộc, dân tộc, quốc tịch, tôn giáo, sức khỏe hoặc mức độ hấp dẫn.",
-    "undertone": {"warm": "Ấm", "neutral": "Trung tính", "cool": "Lạnh"},
-    "depth": {"light": "Sáng", "medium": "Trung bình", "deep": "Đậm"},
-    "contrast": {"soft": "Mềm", "medium": "Trung bình", "high": "Cao"},
+    "undertone": {
+      "warm": "Ấm",
+      "neutral": "Trung tính",
+      "cool": "Lạnh"
+    },
+    "depth": {
+      "light": "Sáng",
+      "medium": "Trung bình",
+      "deep": "Đậm"
+    },
+    "contrast": {
+      "soft": "Mềm",
+      "medium": "Trung bình",
+      "high": "Cao"
+    },
     "warnings": {
       "darkPhoto": "Ảnh có vẻ tối. Ánh sáng ban ngày có thể cho kết quả ổn định hơn.",
       "overexposedPhoto": "Vùng mặt có vẻ quá sáng. Hãy thử ánh sáng tự nhiên dịu hơn.",
@@ -83,17 +117,73 @@
       "unknown": "Không thể phân tích ảnh này. Hãy thử một ảnh selfie rõ khác."
     },
     "palettes": {
-      "jadeWarmIvory": {"name": "Ngọc bích & ngà ấm", "note": "Phối màu cổ điển hợp bối cảnh cung điện, giữ cảm giác ấm gần khuôn mặt."},
-      "peachSage": {"name": "Đào & xanh xô thơm", "note": "Mềm mại, thân thiện cho ảnh ban ngày và dạo phố nhẹ nhàng."},
-      "creamCrimson": {"name": "Kem & đỏ thẫm", "note": "Tương phản mạnh hơn cho kiến trúc cung điện và Hanbok trang trọng."},
-      "softWhiteJade": {"name": "Trắng dịu & ngọc bích", "note": "Cân bằng và linh hoạt cho cả Hanbok truyền thống lẫn hiện đại."},
-      "dustyRoseNavy": {"name": "Hồng tro & xanh navy", "note": "Tinh tế và lên ảnh đẹp trước nền đá và gỗ của cung điện."},
-      "mutedPlumIvory": {"name": "Mận trầm & ngà", "note": "Bảng màu lãng mạn, điềm tĩnh mà không cần độ bão hòa quá cao."},
-      "moonBlueSoftWhite": {"name": "Xanh trăng & trắng dịu", "note": "Tương phản sạch, hợp sân cung điện và nền đá."},
-      "lilacPlum": {"name": "Tử đinh hương & mận", "note": "Hướng Hanbok hiện đại, lãng mạn và gọn gàng."},
-      "roseDeepNavy": {"name": "Hồng & navy đậm", "note": "Tạo độ sâu lạnh và tương phản ảnh rõ hơn mà vẫn hạn chế sắc ấm."
+      "jadeWarmIvory": {
+        "name": "Ngọc bích & ngà ấm",
+        "note": "Phối màu cổ điển hợp bối cảnh cung điện, giữ cảm giác ấm gần khuôn mặt."
+      },
+      "peachSage": {
+        "name": "Đào & xanh xô thơm",
+        "note": "Mềm mại, thân thiện cho ảnh ban ngày và dạo phố nhẹ nhàng."
+      },
+      "creamCrimson": {
+        "name": "Kem & đỏ thẫm",
+        "note": "Tương phản mạnh hơn cho kiến trúc cung điện và Hanbok trang trọng."
+      },
+      "softWhiteJade": {
+        "name": "Trắng dịu & ngọc bích",
+        "note": "Cân bằng và linh hoạt cho cả Hanbok truyền thống lẫn hiện đại."
+      },
+      "dustyRoseNavy": {
+        "name": "Hồng tro & xanh navy",
+        "note": "Tinh tế và lên ảnh đẹp trước nền đá và gỗ của cung điện."
+      },
+      "mutedPlumIvory": {
+        "name": "Mận trầm & ngà",
+        "note": "Bảng màu lãng mạn, điềm tĩnh mà không cần độ bão hòa quá cao."
+      },
+      "moonBlueSoftWhite": {
+        "name": "Xanh trăng & trắng dịu",
+        "note": "Tương phản sạch, hợp sân cung điện và nền đá."
+      },
+      "lilacPlum": {
+        "name": "Tử đinh hương & mận",
+        "note": "Hướng Hanbok hiện đại, lãng mạn và gọn gàng."
+      },
+      "roseDeepNavy": {
+        "name": "Hồng & navy đậm",
+        "note": "Tạo độ sâu lạnh và tương phản ảnh rõ hơn mà vẫn hạn chế sắc ấm."
       }
-    }
+    },
+    "shootingGuideTitle": "Mẹo chụp ảnh selfie để có kết quả tốt nhất",
+    "shootingGuide1": "Đón ánh sáng tự nhiên dịu nhẹ (tránh ánh nắng chói trực tiếp)",
+    "shootingGuide2": "Bỏ kính râm và mũ, nhìn thẳng vào máy ảnh",
+    "shootingGuide3": "Tránh dùng bộ lọc làm đẹp đậm hoặc ánh đèn màu trong nhà",
+    "lightingCheck": "Chất lượng ánh sáng",
+    "lightingBalanced": "Đã nhận diện ánh sáng tự nhiên",
+    "faceCentering": "Khung canh chỉnh khuôn mặt",
+    "analyzingStep1": "Đang nhận diện điểm màu sắc tố da…",
+    "analyzingStep2": "Đang đánh giá độ tương phản và độ sáng…",
+    "analyzingStep3": "Đang tạo bảng màu hài hòa giải thích được…",
+    "evidenceTitle": "Cơ sở quan sát cho kết quả này",
+    "evidence1Title": "Xu hướng sắc da (Undertone)",
+    "evidence1Body": "Sắc thái ấm/lạnh quan sát được dưới ánh sáng hiện tại.",
+    "evidence2Title": "Độ tương phản khuôn mặt",
+    "evidence2Body": "Độ chênh lệch sáng tối giữa da, mắt và màu tóc.",
+    "evidence3Title": "Độ sáng & Độ sâu",
+    "evidence3Body": "Dải phản quang giúp đường nét gương mặt rõ ràng nhất.",
+    "evidence4Title": "Khả năng dung hòa độ bão hòa",
+    "evidence4Body": "Hợp với tông màu dịu nhẹ tinh tế hơn là màu neon chói lọi.",
+    "whyColorsTitle": "Tại sao một số màu tôn da trong khi màu khác lại nặng nề",
+    "whyNavyWorks": "Tông màu hài hòa: Làm sáng đường nét khuôn mặt, không tạo bóng tối xỉn màu.",
+    "whyMustardFails": "Tông màu xung đột: Có thể hắt bóng vàng lên da và làm chìm độ tương phản tự nhiên.",
+    "compareTitle": "So sánh tông Ấm (Warm) và tông Lạnh (Cool)",
+    "compareWarmLabel": "Tông Thu Ấm",
+    "compareCoolLabel": "Tông Hè Lạnh",
+    "variationTitle": "Yếu tố có thể làm thay đổi kết quả",
+    "variationText": "Rám nắng theo mùa, đèn huỳnh quang trong nhà, trang điểm hoặc màu nhuộm tóc có thể thay đổi sắc thái. Chụp lại dưới ánh sáng ban mai để có kết quả ổn định nhất.",
+    "matchHanbokCta": "Chọn Hanbok theo bảng màu này →",
+    "swatchBestTitle": "Màu sắc hài hòa tôn khuôn mặt",
+    "swatchAvoidTitle": "Màu sắc nên tránh hoặc làm dịu"
   },
   "Meta": {
     "homeTitle": "Korea Concierge — Hướng dẫn Hàn Quốc phù hợp với bạn",

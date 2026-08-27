@@ -28,7 +28,29 @@
     "sajuTitle": "四柱 / Saju",
     "sajuText": "出生時刻は任意です。正確な時刻、おおよその時間帯、「分からない」のすべてを正規の入力として扱い、不明な時刻を推測しません。",
     "colorTitle": "色とのつながり",
-    "colorText": "伝統的なラッキーカラーの物語は、パーソナルカラーのスタイリング提案と明確に分けます。"
+    "colorText": "伝統的なラッキーカラーの物語は、パーソナルカラーのスタイリング提案と明確に分けます。",
+    "heroTitle": "現代の旅に寄り添う韓国の伝統の知恵",
+    "heroIntro": "季節の調和、五行思想、暦の知恵をやさしく紐解きます。観光と文化理解のための親しみやすいガイドです。",
+    "todayVibeTitle": "本日のトラベルハーモニー",
+    "todayEnergyLabel": "本日の巡る気",
+    "todayEnergyValue": "澄んだ木と清流（爽やかなリフレッシュの気）",
+    "luckyDirectionLabel": "おすすめの方角",
+    "luckyDirectionValue": "北西（西村の小道と仁王山を望むエリア）",
+    "luckyColorLabel": "調和のアクセントカラー",
+    "luckyColorValue": "青磁フォレストグリーン (#2D5A4C)",
+    "harmoniousMealLabel": "体をいたわるおすすめ韓国料理",
+    "harmoniousMealValue": "心地よい風に寄り添う、温かい参鶏湯（サムゲタン）やソルロンタン",
+    "sajuExplorerTitle": "干支と五行のエクスプローラー",
+    "sajuExplorerIntro": "生まれ年の干支と季節の調和をチェックしてみましょう。",
+    "birthYearLabel": "生まれ年",
+    "calculateHarmony": "文化の調和を見る",
+    "privacySeal": "伝統暦に基づく計算 · 100%ローカル処理 · 個人情報の収集なし",
+    "photoSpotTitle": "景福宮のおすすめ撮影スポット",
+    "photoSpotName": "香遠亭（ヒャンウォンジョン）と集玉斎の静かな散策路",
+    "goldenHourLabel": "ゴールデンアワーの時間帯",
+    "goldenHourTime": "16:30 – 17:45（石壁と水面が美しく輝く夕刻）",
+    "actionPairColor": "パーソナルカラーと組み合わせる",
+    "actionExplorePalace": "景福宮ガイドを見る"
   },
   "Gyeongbokgung": {
     "eyebrow": "景福宮 · 先行エリア",
@@ -69,9 +91,21 @@
     "hanbokColors": "試してみたい韓服カラー",
     "paletteAria": "{name} の配色",
     "sensitiveTraitNote": "解析はスタイリング提案のために見えている色のピクセルだけを使います。本人確認や、人種・民族・国籍・宗教・健康・魅力度の推測は行いません。",
-    "undertone": {"warm": "ウォーム", "neutral": "ニュートラル", "cool": "クール"},
-    "depth": {"light": "ライト", "medium": "ミディアム", "deep": "ディープ"},
-    "contrast": {"soft": "ソフト", "medium": "ミディアム", "high": "ハイ"},
+    "undertone": {
+      "warm": "ウォーム",
+      "neutral": "ニュートラル",
+      "cool": "クール"
+    },
+    "depth": {
+      "light": "ライト",
+      "medium": "ミディアム",
+      "deep": "ディープ"
+    },
+    "contrast": {
+      "soft": "ソフト",
+      "medium": "ミディアム",
+      "high": "ハイ"
+    },
     "warnings": {
       "darkPhoto": "写真が暗めです。自然光の方が安定した結果になりやすいです。",
       "overexposedPhoto": "顔周辺が明るすぎるようです。より柔らかい自然光を試してください。",
@@ -83,16 +117,73 @@
       "unknown": "この写真を解析できませんでした。別の鮮明なセルフィーを試してください。"
     },
     "palettes": {
-      "jadeWarmIvory": {"name": "翡翠色 × ウォームアイボリー", "note": "顔まわりに温かみを残し、宮殿背景にも合わせやすい定番配色です。"},
-      "peachSage": {"name": "ピーチ × セージ", "note": "自然光の写真や落ち着いた街歩きに合う柔らかな配色です。"},
-      "creamCrimson": {"name": "クリーム × クリムゾン", "note": "宮殿建築やフォーマルな韓服に映える強めのコントラストです。"},
-      "softWhiteJade": {"name": "ソフトホワイト × 翡翠色", "note": "伝統・モダンどちらの韓服にも合わせやすいバランス型です。"},
-      "dustyRoseNavy": {"name": "ダスティローズ × ネイビー", "note": "宮殿の石や木の背景でも写真映えする上品な組み合わせです。"},
-      "mutedPlumIvory": {"name": "くすみプラム × アイボリー", "note": "強い彩度に頼らない、落ち着いたロマンティック配色です。"},
-      "moonBlueSoftWhite": {"name": "ムーンブルー × ソフトホワイト", "note": "宮殿の中庭や石背景に合うすっきりしたコントラストです。"},
-      "lilacPlum": {"name": "ライラック × プラム", "note": "洗練されたモダンロマンティックな韓服方向です。"},
-      "roseDeepNavy": {"name": "ローズ × ディープネイビー", "note": "クールな深みで写真に強さを出しつつ、温かさを抑えた配色です。"}
-    }
+      "jadeWarmIvory": {
+        "name": "翡翠色 × ウォームアイボリー",
+        "note": "顔まわりに温かみを残し、宮殿背景にも合わせやすい定番配色です。"
+      },
+      "peachSage": {
+        "name": "ピーチ × セージ",
+        "note": "自然光の写真や落ち着いた街歩きに合う柔らかな配色です。"
+      },
+      "creamCrimson": {
+        "name": "クリーム × クリムゾン",
+        "note": "宮殿建築やフォーマルな韓服に映える強めのコントラストです。"
+      },
+      "softWhiteJade": {
+        "name": "ソフトホワイト × 翡翠色",
+        "note": "伝統・モダンどちらの韓服にも合わせやすいバランス型です。"
+      },
+      "dustyRoseNavy": {
+        "name": "ダスティローズ × ネイビー",
+        "note": "宮殿の石や木の背景でも写真映えする上品な組み合わせです。"
+      },
+      "mutedPlumIvory": {
+        "name": "くすみプラム × アイボリー",
+        "note": "強い彩度に頼らない、落ち着いたロマンティック配色です。"
+      },
+      "moonBlueSoftWhite": {
+        "name": "ムーンブルー × ソフトホワイト",
+        "note": "宮殿の中庭や石背景に合うすっきりしたコントラストです。"
+      },
+      "lilacPlum": {
+        "name": "ライラック × プラム",
+        "note": "洗練されたモダンロマンティックな韓服方向です。"
+      },
+      "roseDeepNavy": {
+        "name": "ローズ × ディープネイビー",
+        "note": "クールな深みで写真に強さを出しつつ、温かさを抑えた配色です。"
+      }
+    },
+    "shootingGuideTitle": "より正確に判定するためのセルフィーのコツ",
+    "shootingGuide1": "自然な間接光に向かって撮影してください（直射日光は避けてください）",
+    "shootingGuide2": "サングラスや帽子を外し、正面をまっすぐ見てください",
+    "shootingGuide3": "強い加工フィルターや着色された照明は避けてください",
+    "lightingCheck": "照明状態",
+    "lightingBalanced": "自然光を検出しました",
+    "faceCentering": "顔の位置ガイド",
+    "analyzingStep1": "肌の色彩ピクセルを読み取り中…",
+    "analyzingStep2": "顔のコントラストと明度を測定中…",
+    "analyzingStep3": "調和するカラーパレットを生成中…",
+    "evidenceTitle": "この結果に至った観察理由",
+    "evidence1Title": "ベーストーン傾向",
+    "evidence1Body": "現在の照明下で見られるトーンの傾向です。",
+    "evidence2Title": "顔のコントラスト",
+    "evidence2Body": "肌、瞳、髪色の明暗差のバランスです。",
+    "evidence3Title": "明度と深み",
+    "evidence3Body": "顔立ちを最も引き立てる明るさの範囲です。",
+    "evidence4Title": "彩度との調和",
+    "evidence4Body": "鮮やかすぎる原色よりも、柔らかなニュアンス色が調和します。",
+    "whyColorsTitle": "似合う色と重たく見える色の理由",
+    "whyNavyWorks": "調和するカラー：肌の透明感を引き出し、輪郭をすっきり見せます。",
+    "whyMustardFails": "注意が必要なカラー：顔周りに黄色みを帯びた影を落としやすくなります。",
+    "compareTitle": "イエベ・ブルベの比較",
+    "compareWarmLabel": "ウォームオータム",
+    "compareCoolLabel": "クールサマー",
+    "variationTitle": "結果に影響を与える要因",
+    "variationText": "日焼け、室内の蛍光灯、メイク、ヘアカラーなどにより変化することがあります。朝の自然光で再撮影すると最も安定した結果が得られます。",
+    "matchHanbokCta": "このパレットで韓服を探す →",
+    "swatchBestTitle": "顔周りに映えるおすすめカラー",
+    "swatchAvoidTitle": "避けたほうがよい重ためカラー"
   },
   "Meta": {
     "homeTitle": "Korea Concierge — 自分に合う韓国旅行ガイド",
