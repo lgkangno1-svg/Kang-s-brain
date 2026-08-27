@@ -1,22 +1,18 @@
-name: Korea Concierge CI
+name: Korea Concierge CI (GitHub-hosted fallback)
 
+# Primary automatic verification runs on the repository-scoped MiniPC runner
+# from the private lgkangno1-svg/korea-concierge-ci control repository.
+# Keep this workflow manual-only as a recovery/fallback path so the public
+# repository cannot dispatch untrusted pull-request code onto the MiniPC and
+# normal development does not consume GitHub-hosted Actions minutes.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'projects/korea-avocadoss/**'
-      - '.github/workflows/korea-concierge-ci.yml'
-  pull_request:
-    paths:
-      - 'projects/korea-avocadoss/**'
-      - '.github/workflows/korea-concierge-ci.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: korea-concierge-ci-${{ github.ref }}
+  group: korea-concierge-github-hosted-fallback
   cancel-in-progress: true
 
 jobs:
@@ -31,7 +27,6 @@ jobs:
       run:
         working-directory: projects/korea-avocadoss
     steps:
-      # Official GitHub actions are pinned to full SHAs reviewed in OPEN_SOURCE_DISCOVERY.md.
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -58,8 +53,12 @@ jobs:
         run: npm run check:document-lang
 
       - name: Verify deterministic legacy redirects
+        shell: bash
         run: |
-          npm exec -- next start --hostname 127.0.0.1 --port 3100 > /tmp/korea-concierge-next.log 2>&1 &
+          set -euo pipefail
+          port="$(node -e "const net=require('node:net'); const s=net.createServer(); s.listen(0,'127.0.0.1',()=>{console.log(s.address().port); s.close();});")"
+          origin="http://127.0.0.1:${port}"
+          npm exec -- next start --hostname 127.0.0.1 --port "$port" > /tmp/korea-concierge-next.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          npm run check:legacy-redirects
+          REDIRECT_CHECK_ORIGIN="$origin" npm run check:legacy-redirects
