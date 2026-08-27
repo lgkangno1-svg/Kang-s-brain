@@ -42,8 +42,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies without lifecycle scripts
-        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Validate npm lockfile policy
+        run: node scripts/check-lockfile-policy.mjs
+
+      - name: Install frozen dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validate P0 localization contracts
         run: npm run check:i18n
