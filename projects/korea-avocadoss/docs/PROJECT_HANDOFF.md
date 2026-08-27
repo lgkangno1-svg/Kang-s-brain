@@ -1,261 +1,267 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-08-27  
+**Last updated:** 2026-08-28  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 3 — explainable K-Culture deterministic core, with the Stitch UI system now merged  
-**Latest completed UI slice:** PR #11 — Stitch-designed explainable UI/UX system, squash merge `95a86da4554a9a027b39a5480c971aaa48939672`  
-**PR #11 exact-head MiniPC CI:** source `1e2dcb8daaf6daac610e7b57785da81e64d61446`, private run `33085085859` — SUCCESS  
-**Primary CI:** private `lgkangno1-svg/korea-concierge-ci` repository-scoped MiniPC runner  
-**Production runtime:** Next.js 16.3.3 via `korea-concierge.service` on MiniPC port `3100`, behind the existing Cloudflare Tunnel  
-**Production caution:** the Stitch merge is not considered live until exact-main deployment and public checks finish. Cloudflare has shown intermittent HTTP `530` / browser Error `1033` while the local app remained healthy; tunnel-level diagnosis is active.  
-**Exact next implementation slice after production stabilization:** Step 3A deterministic Saju input/calculation contracts.
+**Current phase:** Step 3 — deterministic/explainable K-Culture core  
+**Current production code SHA:** `6f70d14b93f7e191753acee4d28b3ba8847d3543`  
+**Stitch UI:** LIVE in production  
+**Primary CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci` on the isolated MiniPC runner
 
-> This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics, production deployment or the next step changes.
+> This is the cross-session/cross-AI source of truth. Before every material patch, inspect fresh `main`, recent commits, open PRs, the project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff and the live public site. Never assume remembered state is current. Update this file whenever architecture, tests, production, security/privacy, cost, blockers or next priorities change.
 
 ## 1. Product intent
-Korea Concierge is a mobile-first multilingual Korea companion for international visitors. The product should not merely emit answers; it should make personalized recommendations understandable and actionable: **what was measured/calculated, why the recommendation follows, what the competing interpretation is, what uncertainty remains and what to try next**.
+Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. It should personalize recommendations while making them understandable: **result → evidence/data → alternative → uncertainty → action → method/privacy**.
 
-Authoritative shared contract: `docs/EXPLAINABLE_PERSONALIZATION.md`.
+A result must not merely say “you are Cool” or “this Hanbok suits you.” When we measure or deterministically calculate something, show useful numbers. Numbers are encouraged because users like data, but each visible value must come from an actual measurement, deterministic calculation, verified external fact or documented rubric. Never fabricate decorative precision or hidden chain-of-thought.
 
-The shared result pattern is:
+P0 locales are `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Explicit user choice wins. Never infer nationality, ethnicity, religion, health or another sensitive identity from a photo, name, locale or voice.
 
-1. concise result;
-2. concrete evidence/reason cards;
-3. measured or deterministically calculated data where available;
-4. strongest alternative/counterfactual;
-5. uncertainty/material conditions;
-6. practical next actions;
-7. method/privacy disclosure.
+## 2. Explainable Personal Color + Hanbok direction
+The premium target is **user photo → explicit consent → AI/vision-assisted styling analysis → explainable recommendation**. Existing browser-local Personal Color and deterministic Hanbok tools are the free/private preview layer, not the final premium ceiling.
 
-Do not expose or fabricate hidden chain-of-thought. Do not invent precision. **Numbers are encouraged when they come from a defined measurement or scoring rule.** A visible number must be traceable to a measurement, deterministic calculation, verified source, or explicitly documented rubric.
+### Personal Color free preview
+Current local analysis can expose actual calculated:
+- undertone;
+- depth;
+- contrast;
+- analyzer confidence;
+- CIELAB `L*` lightness;
+- warnings/limitations.
 
-International visitors may not understand Korea-specific concepts. Saju, zodiac, astrology, fortune, tarot, personal color, Hanbok and premium naming must provide a friendly localized “What is this?”, required inputs, what the user receives, limitations/privacy and a simple example before sensitive or paid input.
+PR #11 originally contained unsupported numeric presentation. Before merge it was corrected so confidence is no longer artificially floored and a photo upload does not automatically claim “natural daylight detected.” Comparison palettes now come from the actual deterministic result.
 
-### Photo-based personalization
-The premium Personal Color and Hanbok product direction is **user photo → consented AI/vision-assisted analysis → explainable personalized recommendation**. The existing browser-local Personal Color scanner and deterministic Hanbok matcher are free/private previews and fallbacks, not the final premium ceiling.
+### Hanbok free matcher
+Current `0–100` score is a transparent **preference-fit rubric**, not AI confidence or an objective beauty score:
+- palette 40;
+- mood 25;
+- walking/photo priority 15;
+- backdrop 10;
+- season 10.
 
-Premium photo analysis must only describe styling-relevant visible observations. Never infer race, ethnicity, nationality, religion, health, emotion, attractiveness or identity. Remote photo processing requires explicit consent, EXIF stripping, size/type limits, transient-by-default handling, provider retention/ZDR review, server-only credentials, rate limits and a fixed supplier-cost ceiling.
+Backdrop/comfort displays are derived from explicit selections. Future premium photo-aware Hanbok recommendations may add real photo evidence only after consent/privacy/provider gates are implemented.
 
-The merged Stitch Personal Color UI was corrected before merge so that it shows actual deterministic measurements instead of decorative numbers. Current local-analysis evidence can expose the actual calculated undertone/depth/contrast, the analyzer confidence and CIELAB `L*` lightness. It no longer floors confidence to an invented minimum or claims daylight merely because a photo was uploaded.
+### Premium photo safety
+Before remote photo processing:
+- explicit consent;
+- strip EXIF;
+- strict file/type/pixel limits;
+- transient-by-default retention;
+- no raw-photo logging;
+- provider retention/ZDR review;
+- server-only secrets;
+- abuse/rate limits;
+- fixed supplier-cost ceiling;
+- no race/ethnicity/nationality/religion/health/emotion/attractiveness/identity inference.
 
-The merged free Hanbok UI now uses a transparent deterministic preference-fit score rather than fixed fake match percentages. Current score weights are:
-- palette fit: 40 points;
-- mood fit: 25;
-- walking/photo priority: 15;
-- backdrop fit: 10;
-- season fit: 10.
+## 3. Stitch UI production status
+Codex used Stitch MCP for the frontend-expression layer.
 
-This `0–100` value is a **preference-fit rubric**, not AI confidence or an objective beauty score. Backdrop and comfort displays are also derived from explicit selections. Future premium photo-aware Hanbok recommendations may add real photo evidence only after the privacy/AI gates exist.
+- Stitch project: `5491471407117217005`
+- design-system asset: `6183445483705617630`
+- UI spec: `docs/UI_STITCH_SPEC.md`
+- PR #11: `feat(ui): implement Stitch-designed explainable UI/UX system`
+- corrected PR head: `1e2dcb8daaf6daac610e7b57785da81e64d61446`
+- exact-head MiniPC CI: run `33085085859` — SUCCESS
+- squash merge: `95a86da4554a9a027b39a5480c971aaa48939672`
+- final main verification: run `33086070763` — SUCCESS
+- production deployment: run `33086300976` — SUCCESS
+- deployed SHA: `6f70d14b93f7e191753acee4d28b3ba8847d3543`
+- production deploy health on first public retry: `/` = 308, `/en` = 200, `lang=en`, legacy marker absent
+- post-deploy full live crawl: run `33086470253` — SUCCESS
+- post-deploy crawl result: 36 sitemap URLs checked, all P0 routes 200, correct document languages/canonicals, root 308, `failures=0`
 
-## 2. Non-negotiable requirements
-- **P0 locales:** `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`. P1: Indonesian/Malay. Explicit user choice wins. Never infer nationality, ethnicity, religion or sensitive identity from name, face, voice or locale.
-- **Saju:** exact / approximate / unknown birth time are all valid. Never fabricate or AI-guess a missing hour. Unknown time gets deterministic reduced scope and explicit uncertainty/candidate possibilities where applicable.
-- **Saju privacy:** raw birth date/time/city/name/account identifiers do not go to ordinary narrative AI or general logs. Deterministic derived structures come first.
-- **Names and Saju are separate:** a personal name is not required to calculate Four Pillars. Never invent Hanja for a foreign name to make Saju work. Hanja/stroke/name-element analysis belongs to the optional Naming/Onomastics service.
-- **K-Culture:** calculated/randomized mechanics are fixed before generative wording. Tarot selection is independent of the LLM; daily-fortune theme is fixed before prose. Outputs are cultural/entertainment/reflection, not high-stakes prediction.
-- **Explainability:** result + evidence/data + alternative + uncertainty + action + method/privacy. No fabricated chain-of-thought or decorative precision.
-- **Quick Help:** 0 credits, 0 AI, no external question transfer, deterministic localized tree.
-- **Security:** strict auth/validation, immutable/idempotent wallet later, verified payment callbacks, rate limits, dependency pinning, data minimization, prompt instruction/data separation, source validation and server-only long-lived secrets.
-- **AI cost:** deterministic/static/cache/rules/browser-local first. Remote vision/LLM only when it materially improves value; bounded candidates/history/retries/tokens/provider cost and privacy-safe telemetry.
-- **Credits:** `CREDIT_ECONOMICS.md` remains authoritative for ordinary paid actions. Basic/Advanced/Ultra are one-time Trip Passes plus optional top-ups; no subscription at launch.
+The Stitch production cutover is therefore **verified live**, not merely merged.
 
-## 3. Premium Naming Studio direction
-A separate premium Korean/Asian naming product is planned at roughly **USD $149–150**, positioned as a high-touch naming consultation rather than a cheap random name generator.
+Design changes include contemporary parchment/silk/charcoal surfaces, Dancheong crimson and celadon accents, richer Personal Color/Hanbok result cards, K-Culture presentation, accessibility focus treatment and mobile bottom navigation.
 
-Before generation, a short localized questionnaire should collect only what is useful: desired Korean/Asian style, gender expression or neutral preference if relevant, modern/elegant/intellectual/strong/soft/artistic/etc. mood, desired meanings, sounds/meanings to avoid, preferred length/pronunciation, whether to echo the customer’s original name, and modern-vs-traditional preference.
+## 4. Cloudflare Tunnel incident
+The user observed Cloudflare Error `1033`, and earlier automated preflights observed intermittent `530/502` while the local Next.js origin remained healthy.
+
+Sanitized diagnostics showed:
+- `korea-concierge.service` active;
+- local `/` 308 and `/en` 200;
+- two `cloudflared` processes existed but no systemd cloudflared unit was registered;
+- at one diagnostic moment public `/` returned 502 and `/en` 530.
+
+The subsequent Stitch deployment public check succeeded immediately and the full 36-route post-deploy crawl also passed with zero failures. Treat this as an intermittent tunnel/connectivity risk rather than a proven app-route bug. Continue monitoring; do not expose tunnel tokens or process command lines in diagnostics. If it recurs persistently, inspect process ownership/cgroup/connection health and use only a narrowly scoped user/root action if genuinely necessary.
+
+## 5. Saju / Four Pillars — current next implementation slice
+Step 3A remains the next core work after this UI deployment.
+
+Branch: `korea-concierge/step-3a-input-contracts`  
+Last known validated head before fresh reinspection: `32c81989094b2a3b6e85dfa2e0346896857c9333`  
+Earlier exact-SHA MiniPC CI: SUCCESS.
+
+Existing contracts cover:
+- Gregorian/lunar birth date;
+- exact / approximate / unknown birth time;
+- timezone/longitude requirements;
+- `midnight` / `jasi` / `splitJasi` day-boundary policy;
+- civil vs true-solar-time policy;
+- unknown time reduced scope;
+- whitelist narrative payload that removes raw DOB/time/location/name/account identifiers.
+
+Rules:
+- never guess a missing birth hour;
+- exact/approximate/unknown are all valid user states;
+- name is not required for Four Pillars;
+- never invent Hanja for a foreign name to make Saju work;
+- deterministic chart facts before narrative AI;
+- separate calculation from traditional interpretation;
+- beginner-friendly localized “What is Saju?” before sensitive input;
+- show what missing/rough time changes.
+
+Promising references found so far:
+- `yhj1024/manseryeok` — MIT TypeScript, claims KASI lunar/solar-term data, true-solar/historical-time options and Four Pillars utilities; promising but requires trusted fixture/provenance checks before adoption.
+- `6tail/lunar-javascript` — MIT, useful active cross-check/reference candidate.
+
+## 6. Other K-Culture services
+Planned under one coherent K-Culture Lab:
+- Korean Zodiac;
+- Western Zodiac/Astrology;
+- Daily Fortune/Horoscope;
+- Tarot.
+
+Use deterministic mechanics first where applicable. Tarot card selection/randomization must be independent of the LLM. Astrology must not fabricate ascendants/placements from missing birth data. Daily fortune should present reflective themes/actions, not certain predictions. All are cultural/entertainment/reflection products, never medical/legal/financial/high-impact advice.
+
+## 7. Premium Naming Studio
+A separate premium Korean/Asian naming consultation is planned around **USD $149–150**, not as a cheap random-name generator.
+
+Before naming, use a short localized questionnaire for desired style, modern/traditional balance, gender expression or neutral preference where relevant, mood, desired meanings, sounds/meanings to avoid, pronunciation/length and whether to echo the original name.
 
 Return a curated Top 3–5 with, where valid:
 - Hangul;
-- romanization/pronunciation guide;
-- optional validated Hanja candidates;
+- romanization/pronunciation;
+- validated optional Hanja alternatives;
 - component and whole-name meaning;
-- why it fits the questionnaire;
+- why it matches the questionnaire;
 - Korean naturalness;
-- modernness / generational feel;
+- modernness/generational feel;
 - international pronunciation ease;
-- nicknames/short forms;
-- possible cultural or pronunciation pitfalls;
-- optional traditional Saju/onomastics perspective clearly separated from modern naming quality.
+- nicknames;
+- cultural/pronunciation pitfalls;
+- optional traditional Saju/onomastics view clearly separated from modern naming quality.
 
-Scores such as modernness, naturalness, pronunciation ease and questionnaire fit may be shown only when backed by an explicit rubric/data source. The system should actively avoid obviously dated names and should use current public naming-frequency/trend evidence where legally and technically usable. Include 1–2 refinement rounds in the premium proposition. A report-style deliverable is desirable.
+Use current naming-frequency/trend evidence where legally/technically usable to avoid obviously dated names. Scores may be shown only from an explicit rubric/data source. Include 1–2 refinement rounds and aim for a report-style deliverable.
 
-## 4. K-Culture Lab scope
-### Saju / Four Pillars
-Exact/approximate/unknown birth time; deterministic chart first; calculation separated from interpretation; alternate interpretations where conventions differ; missing-time impact shown explicitly; no fabricated hour pillar.
+## 8. Payments — global foreign-customer first
+Korean domestic checkout is not a launch priority. The target payer is an international visitor, so payment is USD/global-first.
 
-The Step 3A feature branch `korea-concierge/step-3a-input-contracts` already contains typed contracts for Gregorian/lunar input, exact/approximate/unknown time, timezone/longitude requirements, day-boundary/solar-time policy and a whitelist narrative payload that drops raw DOB/time/location/name/account identifiers. Continue from the latest branch state only after re-inspection.
+Current leading initial candidate: **PayPal Checkout**, subject to final Korean merchant/account/policy verification. Do not blindly adopt a Merchant-of-Record provider if its acceptable-use rules conflict with human-in-the-loop naming/consulting services.
 
-### Korean Zodiac
-Deterministic sign + cultural history/context. Personality/compatibility associations are labeled as traditional/entertainment interpretations.
+Ordinary launch economics remain:
+- Basic: $7.99 / 120 credits
+- Advanced: $14.99 / 400 credits
+- Ultra: $24.99 / 1000 credits
+- one-time Trip Passes + optional top-ups; no subscription at launch.
 
-### Western Astrology
-Sun sign deterministic first. Moon/ascendant/full natal chart only after exact astronomy/timezone handling exists. Never fake an ascendant from incomplete birth-time data.
+Premium Naming Studio should likely be a separate fixed-price service product (~$149), not disguised as credits.
 
-### Tarot
-Defined 1-card and 3-card spreads. Transparent selection/randomization independent of the LLM. Show card identity, traditional symbolism, primary reading, another plausible reading, uncertainty and reflection/action prompt.
+**No production payment system exists yet.** Before money is accepted, implement:
+- auth;
+- server-owned product catalog/amounts;
+- immutable/idempotent wallet/service entitlement ledger;
+- server-side order creation/capture;
+- verified signed webhook;
+- replay/idempotency protection;
+- refunds/reversals;
+- rate limits/audit telemetry.
 
-### Daily Fortune
-Fix a daily lens/theme from allowed profile inputs + current date/timezone/rules before prose generation. Show what drove the theme. Avoid deterministic promises or high-stakes advice.
+A browser “success” screen never grants credits or service by itself. Ask the user for merchant credentials only after the credential-free/test foundation is ready.
 
-## 5. International payments — global-first
-The target payer is the foreign visitor, not a Korean domestic shopper. Payment architecture should therefore be global-first and USD-first.
+## 9. Real-time translation
+Quality-first planned provider: direct Google `gemini-3.5-live-translate-preview`, after auth/wallet/payment.
 
-Current direction:
-- PayPal Checkout is the leading initial candidate for foreign customers and the premium naming/service product because it has no monthly integration fee and is compatible with cross-border service payments for a Korea-based seller, subject to final merchant/account verification;
-- do not choose a Merchant-of-Record provider blindly if its acceptable-use rules conflict with human-in-the-loop consulting/naming services;
-- ordinary Trip Pass/top-up amounts remain server-owned;
-- premium Naming Studio should likely be a separate fixed-price service product rather than disguised as credits;
-- browser success pages never grant value by themselves;
-- authoritative server payment capture + verified webhook + idempotent ledger is required before granting credits/entitlements.
-
-**No production payment system is implemented yet.** No payment SDK/API key/webhook/wallet is currently live. Provider onboarding/credentials should be requested from the user only after the testable server foundation is ready.
-
-## 6. Approved real-time translation direction
-The quality-first real-time spoken-translation candidate is direct Google Gemini API model `gemini-3.5-live-translate-preview`, implemented only after auth/wallet/payment.
-
-Current policy:
-- rough planning rate `$0.0368/min` combined speech-to-speech;
+Planning policy:
+- rough cost `$0.0368/min` combined speech-to-speech;
 - Ultra fair-use hypothesis: 30 included minutes then 8 credits/min;
 - long-lived key server-only;
-- constrained ephemeral client token;
-- raw microphone audio not persisted by default;
-- explicit source/target language selection wins over optional detection.
+- short-lived constrained client credential;
+- no raw audio persistence by default;
+- explicit source/target language selection wins.
 
-Authoritative file: `docs/LIVE_TRANSLATION.md`.
+See `docs/LIVE_TRANSLATION.md`.
 
-## 7. Design workflow and Stitch
-Codex has a Stitch MCP connection and is assigned the UI/UX/frontend-expression role to avoid overlap with core logic/security/payment/deployment work.
-
-PR #11 is genuinely Stitch-designed:
-- Stitch project `5491471407117217005`;
-- design system asset `6183445483705617630`;
-- merged design includes parchment/silk/charcoal surfaces, Dancheong crimson, celadon jade, mobile bottom navigation, richer Personal Color/Hanbok result cards and K-Culture presentation;
-- UI spec: `docs/UI_STITCH_SPEC.md`.
-
-Before PR #11 merge, core review corrected unsupported numerical/measurement claims while preserving the visual system. Future large UI redesigns should again use Stitch when available, preferably isolated in a dedicated UI branch/PR so core agents do not overwrite it.
-
-## 8. Current architecture
+## 10. Architecture / CI / deployment
 - Next.js 16.3.3 + exact `next-intl@4.13.4`.
-- P0 URL trees: `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`.
-- Static reviewed dictionaries for site localization; no runtime ML translation for static copy.
-- `P0Locale` is the compile-time boundary.
-- Localized public surfaces: Home, Personal Color, Hanbok, Gyeongbokgung, K-Culture, Credits.
-- 36 canonical P0 URLs with reciprocal hreflang and `x-default` → English.
-- `[locale]/layout.tsx` owns P0 root documents and language tags.
-- deterministic six-route legacy redirects via HTTP 308.
-- ordinary future AI gateway direction remains cost-bounded OpenRouter where appropriate; direct Gemini Live is the real-time translation exception.
+- 36 canonical P0 public URLs.
+- reciprocal hreflang + x-default.
+- deterministic legacy redirects via HTTP 308.
+- static reviewed locale dictionaries; no runtime ML for static copy.
+- private primary CI repo: `lgkangno1-svg/korea-concierge-ci`.
+- runner: `minipc-korea-concierge-ci-c49acd`.
+- runner labels: `self-hosted, linux, x64, minipc`.
+- runner has no general sudo/Docker privilege.
+- public repo must never attach directly to the production MiniPC runner.
+- public GitHub-hosted Korea Concierge workflow remains manual fallback only.
+- production app: `korea-concierge.service`, MiniPC port 3100, Cloudflare Tunnel in front.
+- deployment uses exact SHA, root-owned limited helper, local health checks and rollback protections.
 
-## 9. Primary CI architecture — private MiniPC runner
-The public `Kang-s-brain` repository must never be attached directly to the production MiniPC runner. The private control repository `lgkangno1-svg/korea-concierge-ci` owns the repository-scoped runner.
+Mandatory code merge flow:
+1. inspect fresh main/PRs/tree/docs/live site;
+2. implement isolated branch;
+3. set private `target-ref.txt` to exact public head SHA;
+4. require MiniPC CI green;
+5. merge;
+6. deploy exact desired public SHA via private `deploy-ref.txt`;
+7. verify local + Cloudflare public route;
+8. run full live P0 crawl before calling it shipped.
 
-Current setup:
-- runner `minipc-korea-concierge-ci-c49acd`;
-- labels `self-hosted`, `linux`, `x64`, `minipc`;
-- runner directory `/opt/github-runners/lgkangno1-svg__korea-concierge-ci`;
-- dedicated service user, no runner sudo or Docker-group grant;
-- private workflow fetches public source read-only;
-- accepted source is `main` or exact 40-character SHA;
-- exact public head goes into private `target-ref.txt` before merge;
-- public GitHub-hosted workflow remains manual fallback only.
+## 11. Security / cost / trust posture
+- deterministic/static/cache/rules/browser-local before AI;
+- bounded prompts, candidates, history, retries and provider spend;
+- no sensitive raw prompt/photo/birth payloads in general logs;
+- dependency/lockfile reproducibility and pinned actions;
+- prompt instructions and untrusted source data kept separate;
+- payment and wallet server-authoritative;
+- source freshness/verification shown for place/food facts;
+- dietary filters remain explicit: Vegan, Vegetarian, Halal-certified, Muslim-friendly, pork-free, alcohol-free, gluten-free, seafood-free and allergies; never infer religion/diet; Halal-certified != Muslim-friendly.
 
-Corrected Stitch PR #11 exact head `1e2dcb8daaf6daac610e7b57785da81e64d61446` passed private MiniPC run `33085085859` with lockfile policy, frozen install, P0 i18n, Next production build, document-language and legacy-redirect checks all green.
+## 12. Completed foundations
+- Step 0 ✅ product/architecture/cost/SEO/security baselines
+- Step 1 ✅ zero-AI Quick Help
+- Step 2A/B/C ✅ full P0 i18n/routing/SEO/document-lang/legacy cleanup/reproducible CI
+- free Personal Color preview ✅
+- deterministic Hanbok matcher ✅
+- Credits preview/economics ✅
+- private MiniPC CI ✅
+- secure exact-SHA production deployer ✅
+- explainable-personalization contract ✅
+- Stitch UI system ✅ merged and production-verified
+- Gemini Live policy ✅ documented
+- Premium Naming Studio direction ✅ defined
+- global-first payment direction ✅ defined; implementation not yet built
 
-## 10. Production deployment and Cloudflare incident
-The old Japanese Node landing page was replaced by Korea Concierge Next.js on 2026-08-27. The secure exact-SHA deploy helper and systemd path watcher are installed without granting the CI runner general sudo/Docker rights.
+## 13. Current priorities
+1. Continue Step 3A Saju deterministic calculation/input contracts after a fresh repo/live preflight.
+2. Verify candidate Saju libraries against trusted boundary fixtures and Korean conventions.
+3. Complete foreign-user birth-time/name UX: exact/rough/unknown time, no forced Hanja, minimal location input.
+4. Continue Step 3B–E: explainable Saju → zodiac/astrology → tarot → daily fortune.
+5. Step 4 auth + authoritative wallet.
+6. Step 5 global USD payment foundation, PayPal candidate first after fresh provider-policy verification.
+7. Then Gemini Live and premium consented photo analysis.
+8. Continue Premium Naming Studio data/rubric/questionnaire research in parallel when it does not break roadmap dependencies.
 
-Local origin facts from the last trustworthy diagnostic:
-- `korea-concierge.service` enabled/active;
-- origin port 3100;
-- local `/` → 308;
-- local `/en` → 200;
-- `<html lang="en">` present;
-- legacy Japanese marker absent.
+## 14. Known risks / regression watch
+- Cloudflare Tunnel has shown intermittent 1033/530/502 despite healthy local origin; latest post-deploy full crawl is clean.
+- Do not turn Hanbok preference scores into fake AI confidence.
+- Do not expose fake Personal Color certainty; keep real measured data and photo limitations.
+- Do not send raw birth/photo/name PII to narrative AI.
+- Do not fabricate missing Saju birth hour or astrology placements.
+- Do not invent Hanja for foreign names.
+- Do not ship checkout before webhook/idempotent ledger/refund foundations.
+- Do not claim production deployment without exact-SHA + public verification.
 
-Cloudflare is currently **intermittent**. The user observed browser Error `1033`, and private preflight has also observed repeated HTTP `530`, including a run where the sitemap request itself returned 530 repeatedly and an earlier run where `/vi/culture` alone returned 530. This points to a tunnel/edge connectivity incident rather than a deterministic Next.js route failure.
+## 15. Recent change history
+- 2026-08-27: private MiniPC CI and secure exact-SHA production deployer established.
+- 2026-08-27: old Japanese landing origin replaced by Next.js Korea Concierge.
+- 2026-08-27: explainable photo-based Personal Color/Hanbok direction and K-Culture expansion defined.
+- 2026-08-27: Premium Naming Studio (~$149–150) and global-first payment direction defined.
+- 2026-08-27: Codex/Stitch PR #11 created; core review replaced unsupported numbers with measured data/deterministic rubrics.
+- 2026-08-27: PR #11 merged; final main MiniPC CI run `33086070763` passed.
+- 2026-08-27: production deploy run `33086300976` passed for `6f70d14b93f7e191753acee4d28b3ba8847d3543`.
+- 2026-08-27: post-deploy live crawl run `33086470253` passed all 36 public P0 URLs with `failures=0`; Stitch UI is production-verified.
 
-A sanitized tunnel diagnostic was added to the private deployer diagnostic workflow to inspect cloudflared service active state/restarts/process count and selected non-secret connection/error logs. Never print cloudflared tokens/command arguments into CI logs.
-
-Do not call PR #11 production-live until:
-1. final desired main SHA passes private exact-SHA CI;
-2. exact SHA deploy succeeds locally;
-3. Cloudflare/public `/` and `/en` checks pass;
-4. public sitemap/P0 preflight is clean or any transient tunnel incident is explicitly separated from app correctness.
-
-## 11. Open-source / research status
-Promising deterministic Saju references found on GitHub include:
-- `yhj1024/manseryeok`: MIT TypeScript, claims KASI-based lunar data, 24 solar-term boundaries, true-solar-time/historical-time options and Four Pillars utilities. Promising but still requires fixture/provenance verification before adoption.
-- `6tail/lunar-javascript`: MIT, actively maintained reference implementation and useful cross-check candidate.
-
-No library is adopted merely because it exists. Calendar boundaries, Korean conventions, licensing, fixtures and provenance must be verified.
-
-Research passes should continue checking GitHub, Hugging Face and publicly searchable Threads/web practical discussions. Community tips are hypotheses; primary/official evidence wins.
-
-## 12. Security / privacy / data / margin posture
-Current Stitch UI changes add no remote AI call, payment behavior, microphone capture or new runtime dependency.
-
-Future premium photo path requires explicit consent, EXIF stripping, image limits, purpose limitation, no sensitive-trait/identity inference, transient retention, deletion semantics, provider retention/ZDR review, server-only secrets, abuse/rate controls and fixed per-analysis supplier-cost ceilings.
-
-Future generative K-Culture paths receive deterministic/randomized structured inputs rather than permission to invent the chart/cards/theme. Logs may contain model/version, cost, latency and structured quality/error flags, not sensitive raw prompt/photo/birth payloads.
-
-Global payments require server-owned catalog prices, webhook signature verification, event idempotency, immutable wallet/service entitlement records and refund/reversal handling before production money is accepted.
-
-## 13. Completed roadmap / major shipped foundations
-- Step 0 ✅ product/architecture/cost/SEO/international/security baselines.
-- Step 1 ✅ deterministic P0 Quick Help.
-- Step 2A ✅ i18n foundation.
-- Step 2B ✅ native P0 public surfaces.
-- Step 2C-1A ✅ free/private Personal Color local preview.
-- Step 2C-1B ✅ free deterministic Hanbok matcher.
-- Step 2C-1C ✅ Credits preview/economics.
-- Step 2C-2…7 ✅ executable verification, P0 SEO/document language, legacy retirement, cleanup and lockfile/supply-chain closure.
-- Private MiniPC CI ✅ isolated self-hosted gate.
-- Secure production deployer ✅ exact-SHA build/health/rollback path.
-- Explainable personalization contract ✅.
-- Stitch UI system ✅ merged via PR #11 after measurement/scoring corrections.
-- Gemini Live/Ultra translation policy ✅ documented.
-- Premium Naming Studio product direction ✅ defined at handoff level; detailed PRD/roadmap implementation remains.
-- Global-first payment direction ✅ defined; actual checkout not yet implemented.
-
-## 14. Exact next actions
-1. Finish current Stitch production cutover and Cloudflare tunnel diagnosis; do not hide a tunnel failure as a successful public deployment.
-2. Re-inspect latest main/open PRs/tree/handoff/roadmap after any concurrent change.
-3. Continue Step 3A deterministic Saju input/calculation contracts and verify candidate libraries against trusted fixtures/boundaries.
-4. Keep foreign-name handling separate from Four Pillars; design optional premium Naming Studio/onomastics as its own service.
-5. Continue K-Culture foundations in roadmap order: Saju → zodiac/astrology → tarot mechanics → daily-fortune mechanics.
-6. Build Step 4 auth/immutable wallet before accepting paid AI use.
-7. Build global-first USD payment server foundation (PayPal candidate first, revalidate policy/account fit) before asking the user for merchant credentials.
-8. After payment, proceed to Gemini Live and premium remote photo analysis with the privacy gates.
-
-## 15. Deferred / do not accidentally start
-- paid remote photo analysis before auth/payment/consent/provider privacy gates;
-- AI Hanbok composite as the sole recommendation brain;
-- bulk Hanbok visual generation without its own gate;
-- recurring subscription or ML-personalized pricing without evidence;
-- runtime translation model for static localization;
-- RAG/embeddings/LLM for Quick Help;
-- Saju narrative AI before deterministic calculation/privacy boundary;
-- fabricated birth hour or fake astrology placements from incomplete data;
-- forcing foreign names into invented Hanja for Saju;
-- LLM-selected Tarot cards masquerading as random draw;
-- generic random daily fortune presented as personalized calculation;
-- checkout before authoritative payment/wallet callback foundations;
-- public Gemini microphone/session path before auth/entitlement/rate limiting;
-- browser-language/IP/nationality inference;
-- public repo attached directly to production MiniPC runner;
-- runner general sudo/Docker access;
-- production-deployment claims without successful public post-cutover evidence.
-
-## 16. Operations / recent change history
-- 2026-08-27: private `korea-concierge-ci` and isolated MiniPC runner established; public hosted CI moved to manual fallback.
-- 2026-08-27: secure exact-SHA deployer bootstrapped and old Japanese landing origin replaced by Next.js production service.
-- 2026-08-27: product direction corrected to premium photo-based explainable Personal Color + Hanbok, with deterministic local previews retained as free tier.
-- 2026-08-27: K-Culture scope expanded to Saju/Four Pillars, Korean Zodiac, Western Astrology, Daily Fortune and Tarot.
-- 2026-08-27: Premium Naming Studio direction added: modern Korean/Asian name consultation around $149–150 with questionnaire, meaning/Hanja/pronunciation/trend evidence and refinement rounds.
-- 2026-08-27: payments clarified as foreign/global-first; Korean domestic checkout is not a launch priority. PayPal is the leading candidate pending final merchant/policy verification.
-- 2026-08-27: Codex used Stitch MCP to produce UI branch/PR #11. Core review replaced unsupported confidence/match numbers with actual measurements and transparent deterministic scoring, and marked unimplemented K-Culture calculations as preview.
-- 2026-08-27: PR #11 exact head passed MiniPC CI run `33085085859` and was squash-merged as `95a86da4554a9a027b39a5480c971aaa48939672`.
-- 2026-08-27: Cloudflare Tunnel began intermittently returning 530/1033 while the local app remained healthy; sanitized tunnel diagnostics added before declaring the Stitch production cutover complete.
-
-## 17. User action currently required
-**None.** Continue autonomous diagnosis/deployment. Only request merchant/provider credentials or a narrowly scoped one-time MiniPC root action when that becomes the genuine remaining blocker.
+## 16. User action currently required
+**None.** Continue autonomous development. Only request merchant/provider credentials, DNS changes or a narrowly scoped MiniPC root action when that becomes the genuine remaining blocker.
