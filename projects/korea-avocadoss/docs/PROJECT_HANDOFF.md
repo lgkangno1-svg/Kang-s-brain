@@ -3,42 +3,75 @@
 **Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 2 — internationalized routing / locale parity / migration cleanup  
-**Last completed slice:** Step 2C-6 — shadowed legacy implementation cleanup  
-**Merged to main:** `b803984fc1999b201de0c007ae2d8683fa843565` (PR #6)  
-**Final PR-head CI:** run `33016109548` — SUCCESS  
-**Exact next slice:** Step 2C-7 — supply-chain reproducibility and Step 2 gate closure.
+**Current phase:** Step 2 — internationalized routing / locale parity / supply-chain closure  
+**Last completed slice on main:** Step 2C-6 — shadowed legacy implementation cleanup  
+**Main at planning-branch creation:** `e725bb15285890c54d5a2eb0e8e19d76b87f39d9`  
+**Open implementation PR:** #7 — Step 2C-7 supply-chain reproducibility, still not merged at this handoff update  
+**Exact next implementation slice:** finish Step 2C-7; do not skip directly to later feature code.
 
-> This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
+> This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
 
 ## 1. Product intent
-Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should be useful before payment, genuinely localized, deterministic/browser-local before AI, privacy-first for photos/birth data, source-validated for changing travel facts, server-authoritative for future wallet/payment operations, cost-controlled for AI and crawlable/answer-first on public pages.
+Korea Concierge is a mobile-first multilingual Korea companion for international visitors. It should be useful before payment, genuinely localized, deterministic/browser-local before AI, privacy-first for photos/birth/audio data, source-validated for changing travel facts, server-authoritative for future wallet/payment operations, cost-controlled for AI and crawlable/answer-first on public pages.
+
+International visitors may not understand Korea-specific concepts. Major services such as Saju, Korean zodiac, personal color, Hanbok conventions and other cultural tools must provide a friendly localized “What is this?” explanation, what information is needed, what the user gets, limitations/privacy and a simple example before sensitive or paid input.
+
+Food/restaurant discovery must support explicit dietary filters including Vegan, Vegetarian, Halal-certified, Muslim-friendly, pork-free, alcohol-free, gluten-free, seafood-free and relevant allergy needs. Never infer religion/diet from locale/name. Halal-certified, Muslim-friendly, pork-free and alcohol-free are distinct claims and must not be collapsed. Sensitive dietary claims require source/evidence plus verification date and uncertainty/cross-contamination disclosures where relevant.
 
 ## 2. Non-negotiable requirements
-- **P0 locales:** `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`. P1: Indonesian/Malay. Explicit user choice always wins. Never infer nationality, ethnicity, religion or sensitive identity from name, face or locale. Taiwan/Hong Kong analytics remain separable. English is a global fallback.
+- **P0 locales:** `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`. P1: Indonesian/Malay. Explicit user choice always wins. Never infer nationality, ethnicity, religion or sensitive identity from name, face, voice or locale. Taiwan/Hong Kong analytics remain separable. English is a global fallback.
 - **Saju:** exact / rough / unknown birth time are valid. Never fabricate or AI-guess a missing hour. Unknown time returns deterministic non-hour components only and must be reduced-scope/lower-priced when monetized. Raw birth date/time/city/name/account identifiers never go to an LLM.
 - **Quick Help:** 0 credits, 0 AI, no external question transfer, P0 localized button/topic tree. No RAG/embeddings/LLM without measured need.
-- **Security:** strict auth/validation, immutable/idempotent wallet later, verified payment callbacks, rate limits, dependency pinning, data minimization, EXIF stripping before future remote sensitive-media use, ZDR restrictions, safe logs, prompt instruction/data separation, source validation for AI-returned place facts, server-only secrets and no guessed CSP origins.
-- **AI cost:** deterministic → static → cache → rules → browser-local → cheapest qualified Chinese OpenRouter model. Compact payloads, bounded candidates/history, hard token/provider-cost ceilings, one retry by default, same-model provider fallback before escalation, p50/p95 telemetry without sensitive prompt bodies.
-- **Credits:** `CREDIT_ECONOMICS.md` is authoritative. Basic/Advanced/Ultra one-time passes + optional top-ups; no subscriptions/ML personalized pricing without evidence. Fixed credits are shown before paid actions. Wallet mutations later use immutable reserve/capture/release/refund semantics.
+- **Security:** strict auth/validation, immutable/idempotent wallet later, verified payment callbacks, rate limits, dependency pinning, data minimization, EXIF stripping before future remote sensitive-media use, ZDR restrictions where applicable, safe logs, prompt instruction/data separation, source validation for AI-returned place facts, server-only long-lived secrets and no guessed CSP origins.
+- **AI cost:** deterministic → static → cache → rules → browser-local → cheapest qualified Chinese OpenRouter model for ordinary text/vision. Compact payloads, bounded candidates/history, hard token/provider-cost ceilings, one retry by default, same-model provider fallback before escalation, p50/p95 telemetry without sensitive prompt bodies.
+- **Credits:** `CREDIT_ECONOMICS.md` is authoritative. Basic/Advanced/Ultra one-time passes + optional top-ups; no subscriptions/ML personalized pricing without evidence. Fixed credits are shown before ordinary paid actions. Metered live translation uses a fixed visible unit rate. Wallet mutations later use immutable reserve/capture/release/refund semantics.
 
-## 3. Design workflow requirement
+## 3. New approved real-time translation direction
+The user explicitly prioritizes translation quality and selected **Google Gemini 3.5 Live Translate** as the default real-time spoken-translation provider candidate.
+
+Authoritative policy file: `docs/LIVE_TRANSLATION.md`.
+
+Current decision:
+- direct Google Gemini API model `gemini-3.5-live-translate-preview`;
+- this is a narrow exception to the ordinary OpenRouter-first text/vision routing policy;
+- OpenRouter public search did not confirm this dedicated Live Translate endpoint at decision time;
+- current official Google pricing snapshot is about `$0.0368/min` combined effective speech-to-speech audio cost;
+- initial Ultra/Family fair-use hypothesis: **30 included minutes per Ultra Trip Pass**, then **8 credits/min**;
+- Ultra remains a one-time Trip Pass at launch, not a recurring subscription;
+- included minutes are intended to be shared by the future Ultra family/shared-wallet entitlement; exact member/device limits wait for Step 4 abuse-control design;
+- do not advertise uncapped unlimited translation until measured economics support it;
+- do not silently downgrade quality merely to save margin; adjust allowance/unit economics transparently instead.
+
+Security architecture after auth exists:
+1. server verifies account, Ultra/family entitlement, remaining allowance/credits and rate limits;
+2. server requests a constrained short-lived Gemini ephemeral token;
+3. client connects directly to Gemini Live API over WebSocket for lower latency;
+4. long-lived Gemini key stays server-only;
+5. raw microphone audio is not persisted by default and audio/transcript bodies are excluded from general/cost logs;
+6. explicit source/target language selection always overrides future optional detection.
+
+Implementation is intentionally scheduled **after Step 4 auth/wallet and Step 5 payment**, as Step 5B. Do not add a public microphone/API-key path before those server-authoritative entitlement controls exist.
+
+## 4. Design workflow requirement
 For future user-facing screen creation or substantial UI redesign, **Stitch MCP is the design-first tool**. Use Stitch to explore/define the mobile-first UI, then implement the chosen result in the existing Next.js architecture and run accessibility/i18n/performance regression checks.
 
-The currently connected tool/plugin catalog in this execution environment exposes no Stitch MCP endpoint, and installable-plugin search returned no Stitch plugin. Therefore Step 2C-6 made **no visual design changes** and does not claim Stitch was used. Re-check Stitch MCP availability before the next UI-design slice rather than silently substituting another design tool.
+The currently connected tool/plugin catalog in recent execution environments exposed no Stitch MCP endpoint. Re-check availability before each UI-design slice and never claim Stitch was used if it was not actually available.
 
-## 4. Current architecture
+For the future live translator screen, preferred UX is a simple mobile conversation tool rather than chatbot chrome: clear `Me` / `Other person` language controls, microphone/privacy state, swap languages, translated audio first, readable transcript second, stop/pause, remaining Ultra minutes or fixed metered rate, and text fallback.
+
+## 5. Current architecture
 - Next.js **16.3.3** + exact `next-intl@4.13.4`.
 - Production P0 URL trees: `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`.
-- Static reviewed dictionaries only; no runtime translation ML. Modular messages use recursive deep merge.
+- Static reviewed dictionaries only; no runtime translation ML for site localization. Modular messages use recursive deep merge.
 - `P0Locale` is the production compile-time boundary; broader research locales must not leak into routing.
 - Complete localized public surfaces: Home, Personal Color, Hanbok, Gyeongbokgung, K-Culture, Credits.
 - Complete P0 public URLs have self-canonical, reciprocal hreflang and `x-default` → English. Sitemap contains 36 canonical P0 URLs.
 - `[locale]/layout.tsx` owns P0 root documents and emits `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`.
 - `config/legacy-redirects.json` is the authoritative backwards-compatible unprefixed URL map. It maps six known former English URLs directly to English canonical equivalents via HTTP 308.
 - No browser-language, IP, nationality or market inference participates in redirects.
+- Ordinary AI gateway: OpenRouter. Approved future exception: direct Google Gemini Live API for real-time spoken translation only.
 
-## 5. Completed roadmap
+## 6. Completed roadmap
 - Step 0 ✅ product/architecture/cost/SEO/international/security baselines.
 - Step 1 ✅ deterministic P0 Quick Help, 0-AI/0-credit/no sensitive input.
 - Step 2A ✅ pinned/validated i18n foundation.
@@ -50,63 +83,50 @@ The currently connected tool/plugin catalog in this execution environment expose
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
-- **Step 2C-6 ✅ merged to main.**
+- Step 2C-6 ✅ shadowed legacy UI removed safely.
 
-## 6. Step 2C-6 implementation
-Fresh `main` was inspected at `62329cc069d1af93951c9518a555ada93124255f`; no newer concurrent Korea Concierge change was present at branch creation.
+## 7. Current Step 2C-7 state
+PR #7 (`korea-concierge/step-2c7-lockfile`) is open and remains the next implementation gate.
 
-Next.js 16 Route Groups/root-layout guidance was rechecked. Because there is no shared top-level `app/layout.tsx`, current guidance says the home route `/` should still be owned by a root group. Deleting `(legacy)` wholesale would therefore be an unnecessary architecture risk.
+Prepared there:
+- trusted-environment lockfile generation path;
+- SHA-pinned temporary artifact review path;
+- deterministic lockfile-policy validator;
+- no fabricated `package-lock.json`.
 
-Implemented cleanup:
-- deleted shadowed legacy `/color`, `/hanbok`, `/credits`, `/culture` and `/explore/gyeongbokgung` page implementations;
-- deleted `src/app/LegacyShell.tsx`, removing obsolete English navigation/footer and its legacy-only `NextIntlClientProvider` + Quick Help instance;
-- reduced `(legacy)/layout.tsx` to the minimum English structural root plus global CSS;
-- replaced the old full English home UI in `(legacy)/page.tsx` with a defensive `permanentRedirect('/en')` fallback;
-- retained `config/legacy-redirects.json` unchanged as the public routing authority;
-- retained dynamic generated-document validation rather than any old fixed page-count assumption.
+Known blocker recorded by PR #7: a new executable Actions run was not being created for that PR at the time, local/container DNS could not resolve GitHub, and a Hugging Face Node job returned 402. Re-check this state fresh before continuing; do not assume it is still blocked.
 
-## 7. Discovery decision for Step 2C-6
-### GitHub / Next.js
-Maintained `vercel/next.js` and current Route Groups/root-layout documentation were reviewed. Framework-native structural cleanup is sufficient; no router/migration dependency is justified.
+When an executable Node 22/npm runner is available: generate/retrieve/review the real lockfile, commit it, switch CI to frozen `npm ci --ignore-scripts`, wire the policy check, rerun the full Step 2 gate, then close Step 2 only if green.
+
+## 8. Real-time translation discovery evidence
+### Google / OpenRouter
+Official Google docs were reviewed for Gemini 3.5 Live Translate, pricing, Live API and ephemeral tokens. Fresh OpenRouter public search did not return the dedicated Live Translate model.
+
+### GitHub
+Fresh repository search reviewed `gordonxc/gemini-osd-subtitles` and `andyko208/sermon-realtime-translator`. They are useful references but are not adopted as dependencies because Korea Concierge needs its own entitlement, privacy, abuse-control and metering architecture.
 
 ### Hugging Face
-The installed Hugging Face search action returned a tool-unavailable error. Fresh public fallback review included `dimsavva/nextjs16` and `iamdyeus/ui-instruct-4k`. These generic docs/training datasets cannot prove file-system route ownership or redirect behavior.
+Installed Hugging Face model search was attempted twice and returned tool-unavailable errors. No HF model was adopted. Re-run the gate at Step 5B implementation rather than pretending the search succeeded.
 
-**Decision:** no model/dataset/Space adoption. This is deterministic source-graph + framework-contract work.
+Decision details were recorded both in `OPEN_SOURCE_DISCOVERY.md` and `LIVE_TRANSLATION.md`.
 
-## 8. Executable verification
-Final PR #6 workflow run `33016109548` — **SUCCESS** on head `afe90b8f3e9e91884b32a178192489796adc1158` before squash merge.
+## 9. Security / privacy / token / margin impact of the planning change
+This planning slice adds **no runtime API call, dependency, microphone capture, credential or customer-data path today**. It changes future architecture/economics only.
 
-Verified:
-1. dependency install succeeded;
-2. all P0 localization contracts succeeded;
-3. Next.js 16.3.3 production build and TypeScript succeeded;
-4. generated P0 document-language checks succeeded;
-5. built production server still returned HTTP 308 for all six configured old URLs;
-6. canonical destinations returned 200 and query parameters remained preserved.
+Future Gemini Live path requirements:
+- long-lived key server-only;
+- short-lived constrained token for client WebSocket;
+- microphone consent and direct-Google transfer disclosure;
+- server-authoritative entitlement/metering/rate limits;
+- no raw audio persistence by default;
+- no transcript/audio in cost logs;
+- quality benchmark for Korean↔P0 before launch.
 
-Existing workflow security controls remain SHA-pinned official checkout/setup-node, `contents: read`, no repository secrets, no persisted checkout credentials, Node 22, Next telemetry disabled, 15-minute timeout, path scoping and concurrency cancellation.
+Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at today's Google rate. The allowance is deliberately bounded to keep the $24.99 Ultra planning margin close to the existing protection target. Actual p50/p95 cost/usage must decide production allowance.
 
-This is build/CI evidence, not production deployment or live-domain proof.
-
-## 9. Security / privacy / token / margin impact
-- application AI/model calls added: **0**;
-- CI AI/model calls added: **0**;
-- runtime dependencies added: **0**;
-- new external customer-data transfer: **0**;
-- browser-language/IP/nationality/market inference added: **0**;
-- secrets/payment/wallet behavior changed: **0**;
-- ML/dynamic pricing: **0**;
-- incremental supplier inference cost: **0**.
-
-Removing the duplicate legacy Quick Help/provider reduces unreachable client-side code and maintenance surface. Public URL behavior remains the deterministic redirect map.
-
-## 10. Known remaining technical risk
-No npm lockfile is committed. Runtime package versions are explicitly pinned, but full transitive dependency resolution is not reproducible. Do not fabricate a lockfile manually. Step 2C-7 should generate/review one only from a trusted executable environment, then move CI to `npm ci --ignore-scripts` if the evidence is sound.
-
-## 11. Exact next action — Step 2C-7 only
-1. Inspect fresh main and Step 2C-6 merge/CI state.
-2. Re-search GitHub + Hugging Face for npm/supply-chain alternatives.
+## 10. Exact next action — Step 2C-7 only
+1. Inspect fresh main, recent commits and PR #7 state.
+2. Re-search GitHub + Hugging Face for npm/supply-chain alternatives if the slice is resumed.
 3. Generate a real npm lockfile only from a trusted executable environment and review integrity/resolved graph.
 4. Review whether dev dependency ranges should be narrowed while preserving known-good Next/React/next-intl versions.
 5. Switch CI to deterministic `npm ci --ignore-scripts` only after a reviewed lockfile exists.
@@ -114,16 +134,28 @@ No npm lockfile is committed. Runtime package versions are explicitly pinned, bu
 7. If green, close Step 2 and only then begin Step 3 Saju deterministic core.
 8. Before Step 3 user-facing UI design, re-check Stitch MCP availability and use it first when available.
 
+## 11. Future order after Step 2
+- Step 3: deterministic Saju cultural core + beginner explanations.
+- Step 4: auth, immutable wallet, entitlements/family sharing/rate limits.
+- Step 5: international payment foundation.
+- **Step 5B: Gemini Live Translate Ultra/Family benefit.**
+- Step 6: Personal Color hardening/premium boundary.
+- Step 7: Hanbok recommendation v1.
+- Step 8: verified discovery including Vegan/Halal/allergy-aware food filters.
+- Step 9: itinerary/premium concierge.
+- Step 10: analytics/market adaptation including live-translation minute/cost/latency metrics without conversation contents.
+
 ## 12. Deferred / do not accidentally start
 - bulk Hanbok visual asset generation/collection;
-- subscription or ML-personalized pricing;
-- runtime translation model;
+- recurring subscription or ML-personalized pricing without evidence;
+- runtime translation model for static site localization;
 - RAG/embeddings/LLM for current Quick Help;
 - Saju narrative AI before deterministic calculation/privacy boundary;
 - checkout before authoritative wallet/payment callback foundations;
+- public Gemini microphone/session path before auth/entitlement/rate limiting;
 - browser-language/IP/nationality inference;
 - guessed CSP origins;
 - production-deployment claims without evidence.
 
 ## 13. User action currently required
-**None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal copy review remain deferred to their corresponding gates.
+**None.** Merchant credentials, production DNS/hosting, OpenRouter/Google production API credentials, analytics/search verification and legal copy review remain deferred to their corresponding gates.
