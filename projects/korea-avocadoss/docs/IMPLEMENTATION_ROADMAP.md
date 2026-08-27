@@ -70,11 +70,31 @@ Exact / approximate / unknown birth time; never fabricate missing hour; timezone
 
 **Design rule:** when Step 3 or later work creates/revises user-facing UI, use Stitch MCP first for design exploration when the connector is available, then implement the selected design in the existing Next.js architecture. Never claim Stitch was used if no Stitch MCP endpoint is actually available.
 
+**Beginner-explanation rule:** assume an international visitor may not know what Saju, Korean zodiac, personal color, Hanbok conventions or other Korea-specific services mean. Every major service must provide a short localized “What is this?” explanation, what the user provides, what they receive, limitations/privacy and an example before asking for sensitive or paid input.
+
 ## Step 4 — Auth + authoritative wallet
-Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits, audit telemetry.
+Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits, audit telemetry. Add server-owned entitlement support for Ultra/family benefits and metered allowances; exact family member/device limits are decided here with abuse-control evidence rather than guessed earlier.
 
 ## Step 5 — International payment foundation
 Provider abstraction, foreign cards + PayPal target, server-authoritative pricing, verified callbacks, receipts/refunds; CSP allowlist finalized only after real provider origins exist.
+
+### Step 5B — Ultra / Family real-time voice translation
+Implement the approved quality-first translation benefit only after Step 4/5 entitlement and payment foundations exist.
+
+Approved direction:
+- default model/provider: direct Google Gemini API `gemini-3.5-live-translate-preview`;
+- OpenRouter remains default for ordinary text/vision but the dedicated Live Translate model was not confirmed there at decision time;
+- initial Ultra fair-use hypothesis: **30 included minutes per Ultra Trip Pass**, then **8 credits/min** at a clearly displayed fixed unit rate;
+- backend verifies entitlement/rate limit/remaining allowance before issuing a constrained short-lived Gemini ephemeral token;
+- browser/mobile client connects directly to Gemini Live API over WebSocket to minimize latency; long-lived Google API keys remain server-only;
+- no raw microphone audio/transcript in general logs; no default audio persistence; transcript saving requires separate explicit action;
+- hard session/day ceilings and server-authoritative metering prevent runaway supplier cost;
+- explicit source/target language choice overrides any future optional detection;
+- benchmark Korean↔P0 languages in realistic noisy mobile conditions before launch;
+- use Stitch MCP first for the user-facing translator screen when available;
+- full policy: `docs/LIVE_TRANSLATION.md`.
+
+Do not advertise uncapped “unlimited” usage until measured economics support it. Do not reduce translation quality merely to preserve margin; adjust allowance/unit economics transparently instead.
 
 ## Step 6 — Personal-color v1 hardening/premium boundary
 Browser/local first, representative validation, manual correction, no sensitive identity inference; remote vision only if measured value justifies consent/ZDR/EXIF/privacy and hard supplier-cost ceilings.
@@ -85,14 +105,16 @@ Deterministic ranker first; color/mood/weather/comfort; structured reasons; no b
 ## Step 8 — Gyeongbokgung area discovery
 Verified place model, filters, walking/route ranking, time-sensitive facts separated from editorial copy, dietary/accessibility/language claims only when verified.
 
+Food/restaurant discovery must include explicit user-selected dietary filters such as Vegan, Vegetarian, Halal-certified, Muslim-friendly, pork-free, alcohol-free, gluten-free, seafood-free and relevant allergy needs. Never infer religion/diet from locale/name. Keep `Halal-certified`, `Muslim-friendly`, `pork-free` and `alcohol-free` distinct; do not label an unverified restaurant as halal. Store evidence/source and verification date for sensitive dietary claims and disclose cross-contamination/stock/sauce/cooking-alcohol uncertainty where relevant.
+
 ## Step 9 — Itinerary + premium concierge
 Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings, source-fact validation.
 
 ## Step 10 — Analytics, market adaptation and expansion
-Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, market experiments, P1/P2 expansion from measured demand.
+Locale/topic conversion, margin dashboards, zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, market experiments, P1/P2 expansion from measured demand. Include real-time translation p50/p95 minutes per Ultra buyer/family, supplier cost/minute, reconnect rate, latency, allowance-exhaustion rate and satisfaction without storing conversation bodies.
 
 ## Every-step regression checklist
 Latest GitHub conflict/state check; handoff read/update; navigation; mobile/desktop; accessibility; P0 parity; document language; locale overflow; privacy; security; token/API cost; credit margin; SEO/AEO/GEO; indexability; redirects/404 behavior; performance; failure/refund paths; analytics; dependency/license/supply-chain risk; fresh GitHub/Hugging Face alternatives; distinguish static review from executable evidence.
 
 ## Current user action required
-**None.** Merchant credentials, production DNS/hosting, OpenRouter production key, analytics/search verification and legal review remain deferred to their gates.
+**None.** Merchant credentials, production DNS/hosting, OpenRouter/Google production API credentials, analytics/search verification and legal review remain deferred to their gates.
