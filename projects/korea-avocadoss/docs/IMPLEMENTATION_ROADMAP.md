@@ -1,6 +1,6 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
-**Date:** 2026-08-27  
+**Date:** 2026-08-28  
 **Rule:** implement one reviewable slice at a time. Before every material change inspect latest `main`, recent commits, project tree, this roadmap and `PROJECT_HANDOFF.md`; assume another AI/developer may have changed the repository. Update `PROJECT_HANDOFF.md` in the same run.
 
 ## Step 0 — Product baselines ✅
@@ -17,34 +17,34 @@ Exact `next-intl@4.13.4`; P0 `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`; fai
 ### Step 2B — localized app migration ✅
 Native P0 Home/Culture/Gyeongbokgung, locale-preserving navigation, full Quick Help localization, localized metadata and text-expansion safeguards.
 
-### Step 2C — locale parity, executable verification and cutover
+### Step 2C — locale parity, executable verification and cutover ✅
 
 #### Step 2C-1A — Personal Color native P0 ✅
-Native scanner/content/metadata; browser-local deterministic preview; no image upload/AI/provider cost; message contracts and legacy-route compatibility. This is now explicitly the **free/private preview layer**, not the final product ceiling; the premium product intent is photo-based explainable AI/vision analysis at Step 6.
+Native scanner/content/metadata; browser-local deterministic preview; no image upload/AI/provider cost; message contracts and legacy-route compatibility. This is the **free/private preview layer**, not the final product ceiling; premium intent is photo-based explainable AI/vision analysis at Step 6.
 
 #### Step 2C-1B — Hanbok native P0 ✅
-Native localized route/metadata; free user-choice deterministic matcher; modular P0 messages; no photo/model/provider. This remains the free fallback; Step 7 becomes photo-aware, explainable complete-look recommendation. Bulk visual asset work remains separately gated.
+Native localized route/metadata; free user-choice deterministic matcher; modular P0 messages; no photo/model/provider. This remains the free fallback; Step 7 becomes photo-aware, explainable complete-look recommendation.
 
 #### Step 2C-1C — Credits native P0 ✅
 Native P0 Credits route/metadata; authoritative numeric pricing only in `src/lib/credits/economics.ts`; fixed credits visible before paid actions; no fake checkout, subscription or ML personalized pricing.
 
 #### Step 2C-2 — executable verification ✅
-Minimal SHA-pinned, least-privilege GitHub Actions build gate established. It found and fixed production P0 typing and legacy Quick Help prerender regressions. Green evidence includes all P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and generated pages.
+Minimal SHA-pinned, least-privilege GitHub Actions build gate established. Green evidence includes P0 i18n contracts, TypeScript, Next.js 16.3.3 production compilation and generated pages.
 
 #### Step 2C-3 — P0 SEO locale cutover ✅
 Centralized origin/public route/hreflang helpers; self-canonicals; reciprocal `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th` + `x-default`; 36 canonical localized sitemap URLs; truthful freshness; protected future private/result paths.
 
 #### Step 2C-4 — locale-correct document language ✅
-P0 root documents emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generated HTML is checked after production build. Multiple root layouts are used without browser-language or nationality inference.
+P0 root documents emit `en`, `zh-Hans`, `ja`, `zh-Hant`, `vi`, `th`; generated HTML is checked after production build.
 
 #### Step 2C-5 — deterministic legacy duplicate retirement ✅
-Six known unprefixed public duplicates permanently redirect to their English canonical equivalents via explicit static map; production-server CI verifies HTTP 308, exact destination 200 and query preservation.
+Six known unprefixed public duplicates permanently redirect to their English canonical equivalents via explicit static map; CI verifies HTTP 308, exact destination 200 and query preservation.
 
 #### Step 2C-6 — remove shadowed legacy implementation safely ✅
-Shadowed legacy feature pages/UI were removed while retaining the minimal structural legacy root fallback; full i18n/build/document-language/redirect verification stayed green and no new AI/provider/customer-data behavior was introduced.
+Shadowed legacy feature pages/UI were removed while retaining minimal structural fallback; full i18n/build/document-language/redirect verification stayed green.
 
 #### Step 2C-7 — supply-chain reproducibility + Step 2 gate closure ✅
-Real npm v3 lockfile committed; deterministic package/lock parity, HTTPS npm registry origins and sha512 integrity enforced; frozen `npm ci --ignore-scripts --no-audit --no-fund`; final CI returned to least-privilege read-only permissions. Full P0 localization/build/document-language/redirect gate passed before merge.
+Real npm v3 lockfile committed; deterministic package/lock parity, HTTPS npm registry origins and sha512 integrity enforced; frozen `npm ci --ignore-scripts --no-audit --no-fund`; final CI returned to least-privilege read-only permissions.
 
 **Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; shadowed legacy UI is retired; navigation does not regress; executable `check:i18n` + production build remains green.
 
@@ -63,34 +63,48 @@ Do **not** reveal or fabricate model chain-of-thought. Request and expose observ
 
 This applies to Personal Color, Hanbok, Saju/Four Pillars, Korean Zodiac, Western Astrology, Daily Fortune, Tarot, food/place discovery and itinerary recommendations.
 
-## Step 3 — K-Culture deterministic core
-Step 3 expands from Saju alone into the deterministic foundation for a coherent K-Culture Lab, without skipping the original Saju gates.
+## Step 3 — K-Culture deterministic core — IN PROGRESS
+Step 3 expands from Saju alone into the deterministic foundation for a coherent K-Culture Lab, without skipping Saju correctness gates.
 
-### Step 3A — Saju calculation/input contracts — NEXT
+### Step 3A — Saju calculation/input contracts — IN PROGRESS
+
+Completed and production-verified:
 - exact / approximate / unknown birth time are first-class input states;
 - never fabricate or AI-guess a missing hour;
-- timezone/city only when required for correct conversion;
-- deterministic calendar/pillar computation and privacy-safe fixtures/tests;
-- unknown time returns a reduced-scope three-pillar result and later a lower price;
-- separate calculated chart facts from traditional interpretation;
-- raw birth inputs never go to narrative AI when a minimized derived chart schema suffices;
-- localized beginner explanation before sensitive input.
+- exact/approximate local clock requires IANA timezone; true-solar additionally requires longitude;
+- raw birth inputs are stripped from the narrative payload in favor of a whitelist-only derived schema;
+- explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policy contracts;
+- deterministic boundary fixture harness is part of `npm run check:saju` and therefore the production build gate;
+- KASI official 2024 Ipchun boundary is stored at **2024-02-04 17:27 KST with minute precision**;
+- independent evidence-bounded Year Pillar samples are production-shipped: **17:26 KST → 癸卯**, **17:28 KST → 甲辰**;
+- **17:27:00–17:27:59 KST remains an explicit source-resolution uncertainty window** rather than a fabricated exact second;
+- candidate `manseryeok` remains uninstalled until it can be tested against trusted external fixtures.
+
+Remaining Step 3A gates, in order:
+1. direct-KASI monthly solar-term boundary + independent implementation cross-check;
+2. 23:00/00:00/01:00 outputs under each supported day-boundary policy, clearly labeled as convention choices;
+3. true-solar longitude/equation-of-time handling around a branch-hour crossing;
+4. historical IANA timezone/DST fixture for foreign visitors;
+5. semantic lunar leap-month validity against trusted calendar data;
+6. exact pinned calculator candidate evaluation against the trusted fixture suite;
+7. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
+8. deterministic full/reduced-scope chart output with unknown time returning reduced scope instead of a guessed hour.
 
 ### Step 3B — Explainable Saju interpretation contract
-- show the calculated pillars/elements first;
+- show calculated pillars/elements first;
 - plain-language explanation of structural themes;
 - label tradition/interpretation separately from calculation;
 - alternate interpretations where conventions/schools can differ;
 - explicitly explain what rough/unknown birth time changes;
 - optional color/Hanbok connections are cultural storytelling, not objective prescriptions;
-- bounded generative narrative may be added only after deterministic chart correctness is executable-tested.
+- bounded generative narrative only after deterministic chart correctness is executable-tested.
 
 ### Step 3C — Korean Zodiac + Western Astrology foundations
 - Korean zodiac sign/animal from deterministic rules plus cultural context;
 - Western sun sign deterministic first;
 - moon/ascendant/full chart only after correct astronomical/timezone implementation exists;
 - no fake ascendant or chart from missing birth time;
-- show “calculated vs conventional interpretation vs uncertainty” distinctly.
+- show calculated vs conventional interpretation vs uncertainty distinctly.
 
 ### Step 3D — Tarot foundation
 - explicit entertainment/reflective framing;
@@ -99,19 +113,19 @@ Step 3 expands from Saju alone into the deterministic foundation for a coherent 
 - AI must not secretly choose cards to fit a preferred answer;
 - show card identity, traditional keywords/symbolism, primary interpretation and a second plausible reading;
 - finish with a reflection/action prompt rather than deterministic prophecy;
-- high-stakes medical/legal/financial predictions are not provided.
+- no high-stakes medical/legal/financial predictions.
 
 ### Step 3E — Daily Fortune foundation
 - no generic random prose masquerading as calculation;
-- optional deterministic profile seed (Saju/zodiac/astrology selection), date and timezone;
-- rule-based daily theme fixed before any generative wording;
+- optional deterministic profile seed, date and timezone;
+- rule-based daily theme fixed before generative wording;
 - visible “Today’s lens” explains which inputs/themes were used;
 - sections may include overall mood, relationships/social, travel/activity, reflection prompt and color/theme of the day;
 - no high-stakes certainty claims.
 
-**Design rule:** use Stitch MCP first for substantial user-facing redesign when actually available, then implement in the existing Next.js architecture. Stitch was rechecked on 2026-08-27 and was not available; never claim it was used when unavailable.
+**Design rule:** use Stitch MCP first for substantial user-facing redesign when actually available, then implement in the existing Next.js architecture. Never claim Stitch use when unavailable.
 
-**Beginner-explanation rule:** assume an international visitor may not know Saju, zodiac, astrology, tarot, personal color or Hanbok conventions. Every major service must provide a localized “What is this?”, required input, expected output, limitations/privacy and simple example before sensitive or paid input.
+**Beginner-explanation rule:** assume an international visitor may not know Saju, zodiac, astrology, tarot, personal color or Hanbok conventions. Every major service must provide localized “What is this?”, required input, expected output, limitations/privacy and a simple example before sensitive or paid input.
 
 ## Step 4 — Auth + authoritative wallet
 Guest browsing, immutable ledger, atomic reserve/capture/release/refund, idempotency, authorization, rate limits and audit telemetry. Add server-owned entitlement support for Ultra/family benefits and metered allowances. Exact family member/device limits are decided here from abuse-control evidence.
@@ -173,7 +187,7 @@ Food/restaurant discovery must include explicit user-selected Vegan, Vegetarian,
 ## Step 9 — Itinerary + premium concierge
 Deterministic filtering, compact prompts, partial replans, hard token/cost ceilings and source-fact validation.
 
-Every stop exposes at least one constraint/reason (route efficiency, interest fit, rental return time, rest balance, dietary/accessibility fit). “Replace this stop” should support reason-specific controls such as closer, quieter, cheaper, more photogenic and better for kids instead of regenerating the entire plan.
+Every stop exposes at least one constraint/reason. “Replace this stop” should support reason-specific controls such as closer, quieter, cheaper, more photogenic and better for kids instead of regenerating the entire plan.
 
 ## Step 10 — Analytics, market adaptation and expansion
 Track conversion, satisfaction and margin by locale/topic without sensitive content. Include zero-AI resolution, p50/p95 AI cost/tokens, retry/escalation, Personal Color rescan/manual-correction/disagreement rate, Hanbok recommendation saves, K-Culture completion/satisfaction, food evidence freshness, itinerary replacement reasons, and live-translation minutes/cost/latency/reconnects.
