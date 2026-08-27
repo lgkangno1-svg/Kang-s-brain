@@ -6,37 +6,46 @@ Revalidate Step 3A input/privacy contracts and deterministic calculation candida
 
 ## Sources checked
 
+### Korea Astronomy and Space Science Institute (KASI) calendar data
+
+- KASI's official 2024 calendar data lists **입춘 (Ipchun) at 2024-02-04 17:27 KST**, minute precision.
+- Canonical source: `https://astro.kasi.re.kr/life/post/calendardata` (2024 월력요항 / 24절기 table).
+- This converts to `2024-02-04T08:27:00Z` and is safe to store as an **official astronomical boundary instant**.
+- This source does **not by itself define a Saju year-pillar output**. Korea Concierge therefore records the instant but deliberately leaves `expectedPillars` absent until a genuinely independent implementation/policy cross-check is completed.
+- **Decision: ADOPT as astronomical evidence, not as full calculator truth.** This is the first calculation-boundary fixture promoted beyond `research-pending` without weakening the anti-self-oracle gate.
+
 ### `yhj1024/manseryeok` / npm `manseryeok` 2.0.0
 
 - Public GitHub repository; MIT license.
 - TypeScript declarations included; npm metadata reports zero runtime dependencies.
 - Current README claims KASI-derived lunar/solar-term data, year pillar at the Ipchun boundary, month pillar at solar-term boundaries, true-solar-time correction, IANA historical timezone/DST handling, and multiple day-boundary conventions.
-- The current 2.0.0 changelog explicitly describes breaking correctness fixes around the Ipchun boundary and more precise solar-term handling; that is useful evidence that boundary behavior is exactly where regression fixtures are needed.
-- Useful fit for Korea Concierge because the project is already TypeScript and requires Korean convention support.
-- **Decision: ADAPT / verify before dependency adoption.** Do not add the package yet. First build trusted fixtures around solar-term boundaries, lunar leap months, 23:00–01:00 day-boundary variants, historical timezone transitions, and true-solar correction. Verify outputs against primary/independent references. A README/changelog claim is not enough to define our expected values.
+- The current 2.0.0 changelog explicitly describes breaking correctness fixes around the Ipchun boundary and gives the same 2024 `17:27 KST` boundary, including 17:26→계묘 and 17:28→갑진 examples.
+- Because `manseryeok` is still the dependency candidate under evaluation, its own changelog cannot serve as the independent oracle for expected output fixtures.
+- **Decision: ADAPT / verify before dependency adoption.** Do not add the package yet.
 
 ### `6tail/lunar-javascript`
 
-- MIT JavaScript project, currently independently maintained and still suitable as a secondary implementation cross-check.
-- Current package metadata shows version 1.7.7 and no runtime dependency requirement in the published package metadata inspected this run.
-- **Decision: REFERENCE ONLY.** It is useful as an independent implementation comparison but should not define Korean-specific conventions by itself.
+- MIT JavaScript project and suitable as a secondary implementation cross-check.
+- It remains useful for astronomical/calendar comparison but is not Korean-specific authority for policy choices such as day-boundary conventions.
+- Fresh public search did not surface an attributable standalone 2024 Ipchun output from this implementation that could be accepted as an independent expected-pillar oracle in this run.
+- **Decision: REFERENCE ONLY.** Do not promote expected Saju pillars from it yet.
 
-### Public Saju calculator UX examples
+### Other public implementations / calculator examples
 
-- A currently indexed English-language Saju calculator exposes birthplace/longitude and selectable day-boundary conventions, which supports the need to explain convention choices.
-- The same example substitutes noon when birth time is unknown.
-- **Decision: REJECT the unknown-time behavior.** Korea Concierge must never fabricate an hour pillar. Unknown time remains an explicit valid state with reduced/ambiguous scope.
+- Fresh discovery found additional Korean-style manseryeok projects and public calculators. They reinforce that Ipchun/solar-term boundaries are common implementation concerns, but provenance and convention quality vary.
+- A public calculator table independently displays 2024 Ipchun as 02-04 17:27 KST, citing astronomical almanac material. This is supportive evidence but is still secondary to the direct KASI source.
+- **Decision: SUPPORTING ONLY.** Do not use anonymous calculator output as the authoritative expected pillar.
 
 ### Threads/community search
 
-- A fresh public-web search for Threads discussions around 만세력/자시/진태양시 produced no sufficiently attributable evidence worth adopting in this slice.
-- **Decision: NO ADOPTION.** Absence of useful indexed evidence is recorded rather than pretending a community search succeeded.
+- Fresh public-web searches for indexed Threads discussions around 만세력/입춘/절기 returned no reliable attributable evidence worth adopting.
+- **Decision: NO ADOPTION.**
 
 ### Hugging Face
 
-- A fresh Hugging Face dataset search for Korean lunar calendar / Saju / Four Pillars material was attempted through the installed connector.
-- The server returned `dataset_search is disabled by server configuration`.
-- **Decision: UNAVAILABLE THIS RUN.** No model or dataset is adopted or cited from Hugging Face, and the failure is not treated as evidence that no suitable dataset exists.
+- A fresh dataset search for Korean calendar/Saju/Four Pillars data was attempted through the installed Hugging Face connector.
+- The server again returned `dataset_search is disabled by server configuration`.
+- **Decision: UNAVAILABLE THIS RUN.** No HF dataset/model is claimed or adopted.
 
 ## Contract decisions retained
 
@@ -51,12 +60,17 @@ Revalidate Step 3A input/privacy contracts and deterministic calculation candida
 
 ## Fixture-harness decision
 
-The repository now separates two fixture classes:
+The repository separates two fixture classes:
 
 - **Executable contract fixtures**: date validation, exact/approximate/unknown time shape, timezone/longitude requirements, 23:00/00:00/01:00 policy input shape, historical IANA-zone acceptance, and lunar leap-month input shape.
 - **Calculation-boundary fixtures**: Ipchun, monthly solar-term transition, day-boundary policy output, true-solar branch-hour crossing, and historical timezone/DST output.
 
-Calculation-boundary fixtures remain `research-pending`. The checker intentionally rejects invented `expectedPillars`, `expectedInstant`, or `verified` fields until the harness is deliberately upgraded with exact expected outputs and at least two evidence classes. This prevents a future dependency from becoming its own oracle.
+The harness now supports an intermediate evidence state: `official-instant-verified`. It may store a primary-source astronomical instant plus provenance and resolution, but it still forbids `expectedPillars` and a generic `verified` claim. This allows evidence to accumulate without pretending the candidate calculation library has already been independently validated.
+
+Current promoted evidence:
+
+- `ipchun-year-pillar-boundary`: KASI official 2024 Ipchun instant `2024-02-04 17:27 KST` / `2024-02-04T08:27:00Z`, one-minute resolution.
+- Expected year-pillar outputs before/after the instant remain intentionally absent pending independent implementation/policy cross-check.
 
 Important limitation: `lunar-leap-month-shape-only` confirms only that the input contract can represent a leap month. It does **not** claim the requested leap month exists in a particular year. Semantic lunar validity belongs to the future deterministic calendar engine and trusted calendar data.
 
@@ -69,13 +83,11 @@ Important limitation: `lunar-leap-month-shape-only` confirms only that the input
 
 ## Next verification slice
 
-Promote calculation-boundary fixtures one class at a time only after trusted expected values exist:
+1. Complete an independent implementation/policy cross-check for the 2024 Ipchun before/after year-pillar output; only then add `expectedPillars`.
+2. Promote a monthly solar-term boundary from direct KASI timing plus independent cross-check.
+3. Verify 23:00/00:00/01:00 under each supported day-boundary policy without treating any school as universal truth.
+4. Verify true-solar longitude/equation-of-time handling around a branch-hour boundary.
+5. Verify historical timezone/DST cases for foreign visitors against IANA evidence.
+6. Verify semantic lunar leap-month validity against trusted calendar data.
 
-1. Ipchun year-pillar boundary;
-2. monthly solar-term boundary;
-3. 23:00/00:00/01:00 under each supported day-boundary policy;
-4. true-solar longitude correction around a branch-hour boundary;
-5. historical timezone/DST cases for foreign visitors;
-6. semantic lunar leap-month validity.
-
-Only then evaluate exact-version `manseryeok` against those fixtures and `6tail/lunar-javascript` as a secondary cross-check.
+Only after trusted calculator outputs exist should an exact pinned `manseryeok` version be evaluated against them, with `6tail/lunar-javascript` as secondary evidence rather than authority.
