@@ -4,8 +4,8 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 2 — internationalized routing / locale parity / supply-chain closure  
-**Last completed slice on main:** Step 2C-6 — shadowed legacy implementation cleanup  
-**Main at planning-branch creation:** `e725bb15285890c54d5a2eb0e8e19d76b87f39d9`  
+**Last completed implementation slice on main:** Step 2C-6 — shadowed legacy implementation cleanup  
+**Latest product-policy merge on main:** `ef49f718f8c3fd04bd6ad7c2d0261b071e1844ce` (PR #8 — Gemini Live translation / Ultra Family policy)  
 **Open implementation PR:** #7 — Step 2C-7 supply-chain reproducibility, still not merged at this handoff update  
 **Exact next implementation slice:** finish Step 2C-7; do not skip directly to later feature code.
 
@@ -84,6 +84,7 @@ For the future live translator screen, preferred UX is a simple mobile conversat
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
 - Step 2C-6 ✅ shadowed legacy UI removed safely.
+- Product-policy PR #8 ✅ Gemini Live / Ultra Family translation direction documented and merged.
 
 ## 7. Current Step 2C-7 state
 PR #7 (`korea-concierge/step-2c7-lockfile`) is open and remains the next implementation gate.
