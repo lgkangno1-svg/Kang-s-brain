@@ -61,8 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           encoded=$(base64 -w0 package-lock.json)
-          payload=$(node -e 'console.log(JSON.stringify({message:"ci: commit reviewed npm lockfile",content:process.env.LOCK_CONTENT,branch:process.env.HEAD_REF}))' \
-            LOCK_CONTENT="$encoded" HEAD_REF="$HEAD_REF")
+          payload=$(LOCK_CONTENT="$encoded" HEAD_REF="$HEAD_REF" node -e 'console.log(JSON.stringify({message:"ci: commit reviewed npm lockfile",content:process.env.LOCK_CONTENT,branch:process.env.HEAD_REF}))')
           curl --fail-with-body --silent --show-error \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
