@@ -37,17 +37,13 @@ Production-verified foundations:
 - deterministic boundary fixture harness is part of `npm run check:saju` and the production build gate;
 - KASI 2024 Ipchun boundary stored at **2024-02-04 17:27 KST, minute precision**;
 - trusted Year Pillar samples: **17:26 KST → 癸卯**, unresolved **17:27 minute**, **17:28 KST → 甲辰**;
+- KASI 2024 Jingzhe boundary stored at **2024-03-05 11:23 KST, minute precision**;
+- trusted Month Pillar samples: **11:22 KST → 丙寅**, unresolved **11:23 minute**, **11:24 KST → 丁卯**;
+- the monthly fixture checker is wired into `npm run check:saju` and shipped in production SHA `a63d58a35b5953b45cb434484d2eb3b144d92598`;
+- exact-head MiniPC CI, exact-SHA deploy and post-deploy 8/8 + 36/36 preflight all passed;
 - no new Saju runtime calculator dependency.
 
-Current isolated slice: `korea/saju-jingzhe-month-boundary`.
-- KASI official **경칩 2024-03-05 11:23 KST**, minute precision;
-- independent `6tail/lunar-javascript` tests support exact Jie-crossing month changes;
-- independent Stellium implementation shows 2024 Month Pillar progression **丙寅 → 丁卯 → 戊辰** across spring solar terms;
-- trusted samples: **11:22 KST → 丙寅**, unresolved **11:23 minute**, **11:24 KST → 丁卯**;
-- new monthly fixture checker is wired into `npm run check:saju`;
-- exact-head MiniPC CI, merge, exact-SHA deploy and post-deploy full preflight remain mandatory before calling the slice shipped.
-
-Remaining Step 3A gates after this release:
+Remaining Step 3A gates:
 1. 23:00/00:00/01:00 outputs under each supported day-boundary policy, clearly labeled as convention choices;
 2. true-solar longitude/equation-of-time handling around a branch-hour crossing;
 3. historical IANA timezone/DST fixture for foreign visitors;
