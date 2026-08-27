@@ -20,6 +20,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  finalize-docs:
+    name: Finalize Step 2 docs
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'korea-concierge/step-2c7-lockfile-v2' &&
+      github.actor == 'lgkangno1-svg'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout trusted PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: true
+
+      - name: Apply deterministic documentation closure
+        working-directory: projects/korea-avocadoss
+        run: node scripts/finalize-step2-docs.mjs
+
+      - name: Commit Step 2 closure docs
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add projects/korea-avocadoss/docs/IMPLEMENTATION_ROADMAP.md \
+                  projects/korea-avocadoss/docs/PROJECT_HANDOFF.md \
+                  projects/korea-avocadoss/docs/OPEN_SOURCE_DISCOVERY.md
+          if git diff --cached --quiet; then
+            echo 'No documentation changes to commit.'
+            exit 0
+          fi
+          git commit -m 'docs: close Korea Concierge Step 2 gate'
+          git push origin HEAD:"$HEAD_REF"
+
   verify:
     name: i18n and production build
     runs-on: ubuntu-latest
