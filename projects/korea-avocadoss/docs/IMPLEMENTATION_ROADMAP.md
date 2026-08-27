@@ -1,7 +1,7 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
 **Date:** 2026-08-28  
-**Rule:** implement one reviewable slice at a time. Before every material change inspect latest `main`, recent commits/open PRs, the project tree, this roadmap, `PROJECT_HANDOFF.md`, private CI state and a fresh live-site preflight. Update `PROJECT_HANDOFF.md` in the same material run.
+**Rule:** implement one reviewable slice at a time. Before every material change inspect latest `main`, recent commits/open PRs, the full project tree, this roadmap, `PROJECT_HANDOFF.md`, private CI state and a fresh live-site preflight. Update `PROJECT_HANDOFF.md` in the same material run.
 
 ## Step 0 — Product baselines ✅
 PRD, architecture, AI routing/cost, credit economics, SEO/AEO/GEO, discovery gate, international markets, security/token efficiency.
@@ -28,29 +28,34 @@ Do not expose or fabricate chain-of-thought. Percentages require a defined/calib
 ## Step 3 — K-Culture deterministic core — IN PROGRESS
 
 ### Step 3A — Saju calculation/input contracts — IN PROGRESS
-Production-verified foundations:
+Production-verified foundations before the current slice:
 - exact / approximate / unknown birth time are first-class states;
 - never fabricate or AI-guess a missing hour;
 - exact/approximate local clock requires IANA timezone; true-solar additionally requires longitude;
 - raw birth inputs are stripped from narrative payloads in favor of whitelist-only derived data;
 - explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policies;
 - deterministic boundary fixture harness is part of `npm run check:saju` and the production build gate;
-- KASI 2024 Ipchun boundary stored at **2024-02-04 17:27 KST, minute precision**;
-- trusted Year Pillar samples: **17:26 KST → 癸卯**, unresolved **17:27 minute**, **17:28 KST → 甲辰**;
-- KASI 2024 Jingzhe boundary stored at **2024-03-05 11:23 KST, minute precision**;
-- trusted Month Pillar samples: **11:22 KST → 丙寅**, unresolved **11:23 minute**, **11:24 KST → 丁卯**;
-- the monthly fixture checker is wired into `npm run check:saju` and shipped in production SHA `a63d58a35b5953b45cb434484d2eb3b144d92598`;
-- exact-head MiniPC CI, exact-SHA deploy and post-deploy 8/8 + 36/36 preflight all passed;
-- no new Saju runtime calculator dependency.
+- trusted 2024 Ipchun Year Pillar boundary samples: 17:26 KST → 癸卯, unresolved 17:27 minute, 17:28 → 甲辰;
+- trusted 2024 Jingzhe Month Pillar boundary samples: 11:22 KST → 丙寅, unresolved 11:23 minute, 11:24 → 丁卯;
+- executable 23:00 / 00:00 / 01:00 semantics for `midnight`, `jasi` and `splitJasi` with explicit convention labeling;
+- no Saju runtime calculator dependency.
 
-Remaining Step 3A gates:
-1. 23:00/00:00/01:00 outputs under each supported day-boundary policy, clearly labeled as convention choices;
-2. true-solar longitude/equation-of-time handling around a branch-hour crossing;
-3. historical IANA timezone/DST fixture for foreign visitors;
-4. semantic lunar leap-month validity against trusted calendar data;
-5. exact pinned calculator candidate evaluation against trusted fixtures;
-6. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
-7. deterministic full/reduced-scope chart output with unknown time returning reduced scope instead of a guessed hour.
+Current review slice — true-solar clock correction:
+- `src/lib/saju/true-solar-time.ts` implements NOAA/GML Equation of Time + longitude/timezone correction with no network or AI dependency;
+- caller supplies the already-resolved effective UTC offset, so DST/history is never guessed inside the math layer;
+- result preserves `dayOffset` when solar correction crosses a civil-date boundary;
+- deterministic fixtures cover Singapore and Seoul branch crossings, Greenwich EoT isolation, and previous-day rollover;
+- research/adopt/adapt/reject reasoning is recorded in `docs/SAJU_TRUE_SOLAR_TIME_RESEARCH_2026-08-28.md`;
+- `check-saju-true-solar-time.mjs` is wired into `npm run check:saju`;
+- release remains pending exact-head MiniPC CI, merge, exact-SHA deploy and post-deploy full preflight.
+
+Remaining Step 3A gates after this slice:
+1. historical IANA timezone/DST fixture for foreign visitors, including ambiguous/nonexistent local times without guessing;
+2. semantic lunar leap-month validity against trusted calendar data;
+3. exact pinned calculator candidate evaluation against trusted fixtures;
+4. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
+5. deterministic full/reduced-scope chart output with unknown time returning reduced scope instead of a guessed hour;
+6. integrate true-solar `dayOffset` with the selected day-boundary policy without collapsing convention differences.
 
 ### Step 3B — Explainable Saju interpretation contract
 Show calculated pillars/elements first; plain-language structural explanation; separate calculation from tradition/interpretation; expose alternative convention where relevant; explain rough/unknown-time consequences; use bounded generative narrative only after deterministic correctness is executable-tested.
@@ -101,8 +106,8 @@ Track conversion, satisfaction and margin by locale/topic without sensitive cont
 8. local origin + consecutive public Cloudflare checks;
 9. full sitemap/P0 crawl before claiming production.
 
-## Regression watch
-Any sampled 1033/530/502 immediately reopens reliability priority. Never weaken tests, attach the public repo directly to the production runner, grant general sudo/Docker to that runner, fabricate Saju hours/astrology placements, overstate source precision, send raw birth/photo/name PII to narrative AI, or let a candidate calculator validate itself.
+## Reliability invariant
+The 2026-08-27 Cloudflare incident stays closed only while local origin is healthy, the 10-minute private stability watch remains clean, deploy probes are consecutive, and live-site preflight never hides an intermittent 1033/530/502 with retries. Any sampled 1033/530/502 immediately reopens reliability priority. Never grant the repository-scoped runner general sudo/Docker access.
 
 ## Current user action required
 **None.** Merchant credentials, payment onboarding, production AI credentials and narrowly privileged MiniPC actions remain deferred until genuinely required.
