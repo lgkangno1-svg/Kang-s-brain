@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "saju-true-solar-time-v1",
+  "algorithmVersion": "noaa-gml-eot-v1",
+  "method": "NOAA/GML fractional-year Equation of Time plus longitude correction: EoT + 4*longitude - effective UTC offset minutes.",
+  "scopeNote": "These fixtures validate deterministic astronomical clock correction and branch-boundary effects. They do not claim that every Saju school requires apparent solar time; civil and true-solar remain explicit convention choices.",
+  "evidence": [
+    {
+      "role": "official-algorithm",
+      "source": "https://gml.noaa.gov/grad/solcalc/solareqns.PDF",
+      "finding": "NOAA/GML publishes the fractional-year Equation of Time approximation and the true-solar time offset formula using Equation of Time, longitude and timezone offset."
+    },
+    {
+      "role": "official-definition",
+      "source": "https://aa.usno.navy.mil/faq/eqtime",
+      "finding": "The U.S. Naval Observatory defines Equation of Time as apparent solar time minus mean solar time and explains the additional longitude-dependent offset from civil time away from a zone meridian."
+    },
+    {
+      "role": "independent-community-cross-check",
+      "source": "https://fortunecloud.co/en/learn/true-solar-time",
+      "finding": "An independent BaZi implementation reports a Singapore 09:10 June-15 example correcting to about 08:05 and crossing from Si to Chen hour, consistent with the fixture magnitude and branch transition."
+    },
+    {
+      "role": "convention-contrast",
+      "source": "https://gwirae.com/en/true-solar-time",
+      "finding": "A Korean Saju implementation explicitly uses longitude correction while deliberately omitting Equation of Time, demonstrating that the product must expose civil/true-solar method choices instead of presenting one school as universal."
+    }
+  ],
+  "cases": [
+    {
+      "id": "singapore-1998-06-15-si-to-chen",
+      "input": {
+        "year": 1998,
+        "month": 6,
+        "day": 15,
+        "hour": 9,
+        "minute": 10,
+        "second": 0,
+        "longitude": 103.8198,
+        "utcOffsetMinutes": 480
+      },
+      "civilHourBranch": "巳",
+      "expect": {
+        "equationOfTimeMinutes": -0.002224361057098839,
+        "longitudeCorrectionMinutes": -64.7208,
+        "totalCorrectionMinutes": -64.7230243610571,
+        "trueSolarMinuteOfDay": 485.2769756389429,
+        "dayOffset": 0,
+        "hourBranch": "辰"
+      }
+    },
+    {
+      "id": "seoul-2024-03-03-wu-to-si",
+      "input": {
+        "year": 2024,
+        "month": 3,
+        "day": 3,
+        "hour": 11,
+        "minute": 30,
+        "second": 0,
+        "longitude": 126.978,
+        "utcOffsetMinutes": 540
+      },
+      "civilHourBranch": "午",
+      "expect": {
+        "equationOfTimeMinutes": -12.376736741871653,
+        "longitudeCorrectionMinutes": -32.08800000000002,
+        "totalCorrectionMinutes": -44.464736741871675,
+        "trueSolarMinuteOfDay": 645.5352632581283,
+        "dayOffset": 0,
+        "hourBranch": "巳"
+      }
+    },
+    {
+      "id": "greenwich-2024-11-03-equation-of-time-only",
+      "input": {
+        "year": 2024,
+        "month": 11,
+        "day": 3,
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "longitude": 0,
+        "utcOffsetMinutes": 0
+      },
+      "civilHourBranch": "午",
+      "expect": {
+        "equationOfTimeMinutes": 16.361776115279703,
+        "longitudeCorrectionMinutes": 0,
+        "totalCorrectionMinutes": 16.361776115279703,
+        "trueSolarMinuteOfDay": 736.3617761152797,
+        "dayOffset": 0,
+        "hourBranch": "午"
+      }
+    },
+    {
+      "id": "seoul-2024-03-03-crosses-previous-civil-day",
+      "input": {
+        "year": 2024,
+        "month": 3,
+        "day": 3,
+        "hour": 0,
+        "minute": 20,
+        "second": 0,
+        "longitude": 126.978,
+        "utcOffsetMinutes": 540
+      },
+      "civilHourBranch": "子",
+      "expect": {
+        "equationOfTimeMinutes": -12.468757065655904,
+        "longitudeCorrectionMinutes": -32.08800000000002,
+        "totalCorrectionMinutes": -44.55675706565593,
+        "trueSolarMinuteOfDay": 1415.443242934344,
+        "dayOffset": -1,
+        "hourBranch": "子"
+      }
+    }
+  ]
+}
