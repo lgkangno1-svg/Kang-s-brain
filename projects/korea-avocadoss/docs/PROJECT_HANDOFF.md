@@ -4,8 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 3 — deterministic/explainable K-Culture core  
-**Current production code SHA:** `6f70d14b93f7e191753acee4d28b3ba8847d3543`  
-**Current public main SHA at this handoff:** `7ea9cf27aa7292d51a1c6930b54c6d1963e1415d`  
+**Current production code SHA:** `e83e34b84cf04a54bcbc08bfaa6b0395cc6ca0f2`  
 **Primary CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci` on isolated MiniPC runner
 
 > Source of truth for future AIs/developers. Before every material patch inspect fresh main, recent commits/open PRs, the full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state, and a fresh live-site preflight. Never infer current state from chat history alone.
@@ -29,10 +28,9 @@ Verified remediation/evidence in private CI:
 - production app: `korea-concierge.service`, `127.0.0.1:3100`;
 - legacy `korea-server.service` removed from active user-systemd configuration by clean reset at `2026-08-27T15:52:42Z`;
 - legacy app archived under a timestamped backup instead of destructively deleted;
-- clean reset: local `/` 308, `/en` 200, stable tunnel PID, 12/12 public probes healthy;
+- clean reset passed local `/` 308, `/en` 200, stable tunnel PID and 12/12 public probes;
 - two subsequent independent 12/12 no-retry stability checks passed with no 1033/530/502;
-- corrected full public preflight passed 36/36 sitemap routes with `failures=0`;
-- later independent closure preflight at `2026-08-27T16:55:07Z` passed 8/8 no-retry stability probes plus all 36 P0 routes with `failures=0`;
+- later closure preflight passed 8/8 no-retry probes and all 36 P0 routes with `failures=0`;
 - unrelated Docker connector `n8n-server-cloudflared-1` is a different tunnel and must never be stopped as a Korea repair step.
 
 Private incident record: `lgkangno1-svg/korea-concierge-ci/INCIDENT_CLOUDFLARE_TUNNEL_2026-08-27.md`.
@@ -59,22 +57,27 @@ May expose actual locally calculated undertone, depth, contrast, analyzer confid
 
 Premium Personal Color/Hanbok remains future consented photo-based explainable AI after privacy/provider/cost gates. Before remote photo use: explicit consent, EXIF stripping, file/pixel limits, transient retention, no raw-photo logging, provider retention/ZDR review, server-only secrets, abuse controls, and no sensitive-trait inference.
 
-## 4. Step 3A — current active slice
+## 4. Step 3A — input/privacy contracts shipped
 
-The old branch `korea-concierge/step-3a-input-contracts` diverged from the later Stitch UI main by three commits each. **Do not merge that old branch directly.**
+The old branch `korea-concierge/step-3a-input-contracts` diverged from the Stitch UI main and must not be merged directly.
 
-Current refreshed branch from latest UI main:
+A refreshed branch was created from the latest UI main and merged as PR #12:
 
-`korea-concierge/step-3a-contracts-refresh`
+- PR: `feat(korea): restore Step 3A Saju input/privacy contracts`
+- exact validated head: `77a0167d9731c5acd06629f0b1f136c1c7c66802`
+- exact-head MiniPC CI: **SUCCESS**
+- squash merge / production code SHA: `e83e34b84cf04a54bcbc08bfaa6b0395cc6ca0f2`
+- exact production deployment: **SUCCESS**
+- post-deploy live preflight: 8/8 no-retry stability probes healthy, sitemap 36 URLs, all 36 P0 routes healthy, `failures=0`
 
-This refresh restores the validated contract layer without regressing the Stitch UI:
+Shipped contract layer:
 
 - `src/lib/saju/input-contracts.ts`;
 - `scripts/check-saju-input-contracts.mjs`;
-- `npm run check:saju` added to the production build gate;
-- `docs/SAJU_RESEARCH_2026-08-28.md` fresh research log.
+- `npm run check:saju` is now part of `npm run build`;
+- `docs/SAJU_RESEARCH_2026-08-28.md` records fresh research decisions.
 
-Contract behavior:
+Behavior:
 
 - Gregorian/lunar birth date shape;
 - explicit `exact` / `approximate` / `unknown` birth-time tagged union;
@@ -84,33 +87,35 @@ Contract behavior:
 - true-solar mode additionally requires longitude;
 - day-boundary policies: `midnight` / `jasi` / `splitJasi`;
 - solar-time policies: `civil` / `true-solar`;
-- raw display place labels are not calculation requirements once timezone/longitude are resolved;
+- place labels are display-only once timezone/longitude are resolved;
 - narrative payload is whitelist-only derived data and strips raw DOB/time/city/timezone/longitude/name/account identifiers;
 - no forced Hanja or name requirement for Four Pillars.
 
 Fresh research 2026-08-28:
 
-- `yhj1024/manseryeok` 2.0.0 remains a promising MIT TypeScript / zero-runtime-dependency deterministic candidate claiming KASI-derived lunar/solar-term data, true-solar correction and multiple day-boundary conventions. **Do not add dependency yet**; require trusted boundary fixtures first.
+- `yhj1024/manseryeok` 2.0.0 remains a promising MIT TypeScript / zero-runtime-dependency deterministic candidate claiming KASI-derived lunar/solar-term data, true-solar correction and multiple day-boundary conventions. **No dependency was added yet**; trusted boundary fixtures are required first.
 - `6tail/lunar-javascript` remains an independent reference/cross-check candidate, not authority for Korean conventions.
-- a public English Saju calculator was found substituting noon for unknown birth time; that behavior is explicitly rejected here.
+- public UX that substitutes noon for unknown birth time is explicitly rejected.
 - fresh indexed Threads search produced no reliable evidence worth adopting.
 - Hugging Face model search failed at tool execution in this run; no HF model/dataset was adopted.
 
-Next Step 3A sub-slice: deterministic fixture harness, then only if fixtures justify it, exact-version library integration.
+## 5. Step 3A next slice — deterministic fixture harness
 
-Required fixture classes:
+Before integrating a calendar/Saju library, build trusted fixtures for:
 
 1. Gregorian invalid/leap-day cases;
 2. lunar leap-month validity;
 3. Ipchun year-pillar boundary;
 4. monthly solar-term boundary;
-5. 23:00/00:00/01:00 under each day-boundary policy;
+5. 23:00/00:00/01:00 under each supported day-boundary policy;
 6. exact vs approximate vs unknown time;
 7. true-solar longitude correction around a branch-hour boundary;
 8. historical timezone/DST cases for foreign visitors;
 9. raw-PII exclusion from narrative payload.
 
-## 5. Other K-Culture roadmap
+Only after independent fixtures/cross-checks agree should an exact-version calculation dependency be added.
+
+## 6. Other K-Culture roadmap
 
 After deterministic Saju foundations:
 
@@ -121,11 +126,11 @@ After deterministic Saju foundations:
 
 Use deterministic mechanics first where applicable. Tarot randomization is independent of LLM interpretation. Astrology must not fabricate placements/ascendant from missing data. Daily fortune is reflective/cultural entertainment, not deterministic prediction or medical/legal/financial/high-impact advice.
 
-## 6. Premium Naming Studio
+## 7. Premium Naming Studio
 
 Target remains a separate premium Korean/Asian naming consultation around USD `$149–150`, not a cheap random-name generator. Use a localized preference questionnaire and return curated Top 3–5 with Hangul, pronunciation/romanization, validated optional Hanja where appropriate, meanings, rationale, Korean naturalness, generation feel, international pronunciation ease, nicknames/pitfalls, and optional traditional Saju/onomastics clearly separated from modern naming quality. Scores require explicit rubric/data. Plan 1–2 refinement rounds.
 
-## 7. Global-first payments
+## 8. Global-first payments
 
 International visitor is the launch payer; Korean domestic checkout is not the first priority. PayPal Checkout remains the leading candidate subject to fresh Korean merchant/policy verification.
 
@@ -138,11 +143,11 @@ Ordinary credit hypotheses:
 
 No production payment exists yet. Before money: auth, server-owned catalog/amounts, immutable/idempotent wallet/service-entitlement ledger, server-side order create/capture, verified signed webhook, replay protection, refunds/reversals, rate limits and audit telemetry. Browser success never grants credits by itself.
 
-## 8. Real-time translation
+## 9. Real-time translation
 
 Quality-first planned provider remains direct Google `gemini-3.5-live-translate-preview` after auth/wallet/payment. Long-lived key server-only, constrained client credential, no raw audio persistence by default, explicit language selection wins. See `docs/LIVE_TRANSLATION.md`.
 
-## 9. Architecture / CI / release flow
+## 10. Architecture / CI / release flow
 
 - Next.js `16.3.3`, exact `next-intl@4.13.4`;
 - 36 canonical P0 public URLs;
@@ -155,6 +160,13 @@ Quality-first planned provider remains direct Google `gemini-3.5-live-translate-
 - public repo must never attach directly to production MiniPC runner;
 - production deploy is exact-SHA through limited root-owned helper with local health/rollback and consecutive public checks.
 
+Private CI was hardened in this run:
+
+- MiniPC verification executes `npm run build`, so project-specific contract gates such as `check:saju` cannot be bypassed by calling `next build` directly;
+- production deploy does the same;
+- sanitized latest CI/deploy results are persisted only in the private control repository for future autonomous verification;
+- no additional sudo/Docker/public-repository privilege was granted.
+
 Mandatory merge/release flow:
 
 1. fresh repo/live/private-CI preflight;
@@ -166,7 +178,7 @@ Mandatory merge/release flow:
 7. verify local + consecutive Cloudflare public route;
 8. run full live P0 crawl before claiming shipped.
 
-## 10. Security / cost posture
+## 11. Security / cost posture
 
 - deterministic/static/cache/rules/browser-local before AI;
 - bounded prompts/candidates/history/retries/provider spend;
@@ -177,19 +189,18 @@ Mandatory merge/release flow:
 - place/food facts show source freshness/verification;
 - dietary filters are explicit user selection only; Halal-certified != Muslim-friendly.
 
-## 11. Current priority order
+## 12. Current priority order
 
-1. Verify and merge refreshed Step 3A input/privacy contracts through exact-SHA MiniPC CI.
-2. Build deterministic Saju boundary fixture harness before adding a calculation library.
-3. Evaluate exact-version `manseryeok` only against trusted fixtures/independent cross-checks.
-4. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
-5. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
-6. Step 4 auth + authoritative wallet.
-7. Step 5 global USD payment foundation.
-8. Then Gemini Live and premium consented photo analysis.
-9. Continue Premium Naming Studio research when it does not block core dependencies.
+1. Build deterministic Saju boundary fixture harness.
+2. Evaluate exact-version `manseryeok` only against trusted fixtures and independent cross-checks.
+3. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
+4. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
+5. Step 4 auth + authoritative wallet.
+6. Step 5 global USD payment foundation.
+7. Then Gemini Live and premium consented photo analysis.
+8. Continue Premium Naming Studio research when it does not block core dependencies.
 
-## 12. Regression watch
+## 13. Regression watch
 
 - any reappearance of 1033/530/502 reopens production reliability priority;
 - do not convert Hanbok preference fit into fake AI confidence;
@@ -200,6 +211,6 @@ Mandatory merge/release flow:
 - do not ship checkout before signed webhook/idempotent ledger/refund foundations;
 - do not claim production from merge alone.
 
-## 13. User action currently required
+## 14. User action currently required
 
 **None.** Continue autonomous development. Ask only for merchant/provider credentials, DNS, or a narrowly scoped MiniPC privileged action when it is genuinely the remaining blocker.
