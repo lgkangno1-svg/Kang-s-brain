@@ -114,9 +114,13 @@
   "calculationBoundaryCases": [
     {
       "id": "ipchun-year-pillar-boundary",
-      "status": "research-pending",
+      "status": "official-instant-verified",
       "requiredEvidence": ["primary-or-official-calendar-time", "independent-implementation-cross-check"],
-      "reason": "Exact boundary instant and expected pillars must be independently verified before promotion."
+      "officialInstant": "2024-02-04T08:27:00Z",
+      "officialLocalTime": "2024-02-04T17:27:00+09:00",
+      "officialSource": "https://astro.kasi.re.kr/life/post/calendardata",
+      "resolutionSeconds": 60,
+      "reason": "KASI officially establishes the 2024 Ipchun instant to minute precision. Expected Saju year-pillar outputs remain intentionally absent until an independent implementation cross-check is completed."
     },
     {
       "id": "monthly-solar-term-boundary",
