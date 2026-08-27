@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Phase:** Step 3 — deterministic/explainable K-Culture core  
-**Current verified production application SHA:** `a63d58a35b5953b45cb434484d2eb3b144d92598`  
+**Current verified production application SHA:** `0a602765d26d3f238b8ac9c32e64aa138506d652`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner
 
 > Before every material patch inspect fresh main/recent commits/open PRs/full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone.
@@ -17,7 +17,7 @@ P0 locales: `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Expli
 ## 2. Production reliability
 The 2026-08-27 intermittent Cloudflare 1033/530/502 incident is **closed and monitored**. Production is `korea-concierge.service` on `127.0.0.1:3100`. Legacy `korea-server.service` was removed from active user-systemd configuration; its app was archived rather than destructively deleted. The Docker connector `n8n-server-cloudflared-1` is unrelated and must not be stopped as a Korea repair step.
 
-Closure evidence includes stable local `/` 308 + `/en` 200, clean-reset 12/12 probes, two later independent 12/12 no-retry runs, and repeated full preflights. Fresh pre-patch preflight at `2026-08-27T21:54:00Z` again passed **8/8 no-retry stability, sitemap 36, 36/36 P0 routes, failures=0**. Any sampled 1033/530/502 immediately reopens reliability priority.
+Closure evidence includes stable local `/` 308 + `/en` 200, clean-reset 12/12 probes, two later independent 12/12 no-retry runs, and repeated full preflights. Pre-patch preflight at `2026-08-27T21:54:00Z` passed **8/8 no-retry stability, sitemap 36, 36/36 P0 routes, failures=0**. Post-deploy preflight at `2026-08-27T22:03:31Z` repeated **8/8 no-retry stability, sitemap 36, 36/36 P0 routes, failures=0**. Any sampled 1033/530/502 immediately reopens reliability priority.
 
 Keep the 10-minute private `Korea Concierge Tunnel Stability Watch`, consecutive deploy probes and no-retry live preflight. Runner remains without general sudo/Docker access.
 
@@ -33,10 +33,10 @@ Production includes exact/approximate/unknown birth-time contracts; unknown time
 KASI official: **2024-02-04 17:27 KST**, minute precision. Independent implementation checks support the transition **癸卯 → 甲辰**. Trusted samples remain outside KASI's unresolved minute: 17:26 → 癸卯; 17:27 minute unresolved; 17:28 → 甲辰.
 
 ### Trusted 2024 Jingzhe Month Pillar boundary
-KASI official: **2024-03-05 11:23 KST**, minute precision. Independent implementation checks support **丙寅 → 丁卯**. Trusted samples: 11:22 → 丙寅; 11:23 minute unresolved; 11:24 → 丁卯. Production SHA `a63d58a35b5953b45cb434484d2eb3b144d92598` passed exact-head CI, exact-SHA deployment and post-deploy 8/8 + 36/36 preflight.
+KASI official: **2024-03-05 11:23 KST**, minute precision. Independent implementation checks support **丙寅 → 丁卯**. Trusted samples: 11:22 → 丙寅; 11:23 minute unresolved; 11:24 → 丁卯.
 
-## 5. Current material slice — 23:00 / 00:00 / 01:00 policy semantics
-Branch `automation/saju-day-boundary-policies-20260828` adds:
+### Shipped 23:00 / 00:00 / 01:00 policy semantics
+Production includes:
 - `src/lib/saju/day-boundary-policy.ts`;
 - `fixtures/saju/day-boundary-policy-fixtures.json`;
 - `scripts/check-saju-day-boundary-policy.mjs` wired into `npm run check:saju`;
@@ -51,33 +51,37 @@ Reference fixture uses independently corroborated adjacent dates 2005-06-15 **�
 
 Evidence posture: 6tail's explicit late-Zi sect semantics are **ADAPT**, Pillarwise adjacent-date/hour atlas and BaziInsight split behavior are independent corroboration, not universal cultural authority. Hugging Face model search was unavailable in this environment; no HF evidence is claimed. No attributable Threads evidence was adopted.
 
-**Release state:** candidate branch only until exact branch-head MiniPC CI passes, then merge exact head, deploy exact merged SHA and run full post-deploy preflight. Do not claim shipped before those gates.
+Release evidence:
+1. fresh pre-patch production preflight passed 8/8 + 36/36;
+2. exact branch head `224cacb59f5a492e02189a5f5bffbaeb7ed6c5c5` passed private MiniPC CI;
+3. PR #18 squash-merged to production code SHA `0a602765d26d3f238b8ac9c32e64aa138506d652`;
+4. exact merged SHA deploy completed with `status=success`;
+5. post-deploy preflight passed 8/8 no-retry stability + sitemap 36 + 36/36 P0 routes + `failures=0`.
 
-## 6. Remaining Step 3A order
-1. Finish CI/merge/deploy for the explicit 23/00/01 policy slice.
-2. True-solar longitude/equation-of-time branch-hour crossing.
-3. Historical IANA timezone/DST fixture for foreign visitors.
-4. Semantic lunar leap-month validity against trusted calendar data.
-5. Evaluate exact pinned `manseryeok` only against trusted fixtures.
-6. Beginner foreign-user exact/rough/unknown-time UX with minimal location input.
-7. Deterministic full/reduced-scope chart output; unknown time returns reduced scope rather than a guessed hour.
+## 5. Remaining Step 3A order
+1. True-solar longitude/equation-of-time branch-hour crossing.
+2. Historical IANA timezone/DST fixture for foreign visitors.
+3. Semantic lunar leap-month validity against trusted calendar data.
+4. Evaluate exact pinned `manseryeok` only against trusted fixtures.
+5. Beginner foreign-user exact/rough/unknown-time UX with minimal location input.
+6. Deterministic full/reduced-scope chart output; unknown time returns reduced scope rather than a guessed hour.
 
-## 7. Later K-Culture roadmap
+## 6. Later K-Culture roadmap
 After deterministic Saju foundations: Korean Zodiac → Western Zodiac/Astrology → Tarot → Daily Fortune. Deterministic mechanics first. Tarot randomization is independent of LLM interpretation. Astrology may not fabricate placements/ascendant from missing data. Daily fortune is reflective/cultural entertainment, not deterministic prediction or medical/legal/financial/high-impact advice.
 
-## 8. Premium Naming Studio
+## 7. Premium Naming Studio
 Separate premium Korean/Asian naming consultation target remains about USD `$149–150`, with curated Top 3–5, Hangul/pronunciation/romanization, validated optional Hanja, meanings, rationale, Korean naturalness, generation feel, international pronunciation, pitfalls and clearly separated traditional Saju/onomastics. Scores require explicit rubrics/data.
 
-## 9. Global-first payments
+## 8. Global-first payments
 International visitor is the launch payer. PayPal Checkout remains leading candidate subject to fresh Korean merchant/policy verification. No production payment exists yet. Before money: auth, server-owned catalog/amounts, immutable/idempotent wallet/service-entitlement ledger, server-side create/capture, verified signed webhook, replay protection, refunds/reversals, rate limits and audit telemetry. Browser success never grants credits.
 
-## 10. Architecture / release flow
+## 9. Architecture / release flow
 Next.js `16.3.3`, `next-intl@4.13.4`, 36 canonical P0 URLs, reciprocal hreflang/x-default, deterministic 308 legacy redirects, frozen dependency installs. Public repo never attaches directly to production runner.
 
 Mandatory release flow: fresh repo/live/private-CI preflight → isolated branch → private `target-ref.txt` exact 40-char branch head → MiniPC CI green → merge → private `deploy-ref.txt` exact merged SHA → local + consecutive public checks → full sitemap/P0 crawl.
 
-## 11. Regression watch
+## 10. Regression watch
 Never weaken reliability gates, fabricate Saju hours/astrology placements, turn a convention choice into a confidence percentage, overstate source precision, send raw birth/photo/name PII to narrative AI, let a candidate library validate itself, infer lunar leap-month validity from shape alone, invent Hanja for foreign names, or ship checkout before signed-webhook/idempotent-ledger/refund foundations.
 
-## 12. User action currently required
+## 11. User action currently required
 **None.** Continue autonomously. Ask only for merchant/provider credentials, DNS, or a narrowly scoped privileged MiniPC action when it is genuinely the final blocker.
