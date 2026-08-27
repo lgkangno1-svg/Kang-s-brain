@@ -2,6 +2,57 @@
 
 This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
+## 2026-08-27 — Ultra / Family real-time voice translation provider decision
+
+### Google / OpenRouter review
+Google's current official documentation lists `gemini-3.5-live-translate-preview` as a low-latency audio-to-audio model optimized for real-time spoken translation, with 70+ language support, translated audio and transcript output. The current paid-tier pricing snapshot is approximately `$0.0053/min` audio input + `$0.0315/min` audio output, or about `$0.0368/min` combined effective speech-to-speech cost. Google's paid tier is documented as not using submitted data to improve Google products.
+
+Fresh OpenRouter public model search did not surface the dedicated `gemini-3.5-live-translate-preview` endpoint. Ordinary Gemini/chat/audio models must not be treated as equivalent to the dedicated Live Translate API merely because the vendor/name is similar.
+
+Google's Live API ephemeral-token documentation was also reviewed. For browser/mobile direct WebSocket access, a backend can authenticate the user, request a constrained short-lived token, return it to the client and avoid exposing the long-lived Google API key. This also avoids proxying the real-time audio stream through the application backend and reduces latency.
+
+**Decision:** adopt direct Google Gemini Live Translate as a narrow quality-critical provider exception. OpenRouter remains the default gateway for ordinary Korea Concierge text/vision AI. Implementation waits for auth/wallet/payment entitlements so server-side allowance/rate-limit enforcement exists first.
+
+### GitHub review
+Fresh repository search found small Gemini real-time translator/subtitle references including `gordonxc/gemini-osd-subtitles` and `andyko208/sermon-realtime-translator`.
+
+**Decision:** do not adopt their application stacks as dependencies. They are useful interaction/streaming references but do not replace Korea Concierge requirements for entitlement checks, short-lived credentials, privacy disclosure, family allowance metering, abuse control, supplier-cost telemetry and P0 quality benchmarking. Prefer Google's maintained API/SDK contract plus minimal in-repo integration.
+
+### Hugging Face review
+The installed Hugging Face model-search action was attempted twice for multilingual speech translation discovery and returned a tool-unavailable error.
+
+**Decision:** no Hugging Face model is adopted in this planning slice. A self-hosted STT → translation → TTS pipeline may eventually be cheaper, but it adds multilingual benchmarking, model provenance/licensing, deployment/GPU, latency and operational complexity. The user explicitly prioritizes translation quality, so Gemini remains the approved default candidate. Re-run Hugging Face discovery when implementation begins and the connector is healthy.
+
+### Product / margin decision
+Ultra remains a one-time Trip Pass rather than a subscription at launch. Initial fair-use hypothesis:
+- 30 Gemini Live translation minutes included per Ultra Trip Pass;
+- future Ultra family/shared-wallet entitlement shares that allowance;
+- after allowance: fixed `8 credits/min` unless measured cost/conversion justifies change;
+- provider cost snapshot implies about `$1.104` raw supplier cost for 30 included minutes;
+- do not advertise uncapped unlimited use until measured economics support it;
+- preserve translation quality and adjust allowance/unit economics transparently instead of silently downgrading the model.
+
+### Security / privacy controls
+- long-lived Gemini key remains server-only and never enters `NEXT_PUBLIC_*`;
+- server verifies auth, Ultra/family entitlement, allowance/credits and rate limits before issuing a constrained ephemeral token;
+- client may connect directly to Gemini Live API via WebSocket for latency;
+- microphone permission and Google audio transfer are explicitly disclosed;
+- raw microphone audio is not persisted by default;
+- raw transcript/audio bodies are excluded from general/cost logs;
+- transcript saving/export is separate opt-in if ever implemented;
+- no identity/nationality/ethnicity/religion/health/emotion inference from voices;
+- explicit source/target language selection always overrides any future optional auto-detection.
+
+### Sources reviewed
+- https://ai.google.dev/gemini-api/docs/models/gemini-3.5-live-translate-preview
+- https://ai.google.dev/gemini-api/docs/pricing
+- https://ai.google.dev/gemini-api/docs/live-api/ephemeral-tokens
+- https://ai.google.dev/gemini-api/docs/live-api/capabilities
+- https://github.com/gordonxc/gemini-osd-subtitles
+- https://github.com/andyko208/sermon-realtime-translator
+- OpenRouter public catalog/search for the dedicated Live Translate model; no matching endpoint confirmed in this review
+- Hugging Face model search attempted twice; connector returned tool-unavailable error
+
 ## 2026-08-27 — Step 2C-6 shadowed legacy implementation cleanup
 
 ### GitHub / framework review
