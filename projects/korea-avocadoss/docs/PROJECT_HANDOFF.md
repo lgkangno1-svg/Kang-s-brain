@@ -9,8 +9,9 @@
 **Step 2 main CI:** run `33070371958` — SUCCESS  
 **Latest product-policy merge on main:** `ef49f718f8c3fd04bd6ad7c2d0261b071e1844ce` (PR #8 — Gemini Live translation / Ultra Family policy)  
 **Primary CI:** private `lgkangno1-svg/korea-concierge-ci` repository-scoped MiniPC runner  
-**Production status:** latest Next.js app is **not deployed yet**; `korea.avocadoss.co.kr` still serves the legacy Japanese treasure-hunt landing page from MiniPC port `3100` behind Cloudflare Tunnel.  
-**Exact next implementation slice after production cutover:** Step 3A — deterministic Saju calculation/input contracts before narrative AI or major UI work.
+**Production status:** **deployed** to `korea.avocadoss.co.kr` from exact public source SHA `774fe959e135f2db70d60ade37aa69ca173cf67c`; MiniPC `korea-concierge.service` serves Next.js 16.3.3 on port `3100` behind the existing Cloudflare Tunnel.  
+**Production deployment verification:** private deploy workflow run `33076411784` attempt 2 — SUCCESS; diagnostic run `33077658031` — SUCCESS; local and public `/` return 308, `/en` returns 200 with `<html lang="en">`, and the legacy Japanese landing marker is absent.  
+**Exact next implementation slice:** Step 3A — deterministic Saju calculation/input contracts before narrative AI or major UI work.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics, production deployment or the next step changes.
 
@@ -91,37 +92,32 @@ Current private CI setup:
 Verification evidence:
 - private run `33072758268` proved MiniPC checkout, Node 22/npm, lockfile policy, frozen install, P0 i18n, production build and document-language checks; its redirect step exposed a host port collision because port 3100 was already serving a different process;
 - the private workflow was hardened to allocate a free loopback port dynamically and pass `REDIRECT_CHECK_ORIGIN` explicitly;
-- private runs `33072901430` and `33073152447` passed the full gate including deterministic 308 redirects/query preservation on the MiniPC.
+- private runs `33072901430` and `33073152447` passed the full gate including deterministic 308 redirects/query preservation on the MiniPC;
+- exact latest-main pre-cutover MiniPC CI run `33076199204` passed lockfile, frozen install, P0 localization, production build, document-language and redirect checks before production cutover.
 
 **Required CI procedure for future code changes:** before merging a Korea Concierge code PR/branch, write the exact public head SHA into private `korea-concierge-ci/target-ref.txt`, wait for the MiniPC run to pass, then merge. Scheduled `main` verification is additional drift detection, not a substitute for exact-head pre-merge verification. Never weaken the private-repository boundary merely to auto-run public PR code on the MiniPC.
 
-## 6A. Production deployment discovery and planned cutover
-Production was inspected from the isolated MiniPC runner on 2026-08-27 because the visible site still showed the old Japanese treasure-hunt landing page.
+## 6A. Production deployment — live
+The legacy Japanese treasure-hunt origin was replaced on 2026-08-27 after exact-SHA validation and a one-time root bootstrap on the MiniPC.
 
-Confirmed facts:
-- `korea.avocadoss.co.kr` resolves through Cloudflare (`104.21.79.170`, `172.67.146.158`) and returns `server: cloudflare`;
-- MiniPC has an active Cloudflare Tunnel process: `/home/tnfwod/cloudflared tunnel --config /home/tnfwod/.cloudflared/korea-config.yml run da081e8b-8cb3-4503-a8be-c2971f8a2721`;
-- the exact currently visible legacy site is served locally on **port 3100**;
-- local port 3100 returns the Japanese treasure-hunt HTML and is backed by `/usr/bin/node /home/tnfwod/korea-treasure-hunt-lp/server.js`;
-- therefore the public domain is still routed to the legacy MiniPC origin, not to `projects/korea-avocadoss`;
-- this explains why GitHub code/CI changes were not visible on the production URL.
+Current production facts:
+- `korea.avocadoss.co.kr` remains behind the existing Cloudflare Tunnel and MiniPC origin;
+- production origin remains port **3100**, so no DNS or Cloudflare route change was required;
+- `korea-concierge.service` is enabled and active and runs Next.js **16.3.3** as the dedicated unprivileged `korea-concierge` system user;
+- active release points to `/opt/korea-concierge/releases/774fe959e135f2db70d60ade37aa69ca173cf67c/repo/projects/korea-avocadoss`;
+- the one-time root bootstrap installed `korea-concierge.service`, `korea-concierge-deploy-request.path`, the request handler and exact-SHA deployment helper while leaving the private CI runner without sudo/Docker access;
+- the first successful manual exact-SHA cutover stopped only the known legacy port-3100 process and passed local `/en` 200 + `/` 308 checks;
+- diagnostic run `33077658031` independently confirmed `korea-concierge.service` active, current release SHA, local `/` 308, local `/en` 200, public `/` 308, public `/en` 200, English document language and no legacy Japanese marker;
+- private production deploy workflow run `33076411784` was then re-run after helper hardening and **attempt 2 completed SUCCESS**, including exact-SHA preflight, root-owned deployment request and public Cloudflare verification;
+- future deployments can be driven from the private CI repository without another user sudo step, provided the root-owned deployer remains installed and healthy.
 
-Private CI repository now contains deployment preparation:
-- `scripts/install_minipc_deployer.sh` — one-time root bootstrap;
-- `.github/workflows/deploy-korea-concierge.yml` — exact-SHA production deployment workflow;
-- deployment uses the existing Cloudflare route and keeps port `3100`, so no DNS change should be required;
-- the new app will run as a dedicated `korea-concierge` system user under `/opt/korea-concierge`, managed by `korea-concierge.service`;
-- CI retains **no sudo/Docker privilege**. A root-owned `systemd.path` watcher accepts only a request file inside the private runner sandbox, and the root helper validates an exact 40-character SHA before deployment;
-- each release is fetched from public GitHub at the exact SHA, lockfile-checked, installed with lifecycle scripts disabled, built as the dedicated unprivileged app user, then switched atomically;
-- initial cutover only stops port 3100 if the owning process command exactly matches the known legacy `korea-treasure-hunt-lp/server.js`; an unknown process causes a fail-closed abort;
-- local `/en` 200 + `/` 308 health checks are required after restart;
-- rollback restores the previous release; on first-cutover failure the legacy server restart is attempted;
-- public Cloudflare route is rechecked after cutover and must serve English `<html lang="en">` without the legacy Japanese landing marker.
-
-Bootstrap validation:
-- private run `33074251302` passed shell syntax validation and verified required MiniPC commands (`git`, `node`, `npm`, `runuser`, `systemctl`, `flock`, `curl`, `ss`).
-
-**Current deployment blocker:** the runner is intentionally sandboxed and cannot install root-owned systemd units. The user must execute the one-time bootstrap command on the MiniPC with `sudo`. After that, deployment requests and future exact-SHA production releases can be driven automatically from the private CI repository without granting the runner general root access.
+Deployment security remains least-privilege:
+- CI retains **no sudo/Docker privilege**;
+- root deployer accepts only exact 40-character SHAs from the private runner request directory;
+- each release is fetched from public GitHub at the exact SHA, lockfile-checked, installed with lifecycle scripts disabled and built as the dedicated app user;
+- unknown processes on production port cause fail-closed aborts;
+- local health-check failure triggers rollback;
+- public Cloudflare route is checked after cutover before production success is claimed.
 
 ## 7. Completed roadmap
 - Step 0 ✅ product/architecture/cost/SEO/international/security baselines.
@@ -138,7 +134,7 @@ Bootstrap validation:
 - Step 2C-6 ✅ shadowed legacy UI removed safely.
 - Step 2C-7 ✅ real npm lockfile committed; frozen `npm ci`; full Step 2 executable gate green on PR and merged main.
 - Private MiniPC CI ✅ isolated private control repo + full self-hosted gate green.
-- Production deployment discovery ✅ legacy origin identified and secure exact-SHA deployment path prepared; one-time root bootstrap remains.
+- Production deployment ✅ exact SHA `774fe959e135f2db70d60ade37aa69ca173cf67c` live behind Cloudflare; local/public health checks and automated deployment attempt 2 green.
 - Product-policy PR #8 ✅ Gemini Live / Ultra Family translation direction documented and merged.
 
 ## 8. Step 2C-7 completion evidence
@@ -148,7 +144,7 @@ The previously blocked GitHub Actions path recovered. A trusted Node 22 Actions 
 
 Temporary same-repository PR write jobs were used only to materialize the generated lockfile and synchronize closure documentation because the connector could not directly upload the generated artifact as a repository file. They were branch/actor constrained and removed before merge. The merged workflow used `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets. After MiniPC CI became primary, this public GitHub-hosted workflow was converted to manual fallback only.
 
-Final read-only PR #9 workflow run `33070277051` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. After squash merge `bf12dc22a986a1ad14eea24055575c2f129780d8`, main workflow run `33070371958` passed the same complete gate. These are executable build/CI evidence, not production deployment evidence.
+Final read-only PR #9 workflow run `33070277051` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. After squash merge `bf12dc22a986a1ad14eea24055575c2f129780d8`, main workflow run `33070371958` passed the same complete gate. These are executable build/CI evidence; production deployment evidence is now separately recorded in §6A.
 
 ## 9. Real-time translation discovery evidence
 ### Google / OpenRouter
@@ -186,14 +182,11 @@ Future Gemini Live path requirements:
 Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at today's Google rate. Actual p50/p95 cost/usage must decide production allowance.
 
 ## 11. Exact next action
-1. User runs the one-time MiniPC secure deployer bootstrap command with `sudo`.
-2. Verify `korea-concierge-deploy-request.path` is active; do not weaken runner sandboxing.
-3. Re-inspect latest public `main` SHA immediately before production deployment.
-4. Trigger private exact-SHA build/deployment workflow.
-5. Require private preflight, root deployment result, local health checks and public Cloudflare `/`, `/en` verification to pass.
-6. Record the actual deployed SHA and deployment run here; only then state that production is deployed.
-7. Continue Step 3A: GitHub + Hugging Face discovery; exact/rough/unknown birth input types; deterministic conversion boundaries; privacy-safe fixtures/tests.
-8. Before substantial user-facing Step 3 UI work, re-check Stitch MCP and use it first when actually available.
+1. Re-inspect latest public `main`, recent commits, open PRs, roadmap and this handoff before editing.
+2. Continue Step 3A: GitHub + Hugging Face discovery; exact/rough/unknown birth input types; deterministic conversion boundaries; privacy-safe fixtures/tests.
+3. Before any merge, verify the exact head SHA through private MiniPC CI.
+4. After a verified merge, deploy the exact desired production SHA through the private deploy workflow and require local/public post-cutover checks before claiming success.
+5. Before substantial user-facing Step 3 UI work, re-check Stitch MCP and use it first when actually available.
 
 ## 12. Future order after Step 2
 - Step 3: deterministic Saju cultural core + beginner explanations.
@@ -225,7 +218,10 @@ Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at
 - 2026-08-27: MiniPC CI full production-build gate passed after dynamic redirect-test port fix.
 - 2026-08-27: public hosted CI converted to manual fallback to reduce GitHub-hosted minutes.
 - 2026-08-27: production discovery identified Cloudflare → MiniPC port 3100 → legacy Japanese `korea-treasure-hunt-lp/server.js` path.
-- 2026-08-27: secure exact-SHA deployment bootstrap and production workflow added to the private CI repo; bootstrap syntax/tool validation run `33074251302` passed.
+- 2026-08-27: secure exact-SHA deployer bootstrap installed on MiniPC without granting runner sudo/Docker rights.
+- 2026-08-27: source SHA `774fe959e135f2db70d60ade37aa69ca173cf67c` built and cut over to production; `korea-concierge.service` active on port 3100.
+- 2026-08-27: diagnostic run `33077658031` confirmed local/public 308 + 200, English document language and legacy marker removal.
+- 2026-08-27: production deploy workflow run `33076411784` attempt 2 completed SUCCESS, proving future private-CI-driven exact-SHA deployment works end to end.
 
 ## 15. User action currently required
-**One one-time MiniPC root bootstrap is now required before I can perform the production cutover automatically.** This is not a Codex task and does not require API keys, DNS changes or Cloudflare credentials. After the bootstrap succeeds, I can trigger the exact-SHA production deployment from the private CI repository and verify the public domain myself.
+**None.** The one-time MiniPC root bootstrap and first production cutover are complete. Future normal CI and production deployments can run through the private MiniPC control repository without additional user sudo work. Merchant credentials, payment onboarding, production Google Gemini credentials and any future DNS/provider-specific setup remain deferred to their roadmap gates.
