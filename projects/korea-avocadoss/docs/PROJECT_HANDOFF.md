@@ -31,6 +31,7 @@ Verified remediation/evidence in private CI:
 - clean reset passed local `/` 308, `/en` 200, stable tunnel PID and 12/12 public probes;
 - two subsequent independent 12/12 no-retry stability checks passed with no 1033/530/502;
 - later closure preflight passed 8/8 no-retry probes and all 36 P0 routes with `failures=0`;
+- post-Step3A production preflight on 2026-08-28 also completed successfully in private CI;
 - unrelated Docker connector `n8n-server-cloudflared-1` is a different tunnel and must never be stopped as a Korea repair step.
 
 Private incident record: `lgkangno1-svg/korea-concierge-ci/INCIDENT_CLOUDFLARE_TUNNEL_2026-08-27.md`.
@@ -74,7 +75,7 @@ Shipped contract layer:
 
 - `src/lib/saju/input-contracts.ts`;
 - `scripts/check-saju-input-contracts.mjs`;
-- `npm run check:saju` is now part of `npm run build`;
+- `npm run check:saju` is part of `npm run build`;
 - `docs/SAJU_RESEARCH_2026-08-28.md` records fresh research decisions.
 
 Behavior:
@@ -91,29 +92,41 @@ Behavior:
 - narrative payload is whitelist-only derived data and strips raw DOB/time/city/timezone/longitude/name/account identifiers;
 - no forced Hanja or name requirement for Four Pillars.
 
-Fresh research 2026-08-28:
+## 5. Step 3A — deterministic fixture harness in validation
 
-- `yhj1024/manseryeok` 2.0.0 remains a promising MIT TypeScript / zero-runtime-dependency deterministic candidate claiming KASI-derived lunar/solar-term data, true-solar correction and multiple day-boundary conventions. **No dependency was added yet**; trusted boundary fixtures are required first.
-- `6tail/lunar-javascript` remains an independent reference/cross-check candidate, not authority for Korean conventions.
-- public UX that substitutes noon for unknown birth time is explicitly rejected.
-- fresh indexed Threads search produced no reliable evidence worth adopting.
-- Hugging Face model search failed at tool execution in this run; no HF model/dataset was adopted.
+Current branch: `korea-concierge/step-3a-fixture-harness`.
 
-## 5. Step 3A next slice — deterministic fixture harness
+Added:
 
-Before integrating a calendar/Saju library, build trusted fixtures for:
+- `fixtures/saju/boundary-fixtures.json`;
+- `scripts/check-saju-boundary-fixtures.mjs`;
+- `npm run check:saju` now runs both the original input/privacy contract checks and the boundary fixture harness;
+- `docs/SAJU_RESEARCH_2026-08-28.md` refreshed with current `manseryeok` 2.0.0 / `6tail/lunar-javascript` evidence and the failed Hugging Face dataset-search attempt.
 
-1. Gregorian invalid/leap-day cases;
-2. lunar leap-month validity;
-3. Ipchun year-pillar boundary;
-4. monthly solar-term boundary;
-5. 23:00/00:00/01:00 under each supported day-boundary policy;
-6. exact vs approximate vs unknown time;
-7. true-solar longitude correction around a branch-hour boundary;
-8. historical timezone/DST cases for foreign visitors;
-9. raw-PII exclusion from narrative payload.
+The harness deliberately separates:
 
-Only after independent fixtures/cross-checks agree should an exact-version calculation dependency be added.
+1. **Executable contract fixtures** — leap-day validation, exact/approximate/unknown input states, timezone/longitude gates, 23:00/00:00/01:00 policy input shape, historical IANA-zone acceptance, lunar leap-month input shape.
+2. **Calculation-boundary fixtures** — Ipchun, monthly solar-term transition, day-boundary output, true-solar hour crossing, historical timezone/DST output.
+
+The calculation-boundary set remains `research-pending`. It may not contain invented `expectedPillars`, `expectedInstant` or `verified` values until exact expected outputs are established from at least two evidence classes. This prevents the candidate dependency from becoming its own oracle.
+
+Important limitation: the lunar leap-month fixture currently verifies representation/shape only; semantic validity of a leap month in a specific year must come from the deterministic calendar engine and trusted calendar data.
+
+Current research decisions:
+
+- `yhj1024/manseryeok` 2.0.0 remains **ADAPT / verify before adoption**. Its changelog confirms prior correctness changes specifically around Ipchun and solar-term boundaries, reinforcing the need for fixtures before dependency adoption.
+- `6tail/lunar-javascript` 1.7.7 remains **REFERENCE ONLY**, not Korean-specific authority.
+- public UX that substitutes noon for unknown birth time remains rejected.
+- indexed Threads search produced no reliable evidence worth adopting.
+- Hugging Face dataset search was attempted but the installed connector reported the function disabled by server configuration; no HF source was adopted.
+- **No new runtime dependency has been added.**
+
+Next acceptance gate for this branch:
+
+1. exact branch-head MiniPC CI must pass `npm run build`, including both Saju checks;
+2. merge only after exact-head success;
+3. deploy exact merged SHA through private deploy controls;
+4. require consecutive public health checks and full 36-route P0 preflight.
 
 ## 6. Other K-Culture roadmap
 
@@ -160,12 +173,7 @@ Quality-first planned provider remains direct Google `gemini-3.5-live-translate-
 - public repo must never attach directly to production MiniPC runner;
 - production deploy is exact-SHA through limited root-owned helper with local health/rollback and consecutive public checks.
 
-Private CI was hardened in this run:
-
-- MiniPC verification executes `npm run build`, so project-specific contract gates such as `check:saju` cannot be bypassed by calling `next build` directly;
-- production deploy does the same;
-- sanitized latest CI/deploy results are persisted only in the private control repository for future autonomous verification;
-- no additional sudo/Docker/public-repository privilege was granted.
+Private CI verification/deployment executes `npm run build`, so project-specific contract gates such as `check:saju` cannot be bypassed by directly calling `next build`. Sanitized CI/deploy results are persisted only in the private control repository. No extra sudo/Docker/public-repository privilege is granted.
 
 Mandatory merge/release flow:
 
@@ -191,14 +199,15 @@ Mandatory merge/release flow:
 
 ## 12. Current priority order
 
-1. Build deterministic Saju boundary fixture harness.
-2. Evaluate exact-version `manseryeok` only against trusted fixtures and independent cross-checks.
-3. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
-4. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
-5. Step 4 auth + authoritative wallet.
-6. Step 5 global USD payment foundation.
-7. Then Gemini Live and premium consented photo analysis.
-8. Continue Premium Naming Studio research when it does not block core dependencies.
+1. Validate and ship the deterministic Saju boundary fixture harness.
+2. Promote trusted calculator-boundary fixtures one class at a time using primary/official evidence plus an independent cross-check.
+3. Evaluate an exact pinned `manseryeok` version only against those trusted fixtures; keep `6tail/lunar-javascript` secondary.
+4. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
+5. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
+6. Step 4 auth + authoritative wallet.
+7. Step 5 global USD payment foundation.
+8. Then Gemini Live and premium consented photo analysis.
+9. Continue Premium Naming Studio research when it does not block core dependencies.
 
 ## 13. Regression watch
 
@@ -207,6 +216,8 @@ Mandatory merge/release flow:
 - do not inflate Personal Color certainty;
 - do not send raw birth/photo/name PII to narrative AI;
 - do not fabricate missing Saju hour or astrology placements;
+- do not treat a library README/changelog/example as authoritative fixture truth;
+- do not treat lunar leap-month input shape as semantic calendar validity;
 - do not invent Hanja for foreign names;
 - do not ship checkout before signed webhook/idempotent ledger/refund foundations;
 - do not claim production from merge alone.
