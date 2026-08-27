@@ -2,6 +2,31 @@
 
 This is the required discovery record before material feature implementation/revision. Search first, then adopt only when commercial license, maintenance, privacy, quality, runtime cost, latency, browser/mobile fit, multilingual suitability, provenance, security and margin justify it.
 
+## 2026-08-27 — Step 2C-7 npm supply-chain reproducibility
+
+### GitHub / npm review
+Rechecked npm lockfile/`npm ci` behavior and the maintained `lirantal/lockfile-lint` project (Apache-2.0; active in August 2026). `lockfile-lint` is relevant, but adding another dependency only to validate this small lockfile would expand the supply-chain surface. A dependency-free in-repo validator covers the required root-manifest parity, registry-origin and integrity checks.
+
+A real npm v3 lockfile was generated in trusted GitHub Actions with lifecycle scripts disabled and then reviewed. The resolved graph contains 106 package entries. Direct runtime versions remain exact: Next.js 16.3.3, next-intl 4.13.4, React/React DOM 19.2.0. Resolved dev versions include TypeScript 5.9.3, @types/node 22.20.1, @types/react 19.2.18 and @types/react-dom 19.2.5. All resolved tarballs use HTTPS npm registry URLs and sha512 integrity; no package entry lacks license metadata. Optional Sharp/libvips platform packages account for LGPL metadata and caniuse-lite carries CC-BY-4.0; no new package was added by this slice.
+
+**Decision:** adopt the generated/validated npm lockfile plus frozen `npm ci --ignore-scripts`; keep the small in-repo policy validator; reject an additional lockfile-lint runtime/dev dependency for now. Keep direct dev ranges as-is because the committed lockfile freezes concrete versions; update them only through deliberate reviewed lockfile changes.
+
+### Hugging Face review
+The installed Hugging Face model-search action was attempted again for software supply-chain/security candidates and returned a tool-not-found error. Earlier reviewed vulnerability/code-analysis models cannot generate or prove npm's concrete dependency graph and would add inference/provenance risk.
+
+**Decision:** no model/dataset/Space adoption. Dependency resolution and integrity are deterministic package-manager/security-policy tasks, not ML tasks.
+
+### Executable evidence / security
+PR #9 final workflow run `33069835102` passed lockfile policy, frozen npm install, P0 localization contracts, production build, document-language verification and legacy redirect checks. The temporary trusted-branch write permission used solely to commit the generated lockfile was removed before merge; final CI returns to `contents: read`, full-SHA official actions, no persisted checkout credentials and no repository secrets.
+
+Application AI calls: **0**. Runtime dependencies added: **0**. Customer data transfer: **0**. Incremental supplier inference cost: **0**.
+
+### Sources reviewed
+- https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json
+- https://docs.npmjs.com/cli/v11/commands/npm-ci
+- https://github.com/lirantal/lockfile-lint
+- Hugging Face model search attempted; connector returned tool-not-found in this run
+
 ## 2026-08-27 — Ultra / Family real-time voice translation provider decision
 
 ### Google / OpenRouter review

@@ -3,11 +3,11 @@
 **Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 2 — internationalized routing / locale parity / supply-chain closure  
-**Last completed implementation slice on main:** Step 2C-6 — shadowed legacy implementation cleanup  
+**Current phase:** Step 3 — Saju deterministic cultural core
+**Last completed implementation slice:** Step 2C-7 — supply-chain reproducibility / Step 2 closure
 **Latest product-policy merge on main:** `ef49f718f8c3fd04bd6ad7c2d0261b071e1844ce` (PR #8 — Gemini Live translation / Ultra Family policy)  
-**Open implementation PR:** #7 — Step 2C-7 supply-chain reproducibility, still not merged at this handoff update  
-**Exact next implementation slice:** finish Step 2C-7; do not skip directly to later feature code.
+**Implementation PR:** #9 — Step 2C-7 final frozen-install gate
+**Exact next implementation slice:** Step 3A — deterministic Saju calculation/input contracts before narrative AI or major UI work.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
 
@@ -84,20 +84,17 @@ For the future live translator screen, preferred UX is a simple mobile conversat
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
 - Step 2C-6 ✅ shadowed legacy UI removed safely.
+- Step 2C-7 ✅ real npm lockfile committed; read-only CI uses frozen `npm ci`; full Step 2 executable gate green.
 - Product-policy PR #8 ✅ Gemini Live / Ultra Family translation direction documented and merged.
 
-## 7. Current Step 2C-7 state
-PR #7 (`korea-concierge/step-2c7-lockfile`) is open and remains the next implementation gate.
+## 7. Step 2C-7 completion evidence
+Step 2C-7 was rebased from the latest main in PR #9 after the Gemini Live planning merge so newer policy work was preserved.
 
-Prepared there:
-- trusted-environment lockfile generation path;
-- SHA-pinned temporary artifact review path;
-- deterministic lockfile-policy validator;
-- no fabricated `package-lock.json`.
+The previously blocked GitHub Actions path recovered. A trusted Node 22 Actions run generated a real npm lockfile with lifecycle scripts disabled. The lockfile policy passed before commit. The reviewed graph has 106 package entries; all resolved tarballs use HTTPS `registry.npmjs.org`, all resolved packages have sha512 integrity, root manifest specifiers match `package.json`, and no package entry is missing license metadata. Runtime dependencies remain exactly pinned; dev dependency ranges are retained because the committed lockfile freezes their concrete versions and future updates should be deliberate lockfile reviews.
 
-Known blocker recorded by PR #7: a new executable Actions run was not being created for that PR at the time, local/container DNS could not resolve GitHub, and a Hugging Face Node job returned 402. Re-check this state fresh before continuing; do not assume it is still blocked.
+A temporary PR-branch-only write job was used solely to materialize the generated lockfile after normal connector upload limitations. It was conditioned on the same repository, exact trusted branch and repository owner actor, and was removed immediately after the lockfile commit. The final workflow is again `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets.
 
-When an executable Node 22/npm runner is available: generate/retrieve/review the real lockfile, commit it, switch CI to frozen `npm ci --ignore-scripts`, wire the policy check, rerun the full Step 2 gate, then close Step 2 only if green.
+Final PR #9 workflow run `33069835102` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. This is build/CI evidence, not production deployment evidence.
 
 ## 8. Real-time translation discovery evidence
 ### Google / OpenRouter
@@ -125,15 +122,15 @@ Future Gemini Live path requirements:
 
 Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at today's Google rate. The allowance is deliberately bounded to keep the $24.99 Ultra planning margin close to the existing protection target. Actual p50/p95 cost/usage must decide production allowance.
 
-## 10. Exact next action — Step 2C-7 only
-1. Inspect fresh main, recent commits and PR #7 state.
-2. Re-search GitHub + Hugging Face for npm/supply-chain alternatives if the slice is resumed.
-3. Generate a real npm lockfile only from a trusted executable environment and review integrity/resolved graph.
-4. Review whether dev dependency ranges should be narrowed while preserving known-good Next/React/next-intl versions.
-5. Switch CI to deterministic `npm ci --ignore-scripts` only after a reviewed lockfile exists.
-6. Rerun P0 contracts, production build, generated document languages and deterministic legacy redirects.
-7. If green, close Step 2 and only then begin Step 3 Saju deterministic core.
-8. Before Step 3 user-facing UI design, re-check Stitch MCP availability and use it first when available.
+## 10. Exact next action — Step 3A only
+1. Inspect fresh main/recent commits/open PRs before editing.
+2. Re-run the GitHub + Hugging Face discovery gate for deterministic Saju/calendar libraries and reference implementations.
+3. Implement deterministic birth-input types for exact time, rough time band and unknown time; never infer a missing hour.
+4. Define deterministic calendar/timezone conversion boundaries and request birth city/timezone only when genuinely needed.
+5. Keep raw birth date/time/city/name/account identifiers out of any LLM payload and logs.
+6. Add unit/fixture coverage for boundary dates, time bands and unknown-time reduced scope before narrative AI.
+7. Do not introduce paid narrative AI until deterministic structures and privacy boundaries are proven.
+8. Before substantial user-facing Step 3 UI work, re-check Stitch MCP and use it first when actually available.
 
 ## 11. Future order after Step 2
 - Step 3: deterministic Saju cultural core + beginner explanations.

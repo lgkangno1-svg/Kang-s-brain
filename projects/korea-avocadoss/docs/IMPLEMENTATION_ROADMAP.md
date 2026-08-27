@@ -9,7 +9,7 @@ PRD, architecture, AI routing/cost, credit economics, SEO/AEO/GEO, discovery gat
 ## Step 1 — Free Quick Help + market/locale registry ✅
 0-credit, 0-AI, no external question transfer, P0 localized, keyboard/focus/ARIA hardened.
 
-## Step 2 — Internationalized routing and language selector ← in progress
+## Step 2 — Internationalized routing and language selector ✅
 
 ### Step 2A — i18n foundation ✅
 Exact `next-intl@4.13.4`; P0 `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`; fail-closed locale validation; static reviewed dictionaries; no runtime translation ML.
@@ -50,18 +50,14 @@ Six known unprefixed public duplicates permanently redirect to their English can
 - PR #6 workflow run `33015960301` passed dependency install, all P0 localization contracts, Next.js production build/TypeScript, generated document-language verification and deterministic legacy redirect/query-preservation checks;
 - no browser-language negotiation, IP geolocation, nationality/market inference, new dependency, AI/model call, wallet/payment change or customer-data transfer was introduced.
 
-#### Step 2C-7 — next slice: supply-chain reproducibility + Step 2 gate closure
-Before starting Saju, close the known package-resolution gap without fabricating dependency state.
-
-Scope:
-- inspect fresh main and Step 2C-6 CI/merge state;
-- re-search GitHub + Hugging Face for supply-chain/tooling alternatives;
-- generate a real npm lockfile only from a trusted executable environment, review resolved package graph/integrity and commit only if evidence is trustworthy;
-- prefer `npm ci --ignore-scripts` after a reviewed lockfile exists;
-- preserve exact runtime pins (`next`, `next-intl`, React) and review whether dev dependency ranges should be narrowed;
-- keep Actions SHA-pinned, least privilege, telemetry off and secrets absent;
-- rerun P0 contracts, production build, document-language and legacy redirect checks;
-- close Step 2 only when all gate criteria are executable-green.
+#### Step 2C-7 — supply-chain reproducibility + Step 2 gate closure ✅
+- generated a real npm v3 lockfile in trusted GitHub Actions with lifecycle scripts disabled;
+- deterministic policy requires package.json/root-lock parity, HTTPS npm registry origins and sha512 integrity;
+- reviewed lock graph contains 106 package entries with no missing license metadata; runtime pins remain exact and dev ranges remain intentionally range-based because the committed lockfile freezes the resolved versions;
+- temporary branch-only write permission used only to materialize the generated lockfile was removed before merge; final CI is back to read-only contents permission with persisted checkout credentials disabled;
+- CI now uses frozen `npm ci --ignore-scripts --no-audit --no-fund`;
+- PR #9 workflow run `33069835102` passed lockfile policy, frozen install, all P0 i18n contracts, Next.js production build, generated document-language checks and deterministic legacy redirect/query-preservation checks;
+- no runtime dependency, application AI call, customer-data transfer, wallet/payment behavior or UI behavior was added.
 
 **Step 2 gate:** no English-only core public/paid-flow dead end; correct locale document language; locale URLs have correct SEO alternates; deterministic legacy redirects work; shadowed legacy UI is retired; navigation does not regress; executable `check:i18n` + production build remains green.
 
