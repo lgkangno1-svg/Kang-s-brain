@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "saju-month-boundary-fixtures-v1",
+  "cases": [
+    {
+      "id": "2024-jingzhe-month-pillar-boundary",
+      "status": "month-pillar-cross-checked",
+      "officialTerm": "경칩",
+      "requiredEvidence": [
+        "primary-or-official-calendar-time",
+        "independent-implementation-tests",
+        "independent-implementation-example"
+      ],
+      "officialInstant": "2024-03-05T02:23:00Z",
+      "officialLocalTime": "2024-03-05T11:23:00+09:00",
+      "officialSource": "https://astro.kasi.re.kr/life/post/calendardata",
+      "resolutionSeconds": 60,
+      "trustedSamples": [
+        {
+          "instant": "2024-03-05T02:22:00Z",
+          "localTime": "2024-03-05T11:22:00+09:00",
+          "expectedMonthPillar": "丙寅",
+          "position": "before-official-boundary-minute"
+        },
+        {
+          "instant": "2024-03-05T02:24:00Z",
+          "localTime": "2024-03-05T11:24:00+09:00",
+          "expectedMonthPillar": "丁卯",
+          "position": "after-official-boundary-minute"
+        }
+      ],
+      "boundaryMinuteUncertainty": {
+        "startInclusive": "2024-03-05T02:23:00Z",
+        "endExclusive": "2024-03-05T02:24:00Z",
+        "reason": "KASI publishes the 2024 Jingzhe event to minute precision, so Korea Concierge does not invent a second-level month-pillar cutover inside 11:23 KST."
+      },
+      "independentEvidence": [
+        {
+          "source": "https://github.com/6tail/lunar-javascript/blob/4c45a59f79b856125516f31aefa8295035c16afd/__tests__/Lunar.test.js",
+          "role": "independent-implementation-tests",
+          "finding": "Pinned lunar-javascript tests distinguish date-based Month GanZhi from exact solar-term Month GanZhi and demonstrate that the exact Month Pillar changes only after the relevant Jie crossing."
+        },
+        {
+          "source": "https://stellium.readthedocs.io/en/latest/cookbooks/bazi.html",
+          "role": "independent-implementation-example",
+          "finding": "Stellium independently documents Jie-based BaZi month calculation and shows 2024 progressing from 丙寅 in February to 丁卯 in March, consistent with the Jingzhe boundary."
+        }
+      ],
+      "reason": "KASI gives the official 2024 Jingzhe minute at 11:23 KST; unrelated implementations support Jie-based exact month switching and the 2024 丙寅 to 丁卯 progression. Trusted samples stay outside the unresolved KASI minute."
+    }
+  ]
+}
