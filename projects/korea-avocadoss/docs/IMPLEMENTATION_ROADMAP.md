@@ -28,7 +28,7 @@ Do not expose or fabricate chain-of-thought. Percentages require a defined/calib
 ## Step 3 — K-Culture deterministic core — IN PROGRESS
 
 ### Step 3A — Saju calculation/input contracts — IN PROGRESS
-Production-verified foundations before the current slice:
+Production-verified foundations:
 - exact / approximate / unknown birth time are first-class states;
 - never fabricate or AI-guess a missing hour;
 - exact/approximate local clock requires IANA timezone; true-solar additionally requires longitude;
@@ -38,18 +38,11 @@ Production-verified foundations before the current slice:
 - trusted 2024 Ipchun Year Pillar boundary samples: 17:26 KST → 癸卯, unresolved 17:27 minute, 17:28 → 甲辰;
 - trusted 2024 Jingzhe Month Pillar boundary samples: 11:22 KST → 丙寅, unresolved 11:23 minute, 11:24 → 丁卯;
 - executable 23:00 / 00:00 / 01:00 semantics for `midnight`, `jasi` and `splitJasi` with explicit convention labeling;
+- deterministic NOAA/GML Equation-of-Time + longitude/timezone correction with explicit `dayOffset`, fixture-covered Singapore/Seoul hour-branch crossings, Greenwich EoT isolation and previous-day rollover;
+- true-solar production release SHA `361ddfc8728dcbf8615890d37d477608db91f249` passed exact-head MiniPC CI, exact-SHA deploy, post-deploy 8/8 no-retry stability and 36/36 P0 crawl;
 - no Saju runtime calculator dependency.
 
-Current review slice — true-solar clock correction:
-- `src/lib/saju/true-solar-time.ts` implements NOAA/GML Equation of Time + longitude/timezone correction with no network or AI dependency;
-- caller supplies the already-resolved effective UTC offset, so DST/history is never guessed inside the math layer;
-- result preserves `dayOffset` when solar correction crosses a civil-date boundary;
-- deterministic fixtures cover Singapore and Seoul branch crossings, Greenwich EoT isolation, and previous-day rollover;
-- research/adopt/adapt/reject reasoning is recorded in `docs/SAJU_TRUE_SOLAR_TIME_RESEARCH_2026-08-28.md`;
-- `check-saju-true-solar-time.mjs` is wired into `npm run check:saju`;
-- release remains pending exact-head MiniPC CI, merge, exact-SHA deploy and post-deploy full preflight.
-
-Remaining Step 3A gates after this slice:
+Remaining Step 3A gates:
 1. historical IANA timezone/DST fixture for foreign visitors, including ambiguous/nonexistent local times without guessing;
 2. semantic lunar leap-month validity against trusted calendar data;
 3. exact pinned calculator candidate evaluation against trusted fixtures;
