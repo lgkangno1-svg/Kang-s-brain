@@ -67,9 +67,10 @@ export function ColorScanner() {
   }
 
   const completed = status === 'done';
-
   const alternateUndertone: Undertone = undertone === 'warm' ? 'cool' : undertone === 'cool' ? 'warm' : 'warm';
   const alternatePalettes = useMemo(() => getPalettes(alternateUndertone, depth), [alternateUndertone, depth]);
+  const currentPrimaryPalette = palettes[0];
+  const alternatePrimaryPalette = alternatePalettes[0];
 
   return (
     <div className={styles.shell}>
@@ -104,7 +105,7 @@ export function ColorScanner() {
           <div className={styles.guide} aria-hidden="true" />
           <div className={styles.stageBadges}>
             <span className={styles.privacyBadge}>{t('browserPrivacy')}</span>
-            {photoUrl && <span className={styles.lightingBadge}>✓ {t('lightingBalanced')}</span>}
+            {completed && <span className={styles.lightingBadge}>✓ {t('lightingCheck')}</span>}
           </div>
         </div>
 
@@ -162,7 +163,7 @@ export function ColorScanner() {
 
             <div className={styles.confidenceBanner}>
               <span className={styles.confidenceScore}>
-                {t('confidence', { confidence: Math.max(78, Math.round(result.confidence * 100)), lightness: result.lightness })}
+                {t('confidence', { confidence: Math.round(result.confidence * 100), lightness: result.lightness })}
               </span>
             </div>
 
@@ -179,15 +180,11 @@ export function ColorScanner() {
                 </div>
                 <div className={styles.evidenceCard}>
                   <strong>{t('evidence2Title')}</strong>
-                  <p>{t('evidence2Body')} ({t('contrast.' + result.contrast)})</p>
+                  <p>{t('contrastLabel')}: {t('contrast.' + result.contrast)}</p>
                 </div>
                 <div className={styles.evidenceCard}>
                   <strong>{t('evidence3Title')}</strong>
-                  <p>{t('evidence3Body')} ({t('depth.' + result.depth)})</p>
-                </div>
-                <div className={styles.evidenceCard}>
-                  <strong>{t('evidence4Title')}</strong>
-                  <p>{t('evidence4Body')}</p>
+                  <p>{t('evidence3Body')} ({t('depth.' + result.depth)} · L* {result.lightness}/100)</p>
                 </div>
               </div>
             </div>
@@ -196,12 +193,12 @@ export function ColorScanner() {
               <h3>{t('whyColorsTitle')}</h3>
               <div className={styles.whyColorsGrid}>
                 <div className={styles.whyFlatter}>
-                  <span className={styles.flatterTag}>✓ Best Face Harmony</span>
-                  <p>{t('whyNavyWorks')}</p>
+                  <span className={styles.flatterTag}>✓ {t('palettes.' + currentPrimaryPalette.id + '.name')}</span>
+                  <p>{t('palettes.' + currentPrimaryPalette.id + '.note')}</p>
                 </div>
                 <div className={styles.whyHeavy}>
-                  <span className={styles.heavyTag}>⚠ Color Conflict</span>
-                  <p>{t('whyMustardFails')}</p>
+                  <span className={styles.heavyTag}>↔ {t('palettes.' + alternatePrimaryPalette.id + '.name')}</span>
+                  <p>{t('palettes.' + alternatePrimaryPalette.id + '.note')}</p>
                 </div>
               </div>
             </div>
@@ -215,14 +212,14 @@ export function ColorScanner() {
                     className={activeCompare === 'current' ? styles.activeTab : styles.inactiveTab}
                     onClick={() => setActiveCompare('current')}
                   >
-                    {undertone === 'warm' ? t('compareWarmLabel') : t('compareCoolLabel')} (Your match)
+                    {t('undertone.' + undertone)}
                   </button>
                   <button
                     type="button"
                     className={activeCompare === 'alternate' ? styles.activeTab : styles.inactiveTab}
                     onClick={() => setActiveCompare('alternate')}
                   >
-                    {undertone === 'warm' ? t('compareCoolLabel') : t('compareWarmLabel')} (Alternative)
+                    {t('undertone.' + alternateUndertone)}
                   </button>
                 </div>
               </div>
@@ -294,4 +291,3 @@ export function ColorScanner() {
     </div>
   );
 }
-
