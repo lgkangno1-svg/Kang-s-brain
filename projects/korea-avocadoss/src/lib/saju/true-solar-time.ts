@@ -24,7 +24,9 @@ export type TrueSolarClockResult = {
   hourBranch: '子' | '丑' | '寅' | '卯' | '辰' | '巳' | '午' | '未' | '申' | '酉' | '戌' | '亥';
 };
 
-const HOUR_BRANCHES = [...'子丑寅卯辰巳午未申酉戌亥'] as const;
+const HOUR_BRANCHES: readonly TrueSolarClockResult['hourBranch'][] = [
+  '子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥',
+];
 
 function assertFiniteInRange(value: number, min: number, max: number, label: string): void {
   if (!Number.isFinite(value) || value < min || value > max) {
@@ -92,7 +94,9 @@ export function hourBranchForSolarMinute(minuteOfDay: number): TrueSolarClockRes
   assertFiniteInRange(minuteOfDay, 0, 1440, 'true solar minute of day');
   if (minuteOfDay === 1440) minuteOfDay = 0;
   const index = Math.floor(((minuteOfDay + 60) % 1440) / 120);
-  return HOUR_BRANCHES[index];
+  const branch = HOUR_BRANCHES[index];
+  if (!branch) throw new RangeError('Unable to resolve solar hour branch.');
+  return branch;
 }
 
 /**
