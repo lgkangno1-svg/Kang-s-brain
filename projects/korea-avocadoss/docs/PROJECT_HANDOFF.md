@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 3 — deterministic/explainable K-Culture core  
-**Current production code SHA:** `d46793c2460f0f796087dbb0ba81e8457c9053a6`  
+**Current production application SHA:** `d6bc729c1d5c092f9241382c17f95b15b923c5e3`  
 **Primary CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci` on isolated MiniPC runner
 
 > Source of truth for future AIs/developers. Before every material patch inspect fresh main, recent commits/open PRs, the full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state, and a fresh live-site preflight. Never infer current state from chat history alone.
@@ -31,7 +31,8 @@ Verified remediation/evidence in private CI:
 - clean reset passed local `/` 308, `/en` 200, stable tunnel PID and 12/12 public probes;
 - two subsequent independent 12/12 no-retry stability checks passed with no 1033/530/502;
 - closure and later production preflights passed all 36 P0 routes with `failures=0`;
-- **fresh preflight at 2026-08-28 04:53 KST passed 8/8 no-retry stability, sitemap 36 URLs, all 36 P0 routes, canonical/lang checks, and `failures=0`;**
+- pre-change preflight at 2026-08-28 04:53 KST passed 8/8 no-retry stability, sitemap 36 URLs, all 36 P0 routes and `failures=0`;
+- **post-deploy preflight for `d6bc729c1d5c092f9241382c17f95b15b923c5e3` at 2026-08-28 05:01 KST again passed 8/8 no-retry stability, sitemap 36 URLs, all 36 P0 routes, canonical/lang checks, and `failures=0`;**
 - unrelated Docker connector `n8n-server-cloudflared-1` is a different tunnel and must never be stopped as a Korea repair step.
 
 Retain hardened gates: consecutive public deployment probes, no-retry preflight stability gate, and `Korea Concierge Tunnel Stability Watch`. Any sampled 1033/530/502 reopens reliability priority before product work.
@@ -77,7 +78,7 @@ Shipped behavior:
 
 ## 5. Step 3A — deterministic boundary fixture harness shipped
 
-Production currently contains:
+Production contains:
 
 - `fixtures/saju/boundary-fixtures.json`;
 - `scripts/check-saju-boundary-fixtures.mjs`;
@@ -91,19 +92,11 @@ Fixture classes remain separate:
 
 A dependency README/changelog cannot become its own oracle. Unverified outputs may not contain invented `expectedPillars` or generic `verified` claims.
 
-## 6. Current branch — independent 2024 Ipchun Year Pillar cross-check
+## 6. Shipped — independent 2024 Ipchun Year Pillar cross-check
 
-Branch: `korea-concierge/saju-ipchun-year-pillar-crosscheck`.
+PR #15 merged and production SHA `d6bc729c1d5c092f9241382c17f95b15b923c5e3` is deployed.
 
-Fresh prerequisites completed before this slice:
-
-- latest public main inspected at `d46793c2460f0f796087dbb0ba81e8457c9053a6`;
-- open PR inventory inspected; only unrelated AI Shopping Shorts PR #1 is open;
-- full repository tree, roadmap and this handoff inspected;
-- private CI state inspected;
-- fresh production preflight passed 8/8 no-retry probes, sitemap 36 URLs, all 36 P0 routes, `failures=0`.
-
-Fresh research/discovery:
+Research/evidence:
 
 - KASI official 2024 calendar data: **입춘 2024-02-04 17:27 KST**, equivalent to `2024-02-04T08:27:00Z`, **minute precision**;
 - KASI labels adjacent calendar cycles as 2023 **계묘** and 2024 **갑진**;
@@ -113,29 +106,30 @@ Fresh research/discovery:
 - Hugging Face dataset search was attempted and returned `dataset_search is disabled by server configuration`;
 - `manseryeok` remains the candidate dependency under evaluation and is deliberately excluded from the independent oracle set.
 
-Current branch change:
+Shipped fixture state:
 
-- `ipchun-year-pillar-boundary` advances from `official-instant-verified` to `year-pillar-cross-checked`;
+- `ipchun-year-pillar-boundary` is `year-pillar-cross-checked`;
 - trusted sample **17:26 KST → 癸卯**;
 - trusted sample **17:28 KST → 甲辰**;
-- **17:27:00–17:27:59 KST is explicitly retained as a source-resolution uncertainty window** because KASI publishes only minute precision;
-- the checker requires two independent implementation evidence roles and validates that trusted samples sit outside the unresolved official minute;
+- **17:27:00–17:27:59 KST remains an explicit source-resolution uncertainty window** because KASI publishes only minute precision;
+- checker requires two independent implementation evidence roles and verifies trusted samples sit outside the unresolved official minute;
 - full `expectedPillars`, generic `verified`, and a fabricated second-level cutover remain forbidden;
-- no runtime dependency or birth-data processing is added.
+- no runtime dependency or birth-data processing was added.
 
-This is a narrower and stronger result than claiming `17:27:00` as an exact Saju cutover second.
+Release verification:
 
-Next acceptance gate for this branch:
+1. exact branch-head `d7cc5fbff5558ee9022f1e1877e704a3080792e2` passed MiniPC CI including `npm run build` and Saju gates;
+2. PR #15 was squash-merged to `d6bc729c1d5c092f9241382c17f95b15b923c5e3`;
+3. exact merged SHA deployment succeeded through the private root-owned deployment path;
+4. stable public Cloudflare verification succeeded;
+5. post-deploy full preflight passed 8/8 stability + all 36 P0 routes with `failures=0`.
 
-1. exact branch-head MiniPC CI must pass `npm run build`, including both Saju checks;
-2. merge only after exact-head success;
-3. deploy exact merged SHA through private deploy controls;
-4. require consecutive public health checks and full 36-route P0 preflight.
+This is intentionally narrower and stronger than claiming `17:27:00` as an exact Saju cutover second.
 
 ## 7. Deterministic Saju research decisions
 
 - `yhj1024/manseryeok` 2.0.0 remains **ADAPT / verify before adoption**. MIT, TypeScript, zero runtime dependencies, but its own correctness examples cannot validate itself.
-- `6tail/lunar-javascript` is now **ADOPTED AS NARROW INDEPENDENT CROSS-CHECK** for exact LiChun Year GanZhi boundary mechanics; it remains reference-only for Korean-specific day-boundary/true-solar policy choices.
+- `6tail/lunar-javascript` is **ADOPTED AS NARROW INDEPENDENT CROSS-CHECK** for exact LiChun Year GanZhi boundary mechanics; it remains reference-only for Korean-specific day-boundary/true-solar policy choices.
 - Stellium is **SUPPORTING INDEPENDENT IMPLEMENTATION EVIDENCE** for 2024 癸卯→甲辰 across LiChun, not a KASI timing authority.
 - KASI remains the timing/cycle-label primary source.
 - public UX that substitutes noon for unknown birth time is rejected.
@@ -222,16 +216,16 @@ Mandatory merge/release flow:
 
 ## 14. Current priority order
 
-1. Validate and ship the independent Ipchun Year Pillar cross-check branch without inventing second-level precision or full Four Pillars.
-2. Promote one monthly solar-term boundary from direct KASI timing + independent cross-check.
-3. Promote trusted calculator-boundary fixtures one class at a time.
-4. Evaluate an exact pinned `manseryeok` version only against trusted fixtures.
-5. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
-6. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
-7. Step 4 auth + authoritative wallet.
-8. Step 5 global USD payment foundation.
-9. Then Gemini Live and premium consented photo analysis.
-10. Continue Premium Naming Studio research when it does not block core dependencies.
+1. Promote one monthly solar-term boundary from direct KASI timing + independent cross-check, preserving source-resolution uncertainty.
+2. Promote 23:00/00:00/01:00 policy outputs without treating one school as universal truth.
+3. Verify true-solar longitude/equation-of-time branch-hour crossing.
+4. Verify historical IANA timezone/DST and semantic lunar leap-month validity.
+5. Evaluate an exact pinned `manseryeok` version only against trusted fixtures.
+6. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
+7. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
+8. Step 4 auth + authoritative wallet.
+9. Step 5 global USD payment foundation.
+10. Then Gemini Live and premium consented photo analysis; continue Premium Naming Studio research when it does not block core dependencies.
 
 ## 15. Regression watch
 
