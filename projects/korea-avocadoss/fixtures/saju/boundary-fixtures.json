@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "saju-boundary-fixtures-v1",
+  "contractCases": [
+    {
+      "id": "gregorian-leap-day-valid-2000",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 2000, "month": 2, "day": 29},
+        "time": {"precision": "unknown"}
+      },
+      "expect": {"isLeapMonth": false, "window": [0, 1440]}
+    },
+    {
+      "id": "gregorian-non-leap-invalid-1900",
+      "kind": "normalize-invalid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 1900, "month": 2, "day": 29},
+        "time": {"precision": "unknown"}
+      },
+      "errorIncludes": "Invalid Gregorian birth date"
+    },
+    {
+      "id": "unknown-never-guesses-hour",
+      "kind": "requirements",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 1988, "month": 2, "day": 4},
+        "time": {"precision": "unknown"}
+      },
+      "expect": {"timeZone": "conditional", "canCalculateFullScope": false, "canCalculateReducedScope": true, "missingRequired": []}
+    },
+    {
+      "id": "exact-clock-requires-timezone",
+      "kind": "requirements",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 1990, "month": 6, "day": 15},
+        "time": {"precision": "exact", "hour": 14, "minute": 30}
+      },
+      "expect": {"timeZone": "required", "canCalculateFullScope": false, "canCalculateReducedScope": false, "missingRequired": ["timeZone"]}
+    },
+    {
+      "id": "approximate-cross-midnight-rejected",
+      "kind": "normalize-invalid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 2000, "month": 1, "day": 1},
+        "time": {"precision": "approximate", "startHour": 23, "startMinute": 0, "endHour": 1, "endMinute": 0}
+      },
+      "errorIncludes": "must stay within one local birth date"
+    },
+    {
+      "id": "true-solar-requires-longitude",
+      "kind": "requirements",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 1999, "month": 12, "day": 31},
+        "time": {"precision": "exact", "hour": 23, "minute": 20},
+        "location": {"timeZone": "America/Los_Angeles"},
+        "policy": {"solarTimeMode": "true-solar"}
+      },
+      "expect": {"longitude": "required", "canCalculateFullScope": false, "canCalculateReducedScope": false, "missingRequired": ["longitude"]}
+    },
+    {
+      "id": "jasi-policy-23h-shape",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 2024, "month": 2, "day": 4},
+        "time": {"precision": "exact", "hour": 23, "minute": 0},
+        "location": {"timeZone": "Asia/Seoul"},
+        "policy": {"dayBoundary": "jasi"}
+      },
+      "expect": {"dayBoundary": "jasi", "window": [1380, 1381]}
+    },
+    {
+      "id": "split-jasi-policy-midnight-shape",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 2024, "month": 2, "day": 5},
+        "time": {"precision": "exact", "hour": 0, "minute": 0},
+        "location": {"timeZone": "Asia/Seoul"},
+        "policy": {"dayBoundary": "splitJasi"}
+      },
+      "expect": {"dayBoundary": "splitJasi", "window": [0, 1]}
+    },
+    {
+      "id": "midnight-policy-01h-shape",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 2024, "month": 2, "day": 5},
+        "time": {"precision": "exact", "hour": 1, "minute": 0},
+        "location": {"timeZone": "Asia/Seoul"},
+        "policy": {"dayBoundary": "midnight"}
+      },
+      "expect": {"dayBoundary": "midnight", "window": [60, 61]}
+    },
+    {
+      "id": "historical-iana-zone-shape",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "gregorian", "year": 1945, "month": 8, "day": 15},
+        "time": {"precision": "exact", "hour": 12, "minute": 0},
+        "location": {"timeZone": "America/New_York"}
+      },
+      "expect": {"window": [720, 721]}
+    },
+    {
+      "id": "lunar-leap-month-shape-only",
+      "kind": "normalize-valid",
+      "input": {
+        "date": {"calendar": "lunar", "year": 2020, "month": 4, "day": 1, "isLeapMonth": true},
+        "time": {"precision": "unknown"}
+      },
+      "expect": {"isLeapMonth": true, "window": [0, 1440]},
+      "note": "This validates input shape only. Semantic leap-month validity must be established by the deterministic calendar engine against trusted calendar data."
+    }
+  ],
+  "calculationBoundaryCases": [
+    {
+      "id": "ipchun-year-pillar-boundary",
+      "status": "research-pending",
+      "requiredEvidence": ["primary-or-official-calendar-time", "independent-implementation-cross-check"],
+      "reason": "Exact boundary instant and expected pillars must be independently verified before promotion."
+    },
+    {
+      "id": "monthly-solar-term-boundary",
+      "status": "research-pending",
+      "requiredEvidence": ["primary-or-official-calendar-time", "independent-implementation-cross-check"],
+      "reason": "Do not infer month-pillar change from approximate calendar dates."
+    },
+    {
+      "id": "day-boundary-23-00-01",
+      "status": "research-pending",
+      "requiredEvidence": ["documented-policy-semantics", "independent-implementation-cross-check"],
+      "reason": "midnight, jasi and splitJasi are explicit policy variants, not interchangeable truths."
+    },
+    {
+      "id": "true-solar-branch-hour-crossing",
+      "status": "research-pending",
+      "requiredEvidence": ["longitude-and-equation-of-time-method", "independent-implementation-cross-check"],
+      "reason": "Expected hour pillar must not be asserted from a README example alone."
+    },
+    {
+      "id": "historical-timezone-dst",
+      "status": "research-pending",
+      "requiredEvidence": ["iana-timezone-evidence", "independent-implementation-cross-check"],
+      "reason": "Foreign visitor historical wall-clock conversion needs zone-history evidence."
+    }
+  ]
+}
