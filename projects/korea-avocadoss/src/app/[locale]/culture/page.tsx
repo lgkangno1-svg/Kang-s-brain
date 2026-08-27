@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { localizedAlternates } from '@/lib/seo/localized-metadata';
@@ -30,11 +30,10 @@ export default async function LocalizedCulturePage({ params }: PageProps) {
         <p>{culture('heroIntro')}</p>
       </section>
 
-      {/* Daily Travel Harmony Card */}
       <section className="prototype">
         <div className="prototypePanel cultureHighlightPanel">
           <div className="cultureSectionHeader">
-            <span className="matchBadge">✦ Daily Harmony</span>
+            <span className="matchBadge">✦ {culture('planned')}</span>
             <h2>{culture('todayVibeTitle')}</h2>
           </div>
 
@@ -59,10 +58,12 @@ export default async function LocalizedCulturePage({ params }: PageProps) {
               <strong>{culture('harmoniousMealValue')}</strong>
             </div>
           </div>
+          <div className="cultureNoticeCard">
+            <p>{culture('intro')}</p>
+          </div>
         </div>
       </section>
 
-      {/* Traditional Zodiac & Four Pillars Explorer */}
       <section className="prototype">
         <div className="prototypePanel">
           <h2>{culture('sajuExplorerTitle')}</h2>
@@ -91,23 +92,17 @@ export default async function LocalizedCulturePage({ params }: PageProps) {
               </div>
             </div>
           </div>
-
-          <div className="cultureNoticeCard">
-            <p>{culture('privacySeal')}</p>
-          </div>
         </div>
       </section>
 
-      {/* Palace Photo Spot & Curated Moment */}
       <section className="prototype">
         <div className="prototypePanel">
           <div className="cultureSectionHeader">
-            <span className="matchBadgeSecondary">📸 Curated Moment</span>
+            <span className="matchBadgeSecondary">📸</span>
             <h2>{culture('photoSpotTitle')}</h2>
           </div>
           <div className="photoSpotCard">
             <strong>{culture('photoSpotName')}</strong>
-            <p>{culture('goldenHourLabel')}: <em>{culture('goldenHourTime')}</em></p>
           </div>
 
           <div className="cultureActionGroup">
