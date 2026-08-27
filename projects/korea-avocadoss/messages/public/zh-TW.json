@@ -28,7 +28,29 @@
     "sajuTitle": "四柱 / Saju",
     "sajuText": "出生時間可選。準確時間、大約時段與「我不知道」都是有效路徑；系統絕不猜測缺少的出生時間。",
     "colorTitle": "色彩連結",
-    "colorText": "傳統幸運色故事會和個人色彩造型建議清楚分開。"
+    "colorText": "傳統幸運色故事會和個人色彩造型建議清楚分開。",
+    "heroTitle": "融入現代旅行的韓國傳統時節智慧",
+    "heroIntro": "探索時節調和、五行（木火土金水）與傳統曆法週期。作為注重文化教育、非迷信的同行指南。",
+    "todayVibeTitle": "今日時令旅行調和",
+    "todayEnergyLabel": "今日主導氣韻",
+    "todayEnergyValue": "清木與活水（舒心提神之氣）",
+    "luckyDirectionLabel": "順暢方位",
+    "luckyDirectionValue": "西北方（朝向西村巷弄與仁王山景觀）",
+    "luckyColorLabel": "氣韻搭配色",
+    "luckyColorValue": "青瓷幽林綠 (#2D5A4C)",
+    "harmoniousMealLabel": "溫潤膳食建議",
+    "harmoniousMealValue": "溫潤暖胃的蔘雞湯或雪濃湯，調和秋涼微風",
+    "sajuExplorerTitle": "傳統生肖與五行調和探索",
+    "sajuExplorerIntro": "發現您的出生年份五行屬性與傳統四季調和智慧。",
+    "birthYearLabel": "出生年份",
+    "calculateHarmony": "探索文化調和",
+    "privacySeal": "確定性曆法推算 · 100%本地隱私 · 無個人資訊追蹤",
+    "photoSpotTitle": "精選景福宮亭閣光影時刻",
+    "photoSpotName": "香遠亭與集玉齋靜謐漫步",
+    "goldenHourLabel": "最佳金色光影時段",
+    "goldenHourTime": "16:30 – 17:45（石牆與池水柔和倒影）",
+    "actionPairColor": "連動我的個人色彩",
+    "actionExplorePalace": "瀏覽景福宮指南"
   },
   "Gyeongbokgung": {
     "eyebrow": "景福宮 · 首發區域",
@@ -69,9 +91,21 @@
     "hanbokColors": "值得嘗試的韓服配色",
     "paletteAria": "{name} 配色",
     "sensitiveTraitNote": "掃描只使用可見色彩像素提供造型建議，不會辨識你的身分，也不會推測種族、族群、國籍、宗教、健康狀況或吸引力。",
-    "undertone": {"warm": "暖", "neutral": "中性", "cool": "冷"},
-    "depth": {"light": "淺", "medium": "中等", "deep": "深"},
-    "contrast": {"soft": "柔和", "medium": "中等", "high": "高"},
+    "undertone": {
+      "warm": "暖",
+      "neutral": "中性",
+      "cool": "冷"
+    },
+    "depth": {
+      "light": "淺",
+      "medium": "中等",
+      "deep": "深"
+    },
+    "contrast": {
+      "soft": "柔和",
+      "medium": "中等",
+      "high": "高"
+    },
     "warnings": {
       "darkPhoto": "照片偏暗。使用自然日光可能得到更可靠的結果。",
       "overexposedPhoto": "臉部區域似乎過曝，請嘗試更柔和的自然光。",
@@ -83,16 +117,73 @@
       "unknown": "無法分析這張照片，請嘗試另一張清晰自拍。"
     },
     "palettes": {
-      "jadeWarmIvory": {"name": "玉色與暖象牙白", "note": "適合宮殿背景的經典組合，臉部附近保留溫暖感。"},
-      "peachSage": {"name": "蜜桃與鼠尾草綠", "note": "柔和親切，適合日光拍照和輕鬆街區散步。"},
-      "creamCrimson": {"name": "奶油白與緋紅", "note": "對比更強，適合宮殿建築和正式韓服造型。"},
-      "softWhiteJade": {"name": "柔白與玉色", "note": "平衡靈活，傳統或現代韓服都容易搭配。"},
-      "dustyRoseNavy": {"name": "灰粉與海軍藍", "note": "精緻穩重，在宮殿石材與木質背景前很上鏡。"},
-      "mutedPlumIvory": {"name": "柔梅紫與象牙白", "note": "低飽和的安靜浪漫配色，不依賴過於鮮豔的顏色。"},
-      "moonBlueSoftWhite": {"name": "月藍與柔白", "note": "清爽對比，適合宮殿庭院和石質背景。"},
-      "lilacPlum": {"name": "丁香紫與梅紫", "note": "精緻的現代浪漫韓服方向。"},
-      "roseDeepNavy": {"name": "玫瑰與深海軍藍", "note": "冷調深色帶來更強的拍照對比，同時不過度偏暖。"}
-    }
+      "jadeWarmIvory": {
+        "name": "玉色與暖象牙白",
+        "note": "適合宮殿背景的經典組合，臉部附近保留溫暖感。"
+      },
+      "peachSage": {
+        "name": "蜜桃與鼠尾草綠",
+        "note": "柔和親切，適合日光拍照和輕鬆街區散步。"
+      },
+      "creamCrimson": {
+        "name": "奶油白與緋紅",
+        "note": "對比更強，適合宮殿建築和正式韓服造型。"
+      },
+      "softWhiteJade": {
+        "name": "柔白與玉色",
+        "note": "平衡靈活，傳統或現代韓服都容易搭配。"
+      },
+      "dustyRoseNavy": {
+        "name": "灰粉與海軍藍",
+        "note": "精緻穩重，在宮殿石材與木質背景前很上鏡。"
+      },
+      "mutedPlumIvory": {
+        "name": "柔梅紫與象牙白",
+        "note": "低飽和的安靜浪漫配色，不依賴過於鮮豔的顏色。"
+      },
+      "moonBlueSoftWhite": {
+        "name": "月藍與柔白",
+        "note": "清爽對比，適合宮殿庭院和石質背景。"
+      },
+      "lilacPlum": {
+        "name": "丁香紫與梅紫",
+        "note": "精緻的現代浪漫韓服方向。"
+      },
+      "roseDeepNavy": {
+        "name": "玫瑰與深海軍藍",
+        "note": "冷調深色帶來更強的拍照對比，同時不過度偏暖。"
+      }
+    },
+    "shootingGuideTitle": "自拍採光建議以獲得最佳效果",
+    "shootingGuide1": "面向自然散射光（避免陽光直射強光）",
+    "shootingGuide2": "摘下太陽眼鏡和帽子，正視鏡頭",
+    "shootingGuide3": "避免濃重美顏濾鏡或彩色室內燈光",
+    "lightingCheck": "採光品質",
+    "lightingBalanced": "已檢測到自然採光",
+    "faceCentering": "臉部對齊參考框",
+    "analyzingStep1": "正在讀取可見膚色像素…",
+    "analyzingStep2": "正在分析臉部對比度與明度…",
+    "analyzingStep3": "正在生成可解釋的色彩搭配…",
+    "evidenceTitle": "得出該結果的觀察依據",
+    "evidence1Title": "膚色底色傾向",
+    "evidence1Body": "在當前採光下呈現的冷暖調傾向。",
+    "evidence2Title": "臉部對比度",
+    "evidence2Body": "皮膚、眼睛與髮色之間的明暗反差。",
+    "evidence3Title": "明度與深淺",
+    "evidence3Body": "令五官輪廓更清晰的明暗反射區間。",
+    "evidence4Title": "色彩飽和度耐受",
+    "evidence4Body": "更適合柔和清透色調，而非刺眼螢光原色。",
+    "whyColorsTitle": "為什麼某些顏色顯白而另一些顯得沉重",
+    "whyNavyWorks": "和諧色調：能提亮臉部輪廓，不易產生暗沉陰影。",
+    "whyMustardFails": "衝突色調：可能在臉部投射發黃暗影，壓制天然對比度。",
+    "compareTitle": "暖色調 vs 冷色調對比",
+    "compareWarmLabel": "暖秋色調",
+    "compareCoolLabel": "冷夏色調",
+    "variationTitle": "可能改變結果的因素",
+    "variationText": "季節性曬黑、室內螢光燈、妝容或染髮都可能影響可見色調。建議在清晨自然光下複測以獲得最穩定結果。",
+    "matchHanbokCta": "按此色盤挑選韓服 →",
+    "swatchBestTitle": "貼合臉部的和諧推薦色盤",
+    "swatchAvoidTitle": "建議避開或柔化處理的色彩"
   },
   "Meta": {
     "homeTitle": "Korea Concierge — 個人化韓國旅行指南",

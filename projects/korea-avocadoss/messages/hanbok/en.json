@@ -35,11 +35,26 @@
     "resultPalette": "Palette",
     "resultTripPriority": "Trip priority",
     "directions": {
-      "elegant": {"name": "Classic palace elegance", "reason": "Favor clean traditional lines and restrained contrast so the outfit works naturally with palace architecture."},
-      "royal": {"name": "Structured royal statement", "reason": "Favor stronger contrast and more formal visual weight for a dramatic palace-photo direction."},
-      "romantic": {"name": "Soft romantic Hanbok", "reason": "Favor gentler contrast, graceful layers and a softer visual rhythm for daylight photos."},
-      "minimal": {"name": "Modern minimal Hanbok", "reason": "Favor a quieter two-color story and less visual ornament for a clean contemporary direction."},
-      "kdrama": {"name": "K-drama inspired look", "reason": "Favor a recognizable cinematic silhouette while keeping the final rental choice practical for the day."}
+      "elegant": {
+        "name": "Classic palace elegance",
+        "reason": "Favor clean traditional lines and restrained contrast so the outfit works naturally with palace architecture."
+      },
+      "royal": {
+        "name": "Structured royal statement",
+        "reason": "Favor stronger contrast and more formal visual weight for a dramatic palace-photo direction."
+      },
+      "romantic": {
+        "name": "Soft romantic Hanbok",
+        "reason": "Favor gentler contrast, graceful layers and a softer visual rhythm for daylight photos."
+      },
+      "minimal": {
+        "name": "Modern minimal Hanbok",
+        "reason": "Favor a quieter two-color story and less visual ornament for a clean contemporary direction."
+      },
+      "kdrama": {
+        "name": "K-drama inspired look",
+        "reason": "Favor a recognizable cinematic silhouette while keeping the final rental choice practical for the day."
+      }
     },
     "comfortNotes": {
       "walking": "Prioritize lighter layers, manageable volume and easy movement before decorative detail.",
@@ -48,7 +63,37 @@
     },
     "freeBoundaryTitle": "What this free matcher does",
     "freeBoundaryText": "It combines only the choices you made above with deterministic rules. No AI model, profile inference or external data transfer is used.",
-    "paidBoundaryText": "If premium visual try-on or AI styling is added later, its fixed credit cost and photo/privacy terms will be shown before you confirm."
+    "paidBoundaryText": "If premium visual try-on or AI styling is added later, its fixed credit cost and photo/privacy terms will be shown before you confirm.",
+    "destinationLegend": "4. Palace backdrop & photo zone",
+    "destinations": {
+      "stoneWall": "Gyeongbokgung Stone Walls & Courtyard",
+      "hyangwonjeong": "Hyangwonjeong Pond & Pavilions",
+      "bukchon": "Bukchon Hanok Traditional Alleys"
+    },
+    "seasonLegend": "5. Season & fabric direction",
+    "seasons": {
+      "springAutumn": "Spring / Autumn Silk Organza",
+      "summer": "Summer Lightweight Ramie & Gauze",
+      "winter": "Winter Quilted Jacquard"
+    },
+    "looksTitle": "Top Recommended Hanbok Looks",
+    "look1Title": "The Ethereal Jade & Crimson Moon",
+    "look1Desc": "Soft Celadon Sky Jeogori with Royal Plum Mulberry Chima.",
+    "look2Title": "Modern Minimalist Moonlight Silk",
+    "look2Desc": "Pale Lavender Jeogori with Charcoal Indigo Chima.",
+    "look3Title": "Royal Dancheong Heritage",
+    "look3Desc": "Ivory Silk Jeogori with Soft Rosegold Chima.",
+    "fabricLabel": "Fabric Texture",
+    "accessoriesLabel": "Recommended Accessories",
+    "accessoriesValue": "Silver Jade Norigae & Silk Daenggi Hair Ribbon",
+    "backdropRating": "Backdrop Compatibility",
+    "comfortScore": "Walking Comfort",
+    "whySuitsTitle": "Why this look suits you",
+    "why1": "Under-layer tone harmonizes with skin undertones without clashing.",
+    "why2": "Skirt depth anchors contrast against gray palace stone.",
+    "why3": "Organza texture catches natural palace sunlight gracefully.",
+    "rentalMapCta": "Save Look & Find Nearby Boutiques",
+    "walkingTimeNotice": "Estimated 4–8 min walk from Gyeongbokgung Station Exit 2 & 4."
   },
   "Meta": {
     "hanbokTitle": "Hanbok Match — Free Rule-Based Styling Preview",

@@ -14,18 +14,47 @@
     "moodHelp": "请选择你自己想穿的感觉，而不是让系统根据语言或国籍替你判断。",
     "comfortLegend": "3. 行程优先级",
     "comfortHelp": "宫殿造型不仅要上镜，也要符合租赁时间和步行计划。",
-    "colors": {"jadeIvory": "玉色与暖象牙白", "roseNavy": "灰粉与海军蓝", "moonBlue": "月蓝与柔白"},
-    "moods": {"elegant": "传统优雅", "royal": "王室感 / 戏剧感", "romantic": "柔和浪漫", "minimal": "现代极简", "kdrama": "韩剧感"},
-    "comfort": {"walking": "步行优先", "balanced": "拍照与舒适平衡", "photoFirst": "拍照优先"},
+    "colors": {
+      "jadeIvory": "玉色与暖象牙白",
+      "roseNavy": "灰粉与海军蓝",
+      "moonBlue": "月蓝与柔白"
+    },
+    "moods": {
+      "elegant": "传统优雅",
+      "royal": "王室感 / 戏剧感",
+      "romantic": "柔和浪漫",
+      "minimal": "现代极简",
+      "kdrama": "韩剧感"
+    },
+    "comfort": {
+      "walking": "步行优先",
+      "balanced": "拍照与舒适平衡",
+      "photoFirst": "拍照优先"
+    },
     "resultEyebrow": "免费匹配预览",
     "resultPalette": "配色",
     "resultTripPriority": "行程优先级",
     "directions": {
-      "elegant": {"name": "经典宫廷优雅", "reason": "优先传统线条与克制对比，让整体更自然地融入宫殿建筑背景。"},
-      "royal": {"name": "有结构感的王室造型", "reason": "使用更强对比和更正式的视觉重量，适合需要戏剧感的宫殿照片。"},
-      "romantic": {"name": "柔和浪漫韩服", "reason": "使用更柔和的对比和轻盈层次，让白天拍照更温和。"},
-      "minimal": {"name": "现代极简韩服", "reason": "减少颜色与装饰数量，保持干净、现代的视觉方向。"},
-      "kdrama": {"name": "韩剧感造型", "reason": "保留有辨识度的影视轮廓，同时让实际租赁和当天活动保持可行。"}
+      "elegant": {
+        "name": "经典宫廷优雅",
+        "reason": "优先传统线条与克制对比，让整体更自然地融入宫殿建筑背景。"
+      },
+      "royal": {
+        "name": "有结构感的王室造型",
+        "reason": "使用更强对比和更正式的视觉重量，适合需要戏剧感的宫殿照片。"
+      },
+      "romantic": {
+        "name": "柔和浪漫韩服",
+        "reason": "使用更柔和的对比和轻盈层次，让白天拍照更温和。"
+      },
+      "minimal": {
+        "name": "现代极简韩服",
+        "reason": "减少颜色与装饰数量，保持干净、现代的视觉方向。"
+      },
+      "kdrama": {
+        "name": "韩剧感造型",
+        "reason": "保留有辨识度的影视轮廓，同时让实际租赁和当天活动保持可行。"
+      }
     },
     "comfortNotes": {
       "walking": "优先轻量层次、适中的裙摆或衣量和活动自由度，再考虑装饰细节。",
@@ -34,7 +63,37 @@
     },
     "freeBoundaryTitle": "这个免费匹配会做什么",
     "freeBoundaryText": "只把你上面主动选择的条件通过确定性规则组合起来，不使用 AI、个人画像推断或外部数据传输。",
-    "paidBoundaryText": "如果以后加入高级虚拟试穿或 AI 造型，会在确认前显示固定积分费用以及照片和隐私条款。"
+    "paidBoundaryText": "如果以后加入高级虚拟试穿或 AI 造型，会在确认前显示固定积分费用以及照片和隐私条款。",
+    "destinationLegend": "4. 宫殿拍照取景地",
+    "destinations": {
+      "stoneWall": "景福宫石墙与正殿广场",
+      "hyangwonjeong": "香远亭莲池与水阁",
+      "bukchon": "北村韩屋传统古巷"
+    },
+    "seasonLegend": "5. 季节与面料质感",
+    "seasons": {
+      "springAutumn": "春秋轻薄生丝欧根纱",
+      "summer": "盛夏透气麻纱与薄罗",
+      "winter": "暖冬提花夹层锦缎"
+    },
+    "looksTitle": "精选推荐韩服搭配",
+    "look1Title": "青瓷月影与朱梅宫廷韩服",
+    "look1Desc": "清透天青色短赤古里 + 典雅墨梅深紫长裙。",
+    "look2Title": "现代极简月光素丝韩服",
+    "look2Desc": "浅薰衣草紫短赤古里 + 炭黑藏青长裙。",
+    "look3Title": "古典丹青宫廷礼服",
+    "look3Desc": "牙白真丝短赤古里 + 柔金朱砂长裙。",
+    "fabricLabel": "面料质地",
+    "accessoriesLabel": "推荐佩饰",
+    "accessoriesValue": "白银翡翠流苏佩饰 & 真丝发带（唐只）",
+    "backdropRating": "背景拍照契合度",
+    "comfortScore": "行走舒适度",
+    "whySuitsTitle": "为何该搭配适合您",
+    "why1": "内层青瓷色调与肤色底色自然呼应，提亮面容。",
+    "why2": "深色裙摆在宫殿灰白石墙前构成鲜明稳重的视觉重心。",
+    "why3": "欧根纱双层透光质感在自然日光下呈现柔美光泽。",
+    "rentalMapCta": "保存搭配并查找附近租赁工坊",
+    "walkingTimeNotice": "距景福宫站2号/4号出口步行约4–8分钟。"
   },
   "Meta": {
     "hanbokTitle": "韩服匹配 — 免费规则式造型预览",
