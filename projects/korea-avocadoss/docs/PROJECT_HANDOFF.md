@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 3 — deterministic/explainable K-Culture core  
-**Current production code SHA:** `52a3aced261979117154286d2a7b9f41aa986c72`  
+**Current production code SHA:** `d46793c2460f0f796087dbb0ba81e8457c9053a6`  
 **Primary CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci` on isolated MiniPC runner
 
 > Source of truth for future AIs/developers. Before every material patch inspect fresh main, recent commits/open PRs, the full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state, and a fresh live-site preflight. Never infer current state from chat history alone.
@@ -30,16 +30,15 @@ Verified remediation/evidence in private CI:
 - legacy app archived under a timestamped backup instead of destructively deleted;
 - clean reset passed local `/` 308, `/en` 200, stable tunnel PID and 12/12 public probes;
 - two subsequent independent 12/12 no-retry stability checks passed with no 1033/530/502;
-- closure preflight passed 8/8 no-retry probes and all 36 P0 routes with `failures=0`;
-- post-Step3A and post-fixture-harness production preflights also completed successfully;
-- fresh preflight requested at 2026-08-28 03:53 KST again passed 8/8 stability, sitemap 36 URLs, all 36 P0 routes and `failures=0`;
+- closure and later production preflights passed all 36 P0 routes with `failures=0`;
+- **fresh preflight at 2026-08-28 04:53 KST passed 8/8 no-retry stability, sitemap 36 URLs, all 36 P0 routes, canonical/lang checks, and `failures=0`;**
 - unrelated Docker connector `n8n-server-cloudflared-1` is a different tunnel and must never be stopped as a Korea repair step.
 
-Retain hardened gates: consecutive public deployment probes, no-retry preflight stability gate, and scheduled `Korea Concierge Tunnel Stability Watch`. Any sampled 1033/530/502 reopens reliability priority before product work.
+Retain hardened gates: consecutive public deployment probes, no-retry preflight stability gate, and `Korea Concierge Tunnel Stability Watch`. Any sampled 1033/530/502 reopens reliability priority before product work.
 
 ## 3. Stitch UI / existing explainable previews
 
-Stitch UI is production verified. PR #11 was corrected before merge so unsupported numeric certainty was removed.
+Stitch UI is production verified. Unsupported numeric certainty was removed before merge.
 
 ### Personal Color free preview
 
@@ -58,8 +57,6 @@ May expose actual locally calculated undertone, depth, contrast, analyzer confid
 Premium Personal Color/Hanbok remains future consented photo-based explainable AI after privacy/provider/cost gates. Before remote photo use: explicit consent, EXIF stripping, file/pixel limits, transient retention, no raw-photo logging, provider retention/ZDR review, server-only secrets, abuse controls, and no sensitive-trait inference.
 
 ## 4. Step 3A — input/privacy contracts shipped
-
-PR #12 restored the Saju input/privacy contract layer on top of current Stitch UI main.
 
 Shipped behavior:
 
@@ -80,43 +77,53 @@ Shipped behavior:
 
 ## 5. Step 3A — deterministic boundary fixture harness shipped
 
-PR #13 / production SHA `52a3aced261979117154286d2a7b9f41aa986c72` added:
+Production currently contains:
 
 - `fixtures/saju/boundary-fixtures.json`;
 - `scripts/check-saju-boundary-fixtures.mjs`;
-- `npm run check:saju` runs input/privacy contract checks plus the boundary fixture harness;
-- `docs/SAJU_RESEARCH_2026-08-28.md` records research/evidence decisions.
+- `npm run check:saju` runs input/privacy contracts plus boundary fixtures;
+- `docs/SAJU_RESEARCH_2026-08-28.md` records evidence decisions.
 
-The harness separates:
+Fixture classes remain separate:
 
 1. **Executable contract fixtures** — leap-day validation, exact/approximate/unknown input states, timezone/longitude gates, 23:00/00:00/01:00 policy input shape, historical IANA-zone acceptance, lunar leap-month input shape.
 2. **Calculation-boundary fixtures** — Ipchun, monthly solar-term transition, day-boundary output, true-solar hour crossing, historical timezone/DST output.
 
-Unverified calculation outputs may not contain invented `expectedPillars` or generic `verified` claims. A dependency README/changelog cannot become its own oracle.
+A dependency README/changelog cannot become its own oracle. Unverified outputs may not contain invented `expectedPillars` or generic `verified` claims.
 
-## 6. Current branch — official 2024 Ipchun astronomical evidence
+## 6. Current branch — independent 2024 Ipchun Year Pillar cross-check
 
-Branch: `korea-concierge/saju-ipchun-official-evidence`.
+Branch: `korea-concierge/saju-ipchun-year-pillar-crosscheck`.
 
-Fresh preflight before this branch passed 8/8 no-retry stability probes, sitemap 36 URLs, all 36 P0 routes, `failures=0`.
+Fresh prerequisites completed before this slice:
+
+- latest public main inspected at `d46793c2460f0f796087dbb0ba81e8457c9053a6`;
+- open PR inventory inspected; only unrelated AI Shopping Shorts PR #1 is open;
+- full repository tree, roadmap and this handoff inspected;
+- private CI state inspected;
+- fresh production preflight passed 8/8 no-retry probes, sitemap 36 URLs, all 36 P0 routes, `failures=0`.
 
 Fresh research/discovery:
 
-- KASI official 2024 calendar data directly lists **입춘 2024-02-04 17:27 KST**, equivalent to `2024-02-04T08:27:00Z`, minute precision.
-- `manseryeok` 2.0.0 independently documents the same instant and before/after pillar examples, but because it remains the candidate dependency under evaluation, its own output is **not** accepted as independent expected-pillar truth.
-- `6tail/lunar-javascript` remains secondary/reference-only; fresh search did not produce a sufficiently attributable independent expected-pillar result for this exact boundary in this run.
-- indexed Threads search produced no adoptable evidence.
-- Hugging Face dataset search was attempted and again disabled by server configuration.
+- KASI official 2024 calendar data: **입춘 2024-02-04 17:27 KST**, equivalent to `2024-02-04T08:27:00Z`, **minute precision**;
+- KASI labels adjacent calendar cycles as 2023 **계묘** and 2024 **갑진**;
+- pinned `6tail/lunar-javascript` tests independently demonstrate that exact Year GanZhi switches at LiChun rather than Lunar New Year;
+- Stellium BaZi docs independently show 2024 pre-LiChun **癸卯** and post-LiChun **甲辰**;
+- indexed Threads search produced no adoptable evidence;
+- Hugging Face dataset search was attempted and returned `dataset_search is disabled by server configuration`;
+- `manseryeok` remains the candidate dependency under evaluation and is deliberately excluded from the independent oracle set.
 
-Branch change:
+Current branch change:
 
-- `ipchun-year-pillar-boundary` advances from `research-pending` to `official-instant-verified`;
-- stores direct KASI source, UTC instant, KST local instant and 60-second source resolution;
-- checker verifies the UTC/KST records identify the same instant and source is KASI;
-- checker still **forbids `expectedPillars` and generic `verified`** until an independent implementation/policy cross-check is completed;
-- no runtime dependency or raw birth-data processing is added.
+- `ipchun-year-pillar-boundary` advances from `official-instant-verified` to `year-pillar-cross-checked`;
+- trusted sample **17:26 KST → 癸卯**;
+- trusted sample **17:28 KST → 甲辰**;
+- **17:27:00–17:27:59 KST is explicitly retained as a source-resolution uncertainty window** because KASI publishes only minute precision;
+- the checker requires two independent implementation evidence roles and validates that trusted samples sit outside the unresolved official minute;
+- full `expectedPillars`, generic `verified`, and a fabricated second-level cutover remain forbidden;
+- no runtime dependency or birth-data processing is added.
 
-This is intentionally a partial evidence promotion, not a calculator adoption.
+This is a narrower and stronger result than claiming `17:27:00` as an exact Saju cutover second.
 
 Next acceptance gate for this branch:
 
@@ -127,22 +134,22 @@ Next acceptance gate for this branch:
 
 ## 7. Deterministic Saju research decisions
 
-- `yhj1024/manseryeok` 2.0.0 remains **ADAPT / verify before adoption**. MIT, TypeScript, zero runtime dependencies, but prior correctness fixes around Ipchun/solar-term boundaries make external fixtures mandatory.
-- `6tail/lunar-javascript` remains **REFERENCE ONLY**, not Korean-specific authority.
+- `yhj1024/manseryeok` 2.0.0 remains **ADAPT / verify before adoption**. MIT, TypeScript, zero runtime dependencies, but its own correctness examples cannot validate itself.
+- `6tail/lunar-javascript` is now **ADOPTED AS NARROW INDEPENDENT CROSS-CHECK** for exact LiChun Year GanZhi boundary mechanics; it remains reference-only for Korean-specific day-boundary/true-solar policy choices.
+- Stellium is **SUPPORTING INDEPENDENT IMPLEMENTATION EVIDENCE** for 2024 癸卯→甲辰 across LiChun, not a KASI timing authority.
+- KASI remains the timing/cycle-label primary source.
 - public UX that substitutes noon for unknown birth time is rejected.
-- lunar leap-month fixture currently verifies representation/shape only; semantic validity belongs to trusted calendar data/engine.
+- lunar leap-month fixture verifies representation/shape only; semantic validity belongs to trusted calendar data/engine.
 - no new Saju runtime dependency has been added.
 
 Next trusted-fixture order:
 
-1. independently cross-check the KASI 2024 Ipchun before/after year-pillar result;
-2. direct-KASI monthly solar-term boundary + independent cross-check;
-3. 23:00/00:00/01:00 policy outputs;
-4. true-solar longitude/equation-of-time branch-hour crossing;
-5. historical IANA timezone/DST;
-6. semantic lunar leap-month validity.
-
-Only then pin/evaluate `manseryeok` against trusted fixtures.
+1. direct-KASI monthly solar-term boundary + independent cross-check;
+2. 23:00/00:00/01:00 policy outputs;
+3. true-solar longitude/equation-of-time branch-hour crossing;
+4. historical IANA timezone/DST;
+5. semantic lunar leap-month validity;
+6. only then pin/evaluate exact `manseryeok` against trusted fixtures.
 
 ## 8. Other K-Culture roadmap
 
@@ -215,8 +222,8 @@ Mandatory merge/release flow:
 
 ## 14. Current priority order
 
-1. Validate and ship the official KASI Ipchun evidence-state branch without claiming expected pillars.
-2. Complete independent cross-check and only then promote 2024 Ipchun before/after expected year pillars.
+1. Validate and ship the independent Ipchun Year Pillar cross-check branch without inventing second-level precision or full Four Pillars.
+2. Promote one monthly solar-term boundary from direct KASI timing + independent cross-check.
 3. Promote trusted calculator-boundary fixtures one class at a time.
 4. Evaluate an exact pinned `manseryeok` version only against trusted fixtures.
 5. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
@@ -234,7 +241,7 @@ Mandatory merge/release flow:
 - do not send raw birth/photo/name PII to narrative AI;
 - do not fabricate missing Saju hour or astrology placements;
 - do not treat a library README/changelog/example as authoritative fixture truth;
-- do not promote an official astronomical instant into Saju pillar truth without independent policy/implementation evidence;
+- do not promote an astronomical minute into a fabricated exact second;
 - do not treat lunar leap-month input shape as semantic calendar validity;
 - do not invent Hanja for foreign names;
 - do not ship checkout before signed webhook/idempotent ledger/refund foundations;

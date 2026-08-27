@@ -73,12 +73,72 @@ for (const testCase of fixture.contractCases) {
 }
 
 let officialInstantEvidenceCount = 0;
+let trustedYearPillarBoundaryCount = 0;
 for (const boundaryCase of fixture.calculationBoundaryCases) {
   assert.equal(typeof boundaryCase.id, 'string');
   assert.equal(seen.has(boundaryCase.id), false, `Duplicate fixture id: ${boundaryCase.id}`);
   seen.add(boundaryCase.id);
   assert.ok(Array.isArray(boundaryCase.requiredEvidence) && boundaryCase.requiredEvidence.length >= 2, `${boundaryCase.id} needs at least two evidence classes.`);
   assert.ok(typeof boundaryCase.reason === 'string' && boundaryCase.reason.length >= 20, `${boundaryCase.id} needs an explicit anti-guessing reason.`);
+
+  if (boundaryCase.status === 'year-pillar-cross-checked') {
+    officialInstantEvidenceCount += 1;
+    trustedYearPillarBoundaryCount += 1;
+    assert.equal(typeof boundaryCase.officialInstant, 'string', `${boundaryCase.id}: officialInstant required`);
+    assert.equal(typeof boundaryCase.officialLocalTime, 'string', `${boundaryCase.id}: officialLocalTime required`);
+    assert.equal(typeof boundaryCase.officialSource, 'string', `${boundaryCase.id}: officialSource required`);
+    assert.ok(boundaryCase.officialSource.startsWith('https://astro.kasi.re.kr/'), `${boundaryCase.id}: official source must be KASI`);
+    assert.equal(boundaryCase.resolutionSeconds, 60, `${boundaryCase.id}: current KASI fixture resolution is one minute`);
+
+    const officialUtcMs = Date.parse(boundaryCase.officialInstant);
+    const officialLocalMs = Date.parse(boundaryCase.officialLocalTime);
+    assert.ok(Number.isFinite(officialUtcMs), `${boundaryCase.id}: officialInstant must be ISO parseable`);
+    assert.ok(Number.isFinite(officialLocalMs), `${boundaryCase.id}: officialLocalTime must be ISO parseable`);
+    assert.equal(officialUtcMs, officialLocalMs, `${boundaryCase.id}: UTC and KST records must identify the same instant`);
+
+    assert.ok(Array.isArray(boundaryCase.trustedSamples) && boundaryCase.trustedSamples.length === 2, `${boundaryCase.id}: two trusted samples required`);
+    const before = boundaryCase.trustedSamples.find((sample) => sample.position === 'before-official-boundary-minute');
+    const after = boundaryCase.trustedSamples.find((sample) => sample.position === 'after-official-boundary-minute');
+    assert.ok(before, `${boundaryCase.id}: before sample required`);
+    assert.ok(after, `${boundaryCase.id}: after sample required`);
+    assert.equal(before.expectedYearPillar, '癸卯', `${boundaryCase.id}: trusted pre-Ipchun year pillar`);
+    assert.equal(after.expectedYearPillar, '甲辰', `${boundaryCase.id}: trusted post-Ipchun year pillar`);
+
+    const beforeMs = Date.parse(before.instant);
+    const beforeLocalMs = Date.parse(before.localTime);
+    const afterMs = Date.parse(after.instant);
+    const afterLocalMs = Date.parse(after.localTime);
+    assert.ok([beforeMs, beforeLocalMs, afterMs, afterLocalMs].every(Number.isFinite), `${boundaryCase.id}: trusted sample instants must be ISO parseable`);
+    assert.equal(beforeMs, beforeLocalMs, `${boundaryCase.id}: before UTC/KST sample mismatch`);
+    assert.equal(afterMs, afterLocalMs, `${boundaryCase.id}: after UTC/KST sample mismatch`);
+    assert.ok(beforeMs < officialUtcMs, `${boundaryCase.id}: before sample must precede official boundary minute`);
+    assert.ok(afterMs >= officialUtcMs + boundaryCase.resolutionSeconds * 1000, `${boundaryCase.id}: after sample must start after the unresolved source minute`);
+
+    const uncertaintyStartMs = Date.parse(boundaryCase.boundaryMinuteUncertainty?.startInclusive);
+    const uncertaintyEndMs = Date.parse(boundaryCase.boundaryMinuteUncertainty?.endExclusive);
+    assert.equal(uncertaintyStartMs, officialUtcMs, `${boundaryCase.id}: uncertainty starts at published minute`);
+    assert.equal(uncertaintyEndMs, officialUtcMs + boundaryCase.resolutionSeconds * 1000, `${boundaryCase.id}: uncertainty spans exactly source resolution`);
+    assert.ok(typeof boundaryCase.boundaryMinuteUncertainty?.reason === 'string' && boundaryCase.boundaryMinuteUncertainty.reason.length >= 20, `${boundaryCase.id}: minute-resolution limitation must be explicit`);
+
+    assert.ok(Array.isArray(boundaryCase.independentEvidence) && boundaryCase.independentEvidence.length >= 2, `${boundaryCase.id}: independent evidence required`);
+    const evidenceRoles = new Set();
+    for (const evidence of boundaryCase.independentEvidence) {
+      assert.ok(/^https:\/\//.test(evidence.source), `${boundaryCase.id}: evidence source must be HTTPS`);
+      assert.ok(typeof evidence.role === 'string' && evidence.role.length > 0, `${boundaryCase.id}: evidence role required`);
+      assert.ok(typeof evidence.finding === 'string' && evidence.finding.length >= 40, `${boundaryCase.id}: evidence finding must be explicit`);
+      evidenceRoles.add(evidence.role);
+    }
+    assert.ok(evidenceRoles.has('independent-implementation-tests'), `${boundaryCase.id}: independent implementation tests required`);
+    assert.ok(evidenceRoles.has('independent-implementation-example'), `${boundaryCase.id}: second independent implementation example required`);
+
+    // The trusted output is deliberately limited to Year Pillar samples outside
+    // KASI's unresolved minute. Full Four Pillars and second-level cutover remain
+    // forbidden until stronger evidence exists.
+    for (const forbidden of ['expectedPillars', 'verified', 'exactBoundarySecond']) {
+      assert.equal(Object.hasOwn(boundaryCase, forbidden), false, `${boundaryCase.id} contains overclaimed calculator truth: ${forbidden}`);
+    }
+    continue;
+  }
 
   if (boundaryCase.status === 'official-instant-verified') {
     officialInstantEvidenceCount += 1;
@@ -94,20 +154,18 @@ for (const boundaryCase of fixture.calculationBoundaryCases) {
     assert.ok(Number.isFinite(localMs), `${boundaryCase.id}: officialLocalTime must be ISO parseable`);
     assert.equal(utcMs, localMs, `${boundaryCase.id}: UTC and KST records must identify the same instant`);
 
-    // Official astronomical time is evidence, not yet calculator truth. Until
-    // a genuinely independent implementation cross-check is recorded, do not
-    // let this fixture assert Saju pillar output or claim full verification.
-    for (const forbidden of ['expectedPillars', 'verified']) {
+    for (const forbidden of ['expectedPillars', 'trustedSamples', 'verified']) {
       assert.equal(Object.hasOwn(boundaryCase, forbidden), false, `${boundaryCase.id} contains premature calculator truth: ${forbidden}`);
     }
     continue;
   }
 
   assert.equal(boundaryCase.status, 'research-pending', `${boundaryCase.id} has an unsupported evidence state.`);
-  for (const forbidden of ['expectedPillars', 'expectedInstant', 'officialInstant', 'verified']) {
+  for (const forbidden of ['expectedPillars', 'expectedInstant', 'officialInstant', 'trustedSamples', 'verified']) {
     assert.equal(Object.hasOwn(boundaryCase, forbidden), false, `${boundaryCase.id} contains unverified calculator truth: ${forbidden}`);
   }
 }
 
 assert.ok(officialInstantEvidenceCount >= 1, 'At least one calculator-boundary case should carry official astronomical evidence once established.');
-console.log(`Saju boundary fixture checks passed: ${fixture.contractCases.length} executable contract cases; ${officialInstantEvidenceCount} official instant evidence record(s); remaining calculator outputs stay evidence-gated.`);
+assert.ok(trustedYearPillarBoundaryCount >= 1, 'At least one independently cross-checked Year Pillar boundary should exist once trusted samples are promoted.');
+console.log(`Saju boundary fixture checks passed: ${fixture.contractCases.length} executable contract cases; ${officialInstantEvidenceCount} official instant evidence record(s); ${trustedYearPillarBoundaryCount} trusted Year Pillar boundary record(s); remaining calculator outputs stay evidence-gated.`);
