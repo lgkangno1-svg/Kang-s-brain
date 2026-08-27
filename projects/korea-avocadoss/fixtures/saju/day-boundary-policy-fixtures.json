@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "saju-day-boundary-policy-v1",
+  "reference": {
+    "civilDate": "2005-06-15",
+    "civilDayPillar": "庚午",
+    "nextCivilDate": "2005-06-16",
+    "nextDayPillar": "辛未",
+    "evidence": [
+      {
+        "source": "https://pillarwise.io/bazi-chart/2005/06/15/zi-hour",
+        "role": "independent-civil-date-reference",
+        "finding": "The early-Zi civil reference gives 2005-06-15 as 庚午 with 23:00 Zi hour 丙子 and explicitly notes that late-Zi schools can move 23:00-24:00 to the next day."
+      },
+      {
+        "source": "https://pillarwise.io/bazi-chart/2005/06/16",
+        "role": "independent-next-day-reference",
+        "finding": "The following civil date 2005-06-16 is independently listed as 辛未, establishing the adjacent Day Pillar needed by the policy comparison."
+      },
+      {
+        "source": "https://github.com/6tail/lunar-java/blob/master/src/main/java/com/nlf/calendar/EightChar.java",
+        "role": "independent-policy-implementation",
+        "finding": "6tail documents two late-Zi sects: sect 2 keeps the late-Zi Day Pillar on the current day, while sect 1 assigns it to the following day."
+      },
+      {
+        "source": "https://www.baziinsight.com/learn/bazi-day-boundary",
+        "role": "independent-split-zi-explanation",
+        "finding": "An unrelated implementation keeps the displayed Day Pillar through 23:59 while its hour calculation reacts at 23:00, demonstrating the split Day-Pillar/hour-stem-basis behavior."
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "midnight-2300",
+      "clock": {"hour": 23, "minute": 0},
+      "policy": "midnight",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "子", "dayPillar": "庚午", "hourPillar": "丙子"}
+    },
+    {
+      "id": "jasi-2300",
+      "clock": {"hour": 23, "minute": 0},
+      "policy": "jasi",
+      "expect": {"dayPillarDateOffset": 1, "hourStemDateOffset": 1, "hourBranch": "子", "dayPillar": "辛未", "hourPillar": "戊子"}
+    },
+    {
+      "id": "split-jasi-2300",
+      "clock": {"hour": 23, "minute": 0},
+      "policy": "splitJasi",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 1, "hourBranch": "子", "dayPillar": "庚午", "hourPillar": "戊子"}
+    },
+    {
+      "id": "midnight-0000-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 0, "minute": 0},
+      "policy": "midnight",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "子", "dayPillar": "辛未", "hourPillar": "戊子"}
+    },
+    {
+      "id": "jasi-0000-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 0, "minute": 0},
+      "policy": "jasi",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "子", "dayPillar": "辛未", "hourPillar": "戊子"}
+    },
+    {
+      "id": "split-jasi-0000-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 0, "minute": 0},
+      "policy": "splitJasi",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "子", "dayPillar": "辛未", "hourPillar": "戊子"}
+    },
+    {
+      "id": "midnight-0100-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 1, "minute": 0},
+      "policy": "midnight",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "丑", "dayPillar": "辛未", "hourPillar": "己丑"}
+    },
+    {
+      "id": "jasi-0100-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 1, "minute": 0},
+      "policy": "jasi",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "丑", "dayPillar": "辛未", "hourPillar": "己丑"}
+    },
+    {
+      "id": "split-jasi-0100-next-civil-date",
+      "civilDate": "2005-06-16",
+      "clock": {"hour": 1, "minute": 0},
+      "policy": "splitJasi",
+      "expect": {"dayPillarDateOffset": 0, "hourStemDateOffset": 0, "hourBranch": "丑", "dayPillar": "辛未", "hourPillar": "己丑"}
+    }
+  ],
+  "scopeNote": "These fixtures lock explicit convention semantics and trusted adjacent-date examples. They do not claim that one day-boundary school is universally correct, and they do not yet constitute a complete Saju calendar engine."
+}
