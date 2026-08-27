@@ -3,10 +3,11 @@
 **Last updated:** 2026-08-27  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Current phase:** Step 3 — Saju deterministic cultural core
-**Last completed implementation slice:** Step 2C-7 — supply-chain reproducibility / Step 2 closure
+**Current phase:** Step 3 — Saju deterministic cultural core  
+**Last completed implementation slice:** Step 2C-7 — supply-chain reproducibility / Step 2 closure  
+**Step 2 merge on main:** `bf12dc22a986a1ad14eea24055575c2f129780d8` (PR #9)  
+**Step 2 main CI:** run `33070371958` — SUCCESS  
 **Latest product-policy merge on main:** `ef49f718f8c3fd04bd6ad7c2d0261b071e1844ce` (PR #8 — Gemini Live translation / Ultra Family policy)  
-**Implementation PR:** #9 — Step 2C-7 final frozen-install gate
 **Exact next implementation slice:** Step 3A — deterministic Saju calculation/input contracts before narrative AI or major UI work.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
@@ -84,7 +85,7 @@ For the future live translator screen, preferred UX is a simple mobile conversat
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
 - Step 2C-6 ✅ shadowed legacy UI removed safely.
-- Step 2C-7 ✅ real npm lockfile committed; read-only CI uses frozen `npm ci`; full Step 2 executable gate green.
+- Step 2C-7 ✅ real npm lockfile committed; read-only CI uses frozen `npm ci`; full Step 2 executable gate green on PR and merged main.
 - Product-policy PR #8 ✅ Gemini Live / Ultra Family translation direction documented and merged.
 
 ## 7. Step 2C-7 completion evidence
@@ -92,9 +93,9 @@ Step 2C-7 was rebased from the latest main in PR #9 after the Gemini Live planni
 
 The previously blocked GitHub Actions path recovered. A trusted Node 22 Actions run generated a real npm lockfile with lifecycle scripts disabled. The lockfile policy passed before commit. The reviewed graph has 106 package entries; all resolved tarballs use HTTPS `registry.npmjs.org`, all resolved packages have sha512 integrity, root manifest specifiers match `package.json`, and no package entry is missing license metadata. Runtime dependencies remain exactly pinned; dev dependency ranges are retained because the committed lockfile freezes their concrete versions and future updates should be deliberate lockfile reviews.
 
-A temporary PR-branch-only write job was used solely to materialize the generated lockfile after normal connector upload limitations. It was conditioned on the same repository, exact trusted branch and repository owner actor, and was removed immediately after the lockfile commit. The final workflow is again `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets.
+Temporary same-repository PR write jobs were used only to materialize the generated lockfile and synchronize closure documentation because the connector could not directly upload the generated artifact as a repository file. They were branch/actor constrained and removed before merge. The merged workflow is `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets.
 
-Final PR #9 workflow run `33069835102` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. This is build/CI evidence, not production deployment evidence.
+Final read-only PR #9 workflow run `33070277051` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. After squash merge `bf12dc22a986a1ad14eea24055575c2f129780d8`, main workflow run `33070371958` passed the same complete gate. This is executable build/CI evidence, not production deployment evidence.
 
 ## 8. Real-time translation discovery evidence
 ### Google / OpenRouter
