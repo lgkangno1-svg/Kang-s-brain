@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current phase:** Step 3 — deterministic/explainable K-Culture core  
-**Current production application SHA:** `d6bc729c1d5c092f9241382c17f95b15b923c5e3`  
+**Current production application SHA:** `a63d58a35b5953b45cb434484d2eb3b144d92598`  
 **Primary CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci` on isolated MiniPC runner
 
 > Source of truth for future AIs/developers. Before every material patch inspect fresh main, recent commits/open PRs, the full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state, and a fresh live-site preflight. Never infer current state from chat history alone.
@@ -27,8 +27,8 @@ Verified remediation/evidence in private CI:
 - legacy app archived under timestamped backup instead of destructively deleted;
 - clean reset passed local `/` 308, `/en` 200, stable tunnel PID and 12/12 public probes;
 - two subsequent independent 12/12 no-retry stability checks passed with no 1033/530/502;
-- closure and production preflights passed all 36 P0 routes with `failures=0`;
 - fresh pre-patch preflight at `2026-08-27T20:51:09Z` passed **8/8 no-retry stability, sitemap 36 URLs, 36/36 P0 routes, canonical/lang checks, failures=0**;
+- post-deploy preflight for `a63d58a35b5953b45cb434484d2eb3b144d92598` at `2026-08-27T20:59:51Z` again passed **8/8 no-retry stability, sitemap 36 URLs, 36/36 P0 routes, canonical/lang checks, failures=0**;
 - unrelated Docker connector `n8n-server-cloudflared-1` is a different tunnel and must never be stopped as a Korea repair step.
 
 Retain consecutive public deployment probes, no-retry preflight stability gate, and `Korea Concierge Tunnel Stability Watch`. Any sampled 1033/530/502 reopens reliability priority before product work.
@@ -63,15 +63,14 @@ Shipped contracts:
 ## 5. Deterministic fixture harness
 Production contains:
 - `fixtures/saju/boundary-fixtures.json`;
+- `fixtures/saju/month-boundary-fixtures.json`;
 - `scripts/check-saju-boundary-fixtures.mjs`;
-- contract fixtures for leap-day/date validation, exact/approximate/unknown time, timezone/longitude gates, day-boundary input shape, historical IANA-zone acceptance, and lunar leap-month shape;
-- calculation boundaries remain evidence-gated until independently supported.
+- `scripts/check-saju-month-boundary-fixtures.mjs`;
+- `npm run check:saju` runs input/privacy contracts plus Year/Month boundary evidence gates.
 
-A dependency README/changelog cannot become its own oracle. Unverified outputs may not contain invented full pillars or generic verified claims.
+A dependency README/changelog cannot become its own oracle. Unverified outputs may not contain invented full pillars, generic verified claims, or fake second-level precision.
 
 ## 6. Shipped — 2024 Ipchun Year Pillar cross-check
-Production SHA `d6bc729c1d5c092f9241382c17f95b15b923c5e3` contains the trusted Year Pillar boundary fixture.
-
 Evidence:
 - KASI official 2024 calendar: **입춘 2024-02-04 17:27 KST**, minute precision;
 - pinned `6tail/lunar-javascript` tests independently demonstrate exact LiChun-based Year GanZhi switching;
@@ -82,15 +81,13 @@ Trusted samples:
 - 17:27:00–17:27:59 KST → explicit source-resolution uncertainty window;
 - 17:28 KST → **甲辰**.
 
-No runtime calculator dependency was added.
+## 7. Shipped — 2024 Jingzhe Month Pillar cross-check
+PR #17 was exact-head verified, squash-merged and deployed as production SHA `a63d58a35b5953b45cb434484d2eb3b144d92598`.
 
-## 7. Current branch — 2024 Jingzhe Month Pillar boundary
-Branch: `korea/saju-jingzhe-month-boundary`.
-
-Fresh research and patch add:
+Production includes:
 - `fixtures/saju/month-boundary-fixtures.json`;
 - `scripts/check-saju-month-boundary-fixtures.mjs`;
-- `npm run check:saju` now gates the monthly fixture checker;
+- monthly fixture checker inside `npm run check:saju`;
 - `docs/SAJU_MONTH_BOUNDARY_RESEARCH_2026-08-28.md`.
 
 Evidence-bounded result:
@@ -101,9 +98,15 @@ Evidence-bounded result:
 - **11:23:00–11:23:59 KST remains unresolved at KASI source resolution**;
 - trusted post sample **11:24 KST → 丁卯**.
 
+Release evidence:
+1. exact branch head `611894b6d7fbbcb1260d620f9344c375b83ff8bd` passed private MiniPC CI including frozen install, i18n, `npm run build`/Saju gates, document-language and legacy redirect checks;
+2. PR #17 squash-merged to `a63d58a35b5953b45cb434484d2eb3b144d92598`;
+3. exact merged SHA deployment completed with status success through the private root-owned deployment path;
+4. post-deploy full preflight passed 8/8 stability + all 36 P0 routes with `failures=0`.
+
 Fresh indexed Threads searches returned no attributable evidence worth adopting. Hugging Face dataset search was attempted but `dataset_search` remains disabled by server configuration. No HF/Threads evidence is claimed.
 
-**Release state:** branch patch prepared; MiniPC exact-head CI, merge, exact-SHA deployment and post-deploy full preflight are still required before calling this production-shipped.
+No runtime Saju calculator dependency was added.
 
 ## 8. Deterministic Saju research decisions
 - `yhj1024/manseryeok` 2.0.0 remains **ADAPT / verify before adoption**. MIT, TypeScript, zero runtime dependencies, but its own correctness examples cannot validate itself.
@@ -114,7 +117,7 @@ Fresh indexed Threads searches returned no attributable evidence worth adopting.
 - lunar leap-month fixture currently verifies representation/shape only.
 - no new Saju runtime dependency has been added.
 
-Next trusted-fixture order after the Jingzhe slice is released:
+Next trusted-fixture order:
 1. 23:00/00:00/01:00 policy outputs;
 2. true-solar longitude/equation-of-time branch-hour crossing;
 3. historical IANA timezone/DST;
@@ -172,16 +175,15 @@ Mandatory release flow:
 - dietary filters are explicit user selection only.
 
 ## 15. Current priority order
-1. Finish exact-head MiniPC CI and release of the Jingzhe Month Pillar fixture branch.
-2. Promote 23:00/00:00/01:00 outputs without treating one school as universal truth.
-3. Verify true-solar longitude/equation-of-time branch-hour crossing.
-4. Verify historical IANA timezone/DST and semantic lunar leap-month validity.
-5. Evaluate an exact pinned `manseryeok` only against trusted fixtures.
-6. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
-7. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
-8. Step 4 auth + authoritative wallet.
-9. Step 5 global USD payment foundation.
-10. Then Gemini Live and premium consented photo analysis; continue Premium Naming Studio research when it does not block core dependencies.
+1. Promote 23:00/00:00/01:00 outputs without treating one day-boundary school as universal truth.
+2. Verify true-solar longitude/equation-of-time branch-hour crossing.
+3. Verify historical IANA timezone/DST and semantic lunar leap-month validity.
+4. Evaluate an exact pinned `manseryeok` only against trusted fixtures.
+5. Build foreign-user exact/rough/unknown birth-time UX with minimal location input and no forced Hanja.
+6. Continue Step 3B–E explainable Saju → zodiac/astrology → tarot → daily fortune.
+7. Step 4 auth + authoritative wallet.
+8. Step 5 global USD payment foundation.
+9. Then Gemini Live and premium consented photo analysis; continue Premium Naming Studio research when it does not block core dependencies.
 
 ## 16. Regression watch
 - any reappearance of 1033/530/502 reopens production reliability priority;
