@@ -72,19 +72,42 @@ for (const testCase of fixture.contractCases) {
   }
 }
 
+let officialInstantEvidenceCount = 0;
 for (const boundaryCase of fixture.calculationBoundaryCases) {
   assert.equal(typeof boundaryCase.id, 'string');
   assert.equal(seen.has(boundaryCase.id), false, `Duplicate fixture id: ${boundaryCase.id}`);
   seen.add(boundaryCase.id);
-  assert.equal(boundaryCase.status, 'research-pending', `${boundaryCase.id} must remain pending until expected values are independently verified.`);
   assert.ok(Array.isArray(boundaryCase.requiredEvidence) && boundaryCase.requiredEvidence.length >= 2, `${boundaryCase.id} needs at least two evidence classes.`);
   assert.ok(typeof boundaryCase.reason === 'string' && boundaryCase.reason.length >= 20, `${boundaryCase.id} needs an explicit anti-guessing reason.`);
 
-  // A future fixture may be promoted only when the harness is deliberately
-  // upgraded to validate exact expected calculator output + source provenance.
-  for (const forbidden of ['expectedPillars', 'expectedInstant', 'verified']) {
+  if (boundaryCase.status === 'official-instant-verified') {
+    officialInstantEvidenceCount += 1;
+    assert.equal(typeof boundaryCase.officialInstant, 'string', `${boundaryCase.id}: officialInstant required`);
+    assert.equal(typeof boundaryCase.officialLocalTime, 'string', `${boundaryCase.id}: officialLocalTime required`);
+    assert.equal(typeof boundaryCase.officialSource, 'string', `${boundaryCase.id}: officialSource required`);
+    assert.ok(boundaryCase.officialSource.startsWith('https://astro.kasi.re.kr/'), `${boundaryCase.id}: official source must be KASI`);
+    assert.equal(boundaryCase.resolutionSeconds, 60, `${boundaryCase.id}: current KASI fixture resolution is one minute`);
+
+    const utcMs = Date.parse(boundaryCase.officialInstant);
+    const localMs = Date.parse(boundaryCase.officialLocalTime);
+    assert.ok(Number.isFinite(utcMs), `${boundaryCase.id}: officialInstant must be ISO parseable`);
+    assert.ok(Number.isFinite(localMs), `${boundaryCase.id}: officialLocalTime must be ISO parseable`);
+    assert.equal(utcMs, localMs, `${boundaryCase.id}: UTC and KST records must identify the same instant`);
+
+    // Official astronomical time is evidence, not yet calculator truth. Until
+    // a genuinely independent implementation cross-check is recorded, do not
+    // let this fixture assert Saju pillar output or claim full verification.
+    for (const forbidden of ['expectedPillars', 'verified']) {
+      assert.equal(Object.hasOwn(boundaryCase, forbidden), false, `${boundaryCase.id} contains premature calculator truth: ${forbidden}`);
+    }
+    continue;
+  }
+
+  assert.equal(boundaryCase.status, 'research-pending', `${boundaryCase.id} has an unsupported evidence state.`);
+  for (const forbidden of ['expectedPillars', 'expectedInstant', 'officialInstant', 'verified']) {
     assert.equal(Object.hasOwn(boundaryCase, forbidden), false, `${boundaryCase.id} contains unverified calculator truth: ${forbidden}`);
   }
 }
 
-console.log(`Saju boundary fixture checks passed: ${fixture.contractCases.length} executable contract cases; ${fixture.calculationBoundaryCases.length} calculator-boundary cases remain evidence-gated.`);
+assert.ok(officialInstantEvidenceCount >= 1, 'At least one calculator-boundary case should carry official astronomical evidence once established.');
+console.log(`Saju boundary fixture checks passed: ${fixture.contractCases.length} executable contract cases; ${officialInstantEvidenceCount} official instant evidence record(s); remaining calculator outputs stay evidence-gated.`);
