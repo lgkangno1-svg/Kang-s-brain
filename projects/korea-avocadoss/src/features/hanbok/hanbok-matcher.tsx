@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
@@ -15,6 +15,82 @@ type MoodId = (typeof MOOD_IDS)[number];
 type ComfortId = (typeof COMFORT_IDS)[number];
 type DestinationId = (typeof DESTINATION_IDS)[number];
 type SeasonId = (typeof SEASON_IDS)[number];
+type LookId = 'look1' | 'look2' | 'look3';
+
+type HanbokLook = {
+  id: LookId;
+  color: ColorId;
+  moods: readonly MoodId[];
+  comforts: readonly ComfortId[];
+  destinations: readonly DestinationId[];
+  seasons: readonly SeasonId[];
+  jeogoriColor: string;
+  chimaColor: string;
+};
+
+const HANBOK_LOOKS: readonly HanbokLook[] = [
+  {
+    id: 'look1',
+    color: 'jadeIvory',
+    moods: ['elegant', 'romantic'],
+    comforts: ['balanced', 'photoFirst'],
+    destinations: ['hyangwonjeong', 'stoneWall'],
+    seasons: ['springAutumn', 'summer'],
+    jeogoriColor: '#B8D0D8',
+    chimaColor: '#4A1525',
+  },
+  {
+    id: 'look2',
+    color: 'roseNavy',
+    moods: ['minimal', 'romantic'],
+    comforts: ['walking', 'balanced'],
+    destinations: ['stoneWall', 'bukchon'],
+    seasons: ['springAutumn', 'winter'],
+    jeogoriColor: '#C8B6DB',
+    chimaColor: '#1E293B',
+  },
+  {
+    id: 'look3',
+    color: 'moonBlue',
+    moods: ['royal', 'kdrama'],
+    comforts: ['photoFirst', 'balanced'],
+    destinations: ['bukchon', 'hyangwonjeong'],
+    seasons: ['winter', 'springAutumn'],
+    jeogoriColor: '#FDFBF7',
+    chimaColor: '#D4A373',
+  },
+];
+
+function scoreLook(
+  look: HanbokLook,
+  choices: {
+    color: ColorId;
+    mood: MoodId;
+    comfort: ComfortId;
+    destination: DestinationId;
+    season: SeasonId;
+  },
+) {
+  // Transparent rule score: 40 palette + 25 mood + 15 comfort + 10 backdrop + 10 season.
+  // This is a deterministic preference-fit score, not an AI confidence or objective beauty score.
+  return (
+    (look.color === choices.color ? 40 : 0) +
+    (look.moods.includes(choices.mood) ? 25 : 0) +
+    (look.comforts.includes(choices.comfort) ? 15 : 0) +
+    (look.destinations.includes(choices.destination) ? 10 : 0) +
+    (look.seasons.includes(choices.season) ? 10 : 0)
+  );
+}
+
+function backdropFit(look: HanbokLook, destination: DestinationId) {
+  if (look.destinations[0] === destination) return 5;
+  if (look.destinations.includes(destination)) return 4.5;
+  return 3.5;
+}
+
+function comfortFit(look: HanbokLook, comfort: ComfortId) {
+  return look.comforts.includes(comfort) ? 100 : 60;
+}
 
 export function HanbokMatcher() {
   const t = useTranslations('HanbokMatcher');
@@ -23,6 +99,15 @@ export function HanbokMatcher() {
   const [comfort, setComfort] = useState<ComfortId>('balanced');
   const [destination, setDestination] = useState<DestinationId>('stoneWall');
   const [season, setSeason] = useState<SeasonId>('springAutumn');
+
+  const rankedLooks = useMemo(() => HANBOK_LOOKS
+    .map((look) => ({
+      look,
+      score: scoreLook(look, { color, mood, comfort, destination, season }),
+      backdrop: backdropFit(look, destination),
+      comfortScore: comfortFit(look, comfort),
+    }))
+    .sort((a, b) => b.score - a.score), [color, mood, comfort, destination, season]);
 
   return (
     <div className="prototypePanel">
@@ -35,98 +120,63 @@ export function HanbokMatcher() {
       </div>
 
       <div className="hanbokMatcherGrid">
-        {/* 1. Color Direction */}
         <fieldset className="hanbokFieldset">
           <legend>{t('colorLegend')}</legend>
           <p className="hanbokFieldHelp">{t('colorHelp')}</p>
           <div className="hanbokChoiceGrid">
             {COLOR_IDS.map((id) => (
               <label className={`hanbokChoice ${color === id ? 'hanbokChoiceActive' : ''}`} key={id}>
-                <input
-                  checked={color === id}
-                  name="hanbok-color"
-                  onChange={() => setColor(id)}
-                  type="radio"
-                  value={id}
-                />
+                <input checked={color === id} name="hanbok-color" onChange={() => setColor(id)} type="radio" value={id} />
                 <span>{t('colors.' + id)}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        {/* 2. Mood */}
         <fieldset className="hanbokFieldset">
           <legend>{t('moodLegend')}</legend>
           <p className="hanbokFieldHelp">{t('moodHelp')}</p>
           <div className="hanbokChoiceGrid">
             {MOOD_IDS.map((id) => (
               <label className={`hanbokChoice ${mood === id ? 'hanbokChoiceActive' : ''}`} key={id}>
-                <input
-                  checked={mood === id}
-                  name="hanbok-mood"
-                  onChange={() => setMood(id)}
-                  type="radio"
-                  value={id}
-                />
+                <input checked={mood === id} name="hanbok-mood" onChange={() => setMood(id)} type="radio" value={id} />
                 <span>{t('moods.' + id)}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        {/* 3. Trip Priority */}
         <fieldset className="hanbokFieldset">
           <legend>{t('comfortLegend')}</legend>
           <p className="hanbokFieldHelp">{t('comfortHelp')}</p>
           <div className="hanbokChoiceGrid">
             {COMFORT_IDS.map((id) => (
               <label className={`hanbokChoice ${comfort === id ? 'hanbokChoiceActive' : ''}`} key={id}>
-                <input
-                  checked={comfort === id}
-                  name="hanbok-comfort"
-                  onChange={() => setComfort(id)}
-                  type="radio"
-                  value={id}
-                />
+                <input checked={comfort === id} name="hanbok-comfort" onChange={() => setComfort(id)} type="radio" value={id} />
                 <span>{t('comfort.' + id)}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        {/* 4. Palace Destination */}
         <fieldset className="hanbokFieldset">
           <legend>{t('destinationLegend')}</legend>
           <div className="hanbokChoiceGrid">
             {DESTINATION_IDS.map((id) => (
               <label className={`hanbokChoice ${destination === id ? 'hanbokChoiceActive' : ''}`} key={id}>
-                <input
-                  checked={destination === id}
-                  name="hanbok-destination"
-                  onChange={() => setDestination(id)}
-                  type="radio"
-                  value={id}
-                />
+                <input checked={destination === id} name="hanbok-destination" onChange={() => setDestination(id)} type="radio" value={id} />
                 <span>{t('destinations.' + id)}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        {/* 5. Season & Fabric */}
         <fieldset className="hanbokFieldset">
           <legend>{t('seasonLegend')}</legend>
           <div className="hanbokChoiceGrid">
             {SEASON_IDS.map((id) => (
               <label className={`hanbokChoice ${season === id ? 'hanbokChoiceActive' : ''}`} key={id}>
-                <input
-                  checked={season === id}
-                  name="hanbok-season"
-                  onChange={() => setSeason(id)}
-                  type="radio"
-                  value={id}
-                />
+                <input checked={season === id} name="hanbok-season" onChange={() => setSeason(id)} type="radio" value={id} />
                 <span>{t('seasons.' + id)}</span>
               </label>
             ))}
@@ -134,7 +184,6 @@ export function HanbokMatcher() {
         </fieldset>
       </div>
 
-      {/* Result Section */}
       <div className="hanbokResultCard">
         <div className="hanbokResultHeader">
           <span className="hanbokResultEyebrow">{t('resultEyebrow')}</span>
@@ -155,91 +204,50 @@ export function HanbokMatcher() {
 
         <p className="hanbokComfortNote">{t('comfortNotes.' + comfort)}</p>
 
-        {/* Top Recommended Hanbok Looks */}
         <div className="hanbokLooksSection">
           <h4>{t('looksTitle')}</h4>
           <div className="hanbokLooksGrid">
-            {/* Look 1 */}
-            <article className="hanbokLookCard hanbokLookCardFeatured">
-              <div className="lookCardHeader">
-                <span className="matchBadge">Top Match 96%</span>
-                <h5>{t('look1Title')}</h5>
-                <p>{t('look1Desc')}</p>
-              </div>
-              <div className="lookSwatches">
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#B8D0D8' }} />
-                  <span>Jeogori: Celadon</span>
+            {rankedLooks.map(({ look, score, backdrop, comfortScore }, index) => (
+              <article className={`hanbokLookCard ${index === 0 ? 'hanbokLookCardFeatured' : ''}`} key={look.id}>
+                <div className="lookCardHeader">
+                  <span className={index === 0 ? 'matchBadge' : 'matchBadgeSecondary'}>
+                    #{index + 1} · {score}/100
+                  </span>
+                  <h5>{t(look.id + 'Title')}</h5>
+                  <p>{t(look.id + 'Desc')}</p>
                 </div>
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#4A1525' }} />
-                  <span>Chima: Royal Plum</span>
-                </div>
-              </div>
-              <div className="lookMetaList">
-                <div><small>{t('fabricLabel')}</small><span>{t('seasons.' + season)}</span></div>
-                <div><small>{t('accessoriesLabel')}</small><span>{t('accessoriesValue')}</span></div>
-                <div><small>{t('backdropRating')}</small><span>★★★★★ (5.0 / 5.0)</span></div>
-              </div>
-              <div className="lookWhyList">
-                <strong>{t('whySuitsTitle')}</strong>
-                <ul>
-                  <li>{t('why1')}</li>
-                  <li>{t('why2')}</li>
-                  <li>{t('why3')}</li>
-                </ul>
-              </div>
-            </article>
 
-            {/* Look 2 */}
-            <article className="hanbokLookCard">
-              <div className="lookCardHeader">
-                <span className="matchBadgeSecondary">Match 91%</span>
-                <h5>{t('look2Title')}</h5>
-                <p>{t('look2Desc')}</p>
-              </div>
-              <div className="lookSwatches">
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#C8B6DB' }} />
-                  <span>Jeogori: Lavender</span>
+                <div className="lookSwatches" aria-label={t('resultPalette')}>
+                  <div className="swatchPair">
+                    <i style={{ backgroundColor: look.jeogoriColor }} />
+                    <span>{look.jeogoriColor}</span>
+                  </div>
+                  <div className="swatchPair">
+                    <i style={{ backgroundColor: look.chimaColor }} />
+                    <span>{look.chimaColor}</span>
+                  </div>
                 </div>
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#1E293B' }} />
-                  <span>Chima: Charcoal Indigo</span>
-                </div>
-              </div>
-              <div className="lookMetaList">
-                <div><small>{t('fabricLabel')}</small><span>{t('seasons.' + season)}</span></div>
-                <div><small>{t('backdropRating')}</small><span>★★★★☆ (4.8 / 5.0)</span></div>
-              </div>
-            </article>
 
-            {/* Look 3 */}
-            <article className="hanbokLookCard">
-              <div className="lookCardHeader">
-                <span className="matchBadgeSecondary">Match 88%</span>
-                <h5>{t('look3Title')}</h5>
-                <p>{t('look3Desc')}</p>
-              </div>
-              <div className="lookSwatches">
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#FDFBF7' }} />
-                  <span>Jeogori: Ivory Silk</span>
+                <div className="lookMetaList">
+                  <div><small>{t('fabricLabel')}</small><span>{t('seasons.' + season)}</span></div>
+                  {index === 0 && <div><small>{t('accessoriesLabel')}</small><span>{t('accessoriesValue')}</span></div>}
+                  <div><small>{t('backdropRating')}</small><span>{backdrop.toFixed(1)} / 5.0</span></div>
+                  <div><small>{t('comfortScore')}</small><span>{comfortScore} / 100</span></div>
                 </div>
-                <div className="swatchPair">
-                  <i style={{ backgroundColor: '#D4A373' }} />
-                  <span>Chima: Soft Rosegold</span>
+
+                <div className="lookWhyList">
+                  <strong>{t('whySuitsTitle')}</strong>
+                  <ul>
+                    <li>{t('resultPalette')}: {t('colors.' + color)}</li>
+                    <li>{t('moodLegend')}: {t('moods.' + mood)}</li>
+                    <li>{t('destinationLegend')}: {t('destinations.' + destination)}</li>
+                  </ul>
                 </div>
-              </div>
-              <div className="lookMetaList">
-                <div><small>{t('fabricLabel')}</small><span>{t('seasons.' + season)}</span></div>
-                <div><small>{t('backdropRating')}</small><span>★★★★☆ (4.7 / 5.0)</span></div>
-              </div>
-            </article>
+              </article>
+            ))}
           </div>
         </div>
 
-        {/* Boutique finder & walking buffer */}
         <div className="boutiqueNoticeCard">
           <div className="boutiqueNoticeHead">
             <strong>📍 {t('rentalMapCta')}</strong>
@@ -250,7 +258,6 @@ export function HanbokMatcher() {
           </Link>
         </div>
 
-        {/* Privacy & Boundary notes */}
         <div className="hanbokBoundaryCard">
           <strong>{t('freeBoundaryTitle')}</strong>
           <p>{t('freeBoundaryText')}</p>
@@ -260,4 +267,3 @@ export function HanbokMatcher() {
     </div>
   );
 }
-
