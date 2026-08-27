@@ -8,6 +8,7 @@
 **Step 2 merge on main:** `bf12dc22a986a1ad14eea24055575c2f129780d8` (PR #9)  
 **Step 2 main CI:** run `33070371958` — SUCCESS  
 **Latest product-policy merge on main:** `ef49f718f8c3fd04bd6ad7c2d0261b071e1844ce` (PR #8 — Gemini Live translation / Ultra Family policy)  
+**Primary CI:** private `lgkangno1-svg/korea-concierge-ci` repository-scoped MiniPC runner  
 **Exact next implementation slice:** Step 3A — deterministic Saju calculation/input contracts before narrative AI or major UI work.
 
 > This file is the cross-session/cross-AI source of current implementation context. Every material run must inspect latest `main`, recent commits, open PRs, the current project tree, this file and `IMPLEMENTATION_ROADMAP.md` before editing. Update this file in the same run whenever status, tests, decisions, blockers, security/privacy posture, AI cost, credit economics or the next step changes.
@@ -27,7 +28,7 @@ Food/restaurant discovery must support explicit dietary filters including Vegan,
 - **AI cost:** deterministic → static → cache → rules → browser-local → cheapest qualified Chinese OpenRouter model for ordinary text/vision. Compact payloads, bounded candidates/history, hard token/provider-cost ceilings, one retry by default, same-model provider fallback before escalation, p50/p95 telemetry without sensitive prompt bodies.
 - **Credits:** `CREDIT_ECONOMICS.md` is authoritative. Basic/Advanced/Ultra one-time passes + optional top-ups; no subscriptions/ML personalized pricing without evidence. Fixed credits are shown before ordinary paid actions. Metered live translation uses a fixed visible unit rate. Wallet mutations later use immutable reserve/capture/release/refund semantics.
 
-## 3. New approved real-time translation direction
+## 3. Approved real-time translation direction
 The user explicitly prioritizes translation quality and selected **Google Gemini 3.5 Live Translate** as the default real-time spoken-translation provider candidate.
 
 Authoritative policy file: `docs/LIVE_TRANSLATION.md`.
@@ -72,7 +73,28 @@ For the future live translator screen, preferred UX is a simple mobile conversat
 - No browser-language, IP, nationality or market inference participates in redirects.
 - Ordinary AI gateway: OpenRouter. Approved future exception: direct Google Gemini Live API for real-time spoken translation only.
 
-## 6. Completed roadmap
+## 6. Primary CI architecture — private MiniPC runner
+The public `Kang-s-brain` repository must **not** be attached directly to the production MiniPC self-hosted runner. Public pull requests can contain untrusted code, so the runner is instead repository-scoped to the separate private control repository `lgkangno1-svg/korea-concierge-ci`.
+
+Current private CI setup:
+- runner: `minipc-korea-concierge-ci-c49acd`;
+- labels: `self-hosted`, `linux`, `x64`, `minipc`;
+- dedicated runner directory: `/opt/github-runners/lgkangno1-svg__korea-concierge-ci`;
+- dedicated service user; no sudo or Docker-group grant;
+- service hardening hides `/home` and limits writable paths to the runner sandbox/private temp;
+- private workflow clones public `Kang-s-brain` read-only over HTTPS without persisting source-repository credentials;
+- accepted source targets are only `main` or an exact 40-character commit SHA;
+- `target-ref.txt` update triggers an immediate exact-SHA run; scheduled runs test `main` hourly; manual dispatch remains available;
+- the public `.github/workflows/korea-concierge-ci.yml` is now GitHub-hosted **manual fallback only**, so normal development does not spend hosted Actions minutes.
+
+Verification evidence:
+- private run `33072758268` proved MiniPC checkout, Node 22/npm, lockfile policy, frozen install, P0 i18n, production build and document-language checks; its redirect step exposed a host port collision because port 3100 was already serving a different process;
+- the private workflow was hardened to allocate a free loopback port dynamically and pass `REDIRECT_CHECK_ORIGIN` explicitly;
+- private run `33072901430` then passed the full gate including deterministic 308 redirects/query preservation on the MiniPC.
+
+**Required CI procedure for future code changes:** before merging a Korea Concierge code PR/branch, write the exact public head SHA into private `korea-concierge-ci/target-ref.txt`, wait for the MiniPC run to pass, then merge. Scheduled `main` verification is additional drift detection, not a substitute for exact-head pre-merge verification. Never weaken the private-repository boundary merely to auto-run public PR code on the MiniPC.
+
+## 7. Completed roadmap
 - Step 0 ✅ product/architecture/cost/SEO/international/security baselines.
 - Step 1 ✅ deterministic P0 Quick Help, 0-AI/0-credit/no sensitive input.
 - Step 2A ✅ pinned/validated i18n foundation.
@@ -80,24 +102,25 @@ For the future live translator screen, preferred UX is a simple mobile conversat
 - Step 2C-1A ✅ native P0 Personal Color, browser-local deterministic scan.
 - Step 2C-1B ✅ native P0 Hanbok, free deterministic matcher.
 - Step 2C-1C ✅ native P0 Credits, deterministic authoritative pricing display, no fake checkout.
-- Step 2C-2 ✅ executable GitHub Actions i18n + production-build gate.
+- Step 2C-2 ✅ executable i18n + production-build gate.
 - Step 2C-3 ✅ P0 canonical/hreflang/x-default + localized sitemap/robots cutover.
 - Step 2C-4 ✅ correct P0 document language with generated-build verification.
 - Step 2C-5 ✅ deterministic retirement of old unprefixed duplicates with executable HTTP redirect verification.
 - Step 2C-6 ✅ shadowed legacy UI removed safely.
-- Step 2C-7 ✅ real npm lockfile committed; read-only CI uses frozen `npm ci`; full Step 2 executable gate green on PR and merged main.
+- Step 2C-7 ✅ real npm lockfile committed; frozen `npm ci`; full Step 2 executable gate green on PR and merged main.
+- Private MiniPC CI ✅ isolated private control repo + full self-hosted gate green.
 - Product-policy PR #8 ✅ Gemini Live / Ultra Family translation direction documented and merged.
 
-## 7. Step 2C-7 completion evidence
+## 8. Step 2C-7 completion evidence
 Step 2C-7 was rebased from the latest main in PR #9 after the Gemini Live planning merge so newer policy work was preserved.
 
 The previously blocked GitHub Actions path recovered. A trusted Node 22 Actions run generated a real npm lockfile with lifecycle scripts disabled. The lockfile policy passed before commit. The reviewed graph has 106 package entries; all resolved tarballs use HTTPS `registry.npmjs.org`, all resolved packages have sha512 integrity, root manifest specifiers match `package.json`, and no package entry is missing license metadata. Runtime dependencies remain exactly pinned; dev dependency ranges are retained because the committed lockfile freezes their concrete versions and future updates should be deliberate lockfile reviews.
 
-Temporary same-repository PR write jobs were used only to materialize the generated lockfile and synchronize closure documentation because the connector could not directly upload the generated artifact as a repository file. They were branch/actor constrained and removed before merge. The merged workflow is `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets.
+Temporary same-repository PR write jobs were used only to materialize the generated lockfile and synchronize closure documentation because the connector could not directly upload the generated artifact as a repository file. They were branch/actor constrained and removed before merge. The merged workflow used `contents: read`, SHA-pinned official actions, no persisted checkout credentials and no repository secrets. After MiniPC CI became primary, this public GitHub-hosted workflow was converted to manual fallback only.
 
-Final read-only PR #9 workflow run `33070277051` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. After squash merge `bf12dc22a986a1ad14eea24055575c2f129780d8`, main workflow run `33070371958` passed the same complete gate. This is executable build/CI evidence, not production deployment evidence.
+Final read-only PR #9 workflow run `33070277051` succeeded with: lockfile policy → frozen `npm ci --ignore-scripts --no-audit --no-fund` → P0 localization contracts → Next.js production build/TypeScript → generated document languages → deterministic 308 legacy redirects and query preservation. After squash merge `bf12dc22a986a1ad14eea24055575c2f129780d8`, main workflow run `33070371958` passed the same complete gate. These are executable build/CI evidence, not production deployment evidence.
 
-## 8. Real-time translation discovery evidence
+## 9. Real-time translation discovery evidence
 ### Google / OpenRouter
 Official Google docs were reviewed for Gemini 3.5 Live Translate, pricing, Live API and ephemeral tokens. Fresh OpenRouter public search did not return the dedicated Live Translate model.
 
@@ -109,8 +132,8 @@ Installed Hugging Face model search was attempted twice and returned tool-unavai
 
 Decision details were recorded both in `OPEN_SOURCE_DISCOVERY.md` and `LIVE_TRANSLATION.md`.
 
-## 9. Security / privacy / token / margin impact of the planning change
-This planning slice adds **no runtime API call, dependency, microphone capture, credential or customer-data path today**. It changes future architecture/economics only.
+## 10. Security / privacy / token / margin posture
+Current infrastructure changes add **no application AI call, customer-data transfer, payment behavior, microphone capture or runtime dependency**. The private CI repository stores no production API credentials and does not grant its runner sudo/Docker access.
 
 Future Gemini Live path requirements:
 - long-lived key server-only;
@@ -121,19 +144,20 @@ Future Gemini Live path requirements:
 - no transcript/audio in cost logs;
 - quality benchmark for Korean↔P0 before launch.
 
-Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at today's Google rate. The allowance is deliberately bounded to keep the $24.99 Ultra planning margin close to the existing protection target. Actual p50/p95 cost/usage must decide production allowance.
+Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at today's Google rate. Actual p50/p95 cost/usage must decide production allowance.
 
-## 10. Exact next action — Step 3A only
+## 11. Exact next action — Step 3A only
 1. Inspect fresh main/recent commits/open PRs before editing.
 2. Re-run the GitHub + Hugging Face discovery gate for deterministic Saju/calendar libraries and reference implementations.
 3. Implement deterministic birth-input types for exact time, rough time band and unknown time; never infer a missing hour.
 4. Define deterministic calendar/timezone conversion boundaries and request birth city/timezone only when genuinely needed.
 5. Keep raw birth date/time/city/name/account identifiers out of any LLM payload and logs.
 6. Add unit/fixture coverage for boundary dates, time bands and unknown-time reduced scope before narrative AI.
-7. Do not introduce paid narrative AI until deterministic structures and privacy boundaries are proven.
-8. Before substantial user-facing Step 3 UI work, re-check Stitch MCP and use it first when actually available.
+7. Trigger private MiniPC CI against the exact branch/head SHA and require green before merge.
+8. Do not introduce paid narrative AI until deterministic structures and privacy boundaries are proven.
+9. Before substantial user-facing Step 3 UI work, re-check Stitch MCP and use it first when actually available.
 
-## 11. Future order after Step 2
+## 12. Future order after Step 2
 - Step 3: deterministic Saju cultural core + beginner explanations.
 - Step 4: auth, immutable wallet, entitlements/family sharing/rate limits.
 - Step 5: international payment foundation.
@@ -144,7 +168,7 @@ Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at
 - Step 9: itinerary/premium concierge.
 - Step 10: analytics/market adaptation including live-translation minute/cost/latency metrics without conversation contents.
 
-## 12. Deferred / do not accidentally start
+## 13. Deferred / do not accidentally start
 - bulk Hanbok visual asset generation/collection;
 - recurring subscription or ML-personalized pricing without evidence;
 - runtime translation model for static site localization;
@@ -153,8 +177,9 @@ Current pricing hypothesis: 30 included Ultra minutes cost about `$1.104` raw at
 - checkout before authoritative wallet/payment callback foundations;
 - public Gemini microphone/session path before auth/entitlement/rate limiting;
 - browser-language/IP/nationality inference;
+- attaching the public repository directly to the MiniPC self-hosted runner;
 - guessed CSP origins;
 - production-deployment claims without evidence.
 
-## 13. User action currently required
+## 14. User action currently required
 **None.** Merchant credentials, production DNS/hosting, OpenRouter/Google production API credentials, analytics/search verification and legal copy review remain deferred to their corresponding gates.
