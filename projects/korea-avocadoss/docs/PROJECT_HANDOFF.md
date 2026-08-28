@@ -3,26 +3,43 @@
 **Last updated:** 2026-08-28  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Phase:** Step 3 — deterministic/explainable K-Culture core  
+**Phase:** Step 3 — deterministic/explainable K-Culture core + sellable-MVP acceleration after reliability closure  
 **Current verified production application SHA:** `361ddfc8728dcbf8615890d37d477608db91f249`  
-**CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner
+**CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
+**Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
-> Before every material patch inspect fresh main/recent commits/open PRs/full project tree, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone.
+> Before every material patch inspect fresh main/recent commits/open PRs/full project tree, `PRODUCT_MASTER_SPEC.md`, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone.
 
 ## 1. Product contract
-Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. Personalized results follow **result → evidence/data → alternative → uncertainty → action → method/privacy**. Visible numbers must come from deterministic calculation, measurement, verified facts or a documented rubric; never decorative precision.
+The authoritative long-term product/development/improvement criteria are now centralized in `docs/PRODUCT_MASTER_SPEC.md`. Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. Personalized results follow **result → evidence/data → alternative → uncertainty → action → method/privacy**. Visible numbers must come from deterministic calculation, measurement, verified facts or a documented rubric; never decorative precision.
 
 P0 locales: `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Explicit user choice wins. Never infer sensitive identity from photo/name/locale/voice.
 
+Commercial direction: free browsing/previews must remain genuinely useful, while paid value must be visible before payment. After reliability formally closes, prioritize a sellable vertical loop — visibly stronger Stitch UI, useful Hanbok free/premium experience, authoritative wallet/credits, payment-ready checkout/webhook flow and consented Personal Color premium bridge — without regressing deterministic Step 3 correctness.
+
 ## 2. Production reliability
-The 2026-08-27 intermittent Cloudflare 1033/530/502 incident is **closed and monitored**. Production is `korea-concierge.service` on `127.0.0.1:3100`. Legacy `korea-server.service` was removed from active user-systemd configuration; its app was archived rather than destructively deleted. The Docker connector `n8n-server-cloudflared-1` is unrelated and must not be stopped as a Korea repair step.
+The 2026-08-27 intermittent Cloudflare 1033/530/502 incident has recovered operationally but is **not yet formally closed under the current evidence contract**. Private CI evidence is the source of truth when it is newer than this public handoff.
 
-Closure evidence includes stable local `/` 308 + `/en` 200, clean-reset 12/12 probes, two later independent 12/12 no-retry runs, and repeated full preflights. The fresh pre-patch preflight at `2026-08-27T22:53:59Z` passed **8/8 no-retry stability, sitemap 36, 36/36 P0 routes, failures=0**. The true-solar post-deploy preflight at `2026-08-27T23:06:17Z` repeated **8/8 no-retry stability, sitemap 36, 36/36 P0 routes, failures=0**. Any sampled 1033/530/502 immediately reopens reliability priority.
+Latest revalidated private evidence at this material docs run:
+- persisted scheduled Stability Watch closure evidence contains **sample 1/2 only**: local 3/3, public 12/12, `public_bad=0`, no bad codes;
+- fresh self-hosted live-site preflight at `2026-08-28T12:54:51Z` passed **8/8 no-retry stability, sitemap 200 with 36 URLs, root 308 -> `/en`, all 36 P0 routes healthy, `failures=0`**;
+- the private workflow schedule remains responsible for obtaining a second distinct scheduled healthy sample; manual/push runs do not satisfy the closure contract.
 
-Keep the 10-minute private `Korea Concierge Tunnel Stability Watch`, consecutive deploy probes and no-retry live preflight. Runner remains without general sudo/Docker access. The current connector surface does not expose a list-latest-workflow-runs action for this private repository, so autonomous runs revalidate the stability-watch definition/schedule and fresh self-hosted preflight evidence rather than falsely claiming direct inspection of an unavailable run payload.
+Formal closure requires all of:
+1. healthy local Next.js origin;
+2. two distinct **scheduled** `Korea Concierge Tunnel Stability Watch` runs with no sampled 1033/530/502;
+3. a clean full sitemap/P0 crawl.
+
+Until the second scheduled sample is actually persisted and a fresh full preflight is clean, product runtime patching remains paused. Do not weaken this condition or replace it with retry-until-success evidence.
+
+Production is `korea-concierge.service` on `127.0.0.1:3100`. Legacy `korea-server.service` was removed from active user-systemd configuration; its app was archived rather than destructively deleted. The Docker connector `n8n-server-cloudflared-1` is unrelated and must not be stopped as a Korea repair step unless fresh non-secret diagnostics prove otherwise.
+
+Keep the private 10-minute `Korea Concierge Tunnel Stability Watch`, consecutive deploy probes and no-retry live preflight. Runner remains without general sudo/Docker access. Never expose tokens, credentials, secret environment values or full token-bearing commands.
 
 ## 3. Existing explainable previews
-Personal Color free preview may expose locally calculated undertone/depth/contrast/analyzer confidence/CIELAB values with limitations. Hanbok free matcher uses a transparent preference-fit rubric, not AI confidence or beauty scoring. Premium Personal Color/Hanbok remains future consented photo-based explainable AI after privacy/provider/cost gates.
+Personal Color free preview may expose locally calculated undertone/depth/contrast/analyzer confidence/CIELAB values with limitations. Hanbok free matcher uses a transparent preference-fit rubric, not AI confidence or beauty scoring. Premium Personal Color/Hanbok remains consented photo-based explainable AI after privacy/provider/cost gates.
+
+The current commercial UX gap is that Hanbok/credits can still read as prototype/catalog rather than a compelling paid product. `PRODUCT_MASTER_SPEC.md` now makes this a first-class improvement criterion: free Hanbok should be visually useful, Premium must clearly show what the customer receives, and paid features are not Done until their credit lifecycle/backend boundary is real or only an external credential remains.
 
 ## 4. Step 3A shipped foundations
 Production includes exact/approximate/unknown birth-time contracts; unknown time is valid reduced scope and never gets a guessed hour; exact/approximate clock input requires IANA timezone; true-solar mode additionally requires longitude; raw DOB/time/city/timezone/longitude/name/account identifiers are stripped from narrative payloads. Policies are explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar`.
@@ -84,6 +101,8 @@ Release evidence:
 ## 6. Later K-Culture roadmap
 After deterministic Saju foundations: Korean Zodiac → Western Zodiac/Astrology → Tarot → Daily Fortune. Deterministic mechanics first. Tarot randomization is independent of LLM interpretation. Astrology may not fabricate placements/ascendant from missing data. Daily fortune is reflective/cultural entertainment, not deterministic prediction or medical/legal/financial/high-impact advice.
 
+Step 3 remains an active correctness lane, but after formal reliability closure it must not monopolize implementation while the sellable Hanbok/credits/payment loop remains incomplete. See `PRODUCT_MASTER_SPEC.md` for the commercial MVP prioritization rubric.
+
 ## 7. Premium Naming Studio
 Separate premium Korean/Asian naming consultation target remains about USD `$149–150`, with curated Top 3–5, Hangul/pronunciation/romanization, validated optional Hanja, meanings, rationale, Korean naturalness, generation feel, international pronunciation, pitfalls and clearly separated traditional Saju/onomastics. Scores require explicit rubrics/data.
 
@@ -97,6 +116,8 @@ Mandatory release flow: fresh repo/live/private-CI preflight → isolated branch
 
 ## 10. Regression watch
 Never weaken reliability gates, fabricate Saju hours/astrology placements, turn a convention choice into a confidence percentage, overstate source precision, send raw birth/photo/name PII to narrative AI, let a candidate library validate itself, infer lunar leap-month validity from shape alone, invent Hanja for foreign names, or ship checkout before signed-webhook/idempotent-ledger/refund foundations.
+
+Also treat these product regressions as important: paid value not visible before checkout, Stitch/UI changes with no perceptible customer improvement, credits presented without a functioning authoritative lifecycle, Hanbok recommendations without useful visual looks, and long research-only runs that leave core customer journeys unfinished.
 
 ## 11. User action currently required
 **None.** Continue autonomously. Ask only for merchant/provider credentials, DNS, or a narrowly scoped privileged MiniPC action when it is genuinely the final blocker.
