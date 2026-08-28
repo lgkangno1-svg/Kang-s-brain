@@ -4,7 +4,7 @@
 
 ## Every loop
 1. 현재 branch/PR의 최신 HEAD와 최근 변경을 확인한다. 이전 대화/기억을 최신 코드 상태로 가정하지 않는다.
-2. `docs/HANDOFF.md`, 최신 `docs/loop-history/`, 변경 대상 source를 읽어 다른 AI/개발자의 중간 변경과 회귀 위험을 확인한다.
+2. **`docs/PROJECT_MASTER_PLAN.md`를 먼저 읽어 제품 목적·범위·우선순위·개선 기준을 확인한다.** 그 다음 `docs/HANDOFF.md`, 최신 `docs/loop-history/`, 변경 대상 source를 읽어 다른 AI/개발자의 중간 변경과 회귀 위험을 확인한다.
 3. `npm run check`
 4. `npm run demo`
 5. 다음 네 축에서 한 가지 이상의 병목을 찾는다.
@@ -12,17 +12,32 @@
    - cut timing / continuity
    - API calls / token use
    - runtime / memory / UX / security
-6. 가장 영향이 큰 한 항목만 또는 서로 독립적인 소수 항목을 수정한다.
+6. `PROJECT_MASTER_PLAN.md`의 우선순위와 개선 채택 기준에 따라 가장 영향이 큰 한 항목만 또는 서로 독립적인 소수 항목을 수정한다.
 7. unit/integration regression test를 추가한다.
 8. 가능한 실행환경에서 check/demo/targeted validation을 재실행한다. GitHub Actions unavailable/queued는 제품 patch의 blocker가 아니다.
 9. 실패 시 수정 또는 revert한다.
 10. `docs/loop-history/YYYY-MM-DD-NN-topic.md`에 문제/증거/변경/검증/영향/rollback/다음 가설을 기록한다.
 11. durable lesson이면 이 문서의 `Durable lessons`를 갱신한다.
 12. **코드·설정·테스트·CI·비용·보안·범위·로드맵·현재 상태·다음 우선순위 중 의미 있는 변화가 있으면 같은 회차에서 반드시 `docs/HANDOFF.md`도 갱신한다.** 새 AI가 과거 채팅 없이도 이어갈 수 있어야 한다.
+13. 제품 목적·제품 범위·우선순위·성공 기준 자체를 바꾸는 결정이면 `docs/PROJECT_MASTER_PLAN.md`도 같은 회차에 갱신한다. 단순 구현 진척/SHA 변경 때문에 Master Plan을 자주 수정하지 않는다.
+
+## Project master-plan contract
+
+`docs/PROJECT_MASTER_PLAN.md`는 이 프로젝트의 **제품/엔지니어링 헌장**이다. 개발 목적, CUT ONLY 범위, 품질·비용·신뢰성 우선순위, 개선 채택 기준, 사용자 운영 원칙은 이 문서를 기준으로 판단한다.
+
+문서 우선순위는 기본적으로 다음과 같다.
+
+1. 사용자의 최신 명시적 지시
+2. `docs/PROJECT_MASTER_PLAN.md`
+3. 최신 GitHub source + tests
+4. `docs/HANDOFF.md`
+5. PRD/ARCHITECTURE/LOOP_ENGINEERING/loop-history
+
+새 AI/개발자는 과거 채팅 기억만으로 제품 방향을 확대하거나 변경하지 않는다. Master Plan과 다른 방향이 필요하면 최신 사용자 지시 또는 명시적인 제품 결정이 있어야 한다.
 
 ## Living handoff contract
 
-`docs/HANDOFF.md`는 프로젝트의 공식 인수인계/현재 상태 source of truth다. 그러나 그 문서 안의 commit SHA는 snapshot일 수 있으므로 작업 시작 때 GitHub의 최신 branch/PR/source를 항상 다시 확인한다.
+`docs/HANDOFF.md`는 프로젝트의 공식 **현재 상태/인수인계** source of truth다. 장기 제품 방향은 `docs/PROJECT_MASTER_PLAN.md`가 담당한다. HANDOFF 안의 commit SHA는 snapshot일 수 있으므로 작업 시작 때 GitHub의 최신 branch/PR/source를 항상 다시 확인한다.
 
 다음 항목이 바뀌면 HANDOFF를 같은 작업 회차에 업데이트한다.
 
@@ -64,6 +79,7 @@ HANDOFF 업데이트를 잊은 제품 변경은 인수인계 관점에서 미완
 - mutation lock 자체만으로 stale-state overwrite가 막히는 것은 아니다. mutable snapshot을 lock 전에 읽었다면 앞선 mutation이 끝난 뒤 오래된 객체로 최신 `project.json`을 다시 덮을 수 있으므로, `/upload`·`/run`·`/replace`는 **mutation ownership을 얻은 뒤 최신 project snapshot을 다시 읽고 그 객체만 수정/실행에 사용한다.** snapshot read가 실패하면 owner-aware하게 lock을 해제한다.
 - self-hosted CI는 GitHub Actions 성공을 제품 패치의 전제조건으로 만들지 않는다. Mini PC가 offline이거나 workflow가 queued여도 검증 가능한 변경은 branch/history에 저장하고, runner가 온라인일 때 `npm run check`와 실제 FFmpeg `npm run demo`를 추가 증거로 사용한다. 공개 저장소의 개인 self-hosted runner에서는 외부 fork PR 코드를 실행하지 않고 `GITHUB_TOKEN` 권한도 최소화한다.
 - 프로젝트를 여러 AI/개발자가 이어서 수정할 수 있으면 채팅 기억을 인수인계 수단으로 삼지 않는다. 최신 GitHub source와 `docs/HANDOFF.md`를 먼저 읽고, 의미 있는 변경마다 HANDOFF의 완료 상태/로드맵/다음 가설을 함께 갱신해 repository 자체가 현재 맥락을 보존하게 한다.
+- 장기 제품 방향과 현재 구현 상태를 한 문서에 섞어두면 일상적인 SHA/진척 변경 때문에 제품 철학까지 흔들릴 수 있다. 목적·범위·우선순위·개선 판단 기준은 `PROJECT_MASTER_PLAN.md`에 안정적으로 두고, 구현 진척은 `HANDOFF.md`에서 갱신한다.
 
 ## Quality metrics
 - Caption↔visual judge score
@@ -87,3 +103,4 @@ HANDOFF 업데이트를 잊은 제품 변경은 인수인계 관점에서 미완
 - UI 기능 때문에 renderer determinism을 희생하지 않는다.
 - 공개 저장소에 API key/원본 영상/개인 데이터를 commit하지 않는다.
 - 의미 있는 프로젝트 변경 후 `docs/HANDOFF.md`가 현재 상태와 모순된 채 남으면 해당 회차를 완료로 간주하지 않는다.
+- `docs/PROJECT_MASTER_PLAN.md`의 제품 목적/범위/우선순위를 명시적 제품 결정 없이 임의로 변경하거나 우회하지 않는다.
