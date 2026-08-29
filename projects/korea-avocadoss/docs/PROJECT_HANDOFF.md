@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Phase:** sellable-MVP acceleration + Step 3 deterministic/explainable K-Culture in parallel  
-**Current verified production application SHA:** `17ced5f7dc1fbc7c5ff7492db42634790345f0df`  
+**Current verified production application SHA:** `22e46a830bfdb692da4234da49804b6ff65f504f`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
@@ -33,7 +33,7 @@ Runtime understanding:
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes.
 
-Latest production verification after the Hanbok visual release: private full preflight run `33231057854`, checked `2026-08-29T03:18:31Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
+Latest production verification after the Saju deterministic core release: private full preflight run `33250743742`, checked `2026-08-29T11:43:07Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
 
 ### Private CI diagnostics persistence hardening
 The earlier post-deploy probe run `33230226936` proved the live surface healthy but its diagnostics persistence step hit a private-main rebase race. This was a CI bookkeeping race, not a production failure. Private `.github/workflows/live-site-preflight.yml` was hardened at `f25cba65d2658fa6cca783953672f9fe76705aa0`: each persistence retry resets to newest private `main`, reapplies the sanitized generated report, and performs a normal fast-forward push. No force-push or privilege escalation is used.
@@ -75,8 +75,8 @@ Next Hanbok visual quality steps:
 4. map approved visuals to deterministic look archetypes without claiming the photographed garment is the actual rental item;
 5. continue premium photo-aware Hanbok only after consent/privacy/provider/cost gates.
 
-## 4. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED
-### Saju deterministic core — SHIPPED
+## 4. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED & PRODUCTION VERIFIED 2026-08-29
+### Saju deterministic core — PRODUCTION VERIFIED 2026-08-29
 Files:
 - `src/lib/saju/input-contracts.ts`;
 - `src/lib/saju/deterministic-core.ts`;
@@ -100,6 +100,12 @@ Core invariants & capabilities:
 - **Machine-readable provenance & explainability**: produces full `SajuProvenance` including applied rule IDs, resolved facts, uncertain facts, unavailable reasons, and candidate derivations;
 - **Privacy & Narrative boundary**: `buildSajuNarrativePayload` enforces whitelist-only serialization, dropping all raw PII (birth date, clock time, place label, timezone, longitude, user name, account ID); `validateNarrativePayloadImmutability` verifies that downstream narrative adapters cannot alter deterministic calculation outputs;
 - **Automated tests**: `scripts/check-saju-deterministic-core.mjs` verifies all 20+ required criteria and property invariants; integrated into `npm run check:saju` and production `npm run build`.
+
+Release evidence:
+1. branch head `5b6cfa82ce65ebf7b78e318cb813155b221d141c` passed private MiniPC CI `33250591412` (job `99095466695`, 39s, green);
+2. PR #33 squash-merged to production SHA `22e46a830bfdb692da4234da49804b6ff65f504f`;
+3. private secure deploy `33250658963` (job `99095651505`, 1m20s) deployed `22e46a830bfdb692da4234da49804b6ff65f504f` and passed exact-SHA check, production build, isolated redirect checks, cutover, and consecutive Cloudflare checks;
+4. post-deploy live preflight `33250743742` (job `99095880939`, 53s) passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
 
 Remaining Step 3A/3B:
 1. consumer UI components for Saju chart visualization and explainable result cards;
