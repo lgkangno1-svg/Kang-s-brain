@@ -1,10 +1,11 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-08-29  
+**Last updated:** 2026-08-30  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Phase:** sellable-MVP acceleration + Step 3 deterministic/explainable K-Culture in parallel  
-**Current verified production application SHA:** `9dc8166c937699451ece935b3375030941b01e4a`  
+**Phase:** customer-facing premium Hanbok experience + Stitch synchronization; Step 3 deterministic K-Culture continues in parallel  
+**Most recent merged main SHA:** `6f466c1a6262039612dafc0ada8303c7a989c668`  
+**Most recent user-reported verified production SHA:** `6f466c1a6262039612dafc0ada8303c7a989c668`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
@@ -15,15 +16,17 @@ Korea Concierge is a mobile-first multilingual companion for international visit
 
 P0 locales: `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Explicit user choice wins. Never infer sensitive identity from photo/name/locale/voice.
 
-Global-first payment direction and premium Naming Studio remain intact. Current browser-local/deterministic Personal Color and Hanbok tools remain free previews; premium photo-aware versions are later consented explainable-AI features after privacy/provider/cost gates. Paid-MVP foundations progress in parallel with Step 3 so research-only work does not block a sellable customer journey.
+Global-first payment direction and premium Naming Studio remain intact, but **Stripe live activation is deferred while customer-facing premium value is built first**. The current browser-local/deterministic Personal Color and Hanbok tools remain free previews. Premium photo-aware Hanbok/Personal Color is a later consented explainable-AI layer after privacy/provider/cost gates.
 
 ## 2. Production reliability — FORMALLY CLOSED 2026-08-29
-The 2026-08-27 intermittent Cloudflare 1033/530/502 incident is **formally closed** under the user-defined evidence contract. Private CI remains the source of truth and any future sampled 1033/530/502 immediately reopens reliability priority.
+The 2026-08-27 intermittent Cloudflare 1033/530/502 incident is formally closed under the user-defined evidence contract. Private CI remains the source of truth and any future sampled 1033/530/502 immediately reopens reliability priority.
 
-Closure evidence:
+Closure evidence already recorded:
 1. scheduled dedicated Stability Watch `33130231833`: local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`;
 2. separate scheduled integrated stability/preflight `33216886289`: public stability clean, sitemap 36, P0 `36/36`, `failures=0`;
 3. closure confirmation `33227495587`: local `3/3`, public `12/12`, sitemap 36, P0 `36/36`, failures `0`.
+
+Latest Hanbok/Stripe merge `6f466c1a6262039612dafc0ada8303c7a989c668` was user-reported as deployed with MiniPC CI run `33258985277`, deploy run `33259043279`, and live preflight `33259127317`: local `3/3`, public `12/12`, sitemap/P0 failures `0`, 530/1033/502 = 0. Revalidate from private CI before the next merge rather than relying on this historical report.
 
 Runtime understanding:
 - production is `korea-concierge.service` on `127.0.0.1:3100`;
@@ -33,53 +36,145 @@ Runtime understanding:
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes.
 
-## 3. Hanbok Core 3-Style Redesign & Matcher Preset Architecture — SHIPPED
-Replaced the runway-heavy 6-style layout with the 3 quintessential Korean palace experience styles that international visitors intuitively seek:
-1. **Princess / Prince**: Soft, graceful, youthful pastel layers, classic palace photo-friendly look;
-2. **Queen / King**: Elegant, traditional, dignified formal court-inspired look with richer silk colors;
-3. **Royal**: Luxurious, ornate, ceremonial, highly decorated premium look with gold-leaf accents and dramatic photographic presence.
+## 3. Hanbok Core — current shipped state
+The customer-facing style system is intentionally simple:
+1. **Princess / Prince** — soft, graceful, youthful pastel layers, classic palace photo-friendly look;
+2. **Queen / King** — elegant, traditional, dignified formal court-inspired look with richer colors;
+3. **Royal** — luxurious, ornate, ceremonial, highly decorated premium experience label.
 
-Files:
-- `src/features/hanbok/hanbok-visual-library.ts` (structured 3 categories with curated feminine & masculine references, 4:5 aspect ratio, and matcher presets);
-- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css` (consistent 4:5 image cards, feminine/masculine toggle, source links, direct URL preset linking);
-- `src/features/hanbok/hanbok-matcher.tsx` (URL preset consumption via `?hanbokStyle={style}#hanbok-matcher`, applied preset badge);
-- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json` + `messages/hanbok/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete 6-locale parity with 402 leaf keys);
-- `scripts/check-hanbok-visual-contracts.mjs` (executable contract test ensuring 3 categories, valid metadata, and preset IDs).
+Shipped files:
+- `src/features/hanbok/hanbok-visual-library.ts`;
+- `src/features/hanbok/hanbok-visual-inspiration.tsx` + CSS module;
+- `src/features/hanbok/hanbok-matcher.tsx`;
+- `messages/hanbok-visual/**`, `messages/hanbok/**`;
+- `scripts/check-hanbok-visual-contracts.mjs`.
 
-## 4. Stripe Global Payment Primary Foundation — SHIPPED
-Stripe is confirmed as the primary global payment provider for Korea Concierge. Implemented server-authoritative Stripe Checkout Sessions and HMAC-SHA256 signature verification.
+Important quality issue still open: several primary references still come from `Korea_Hanbok_Fashion_Show_*` sources. The user explicitly rejected runway/fashion-show imagery as the defining visual for the three categories. Replace those with rights-reviewed, high-resolution real palace/ceremonial references before declaring the visual library final.
 
-Files:
-- `src/lib/payments/catalog.ts` (product catalog: `premium_hanbok_match`, `premium_naming_studio`, `trip_pass_basic`, `trip_pass_advanced`, `trip_pass_ultra`; server-mapped Price ID resolution);
-- `src/lib/payments/stripe.ts` (server checkout session creation, timing-safe HMAC-SHA256 webhook signature verification with 300s replay tolerance, zero-PII metadata);
-- `src/app/api/checkout/stripe/route.ts` (secure checkout endpoint rejecting client price/amount injection);
-- `src/app/api/stripe/webhook/route.ts` (verified webhook endpoint for `checkout.session.completed`);
-- `src/app/[locale]/checkout/success/page.tsx` + `layout.tsx` (clean localized order confirmation page);
-- `messages/public/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete CheckoutSuccess copy in all 6 locales);
-- `scripts/check-stripe-payment-contracts.mjs` (security tests: client price injection prevention, webhook signature verification, replay protection, missing config handling);
-- `.env.example` (clean environment variable template for Stripe keys and Price IDs).
+## 4. Personal Color → Hanbok continuity — IMPLEMENTED ON WORKING BRANCH, NOT YET MERGED
+Working branch: `korea-concierge/hanbok-ai-ux-stitch-sync-20260830`.
 
-## 5. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED & PRODUCTION VERIFIED
+Current branch changes:
+- new `src/features/hanbok/personal-color-bridge.ts` with an explicit deterministic mapping: warm → `jadeIvory`, neutral → `roseNavy`, cool → `moonBlue`;
+- browser-local Personal Color result deep-links to `/hanbok?undertone=...#hanbok-matcher`;
+- Hanbok visual style selection preserves the explicit undertone parameter;
+- matcher pre-fills the broad Hanbok palette from that explicit Personal Color result while style still controls mood/comfort;
+- the user can override all matcher selections;
+- `scripts/check-hanbok-visual-contracts.mjs` now covers this bridge.
+
+This mapping is a documented product rule, not an AI confidence score or a claim that one color is objectively best.
+
+## 5. Stitch design synchronization — ROOT CAUSE IDENTIFIED
+Original Stitch UI was successfully merged through PR #11 (`95a86da4554a9a027b39a5480c971aaa48939672`) on 2026-08-27. The design system itself therefore was not missing.
+
+The synchronization drift happened because:
+1. dedicated branch `korea-concierge/stitch-ui-system` stopped at `1e2dcb8daaf6daac610e7b57785da81e64d61446` on 2026-08-27;
+2. later Hanbok gallery work explicitly isolated styling in a CSS module rather than rewriting global Stitch CSS;
+3. later PRs, including the 3-style Hanbok redesign, landed directly on newer `main`;
+4. `docs/UI_STITCH_SPEC.md` remained version 1.0 and still described the old generic Hanbok mock with static 96/91/88 example match percentages.
+
+Do **not** merge the stale Stitch branch back onto main. It can regress newer work. Instead, sync the latest product requirements forward into the Stitch design/project.
+
+`docs/UI_STITCH_SPEC.md` is updated to v1.1 on the current working branch with:
+- current 3-style Hanbok contract;
+- Personal Color continuity;
+- no decorative confidence percentages;
+- rights-reviewed image standards;
+- future Premium AI Hanbok concept UX;
+- a formal rule that material UI changes must update the Stitch spec and refresh Stitch screens when tooling is available.
+
+External Stitch project regeneration is still pending because this ChatGPT run has repository access but no direct Stitch editing connector.
+
+## 6. Premium Hanbok — revised product direction
+Do not build a giant uncontrolled scraped-image dataset. The preferred architecture is hybrid:
+
+### A. Rights-reviewed real reference library
+Grow a smaller high-quality library first, eventually roughly hundreds rather than immediately thousands of images, with useful metadata:
+- Princess/Prince, Queen/King, Royal;
+- feminine/masculine/unisex presentation;
+- dominant/secondary colors;
+- Personal Color fit;
+- ornament level;
+- silhouette;
+- season/fabric;
+- palace/location context;
+- source/license/provenance;
+- real bookable inventory flag.
+
+The purpose is grounding, examples and later real-shop matching. No uncontrolled Instagram/blog/drama scraping into production assets.
+
+### B. AI styling concept generation
+The premium user-visible value should be a visual answer to **“What Hanbok would suit me?”**
+
+Inputs:
+- explicit Personal Color result;
+- selected Princess/Prince, Queen/King or Royal direction;
+- mood;
+- destination;
+- season;
+- walking/photo priority;
+- optional consented photo later;
+- solo/couple/family context later.
+
+Target output:
+- 1–3 large AI Hanbok concept previews;
+- main + alternate colorway;
+- silhouette/accessory/fabric brief;
+- explainable reasons based on explicit inputs;
+- a simple reference card to show a rental shop;
+- visible disclosure that AI concepts are not guaranteed rental inventory.
+
+Implementation order:
+1. typed deterministic styling brief;
+2. provider abstraction;
+3. cost/latency measurement;
+4. optional consented/transient photo pipeline;
+5. generated concept preview;
+6. only then assign credit cost using measured provider cost + target margin.
+
+Do not use generated images as evidence for Personal Color classification. Do not send raw photos to narrative LLMs.
+
+## 7. Stripe Global Payment Primary Foundation — CODE SHIPPED, ACTIVATION DEFERRED
+Stripe remains the chosen global payment provider. Foundation already exists:
+- `src/lib/payments/catalog.ts`;
+- `src/lib/payments/stripe.ts`;
+- `/api/checkout/stripe`;
+- `/api/stripe/webhook`;
+- localized checkout success page;
+- `.env.example`;
+- payment contract tests.
+
+Current webhook verifies `checkout.session.completed` but does not yet persist durable entitlement/credit fulfillment. Live Stripe account onboarding, real Product/Price IDs, server secrets and live checkout are intentionally deferred until the premium feature produces a compelling result.
+
+Long-term commercial loop remains credit-based: buy credits → reserve before expensive AI action → capture on success → release/refund on failure. Credit consumption must be derived from measured provider cost and margin, not guessed numbers.
+
+## 8. Step 3A Saju deterministic core — SHIPPED & PRODUCTION VERIFIED
 Production includes:
 - exact / approximate / unknown birth-time contracts;
 - unknown time as valid reduced scope, never a guessed hour;
-- IANA timezone required for exact/approximate local clock; longitude additionally required for true-solar mode;
-- whitelist-only narrative payloads that strip raw DOB/time/city/timezone/longitude/name/account identifiers;
-- explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policies;
-- trusted Ipchun/Jingzhe boundary fixtures outside unresolved official-source minutes;
-- deterministic late-Zi semantics and NOAA/GML true-solar correction with `dayOffset`;
-- historical IANA wall-clock resolver returning explicit `unique` / `ambiguous` / `nonexistent` states;
-- 20+ automated tests in `scripts/check-saju-deterministic-core.mjs` and build gates;
+- IANA timezone/DST explicit resolution;
+- deterministic boundary policies and true-solar correction;
+- deterministic Five Rats hour-stem formula and bounded uncertainty;
+- whitelist-only narrative payloads stripping raw PII;
+- automated deterministic/property tests;
 - no runtime Saju calculator dependency.
 
-## 6. Authoritative wallet / credits — PRODUCTION FOUNDATION
+Continue later with zodiac/astrology/tarot/daily-fortune foundations after the current customer-facing premium Hanbok slice reaches a useful milestone.
+
+## 9. Authoritative wallet / credits — PRODUCTION FOUNDATION
 - `src/lib/credits/ledger.ts`, `src/lib/credits/authorization.ts`, `src/lib/credits/economics.ts`.
 - Invariants: positive safe-integer credits, append-only entries, no negative balance, server-only capture/release/refund.
 
-## 7. Next priority
-- Complete Stripe account onboarding and configure actual Stripe Price IDs in server environment.
-- Connect server-side webhook fulfillment to the authoritative credit ledger when database persistence is attached.
-- Add photo upload & consented vision analysis pipeline for Premium Hanbok Match.
+No live Stripe-to-ledger fulfillment until persistence and webhook idempotency are attached.
 
-## 8. User action currently required
-**None for core code/build.** When ready for live transactions, provide live/test Stripe API keys and Product/Price IDs in deployment environment.
+## 10. Immediate next priority
+1. Private MiniPC verification of the current Personal Color → Hanbok bridge branch.
+2. Replace runway-heavy Hanbok references with better rights-reviewed palace/royal-ceremony imagery.
+3. Build typed `PremiumHanbokStyleBrief` and image-generation provider seam without payment activation.
+4. Add explicit optional-photo consent, validation, EXIF stripping/transient-processing boundary before any remote vision use.
+5. Add generated Hanbok concept preview and measure real inference cost/latency.
+6. Refresh external Stitch Hanbok screen from `UI_STITCH_SPEC.md` v1.1 when Stitch tooling is available.
+7. Stripe live onboarding later.
+
+## 11. User action currently required
+**None.** Continue autonomous product work. Ask only when a provider credential, actual Stripe live setup, or a narrowly scoped privileged MiniPC action is genuinely the final blocker.
