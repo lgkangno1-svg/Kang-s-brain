@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "saju-timezone-resolution-fixtures-v1",
+  "algorithmVersion": "saju-timezone-resolution-v1",
+  "scopeNote": "These fixtures verify minute-level Gregorian local wall-clock resolution against the runtime IANA timezone database. They classify repeated and skipped local minutes; they do not invent a disambiguation choice for the user.",
+  "evidence": [
+    {
+      "role": "official-dst-rule",
+      "source": "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+      "finding": "NIST states that U.S. daylight saving time begins at 02:00 local on the second Sunday in March by skipping forward to 03:00, and ends at 02:00 local on the first Sunday in November by moving back to 01:00 so that hour repeats."
+    },
+    {
+      "role": "platform-timezone-api",
+      "source": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat",
+      "finding": "MDN documents that Intl.DateTimeFormat accepts IANA timezone identifiers such as America/New_York and provides an explicit h23 hour cycle, allowing deterministic formatting independent of the host machine local timezone."
+    },
+    {
+      "role": "platform-parts-api",
+      "source": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatToParts",
+      "finding": "MDN documents formatToParts as a widely available way to retrieve year, month, day, hour and minute tokens separately, which lets the resolver compare a candidate instant to the exact requested local wall-clock minute without locale-string parsing."
+    }
+  ],
+  "cases": [
+    {
+      "id": "new-york-normal-winter-minute",
+      "timeZone": "America/New_York",
+      "wallClock": {"year": 2024, "month": 1, "day": 15, "hour": 12, "minute": 0},
+      "expect": {
+        "status": "unique",
+        "candidates": [
+          {"instantIso": "2024-01-15T17:00:00.000Z", "utcOffsetMinutes": -300}
+        ]
+      }
+    },
+    {
+      "id": "new-york-spring-forward-gap",
+      "timeZone": "America/New_York",
+      "wallClock": {"year": 2024, "month": 3, "day": 10, "hour": 2, "minute": 30},
+      "expect": {"status": "nonexistent", "candidates": []}
+    },
+    {
+      "id": "new-york-fall-back-repeat",
+      "timeZone": "America/New_York",
+      "wallClock": {"year": 2024, "month": 11, "day": 3, "hour": 1, "minute": 30},
+      "expect": {
+        "status": "ambiguous",
+        "candidates": [
+          {"instantIso": "2024-11-03T05:30:00.000Z", "utcOffsetMinutes": -240},
+          {"instantIso": "2024-11-03T06:30:00.000Z", "utcOffsetMinutes": -300}
+        ]
+      }
+    },
+    {
+      "id": "seoul-no-dst-same-date",
+      "timeZone": "Asia/Seoul",
+      "wallClock": {"year": 2024, "month": 3, "day": 10, "hour": 2, "minute": 30},
+      "expect": {
+        "status": "unique",
+        "candidates": [
+          {"instantIso": "2024-03-09T17:30:00.000Z", "utcOffsetMinutes": 540}
+        ]
+      }
+    }
+  ]
+}
