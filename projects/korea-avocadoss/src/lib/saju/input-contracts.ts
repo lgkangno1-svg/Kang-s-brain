@@ -100,6 +100,42 @@ export type SajuPillarToken = {
   branch: string;
 };
 
+export type FiveElementsElement = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
+
+export type FiveElementsCount = Partial<Record<FiveElementsElement, number>>;
+
+export type FiveElementsBreakdown = {
+  invariantBase: FiveElementsCount;
+  totalExact?: FiveElementsCount;
+  candidateRanges?: Record<FiveElementsElement, { min: number; max: number }>;
+};
+
+export type SajuRuleRecord = {
+  ruleId: string;
+  description: string;
+  impact: string;
+};
+
+export type SajuCandidateDerivation = {
+  field: string;
+  candidateCount: number;
+  candidates: Array<string | SajuPillarToken>;
+  reason: string;
+};
+
+export type SajuProvenance = {
+  contractVersion: typeof SAJU_INPUT_CONTRACT_VERSION;
+  calculationVersion: string;
+  inputPrecision: BirthTimePrecision;
+  timezoneResolutionState: 'unique' | 'ambiguous' | 'nonexistent' | 'not-applicable' | 'insufficient-input';
+  appliedRules: SajuRuleRecord[];
+  appliedPolicy: SajuCalculationPolicy;
+  resolvedFacts: string[];
+  uncertainFacts: string[];
+  unavailableReasons: Record<string, string>;
+  candidateDerivations: SajuCandidateDerivation[];
+};
+
 export type DerivedSajuSummary = {
   calculationVersion: string;
   inputPrecision: BirthTimePrecision;
@@ -111,9 +147,11 @@ export type DerivedSajuSummary = {
     hour?: SajuPillarToken;
   };
   candidateHourPillars?: SajuPillarToken[];
-  fiveElements?: Partial<Record<'wood' | 'fire' | 'earth' | 'metal' | 'water', number>>;
+  candidateHourBranches?: string[];
+  fiveElements?: FiveElementsBreakdown | Partial<Record<FiveElementsElement, number>>;
   uncertaintyCodes: string[];
   policy: SajuCalculationPolicy;
+  provenance?: SajuProvenance;
 };
 
 /**
@@ -127,10 +165,24 @@ export type SajuNarrativePayload = {
   scope: DerivedSajuSummary['scope'];
   pillars: DerivedSajuSummary['pillars'];
   candidateHourPillars: SajuPillarToken[];
-  fiveElements?: DerivedSajuSummary['fiveElements'];
+  candidateHourBranches: string[];
+  fiveElements?: FiveElementsBreakdown | Partial<Record<FiveElementsElement, number>>;
   uncertaintyCodes: string[];
   policy: SajuCalculationPolicy;
+  provenance?: SajuProvenance;
 };
+
+export function isExactBirthTime(time: SajuBirthTime): time is ExactBirthTime {
+  return Boolean(time && typeof time === 'object' && time.precision === 'exact');
+}
+
+export function isApproximateBirthTime(time: SajuBirthTime): time is ApproximateBirthTime {
+  return Boolean(time && typeof time === 'object' && time.precision === 'approximate');
+}
+
+export function isUnknownBirthTime(time: SajuBirthTime): time is UnknownBirthTime {
+  return Boolean(time && typeof time === 'object' && time.precision === 'unknown');
+}
 
 function assertIntegerInRange(value: number, min: number, max: number, label: string): void {
   if (!Number.isInteger(value) || value < min || value > max) {
@@ -340,9 +392,49 @@ function sanitizePillar(pillar: SajuPillarToken, label: string): SajuPillarToken
   return {stem, branch};
 }
 
+function sanitizeFiveElements(
+  elements: FiveElementsBreakdown | Partial<Record<FiveElementsElement, number>> | undefined,
+): FiveElementsBreakdown | Partial<Record<FiveElementsElement, number>> | undefined {
+  if (!elements) return undefined;
+  if ('invariantBase' in elements) {
+    return {
+      invariantBase: {...elements.invariantBase},
+      totalExact: elements.totalExact ? {...elements.totalExact} : undefined,
+      candidateRanges: elements.candidateRanges ? {...elements.candidateRanges} : undefined,
+    };
+  }
+  return {...elements};
+}
+
+function sanitizeProvenance(provenance: SajuProvenance | undefined): SajuProvenance | undefined {
+  if (!provenance) return undefined;
+  return {
+    contractVersion: provenance.contractVersion,
+    calculationVersion: provenance.calculationVersion,
+    inputPrecision: provenance.inputPrecision,
+    timezoneResolutionState: provenance.timezoneResolutionState,
+    appliedRules: provenance.appliedRules.map((rule) => ({...rule})),
+    appliedPolicy: {
+      dayBoundary: provenance.appliedPolicy.dayBoundary,
+      solarTimeMode: provenance.appliedPolicy.solarTimeMode,
+    },
+    resolvedFacts: [...provenance.resolvedFacts],
+    uncertainFacts: [...provenance.uncertainFacts],
+    unavailableReasons: {...provenance.unavailableReasons},
+    candidateDerivations: provenance.candidateDerivations.map((derivation) => ({
+      field: derivation.field,
+      candidateCount: derivation.candidateCount,
+      candidates: derivation.candidates.map((candidate) =>
+        typeof candidate === 'string' ? candidate : {...candidate},
+      ),
+      reason: derivation.reason,
+    })),
+  };
+}
+
 /**
- * Whitelist-only serializer for the future narrative layer.
- * Extra runtime fields such as birthDate, birthTime, city, timezone, name or accountId are intentionally dropped.
+ * Whitelist-only serializer for the narrative layer.
+ * Extra runtime fields such as birthDate, birthTime, city, timezone, longitude, name or account ID are intentionally dropped.
  */
 export function buildSajuNarrativePayload(summary: DerivedSajuSummary): SajuNarrativePayload {
   if (!summary || typeof summary !== 'object') {
@@ -362,7 +454,12 @@ export function buildSajuNarrativePayload(summary: DerivedSajuSummary): SajuNarr
     .slice(0, 12)
     .map((pillar, index) => sanitizePillar(pillar, `candidateHour[${index}]`));
 
-  const uncertaintyCodes = Array.from(new Set(summary.uncertaintyCodes.map((code) => code.trim()).filter(Boolean))).slice(0, 16);
+  const candidateHourBranches = (summary.candidateHourBranches ?? [])
+    .slice(0, 12)
+    .map((b) => b.trim())
+    .filter(Boolean);
+
+  const uncertaintyCodes = Array.from(new Set((summary.uncertaintyCodes ?? []).map((code) => code.trim()).filter(Boolean))).slice(0, 16);
 
   return {
     payloadVersion: SAJU_NARRATIVE_PAYLOAD_VERSION,
@@ -371,11 +468,13 @@ export function buildSajuNarrativePayload(summary: DerivedSajuSummary): SajuNarr
     scope: summary.scope,
     pillars,
     candidateHourPillars,
-    fiveElements: summary.fiveElements ? {...summary.fiveElements} : undefined,
+    candidateHourBranches,
+    fiveElements: sanitizeFiveElements(summary.fiveElements),
     uncertaintyCodes,
     policy: {
       dayBoundary: summary.policy.dayBoundary,
       solarTimeMode: summary.policy.solarTimeMode,
     },
+    provenance: sanitizeProvenance(summary.provenance),
   };
 }
