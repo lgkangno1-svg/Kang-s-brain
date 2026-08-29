@@ -26,7 +26,9 @@ function loadTsModule(relativePath) {
 }
 
 const hanbokLib = loadTsModule('src/features/hanbok/hanbok-visual-library.ts');
+const bridge = loadTsModule('src/features/hanbok/personal-color-bridge.ts');
 const {HANBOK_STYLE_CATEGORIES, isValidHanbokStyle} = hanbokLib;
+const {hanbokColorForUndertone, isPersonalColorUndertone} = bridge;
 
 console.log('--- Testing Hanbok Visual Library & Contracts ---');
 
@@ -39,7 +41,7 @@ assert.deepEqual(categoryIds, ['princess-prince', 'queen-king', 'royal'], 'Categ
 for (const cat of HANBOK_STYLE_CATEGORIES) {
   assert.ok(cat.name, `${cat.id} has name`);
   assert.ok(cat.badge, `${cat.id} has badge`);
-  
+
   assert.ok(cat.feminineRef.title, `${cat.id} feminine title`);
   assert.ok(cat.feminineRef.imageUrl.startsWith('https://'), `${cat.id} feminine imageUrl`);
   assert.ok(cat.feminineRef.sourceUrl.startsWith('https://'), `${cat.id} feminine sourceUrl`);
@@ -59,7 +61,7 @@ for (const cat of HANBOK_STYLE_CATEGORIES) {
   assert.ok(['photoFirst', 'balanced', 'walking'].includes(cat.matcherPreset.comfort));
 }
 
-// 3. Validation helper works
+// 3. Style validation helper works
 assert.equal(isValidHanbokStyle('princess-prince'), true);
 assert.equal(isValidHanbokStyle('queen-king'), true);
 assert.equal(isValidHanbokStyle('royal'), true);
@@ -67,4 +69,22 @@ assert.equal(isValidHanbokStyle('invalid-style'), false);
 assert.equal(isValidHanbokStyle(null), false);
 assert.equal(isValidHanbokStyle(undefined), false);
 
-console.log('✓ Hanbok Visual 3-Category & Matcher contract tests passed!');
+// 4. Browser-local Personal Color bridge is deterministic and bounded to the matcher palette contract.
+assert.equal(isPersonalColorUndertone('warm'), true);
+assert.equal(isPersonalColorUndertone('neutral'), true);
+assert.equal(isPersonalColorUndertone('cool'), true);
+assert.equal(isPersonalColorUndertone('invalid'), false);
+assert.equal(hanbokColorForUndertone('warm'), 'jadeIvory');
+assert.equal(hanbokColorForUndertone('neutral'), 'roseNavy');
+assert.equal(hanbokColorForUndertone('cool'), 'moonBlue');
+
+// 5. Cross-feature URL contract: Personal Color carries explicit undertone into Hanbok,
+// and style selection preserves it before scrolling to the matcher.
+const colorScannerSource = readFileSync(path.join(projectRoot, 'src/features/color/color-scanner.tsx'), 'utf8');
+const visualSource = readFileSync(path.join(projectRoot, 'src/features/hanbok/hanbok-visual-inspiration.tsx'), 'utf8');
+const matcherSource = readFileSync(path.join(projectRoot, 'src/features/hanbok/hanbok-matcher.tsx'), 'utf8');
+assert.match(colorScannerSource, /\/hanbok\?undertone=/, 'Personal Color must deep-link its undertone to Hanbok');
+assert.match(visualSource, /matcherQuery\.set\('undertone'/, 'Hanbok style cards must preserve Personal Color undertone');
+assert.match(matcherSource, /hanbokColorForUndertone\(undertoneParam\)/, 'Matcher must consume the explicit Personal Color bridge');
+
+console.log('✓ Hanbok visual, style-preset, and Personal Color bridge contract tests passed!');
