@@ -5,14 +5,19 @@ import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { isValidHanbokStyle, HANBOK_STYLE_CATEGORIES } from './hanbok-visual-library';
+import {
+  hanbokColorForUndertone,
+  isPersonalColorUndertone,
+  type HanbokMatcherColorId,
+} from './personal-color-bridge';
 
-const COLOR_IDS = ['jadeIvory', 'roseNavy', 'moonBlue'] as const;
+const COLOR_IDS = ['jadeIvory', 'roseNavy', 'moonBlue'] as const satisfies readonly HanbokMatcherColorId[];
 const MOOD_IDS = ['elegant', 'royal', 'romantic', 'minimal', 'kdrama'] as const;
 const COMFORT_IDS = ['walking', 'balanced', 'photoFirst'] as const;
 const DESTINATION_IDS = ['stoneWall', 'hyangwonjeong', 'bukchon'] as const;
 const SEASON_IDS = ['springAutumn', 'summer', 'winter'] as const;
 
-type ColorId = (typeof COLOR_IDS)[number];
+type ColorId = HanbokMatcherColorId;
 type MoodId = (typeof MOOD_IDS)[number];
 type ComfortId = (typeof COMFORT_IDS)[number];
 type DestinationId = (typeof DESTINATION_IDS)[number];
@@ -73,6 +78,8 @@ function scoreLook(
     season: SeasonId;
   },
 ) {
+  // Documented deterministic preference-fit rubric: 40 palette + 25 mood + 15 comfort + 10 destination + 10 season.
+  // This is not AI confidence, attractiveness, or calibrated probability.
   return (
     (look.color === choices.color ? 40 : 0) +
     (look.moods.includes(choices.mood) ? 25 : 0) +
@@ -96,6 +103,7 @@ export function HanbokMatcher() {
   const t = useTranslations('HanbokMatcher');
   const searchParams = useSearchParams();
   const styleParam = searchParams.get('hanbokStyle');
+  const undertoneParam = searchParams.get('undertone');
 
   const [color, setColor] = useState<ColorId>('jadeIvory');
   const [mood, setMood] = useState<MoodId>('elegant');
@@ -105,16 +113,29 @@ export function HanbokMatcher() {
   const [appliedPreset, setAppliedPreset] = useState<string | null>(null);
 
   useEffect(() => {
+    let styleWasApplied = false;
+
     if (isValidHanbokStyle(styleParam)) {
-      const category = HANBOK_STYLE_CATEGORIES.find((c) => c.id === styleParam);
+      const category = HANBOK_STYLE_CATEGORIES.find((item) => item.id === styleParam);
       if (category) {
         setColor(category.matcherPreset.color);
         setMood(category.matcherPreset.mood);
         setComfort(category.matcherPreset.comfort);
         setAppliedPreset(category.name);
+        styleWasApplied = true;
       }
     }
-  }, [styleParam]);
+
+    // Personal Color is a browser-local explicit bridge. It only preselects the broad Hanbok palette;
+    // explicit style still controls mood/comfort and the user can always override every choice.
+    if (isPersonalColorUndertone(undertoneParam)) {
+      setColor(hanbokColorForUndertone(undertoneParam));
+    }
+
+    if (!styleWasApplied) {
+      setAppliedPreset(null);
+    }
+  }, [styleParam, undertoneParam]);
 
   const rankedLooks = useMemo(() => HANBOK_LOOKS
     .map((look) => ({
