@@ -33,7 +33,7 @@ Runtime understanding:
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes.
 
-Latest production verification after the credit-authorization release: private preflight run `33230317038`, checked `2026-08-29T03:00:45Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
+Latest fresh pre-patch verification for the Hanbok visual slice: private preflight run `33230699848`, checked `2026-08-29T03:09:51Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
 
 ### Private CI diagnostics persistence hardening
 The first post-deploy probe run `33230226936` proved the entire live surface healthy (local `3/3`, public `12/12`, sitemap/P0 clean) but its **diagnostics persistence step** failed because another private diagnostic writer advanced `main` and a generated `live-site-preflight.txt` rebase conflicted. This was a CI bookkeeping race, not a production failure.
@@ -43,17 +43,37 @@ Private workflow `.github/workflows/live-site-preflight.yml` was hardened at pri
 ## 3. Existing explainable previews / UI isolation / Hanbok visuals
 Personal Color free preview remains browser-local/private. Hanbok free matcher remains deterministic and explainable. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
 
-A separate `korea-concierge/stitch-ui-system` branch exists and fresh comparison on 2026-08-29 showed it **diverged from main (4 commits ahead / 24 behind)** with overlapping `globals.css`, Personal Color, Hanbok, layout, culture and P0 message changes. Backend/core or new UI work must not casually overwrite it. Before touching those files, compare the latest branch again and deliberately merge/port/supersede/isolate overlapping work.
+A separate `korea-concierge/stitch-ui-system` branch exists and fresh comparison on 2026-08-29 showed it **diverged from main (4 commits ahead / 24 behind)**. Before touching overlap, compare file contents rather than assuming compare-history output means the tips differ. In this run the current `hanbok-matcher.tsx` and `messages/hanbok/en.json` blobs were confirmed identical between `main` and the Stitch branch, so the new visual slice was deliberately isolated into new files plus the short Hanbok page/i18n loader seams rather than rewriting global Stitch CSS or the deterministic matcher.
 
-Hanbok visual direction is now documented in `docs/HANBOK_VISUAL_SOURCE_POLICY.md`:
+Hanbok visual direction is documented in `docs/HANBOK_VISUAL_SOURCE_POLICY.md`:
 - the product should use visually strong real-world examples resembling K-drama / celebrity / palace-fashion styling rather than swatches alone;
 - direct production assets should prioritize owned/licensed/CC0/public-domain or individually verified reusable Creative Commons imagery;
 - celebrity Instagram, drama stills and editorial/social images are inspiration or official-link/embed candidates unless explicit reuse rights are verified; do not scrape/self-host/crop/background-remove them by default;
 - cutout/transparent-background presentation is encouraged **only when the underlying source itself allows reuse and modification**;
-- celebrity-linked garment-only references (for example a legally reusable museum photo of a famous performance Hanbok) are preferred over copying a celebrity portrait where useful;
+- celebrity-linked garment-only references are preferred over copying a celebrity portrait where useful;
 - asset provenance/license/attribution/modification requirements must be tracked, and popularity signals must be measured or attributable rather than invented.
 
-Fresh source discovery on 2026-08-29 found useful Wikimedia Commons Hanbok pools, including CC0 images and a CC BY 4.0 museum photograph of a Blackpink Hanbok outfit on display. Each individual file still requires license/personality-right review before shipping.
+### Hanbok real-reference gallery — implementation candidate
+Branch: `korea/hanbok-visual-reference-gallery-20260829`.
+
+Implemented candidate scope:
+- new `hanbok-visual-library.ts` keeps source URL, credit and license attached to every visual;
+- new isolated CSS module avoids modifying global Stitch styling;
+- new localized `HanbokVisual` copy exists for all P0 locales;
+- Hanbok page now shows three large real-world reference cards **before** the rule-based matcher: a K-pop stage Hanbok museum garment, a CC0 full-body traditional Hanbok example and a real Seoul boutique palette wall;
+- each card links back to the original Wikimedia Commons source and displays the license/credit;
+- UI explicitly says these are styling references, not rental inventory or endorsements;
+- no AI call or inference cost is added.
+
+Research decision record: `docs/HANBOK_VISUAL_RESEARCH_2026-08-29.md`.
+- Creative Commons reuse guidance: **ADOPT**;
+- rights-reviewed CC0/CC BY assets: **ADOPT/ADAPT**;
+- scraped celebrity Instagram/drama screenshots or unlicensed background-removal: **REJECT**;
+- GitHub Hanbok dataset candidate: none worth runtime adoption;
+- Hugging Face dataset search: **UNAVAILABLE** because the installed connector reported the search function disabled;
+- public Threads search: no attributable implementation-grade evidence adopted.
+
+Current trade-off: the first thin slice loads rights-reviewed Wikimedia images remotely, which minimizes bundle/inference cost and keeps source provenance visible but adds an external image request/latency dependency. A later asset-ingestion step should first-party host optimized copies only after binary provenance and derivative-license handling are explicit.
 
 ## 4. Step 3A production-verified foundations
 Production includes:
