@@ -8,7 +8,7 @@
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
-> Before every material patch inspect fresh main/recent commits/open PRs/full project tree, `PRODUCT_MASTER_SPEC.md`, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone.
+> Before every material patch inspect fresh main/recent commits/open PRs/full project tree, relevant active/diverged branches, `PRODUCT_MASTER_SPEC.md`, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone. Root `AGENTS.md` makes this fresh-state inspection mandatory because Codex, ChatGPT, another AI, or a human may have changed the repository between runs.
 
 ## 1. Product contract
 Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. Personalized results follow **result → evidence/data → alternative → uncertainty → action → method/privacy**. Visible numbers must come from deterministic calculation, measurement, verified facts or a documented rubric; never decorative precision.
@@ -40,10 +40,20 @@ The first post-deploy probe run `33230226936` proved the entire live surface hea
 
 Private workflow `.github/workflows/live-site-preflight.yml` was hardened at private commit `f25cba65d2658fa6cca783953672f9fe76705aa0`: each persistence retry now fetches/reset to the newest private `main`, reapplies the sanitized generated report, and performs a normal fast-forward push. It does not force-push and adds no privileges. Validation run `33230317038` completed **success**, including probe and persistence steps.
 
-## 3. Existing explainable previews / UI isolation
+## 3. Existing explainable previews / UI isolation / Hanbok visuals
 Personal Color free preview remains browser-local/private. Hanbok free matcher remains deterministic and explainable. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
 
-A separate `korea-concierge/stitch-ui-system` branch exists, so backend/core work must not casually overwrite its UI surface. Reconcile it deliberately before the next visual slice.
+A separate `korea-concierge/stitch-ui-system` branch exists and fresh comparison on 2026-08-29 showed it **diverged from main (4 commits ahead / 24 behind)** with overlapping `globals.css`, Personal Color, Hanbok, layout, culture and P0 message changes. Backend/core or new UI work must not casually overwrite it. Before touching those files, compare the latest branch again and deliberately merge/port/supersede/isolate overlapping work.
+
+Hanbok visual direction is now documented in `docs/HANBOK_VISUAL_SOURCE_POLICY.md`:
+- the product should use visually strong real-world examples resembling K-drama / celebrity / palace-fashion styling rather than swatches alone;
+- direct production assets should prioritize owned/licensed/CC0/public-domain or individually verified reusable Creative Commons imagery;
+- celebrity Instagram, drama stills and editorial/social images are inspiration or official-link/embed candidates unless explicit reuse rights are verified; do not scrape/self-host/crop/background-remove them by default;
+- cutout/transparent-background presentation is encouraged **only when the underlying source itself allows reuse and modification**;
+- celebrity-linked garment-only references (for example a legally reusable museum photo of a famous performance Hanbok) are preferred over copying a celebrity portrait where useful;
+- asset provenance/license/attribution/modification requirements must be tracked, and popularity signals must be measured or attributable rather than invented.
+
+Fresh source discovery on 2026-08-29 found useful Wikimedia Commons Hanbok pools, including CC0 images and a CC BY 4.0 museum photograph of a Blackpink Hanbok outfit on display. Each individual file still requires license/personality-right review before shipping.
 
 ## 4. Step 3A production-verified foundations
 Production includes:
@@ -132,14 +142,14 @@ Separate premium Korean/Asian naming consultation target remains about USD `$149
 International visitor is the launch payer. PayPal Checkout remains a leading candidate subject to fresh Korean merchant/policy verification. No production payment exists yet. Before money: authenticated ownership, server-owned catalog/amounts, durable idempotent wallet/entitlement persistence, server create/capture, verified signed webhook, replay protection, refunds/reversals, rate limits and audit telemetry. Browser success never grants credits.
 
 ## 10. Architecture / release flow
-Next.js `16.3.3`, `next-intl@4.13.4`, 36 canonical P0 URLs, reciprocal hreflang/x-default, deterministic 308 legacy redirects, frozen installs. Public repo never attaches directly to the production runner.
+Next.js `16.3.3`, `next-intl@4.13.4`, 36 canonical P0 URLs, reciprocal hreflang/x-default, deterministic 308 legacy redirects, frozen installs. Public repo never attaches directly to production runner.
 
 Mandatory material-release flow: fresh repo/private-CI/live preflight → isolated branch → private `target-ref.txt` exact 40-char head → MiniPC CI green → merge → private `deploy-ref.txt` exact merged SHA → secure cutover + consecutive public probes → full sitemap/P0 crawl → update this handoff with verified production truth.
 
 ## 11. Regression watch
 Never weaken reliability gates, fabricate Saju/astrology data, expose raw sensitive PII to narrative AI, silently resolve ambiguous/nonexistent DST clocks, invent Hanja, ship checkout before durable webhook/idempotency/refund foundations, or let browser state become payment/credit authority.
 
-Also reject product regressions where paid value is not visible before checkout, Stitch changes are not perceptible, credits exist only as pricing copy, Hanbok results lack useful visuals, or research-only work leaves customer journeys unfinished.
+Also reject product regressions where paid value is not visible before checkout, Stitch changes are not perceptible, credits exist only as pricing copy, Hanbok results lack useful visuals, or research-only work leaves customer journeys unfinished. Never overwrite concurrent Codex/AI branches without a fresh branch comparison, and never ship unlicensed celebrity/drama/social imagery just because it is visually effective.
 
 ## 12. User action currently required
 **None.** Continue autonomously. Ask only for merchant/provider credentials, DNS, or a narrowly scoped privileged MiniPC action when it is genuinely the final blocker.
