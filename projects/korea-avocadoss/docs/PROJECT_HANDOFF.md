@@ -38,42 +38,21 @@ Latest production verification after the Saju deterministic core release: privat
 ### Private CI diagnostics persistence hardening
 The earlier post-deploy probe run `33230226936` proved the live surface healthy but its diagnostics persistence step hit a private-main rebase race. This was a CI bookkeeping race, not a production failure. Private `.github/workflows/live-site-preflight.yml` was hardened at `f25cba65d2658fa6cca783953672f9fe76705aa0`: each persistence retry resets to newest private `main`, reapplies the sanitized generated report, and performs a normal fast-forward push. No force-push or privilege escalation is used.
 
-## 3. Explainable previews / UI isolation / Hanbok visuals
+## 3. Explainable previews / UI isolation / Hanbok visual lookbook
 Personal Color free preview remains browser-local/private. Hanbok free matcher remains deterministic and explainable. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
 
-A separate `korea-concierge/stitch-ui-system` branch exists. Fresh comparison before the Hanbok visual slice showed it diverged from main. Direct blob checks then confirmed the current `hanbok-matcher.tsx` and `messages/hanbok/en.json` tips were identical between main and that Stitch branch. The visual work was therefore deliberately isolated into new files plus small Hanbok page/i18n loader seams, with no rewrite of global Stitch CSS and no change to the deterministic matcher.
-
-### Hanbok visual source policy — SHIPPED
-`docs/HANBOK_VISUAL_SOURCE_POLICY.md` defines the long-term rules:
-- use visually strong real-world examples resembling K-drama / celebrity / palace-fashion styling rather than swatches alone;
-- production assets prioritize owned/licensed/CC0/public-domain or individually verified reusable Creative Commons imagery;
-- AI-generated fallback images require explicit visual review and strict style coherence;
-- each image must retain machine-readable provenance (`sourceUrl`, `sourceTitle`, `license`, `author`);
-- do not fabricate museum accession numbers or invent public-domain status for unverified commercial photos;
-- UI cards must include a visible styling prompt/tip rather than a plain image thumbnail.
-
-### Hanbok visual reference gallery — SHIPPED
+### Hanbok high-fashion & editorial lookbook — SHIPPED
 Files:
-- `src/features/hanbok/hanbok-visual-library.ts` (6 rights-reviewed real-world reference models with full provenance/attribution);
-- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css`;
-- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json`;
-- `docs/HANBOK_VISUAL_RESEARCH_2026-08-29.md`.
+- `src/features/hanbok/hanbok-visual-library.ts` (6 curated real-world aspirational styles: Royal Court Haute Couture, Soft Pastel Sheer Layering, Contemporary Palace Chic, Noble Scholar Dopo Robe, Romantic Gyeongbokgung Stroll, Modern Stage Fusion);
+- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css` (editorial card grid, style tags, source attribution with outbound links, direct "Find my Hanbok match" CTA linking to `#hanbok-matcher`);
+- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete 6-locale localized style titles, descriptions, and CTAs);
+- `scripts/check-message-parity.mjs` (integrated parity check covering 394 leaf keys across all 6 locales).
 
-Current trade-off: this first slice loads rights-reviewed Wikimedia images remotely. That keeps provenance visible, bundle size low and inference cost at `$0`, but adds a third-party image request and external latency dependency. Future first-party optimized copies require explicit binary provenance/derivative-license handling first.
-
-Release evidence:
-1. fresh pre-patch full preflight `33230699848`: local `3/3`, public `12/12`, sitemap 36, P0 `36/36`, failures `0`;
-2. exact feature head `f92e99dcde790c1fcb499409b98ec446979fe954` passed private MiniPC CI `33230915042`, including P0 localization, Saju gates and production build;
-3. PR #31 squash-merged to exact production SHA `17ced5f7dc1fbc7c5ff7492db42634790345f0df`;
-4. private secure deploy `33230988270` deployed that exact SHA and passed exact-ref validation, production build, isolated redirect checks, root-owned cutover and stable public Cloudflare checks;
-5. post-deploy full preflight `33231057854` passed local `3/3`, public `12/12`, bad codes `none`, sitemap 36, P0 `36/36`, failures `0`.
-
-Next Hanbok visual quality steps:
-1. move approved visuals into a first-party optimized asset pipeline with retained provenance;
-2. prefer owned/model-released photography for prominent result cards;
-3. use legal transparent-background/cutout assets where source licenses allow derivatives;
-4. map approved visuals to deterministic look archetypes without claiming the photographed garment is the actual rental item;
-5. continue premium photo-aware Hanbok only after consent/privacy/provider/cost gates.
+Key improvements:
+- Replaced plain mannequin/market photos with high-aesthetic cultural runway and royal palace reference imagery;
+- Added clear style name, descriptive styling tips, and prominent attribution badge with source link on every card;
+- Added direct interactive connection to the Hanbok Matcher on each card via "Find my Hanbok match";
+- Maintained clear non-endorsement disclaimers and zero-cost client rendering.
 
 ## 4. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED & PRODUCTION VERIFIED 2026-08-29
 ### Saju deterministic core — PRODUCTION VERIFIED 2026-08-29

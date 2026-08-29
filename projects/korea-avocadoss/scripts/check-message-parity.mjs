@@ -43,8 +43,9 @@ async function loadLocale(locale) {
   const core = JSON.parse(await readFile(resolve(root, "messages", `${locale}.json`), "utf8"));
   const publicCopy = JSON.parse(await readFile(resolve(root, "messages", "public", `${locale}.json`), "utf8"));
   const hanbok = JSON.parse(await readFile(resolve(root, "messages", "hanbok", `${locale}.json`), "utf8"));
+  const hanbokVisual = JSON.parse(await readFile(resolve(root, "messages", "hanbok-visual", `${locale}.json`), "utf8"));
   const credits = JSON.parse(await readFile(resolve(root, "messages", "credits", `${locale}.json`), "utf8"));
-  return flatten(mergeMessages(core, publicCopy, hanbok, credits));
+  return flatten(mergeMessages(core, publicCopy, hanbok, hanbokVisual, credits));
 }
 
 const dictionaries = new Map();

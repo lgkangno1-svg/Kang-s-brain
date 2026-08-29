@@ -1,38 +1,87 @@
 export type HanbokVisualReference = {
-  id: 'stageMuseum' | 'classicFullBody' | 'boutiquePalette';
+  id:
+    | 'royalCourtCouture'
+    | 'softPastelElegance'
+    | 'contemporaryPalaceChic'
+    | 'nobleScholarDopo'
+    | 'romanticPalaceWalk'
+    | 'modernStageFusion';
   imageUrl: string;
   sourceUrl: string;
+  sourceLabel: string;
   license: string;
   credit: string;
+  suggestedMood: 'royal' | 'romantic' | 'kdrama' | 'elegant' | 'minimal';
+  suggestedColor: 'roseNavy' | 'jadeIvory' | 'moonBlue';
 };
 
 /**
- * Rights-reviewed visual references for the free Hanbok lookbook.
+ * Editorial & celebrity-inspired visual references for Korea Concierge Hanbok Studio.
  *
- * These are styling references, not rental inventory and not endorsements.
- * Keep source/license metadata attached to every item. Before replacing or
- * adding an image, re-check the source page and docs/HANBOK_VISUAL_SOURCE_POLICY.md.
+ * These showcase real-world aspirational silhouettes from cultural runway showcases,
+ * royal palace photography, and modern haute-couture Hanbok styling.
+ * They are visual inspiration references and do not imply celebrity endorsement
+ * or rental shop inventory guarantees.
  */
 export const HANBOK_VISUAL_REFERENCES: readonly HanbokVisualReference[] = [
   {
-    id: 'stageMuseum',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blackpink%20Hanbok%20at%20MFA.jpg?width=900',
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Blackpink_Hanbok_at_MFA.jpg',
-    license: 'CC BY 4.0',
-    credit: 'Nkon21 / Wikimedia Commons',
+    id: 'royalCourtCouture',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_01_%288423373422%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_01_(8423373422).jpg',
+    sourceLabel: 'Korea.net · Fashion Runway',
+    license: 'CC BY-SA 2.0',
+    credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+    suggestedMood: 'royal',
+    suggestedColor: 'roseNavy',
   },
   {
-    id: 'classicFullBody',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanbok%201.jpg?width=900',
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hanbok_1.jpg',
-    license: 'CC0 1.0',
-    credit: 'Brücke-Osteuropa / Wikimedia Commons',
+    id: 'softPastelElegance',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_08_%288423372986%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_08_(8423372986).jpg',
+    sourceLabel: 'Korea.net · Couture Showcase',
+    license: 'CC BY-SA 2.0',
+    credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+    suggestedMood: 'romantic',
+    suggestedColor: 'jadeIvory',
   },
   {
-    id: 'boutiquePalette',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korean.clothes-Hanbok-01.jpg?width=900',
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korean.clothes-Hanbok-01.jpg',
-    license: 'CC BY 2.0',
-    credit: 'frakorea / Wikimedia Commons',
+    id: 'contemporaryPalaceChic',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_04_%288422279531%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_04_(8422279531).jpg',
+    sourceLabel: 'Korea.net · Modern Editorial',
+    license: 'CC BY-SA 2.0',
+    credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+    suggestedMood: 'kdrama',
+    suggestedColor: 'moonBlue',
+  },
+  {
+    id: 'nobleScholarDopo',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_11_%288423372792%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_11_(8423372792).jpg',
+    sourceLabel: 'Korea.net · Noble Robe Runway',
+    license: 'CC BY-SA 2.0',
+    credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+    suggestedMood: 'elegant',
+    suggestedColor: 'moonBlue',
+  },
+  {
+    id: 'romanticPalaceWalk',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeongbokgung_Hanbok_01_%2832928645842%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Gyeongbokgung_Hanbok_01_(32928645842).jpg',
+    sourceLabel: 'Republic of Korea · Palace Series',
+    license: 'CC BY-SA 2.0',
+    credit: 'Republic of Korea / Korea.net (Jeon Han)',
+    suggestedMood: 'romantic',
+    suggestedColor: 'roseNavy',
+  },
+  {
+    id: 'modernStageFusion',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_05_%288422277933%29.jpg?width=900',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_05_(8422277933).jpg',
+    sourceLabel: 'Korea.net · Fusion Stage',
+    license: 'CC BY-SA 2.0',
+    credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+    suggestedMood: 'minimal',
+    suggestedColor: 'jadeIvory',
   },
 ] as const;
