@@ -1,0 +1,27 @@
+{
+  "HanbokVisual": {
+    "eyebrow": "Tham khảo hình ảnh thực tế",
+    "title": "Xem phom dáng trước khi chọn bảng màu.",
+    "intro": "Các hình tham khảo này đã được kiểm tra điều kiện tái sử dụng, gồm trang phục trưng bày trong bảo tàng, dáng Hanbok toàn thân truyền thống và bảng màu thực tế tại cửa hàng Hanbok ở Seoul. Đây là tư liệu phong cách, không phải hàng cho thuê và không phải sự chứng thực của người nổi tiếng.",
+    "referenceBadge": "Tham khảo phong cách",
+    "sourceLabel": "Nguồn",
+    "licenseLabel": "Giấy phép",
+    "viewSource": "Xem nguồn gốc",
+    "notice": "Ảnh tham khảo chỉ giúp bạn hình dung hướng phong cách. Màu sắc và phối đồ do bộ ghép quy tắc miễn phí ở trên đưa ra không phải chính xác món đồ trong ảnh; hãy xác nhận sản phẩm cho thuê thực tế tại cửa hàng.",
+    "stageMuseum": {
+      "title": "Hanbok sân khấu K-pop · tham khảo trang phục bảo tàng",
+      "description": "Một mẫu Hanbok biểu diễn hiện đại được trưng bày trong bảo tàng. Dùng để tham khảo phom dáng, độ tương phản và cân bằng trang trí, không hàm ý người nổi tiếng chứng thực.",
+      "alt": "Hanbok biểu diễn Hàn Quốc hiện đại được trưng bày trong bảo tàng"
+    },
+    "classicFullBody": {
+      "title": "Tham khảo Hanbok toàn thân cổ điển",
+      "description": "Ảnh CC0 có thể tái sử dụng để xem chiều dài jeogori, độ phồng của váy và tỷ lệ tổng thể trên dáng toàn thân.",
+      "alt": "Người mặc Hanbok truyền thống Hàn Quốc toàn thân"
+    },
+    "boutiquePalette": {
+      "title": "Bảng màu tại cửa hàng Hanbok Seoul",
+      "description": "Hình ảnh từ một cửa hàng Hanbok thực tế giúp bạn thấy nhiều màu trang phục cùng tồn tại trong không gian thật trước khi thu hẹp bảng màu của mình.",
+      "alt": "Nhiều bộ Hanbok được trưng bày trong một cửa hàng ở Seoul"
+    }
+  }
+}

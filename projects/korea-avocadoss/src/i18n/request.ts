@@ -32,15 +32,22 @@ export default getRequestConfig(async ({requestLocale}) => {
     notFound();
   }
 
-  const [core, publicCopy, hanbok, credits] = await Promise.all([
+  const [core, publicCopy, hanbok, hanbokVisual, credits] = await Promise.all([
     import(`../../messages/${requested}.json`),
     import(`../../messages/public/${requested}.json`),
     import(`../../messages/hanbok/${requested}.json`),
+    import(`../../messages/hanbok-visual/${requested}.json`),
     import(`../../messages/credits/${requested}.json`),
   ]);
 
   return {
     locale: requested,
-    messages: mergeMessages(core.default, publicCopy.default, hanbok.default, credits.default),
+    messages: mergeMessages(
+      core.default,
+      publicCopy.default,
+      hanbok.default,
+      hanbokVisual.default,
+      credits.default,
+    ),
   };
 });
