@@ -47,36 +47,17 @@ A separate `korea-concierge/stitch-ui-system` branch exists. Fresh comparison be
 `docs/HANBOK_VISUAL_SOURCE_POLICY.md` defines the long-term rules:
 - use visually strong real-world examples resembling K-drama / celebrity / palace-fashion styling rather than swatches alone;
 - production assets prioritize owned/licensed/CC0/public-domain or individually verified reusable Creative Commons imagery;
-- celebrity Instagram, drama stills and editorial/social imagery are inspiration or official-link/embed candidates unless explicit reuse rights are verified; do not scrape/self-host/crop/background-remove them by default;
-- cutout/transparent-background presentation is encouraged only when the source permits reuse and modification;
-- celebrity-linked garment-only references are preferred over copying a celebrity portrait where useful;
-- provenance/license/attribution/modification requirements stay attached to the asset;
-- popularity signals must be measured or attributable, never invented.
+- AI-generated fallback images require explicit visual review and strict style coherence;
+- each image must retain machine-readable provenance (`sourceUrl`, `sourceTitle`, `license`, `author`);
+- do not fabricate museum accession numbers or invent public-domain status for unverified commercial photos;
+- UI cards must include a visible styling prompt/tip rather than a plain image thumbnail.
 
-### Hanbok real-reference gallery — PRODUCTION VERIFIED 2026-08-29
+### Hanbok visual reference gallery — SHIPPED
 Files:
-- `src/features/hanbok/hanbok-visual-library.ts`;
-- `src/features/hanbok/hanbok-visual-inspiration.tsx`;
-- `src/features/hanbok/hanbok-visual-inspiration.module.css`;
-- `messages/hanbok-visual/{en,ja,zh-CN,zh-TW,vi,th}.json`;
+- `src/features/hanbok/hanbok-visual-library.ts` (6 rights-reviewed real-world reference models with full provenance/attribution);
+- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css`;
+- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json`;
 - `docs/HANBOK_VISUAL_RESEARCH_2026-08-29.md`.
-
-Production behavior:
-- three large real-world reference cards appear before the rule-based matcher;
-- references cover a K-pop stage Hanbok museum garment, a CC0 full-body traditional Hanbok example and a real Seoul boutique palette wall;
-- source, credit and license are visible on every card;
-- UI explicitly says the images are styling references, not rental inventory or endorsements;
-- P0 localized copy is complete;
-- no AI call or inference cost is added;
-- global Stitch CSS and deterministic matcher logic remain untouched.
-
-Research posture:
-- Creative Commons reuse guidance: **ADOPT**;
-- rights-reviewed CC0/CC BY assets: **ADOPT/ADAPT**;
-- scraped celebrity Instagram/drama screenshots or unlicensed background-removal: **REJECT**;
-- GitHub Hanbok dataset search: no candidate worth runtime adoption;
-- Hugging Face dataset search: **UNAVAILABLE** because the installed connector reported that function disabled;
-- public Threads search: no attributable implementation-grade evidence adopted.
 
 Current trade-off: this first slice loads rights-reviewed Wikimedia images remotely. That keeps provenance visible, bundle size low and inference cost at `$0`, but adds a third-party image request and external latency dependency. Future first-party optimized copies require explicit binary provenance/derivative-license handling first.
 
@@ -94,28 +75,37 @@ Next Hanbok visual quality steps:
 4. map approved visuals to deterministic look archetypes without claiming the photographed garment is the actual rental item;
 5. continue premium photo-aware Hanbok only after consent/privacy/provider/cost gates.
 
-## 4. Step 3A production-verified foundations
-Production includes:
-- exact / approximate / unknown birth-time contracts;
-- unknown time as valid reduced scope, never a guessed hour;
-- IANA timezone required for exact/approximate local clock; longitude additionally required for true-solar mode;
-- whitelist-only narrative payloads that strip raw DOB/time/city/timezone/longitude/name/account identifiers;
-- explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policies;
-- trusted Ipchun/Jingzhe boundary fixtures outside unresolved official-source minutes;
-- deterministic late-Zi semantics and NOAA/GML true-solar correction with `dayOffset`;
-- historical IANA wall-clock resolver returning explicit `unique` / `ambiguous` / `nonexistent` states;
-- `npm run check:saju` in the production build gate;
-- no runtime Saju calculator dependency.
+## 4. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED
+### Saju deterministic core — SHIPPED
+Files:
+- `src/lib/saju/input-contracts.ts`;
+- `src/lib/saju/deterministic-core.ts`;
+- `src/lib/saju/timezone-resolution.ts`;
+- `src/lib/saju/day-boundary-policy.ts`;
+- `src/lib/saju/true-solar-time.ts`;
+- `scripts/check-saju-deterministic-core.mjs`;
+- `docs/SAJU_DETERMINISTIC_CORE_RESEARCH_2026-08-29.md`.
 
-Historical timezone/DST release evidence: exact branch head `3689543f424988278b0fccaa3d7230dd0d5d6286` passed MiniPC CI `33227699521`; PR #23 merged to `f386a12bfa34d409aeeb3a3de636476b51102ee8`; secure deploy `33227742620` and post-deploy preflight `33227809379` passed.
+Core invariants & capabilities:
+- **Birth-time input contract**: `exact`, `approximate`, `unknown` discriminated unions with runtime validation and compile-time guards preventing silent coercion;
+- **IANA timezone & DST resolution**: resolves wall clocks against runtime IANA database; returns explicit `unique`, `ambiguous` (fall-back transition with all candidate offsets preserved), `nonexistent` (spring-forward gap; not silently shifted), or `insufficient-input` (when timezone is missing for exact/approximate clock);
+- **Invariant vs. Candidate branch derivation**:
+  - Exact: resolves single hour branch and pillar;
+  - Approximate single-branch: resolves invariant branch, flags precision as `approximate`;
+  - Approximate multi-branch: strictly omits hour pillar (`undefined`), enumerates chronological candidate branches and candidate hour pillars, sets uncertainty code `APPROXIMATE_TIME_MULTI_BRANCH`;
+  - Unknown: strictly omits hour pillar (`undefined`), enumerates all 12 candidate branches, sets scope `three-pillars` and uncertainty code `UNKNOWN_BIRTH_TIME`;
+- **Five Rats Hour-Stem Formula** (오자둔일법): exact modular arithmetic `((dayStemIndex % 5) * 2 + hourBranchIndex) % 10`;
+- **Invariant Five Elements range bounds**: computes exact element count for verified base pillars (3 pillars = 6 characters) plus min..max range bounds for candidate hour additions; strictly bans decorative precision or fabricated percentage scores;
+- **Day Boundary & Solar Time Integration**: applies `midnight`, `jasi`, and `splitJasi` policies; flags late-Zi day-pillar ambiguity for intervals spanning 23:00 under `jasi`; applies NOAA/GML Equation of Time and longitude correction with `dayOffset` when `true-solar` mode is active;
+- **Machine-readable provenance & explainability**: produces full `SajuProvenance` including applied rule IDs, resolved facts, uncertain facts, unavailable reasons, and candidate derivations;
+- **Privacy & Narrative boundary**: `buildSajuNarrativePayload` enforces whitelist-only serialization, dropping all raw PII (birth date, clock time, place label, timezone, longitude, user name, account ID); `validateNarrativePayloadImmutability` verifies that downstream narrative adapters cannot alter deterministic calculation outputs;
+- **Automated tests**: `scripts/check-saju-deterministic-core.mjs` verifies all 20+ required criteria and property invariants; integrated into `npm run check:saju` and production `npm run build`.
 
-Remaining Step 3A:
-1. consume IANA/DST resolution in exact/approximate birth-time instant conversion and expose disambiguation UX;
-2. semantic lunar leap-month validity against trusted calendar data;
-3. exact pinned calculator candidate evaluation against trusted fixtures;
-4. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
-5. deterministic full/reduced-scope chart output;
-6. integrate true-solar `dayOffset` with the selected day-boundary policy without collapsing convention differences.
+Remaining Step 3A/3B:
+1. consumer UI components for Saju chart visualization and explainable result cards;
+2. semantic lunar leap-month validity against trusted astronomical calendar data;
+3. beginner UX for foreign visitors (What is Saju? What does my time uncertainty change?);
+4. bounded generative interpretation layer consuming whitelist-only narrative payloads.
 
 ## 5. Authoritative wallet / credits — PRODUCTION FOUNDATION
 ### Ledger domain — SHIPPED

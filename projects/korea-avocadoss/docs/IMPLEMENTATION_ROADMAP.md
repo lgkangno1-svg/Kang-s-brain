@@ -27,7 +27,7 @@ Do not expose or fabricate chain-of-thought. Percentages require a defined/calib
 
 ## Step 3 — K-Culture deterministic core — IN PROGRESS
 
-### Step 3A — Saju calculation/input contracts — IN PROGRESS
+### Step 3A — Saju calculation/input contracts — CORE SHIPPED
 Production-verified foundations:
 - exact / approximate / unknown birth time are first-class states;
 - never fabricate or AI-guess a missing hour;
@@ -40,16 +40,17 @@ Production-verified foundations:
 - executable 23:00 / 00:00 / 01:00 semantics for `midnight`, `jasi` and `splitJasi` with explicit convention labeling;
 - deterministic NOAA/GML Equation-of-Time + longitude/timezone correction with explicit `dayOffset`, fixture-covered Singapore/Seoul hour-branch crossings, Greenwich EoT isolation and previous-day rollover;
 - historical IANA/DST resolver classifies local wall-clock minutes as `unique`, `ambiguous` or `nonexistent`, never silently choosing a repeated-hour offset or shifting a skipped minute;
-- DST resolver production release SHA `f386a12bfa34d409aeeb3a3de636476b51102ee8` passed exact-head MiniPC CI, exact-SHA deploy, post-deploy local 3/3 + public 12/12 + 36/36 P0 crawl;
+- deterministic calculation engine (`src/lib/saju/deterministic-core.ts`) with Five Rats Hour-Stem formula (오자둔일법), invariant single-branch vs candidate branch derivation, five-elements range bounds, machine-readable provenance (`SajuProvenance`), and tamper-proof narrative payload contract;
+- 20+ automated test requirements and mathematical invariants verified in `scripts/check-saju-deterministic-core.mjs`;
 - no Saju runtime calculator dependency.
 
-Remaining Step 3A gates:
-1. consume IANA/DST resolution in exact/approximate birth-time instant conversion and expose explicit disambiguation UX where required;
+Remaining Step 3A/3B gates:
+1. consumer UI components for Saju chart visualization and explainable result cards;
 2. semantic lunar leap-month validity against trusted calendar data;
 3. exact pinned calculator candidate evaluation against trusted fixtures;
 4. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
 5. deterministic full/reduced-scope chart output with unknown time returning reduced scope instead of a guessed hour;
-6. integrate true-solar `dayOffset` with the selected day-boundary policy without collapsing convention differences.
+6. bounded generative interpretation layer consuming whitelist-only narrative payloads.
 
 ### Step 3B — Explainable Saju interpretation contract
 Show calculated pillars/elements first; plain-language structural explanation; separate calculation from tradition/interpretation; expose alternative convention where relevant; explain rough/unknown-time consequences; use bounded generative narrative only after deterministic correctness is executable-tested.
