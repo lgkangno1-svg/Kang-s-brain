@@ -1,9 +1,9 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-08-28  
+**Last updated:** 2026-08-29  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
-**Phase:** Step 3 — deterministic/explainable K-Culture core + sellable-MVP acceleration after reliability closure  
+**Phase:** Step 3 — deterministic/explainable K-Culture core  
 **Current verified production application SHA:** `361ddfc8728dcbf8615890d37d477608db91f249`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
@@ -11,113 +11,106 @@
 > Before every material patch inspect fresh main/recent commits/open PRs/full project tree, `PRODUCT_MASTER_SPEC.md`, `IMPLEMENTATION_ROADMAP.md`, this handoff, private CI state and a fresh live-site preflight. Never infer state from chat history alone.
 
 ## 1. Product contract
-The authoritative long-term product/development/improvement criteria are now centralized in `docs/PRODUCT_MASTER_SPEC.md`. Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. Personalized results follow **result → evidence/data → alternative → uncertainty → action → method/privacy**. Visible numbers must come from deterministic calculation, measurement, verified facts or a documented rubric; never decorative precision.
+Korea Concierge is a mobile-first multilingual companion for international visitors to Korea. Personalized results follow **result → evidence/data → alternative → uncertainty → action → method/privacy**. Visible numbers must come from deterministic calculation, measurement, verified facts or a documented rubric; never decorative precision.
 
 P0 locales: `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`; P1 Indonesian/Malay. Explicit user choice wins. Never infer sensitive identity from photo/name/locale/voice.
 
-Commercial direction: free browsing/previews must remain genuinely useful, while paid value must be visible before payment. After reliability formally closes, prioritize a sellable vertical loop — visibly stronger Stitch UI, useful Hanbok free/premium experience, authoritative wallet/credits, payment-ready checkout/webhook flow and consented Personal Color premium bridge — without regressing deterministic Step 3 correctness.
+Global-first payment direction and premium Naming Studio remain intact. Current browser-local/deterministic Personal Color and Hanbok tools remain free previews; premium photo-aware versions are later consented explainable-AI features after privacy/provider/cost gates.
 
-## 2. Production reliability
-The 2026-08-27 intermittent Cloudflare 1033/530/502 incident has recovered operationally but is **not yet formally closed under the current evidence contract**. Private CI evidence is the source of truth when it is newer than this public handoff.
+## 2. Production reliability — FORMALLY CLOSED 2026-08-29
+The 2026-08-27 intermittent Cloudflare 1033/530/502 incident is now **formally closed** under the user-defined evidence contract. Private CI remains the source of truth and any future sampled 1033/530/502 immediately reopens reliability priority.
 
-Latest revalidated private evidence at this material docs run:
-- persisted scheduled Stability Watch closure evidence contains **sample 1/2 only**: local 3/3, public 12/12, `public_bad=0`, no bad codes;
-- fresh self-hosted live-site preflight at `2026-08-28T12:54:51Z` passed **8/8 no-retry stability, sitemap 200 with 36 URLs, root 308 -> `/en`, all 36 P0 routes healthy, `failures=0`**;
-- the private workflow schedule remains responsible for obtaining a second distinct scheduled healthy sample; manual/push runs do not satisfy the closure contract.
+Closure evidence:
+1. genuine scheduled dedicated Stability Watch run `33130231833`, checked `2026-08-28T00:36:32Z`: local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`;
+2. separate genuine scheduled integrated stability/preflight run `33216886289`, checked `2026-08-28T22:27:50Z`: public stability `8/8`, sitemap 36, P0 `36/36`, `failures=0`;
+3. fresh closure confirmation run `33227495587`, checked `2026-08-29T01:51:39Z`: local `3/3`, public `12/12`, `public_bad=0`, sitemap 36, P0 `36/36`, `failures=0`.
 
-Formal closure requires all of:
-1. healthy local Next.js origin;
-2. two distinct **scheduled** `Korea Concierge Tunnel Stability Watch` runs with no sampled 1033/530/502;
-3. a clean full sitemap/P0 crawl.
+The second schedule event had not previously been copied into the dedicated closure-evidence file because the stability gate was embedded in the scheduled preflight workflow at that revision. It is still a genuine self-hosted `schedule` event with no-retry stability sampling and a full crawl, so it satisfies the contract requiring two separate scheduled stability runs. This is evidence reconciliation, not a weakened gate.
 
-Until the second scheduled sample is actually persisted and a fresh full preflight is clean, product runtime patching remains paused. Do not weaken this condition or replace it with retry-until-success evidence.
+Runtime understanding:
+- production is `korea-concierge.service` on `127.0.0.1:3100`;
+- Korea tunnel UUID is `da081e8b-8cb3-4503-a8be-c2971f8a2721`, connector `korea-tunnel.service`;
+- Docker `n8n-server-cloudflared-1` is unrelated tunnel UUID `08493dd4-8e40-4d5f-bdfd-c9ffa1fbe2b5` and must not be stopped for Korea repair;
+- legacy `korea-server.service` dependency was removed during clean reset and the old app archived;
+- runner remains without general sudo/Docker rights.
 
-Production is `korea-concierge.service` on `127.0.0.1:3100`. Legacy `korea-server.service` was removed from active user-systemd configuration; its app was archived rather than destructively deleted. The Docker connector `n8n-server-cloudflared-1` is unrelated and must not be stopped as a Korea repair step unless fresh non-secret diagnostics prove otherwise.
-
-Keep the private 10-minute `Korea Concierge Tunnel Stability Watch`, consecutive deploy probes and no-retry live preflight. Runner remains without general sudo/Docker access. Never expose tokens, credentials, secret environment values or full token-bearing commands.
+Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes. GitHub schedule delivery was independently inconsistent during recovery; that remains a CI-monitoring concern, not an open production-tunnel incident.
 
 ## 3. Existing explainable previews
-Personal Color free preview may expose locally calculated undertone/depth/contrast/analyzer confidence/CIELAB values with limitations. Hanbok free matcher uses a transparent preference-fit rubric, not AI confidence or beauty scoring. Premium Personal Color/Hanbok remains consented photo-based explainable AI after privacy/provider/cost gates.
+Personal Color free preview may expose locally calculated undertone/depth/contrast/analyzer confidence/CIELAB values with limitations. Hanbok free matcher uses a transparent preference-fit rubric, not AI confidence or beauty scoring. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
 
-The current commercial UX gap is that Hanbok/credits can still read as prototype/catalog rather than a compelling paid product. `PRODUCT_MASTER_SPEC.md` now makes this a first-class improvement criterion: free Hanbok should be visually useful, Premium must clearly show what the customer receives, and paid features are not Done until their credit lifecycle/backend boundary is real or only an external credential remains.
+## 4. Step 3A shipped production foundations
+Production already includes:
+- exact / approximate / unknown birth-time contracts;
+- unknown time as valid reduced scope, never a guessed hour;
+- IANA timezone required for exact/approximate local clock; longitude additionally required for true-solar mode;
+- whitelist-only narrative payloads that strip raw DOB/time/city/timezone/longitude/name/account identifiers;
+- explicit `midnight` / `jasi` / `splitJasi` day-boundary policies;
+- explicit `civil` / `true-solar` policy;
+- trusted 2024 Ipchun Year Pillar boundary samples outside KASI's unresolved source minute: 17:26 KST → 癸卯, 17:28 → 甲辰;
+- trusted 2024 Jingzhe Month Pillar boundary samples: 11:22 KST → 丙寅, 11:24 → 丁卯;
+- executable 23:00 / 00:00 / 01:00 late-Zi policy semantics;
+- deterministic NOAA/GML Equation-of-Time + longitude/timezone true-solar correction with explicit `dayOffset`;
+- `npm run check:saju` as a production build gate;
+- no runtime Saju calculator dependency.
 
-## 4. Step 3A shipped foundations
-Production includes exact/approximate/unknown birth-time contracts; unknown time is valid reduced scope and never gets a guessed hour; exact/approximate clock input requires IANA timezone; true-solar mode additionally requires longitude; raw DOB/time/city/timezone/longitude/name/account identifiers are stripped from narrative payloads. Policies are explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar`.
+Current verified production Saju release remains `361ddfc8728dcbf8615890d37d477608db91f249` for the true-solar slice.
 
-`npm run check:saju` gates deterministic fixtures. No runtime Saju calculator dependency has been added.
+## 5. Current review slice — historical IANA timezone / DST resolution
+Branch: `korea-concierge/saju-dst-resolution`.
 
-### Trusted 2024 Ipchun Year Pillar boundary
-KASI official: **2024-02-04 17:27 KST**, minute precision. Independent implementation checks support the transition **癸卯 → 甲辰**. Trusted samples remain outside KASI's unresolved minute: 17:26 → 癸卯; 17:27 minute unresolved; 17:28 → 甲辰.
+Added:
+- `src/lib/saju/timezone-resolution.ts`;
+- `fixtures/saju/timezone-resolution-fixtures.json`;
+- `scripts/check-saju-timezone-resolution.mjs`;
+- `docs/SAJU_TIMEZONE_DST_RESEARCH_2026-08-29.md`;
+- the new deterministic gate is included in `npm run check:saju`.
 
-### Trusted 2024 Jingzhe Month Pillar boundary
-KASI official: **2024-03-05 11:23 KST**, minute precision. Independent implementation checks support **丙寅 → 丁卯**. Trusted samples: 11:22 → 丙寅; 11:23 minute unresolved; 11:24 → 丁卯.
-
-### Shipped 23:00 / 00:00 / 01:00 policy semantics
-Production includes `src/lib/saju/day-boundary-policy.ts`, executable fixtures and `check-saju-day-boundary-policy.mjs`. The three policies differ only where tradition differs: `midnight` keeps the civil day at 23:xx; `jasi` advances displayed day and hour-stem basis; `splitJasi` keeps displayed day but advances the hour-stem basis. At 00:00 and 01:00 the reference cases converge once the caller supplies the next civil date.
-
-### Shipped true-solar clock correction
-Production now includes a deterministic, zero-network, zero-AI conversion layer based on NOAA/GML's published Equation of Time approximation:
-
-`true solar offset = EoT + 4 × longitude(deg east) − effective UTC offset minutes`
-
-Files:
-- `src/lib/saju/true-solar-time.ts`;
-- `fixtures/saju/true-solar-time-fixtures.json`;
-- `scripts/check-saju-true-solar-time.mjs`;
-- `docs/SAJU_TRUE_SOLAR_TIME_RESEARCH_2026-08-28.md`;
-- `npm run check:saju` executes the true-solar gate.
-
-Important boundaries:
-- the function accepts an **already-resolved effective UTC offset** and therefore does not guess historical DST or ambiguous/nonexistent local wall times;
-- it preserves `dayOffset` when correction crosses a civil-date boundary;
-- deterministic fixtures prove Singapore and Seoul hour-branch crossings plus Greenwich Equation-of-Time isolation and previous-day rollover;
-- civil versus true-solar remains an explicit convention choice; the product does not claim all Saju schools use the same correction;
-- no runtime astronomy/Saju dependency was added because the official formula is small, auditable, language-neutral, private, zero-cost and fixture-locked.
+Contract:
+- one Gregorian local wall-clock minute + IANA timezone resolves to `unique`, `ambiguous` or `nonexistent`;
+- ambiguous repeated hours return every candidate instant/UTC offset and never silently choose earlier/later;
+- nonexistent DST-gap minutes are not shifted to a nearby valid time;
+- implementation is zero-network, zero-AI, zero new runtime dependency and uses the platform `Intl.DateTimeFormat` IANA data;
+- NIST modern U.S. DST transition rules provide trusted 2024 New York spring-gap/fall-repeat fixtures; Seoul provides a no-DST unique control;
+- raw birth data never leaves the deterministic layer for this resolution.
 
 Research posture:
-- NOAA/GML formula: **ADOPT**;
-- U.S. Naval Observatory Equation-of-Time definition/sign: **ADOPT**;
-- Fortune Cloud Singapore example and other BaZi calculators: **ADAPT** as independent product-level corroboration only;
-- Gwiraedang longitude-only convention: **ADAPT** as evidence of school/method variation;
-- GitHub candidates: **REJECT** runtime adoption; no candidate improved provenance/license/maintenance/bundle/security over the direct official formula;
-- Hugging Face model search execution returned `Tool model_search not found`; no HF evidence is claimed;
-- public Threads search produced no attributable evidence suitable for adoption.
+- NIST DST transition behavior: **ADOPT** as trusted U.S. transition fixture source;
+- standardized `Intl.DateTimeFormat` + `formatToParts`: **ADOPT**;
+- `date-fns-tz`: **REJECT** for this bounded slice — MIT/maintained but unnecessary dependency and no correctness advantage over direct `Intl` for the explicit ambiguity contract;
+- `@date-fns/tz`: **REJECT** for this slice for the same dependency/bundle reason, re-evaluate only if later calendar arithmetic independently justifies it;
+- Hugging Face: connected model search returned `Tool model_search not found`; no HF evidence claimed and ML inference is inappropriate authority for deterministic timezone conversion;
+- public Threads/web search: no attributable evidence suitable for adoption.
 
-Release evidence:
-1. pre-patch production preflight `2026-08-27T22:53:59Z`: 8/8 + 36/36, failures=0;
-2. exact branch head `6f1fdc84f64408ac59f5685aeb7415430a4be314` passed private MiniPC CI after a TypeScript literal-typing issue was detected and fixed before merge;
-3. PR #20 squash-merged to `361ddfc8728dcbf8615890d37d477608db91f249`;
-4. exact merged SHA private production deploy completed with `status=success` at `2026-08-27T23:05:18Z`;
-5. post-deploy preflight `2026-08-27T23:06:17Z`: 8/8 no-retry stability + sitemap 36 + 36/36 P0 + failures=0.
+This slice is not production-shipped until exact-head MiniPC CI, merge, exact-SHA deploy, local/consecutive public checks and full P0 crawl finish.
 
-## 5. Remaining Step 3A order
-1. Historical IANA timezone/DST fixture for foreign visitors, including ambiguous/nonexistent local times without guessing.
-2. Semantic lunar leap-month validity against trusted calendar data.
-3. Evaluate an exact pinned `manseryeok` candidate only against already trusted fixtures.
-4. Beginner foreign-user exact/rough/unknown-time UX with minimal location input.
-5. Deterministic full/reduced-scope chart output; unknown time returns reduced scope rather than a guessed hour.
-6. Integrate true-solar `dayOffset` with the selected day-boundary convention without collapsing policy differences.
+## 6. Remaining Step 3A order
+1. Ship the current IANA/DST resolver slice through private MiniPC CI and exact-SHA deploy.
+2. Integrate the resolver into exact/approximate birth-time instant conversion and foreign-user ambiguity/gap UX.
+3. Semantic lunar leap-month validity against trusted calendar data.
+4. Evaluate an exact pinned `manseryeok` candidate only against already trusted fixtures.
+5. Beginner foreign-user exact/rough/unknown-time UX with minimal location input.
+6. Deterministic full/reduced-scope chart output; unknown time returns reduced scope rather than guessed hour.
+7. Integrate true-solar `dayOffset` with selected day-boundary convention without collapsing policy differences.
 
-## 6. Later K-Culture roadmap
+## 7. Later K-Culture roadmap
 After deterministic Saju foundations: Korean Zodiac → Western Zodiac/Astrology → Tarot → Daily Fortune. Deterministic mechanics first. Tarot randomization is independent of LLM interpretation. Astrology may not fabricate placements/ascendant from missing data. Daily fortune is reflective/cultural entertainment, not deterministic prediction or medical/legal/financial/high-impact advice.
 
-Step 3 remains an active correctness lane, but after formal reliability closure it must not monopolize implementation while the sellable Hanbok/credits/payment loop remains incomplete. See `PRODUCT_MASTER_SPEC.md` for the commercial MVP prioritization rubric.
-
-## 7. Premium Naming Studio
+## 8. Premium Naming Studio
 Separate premium Korean/Asian naming consultation target remains about USD `$149–150`, with curated Top 3–5, Hangul/pronunciation/romanization, validated optional Hanja, meanings, rationale, Korean naturalness, generation feel, international pronunciation, pitfalls and clearly separated traditional Saju/onomastics. Scores require explicit rubrics/data.
 
-## 8. Global-first payments
+## 9. Global-first payments
 International visitor is the launch payer. PayPal Checkout remains leading candidate subject to fresh Korean merchant/policy verification. No production payment exists yet. Before money: auth, server-owned catalog/amounts, immutable/idempotent wallet/service-entitlement ledger, server-side create/capture, verified signed webhook, replay protection, refunds/reversals, rate limits and audit telemetry. Browser success never grants credits.
 
-## 9. Architecture / release flow
+## 10. Architecture / release flow
 Next.js `16.3.3`, `next-intl@4.13.4`, 36 canonical P0 URLs, reciprocal hreflang/x-default, deterministic 308 legacy redirects, frozen dependency installs. Public repo never attaches directly to production runner.
 
 Mandatory release flow: fresh repo/live/private-CI preflight → isolated branch → private `target-ref.txt` exact 40-char branch head → MiniPC CI green → merge → private `deploy-ref.txt` exact merged SHA → local + consecutive public checks → full sitemap/P0 crawl.
 
-## 10. Regression watch
+## 11. Regression watch
 Never weaken reliability gates, fabricate Saju hours/astrology placements, turn a convention choice into a confidence percentage, overstate source precision, send raw birth/photo/name PII to narrative AI, let a candidate library validate itself, infer lunar leap-month validity from shape alone, invent Hanja for foreign names, or ship checkout before signed-webhook/idempotent-ledger/refund foundations.
 
-Also treat these product regressions as important: paid value not visible before checkout, Stitch/UI changes with no perceptible customer improvement, credits presented without a functioning authoritative lifecycle, Hanbok recommendations without useful visual looks, and long research-only runs that leave core customer journeys unfinished.
+For timezone handling specifically, never auto-pick an ambiguous DST offset or auto-shift a nonexistent local time.
 
-## 11. User action currently required
+## 12. User action currently required
 **None.** Continue autonomously. Ask only for merchant/provider credentials, DNS, or a narrowly scoped privileged MiniPC action when it is genuinely the final blocker.
