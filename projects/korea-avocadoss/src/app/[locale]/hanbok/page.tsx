@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
 import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
+import {HanbokVisualInspiration} from '@/features/hanbok/hanbok-visual-inspiration';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}): Promise<Metadata> {
@@ -27,6 +28,7 @@ export default async function HanbokPage({params}: {params: Promise<{locale: str
         <h1>{t('title')}</h1>
         <p>{t('intro')}</p>
       </section>
+      <HanbokVisualInspiration />
       <section className="prototype">
         <HanbokMatcher />
       </section>
