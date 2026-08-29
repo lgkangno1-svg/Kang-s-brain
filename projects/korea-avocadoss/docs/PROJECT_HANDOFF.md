@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Phase:** sellable-MVP acceleration + Step 3 deterministic/explainable K-Culture in parallel  
-**Current verified production application SHA:** `f386a12bfa34d409aeeb3a3de636476b51102ee8`  
+**Current verified production application SHA:** `77709081961d3aae570cd7b94c6838c7072c4841`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
@@ -32,6 +32,8 @@ Runtime understanding:
 - runner remains without general sudo/Docker rights.
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes. GitHub schedule delivery inconsistency during recovery remains a CI-monitoring concern, not an open production-tunnel incident.
+
+The wallet release post-deploy full preflight run `33228193627`, checked `2026-08-29T02:08:31Z`, also passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, P0 `36/36`, `failures=0`. This is ongoing monitoring evidence after closure, not a relaxation of the original closure contract.
 
 ## 3. Existing explainable previews / UI isolation
 Personal Color free preview remains browser-local/private. Hanbok free matcher remains deterministic and explainable. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
@@ -75,14 +77,14 @@ Release evidence:
 3. private deploy run `33227742620` successfully deployed that exact merged SHA;
 4. post-deploy full preflight run `33227809379`, checked `2026-08-29T02:00:20Z`, passed local `3/3`, public `12/12`, bad codes `none`, sitemap 36, P0 `36/36`, `failures=0`.
 
-## 5. Authoritative wallet / credits — CURRENT REVIEW SLICE
-Current clean branch: `korea-concierge/wallet-ledger-foundation-v3`, based on public main after the verified DST release documentation, so concurrent Step 3 work is preserved.
+## 5. Authoritative wallet / credits — SHIPPED DOMAIN FOUNDATION
+Production now includes the first server-authoritative credit-domain foundation.
 
-Candidate files:
+Files:
 - `src/lib/credits/ledger.ts`;
 - `scripts/check-credit-ledger.mjs`;
 - `docs/WALLET_LEDGER_RESEARCH_2026-08-29.md`;
-- `npm run check:credits-ledger`, included in the production build gate alongside `check-saju-timezone-resolution`.
+- `npm run check:credits-ledger`, included in the production build gate alongside the Saju gates.
 
 Domain invariants:
 - positive safe-integer credits only;
@@ -96,7 +98,7 @@ Domain invariants:
 - same key + different request fails closed;
 - capture usage ID must match the reservation usage ID.
 
-`grant` accepts trusted-domain source labels (`verified_payment`, `promotion`, `admin`) but this is not yet a production authorization boundary. Browser success must never invoke grant authority directly.
+`grant` accepts trusted-domain source labels (`verified_payment`, `promotion`, `admin`) but this is still a domain boundary, not yet a production authorization/webhook boundary. Browser success must never invoke grant authority directly.
 
 Research posture (`docs/WALLET_LEDGER_RESEARCH_2026-08-29.md`):
 - Stripe idempotency semantics: **ADOPT**;
@@ -107,9 +109,26 @@ Research posture (`docs/WALLET_LEDGER_RESEARCH_2026-08-29.md`):
 - Hugging Face wallet/ledger models: **REJECT** for deterministic balance authority;
 - public Threads/web search: no attributable implementation-grade evidence adopted.
 
-Private CI robustness note: the first wallet verification proved every product check and build green but the diagnostics-only persistence commit hit a legitimate non-fast-forward because another private diagnostic workflow advanced `main`. The private MiniPC workflow was hardened to fetch/rebase its diagnostics-only commit before a normal push; no force-push, sudo, Docker or broader runner permission was added. A subsequent exact-target MiniPC run verified that hardening successfully.
+Release evidence:
+1. clean branch head `6f5f4bb68646996cccc1260c1f1ff9d653e66909` was based on the latest main after the verified DST release documentation and preserved concurrent Step 3 work;
+2. exact-head private MiniPC CI run `33228057275` completed `success`, including lockfile, P0 localization, Saju/DST gates, wallet ledger invariant gate through the production build, generated document-language and legacy redirect checks;
+3. PR #26 squash-merged to exact public SHA `77709081961d3aae570cd7b94c6838c7072c4841`;
+4. private deploy run `33228113628` deployed that exact SHA and passed the secure root-owned cutover plus six consecutive public root + `/en` probes;
+5. post-deploy full preflight run `33228193627`, checked `2026-08-29T02:08:31Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, P0 `36/36`, `failures=0`.
 
-Next wallet gate after this pure domain slice: server-only transactional persistence adapter, unique idempotency constraint, auth/account ownership, immutable rows, concurrency tests, then payment provider server create/capture + verified signed webhook/replay protection/refunds.
+Private CI robustness note: an earlier wallet verification proved every product check/build green but the diagnostics-only persistence commit hit a legitimate non-fast-forward because another private diagnostic workflow advanced `main`. The MiniPC CI workflow was hardened to fetch/rebase its own diagnostics-only commit before a normal push; no force-push, sudo, Docker or broader runner permission was added. Subsequent exact-target MiniPC CI verified that behavior successfully.
+
+### Next wallet gate
+Implement the server-only transactional persistence/auth layer before real money:
+- account/wallet ownership and authorization;
+- immutable persistence rows;
+- unique database idempotency constraint;
+- atomic reserve/capture/release/refund transactions;
+- deterministic lock ordering/concurrency tests;
+- audit telemetry;
+- then provider server create/capture + verified signed webhook + replay protection + refund/reversal flow.
+
+No browser-reported success may grant credits.
 
 ## 6. Remaining Step 3A order
 1. Integrate the IANA/DST resolver into exact/approximate birth-time instant conversion and foreign-user ambiguity/gap UX.
