@@ -1,3 +1,4 @@
+import {Suspense} from 'react';
 import type {Metadata} from 'next';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 
@@ -30,7 +31,9 @@ export default async function HanbokPage({params}: {params: Promise<{locale: str
       </section>
       <HanbokVisualInspiration />
       <section className="prototype">
-        <HanbokMatcher />
+        <Suspense fallback={<div className="prototypePanel" style={{minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Loading Hanbok Studio...</div>}>
+          <HanbokMatcher />
+        </Suspense>
       </section>
     </main>
   );

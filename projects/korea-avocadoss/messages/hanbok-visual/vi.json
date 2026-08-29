@@ -1,49 +1,57 @@
 {
   "HanbokVisual": {
-    "eyebrow": "Cảm hứng Thời trang & Sân khấu",
-    "heroPill": "Bộ sưu tập Hanbok Cao cấp",
-    "title": "Phong cách Hanbok Tinh tế & Phom dáng Thực tế",
-    "intro": "Khám phá các thiết kế Hanbok cung đình sang trọng, phong cách nữ chính phim Hàn, tông màu pastel nhẹ nhàng và Hanbok cách tân hiện đại từ các sàn diễn danh giá. Hãy chọn phong cách bạn yêu thích và phối màu phù hợp bên dưới.",
-    "tryStyleAction": "Tìm Hanbok hợp với tôi",
+    "eyebrow": "Bộ sưu tập Hanbok Cung đình",
+    "heroPill": "3 Phong cách Chủ đạo",
+    "title": "Phong cách Hanbok Cung điện & Phom dáng Thực tế",
+    "intro": "Khám phá 3 phong cách Hanbok cung đình đặc trưng: Công chúa/Hoàng tử thanh nhã, Hoàng hậu/Quốc vương trang trọng, và Hoàng gia quý phái lộng lẫy. Chọn phong cách để áp dụng ngay bảng màu vào công cụ gợi ý bên dưới.",
+    "genderToggleAria": "Chọn phong cách trang phục nữ hoặc nam",
+    "feminineTab": "Trang phục Nữ",
+    "masculineTab": "Trang phục Nam",
+    "findMatchAction": "Phối Hanbok theo phong cách này",
     "sourceLabel": "Nguồn",
     "licenseLabel": "Bản quyền",
     "viewSource": "Xem nguồn gốc",
-    "notice": "Hình ảnh mang tính chất tham khảo phong cách từ các sự kiện văn hóa và truyền thông chính thức, không bao hàm chứng thực từ người nổi tiếng hay cam kết tồn kho của tiệm thuê. Vui lòng sử dụng công cụ bên dưới để phối trang phục chuẩn cho chuyến đi Seoul.",
-    "royalCourtCouture": {
-      "title": "Hanbok Cung Đình Hoàng Gia Cao Cấp",
-      "tag": "Cung Đình",
-      "description": "Chi tiết thêu chỉ vàng lộng lẫy kết hợp sắc đỏ thẫm quý phái, gợi nhớ hình ảnh hoàng hậu trong các bộ phim truyền hình lịch sử.",
-      "alt": "Hanbok cung đình hoàng gia trên sàn diễn thời trang văn hóa"
-    },
-    "softPastelElegance": {
-      "title": "Sắc Pastel Dịu Dàng Thanh Thoát",
-      "tag": "Tông Pastel",
-      "description": "Áo jeogori trắng ngà mỏng nhẹ phối cùng chân váy bồng bềnh sắc hồng tím, mang lại vẻ đẹp thanh tú và cực kỳ bắt mắt khi chụp ảnh.",
-      "alt": "Hanbok hiện đại xếp lớp tông màu pastel nhẹ nhàng"
-    },
-    "contemporaryPalaceChic": {
-      "title": "Phong Cách Cung Điện Hiện Đại",
-      "tag": "Phong Cách Phim Hàn",
-      "description": "Sự kết hợp tinh tế giữa xanh ngọc bích và xanh navy đậm, mang vẻ trang nhã cổ điển pha nét thanh lịch hiện đại của nữ chính.",
-      "alt": "Hanbok hiện đại phong cách hoàng cung với tông xanh ngọc và xanh navy"
-    },
-    "nobleScholarDopo": {
-      "title": "Áo Choàng Dopo Quý Tộc",
-      "tag": "Áo Choàng Dopo",
-      "description": "Áo choàng xanh thẫm uy nghi với tay áo rộng và phom đứng sang trọng, biểu tượng của các bậc công tử quý tộc thời xưa.",
-      "alt": "Áo choàng dopo quý tộc nam trên sàn diễn văn hóa"
-    },
-    "romanticPalaceWalk": {
-      "title": "Dạo Bước Cung Điện Lãng Mạn",
-      "tag": "Lãng Mạn Cung Điện",
-      "description": "Chất liệu lụa bóng sang trọng nổi bật giữa không gian cổ kính của cung điện Gyeongbokgung, hoàn hảo cho bộ ảnh du lịch Seoul.",
-      "alt": "Hanbok lụa truyền thống trước khung cảnh cung điện Gyeongbokgung"
-    },
-    "modernStageFusion": {
-      "title": "Hanbok Cách Tân Sân Khấu Hiện Đại",
-      "tag": "Cách Tân",
-      "description": "Đường cắt may táo bạo điểm xuyết ánh vàng kim hiện đại, phong cách từng gây ấn tượng trên các sân khấu K-Pop quốc tế.",
-      "alt": "Thiết kế Hanbok cách tân hiện đại với chi tiết ánh kim"
+    "notice": "Hình ảnh mang tính chất tham khảo phong cách từ các sự kiện văn hóa và truyền thông chính thức, không bao hàm chứng thực từ người nổi tiếng hay cam kết tồn kho của tiệm thuê.",
+    "categories": {
+      "princess-prince": {
+        "name": "Công chúa / Hoàng tử",
+        "badge": "Dịu dàng & Thanh thoát",
+        "tagline": "Nhẹ nhàng, thanh lịch và ăn ảnh",
+        "feminine": {
+          "description": "Nhẹ nhàng, thanh lịch và cực kỳ ăn ảnh. Lựa chọn kinh điển cho lần đầu mặc Hanbok và chụp ảnh tại vườn cung điện với sắc pastel trong trẻo.",
+          "alt": "Hanbok công chúa tông pastel dịu dàng"
+        },
+        "masculine": {
+          "description": "Áo choàng hoàng tử trẻ trung với tông màu sáng sủa, lý tưởng cho những bức ảnh dạo bước cung điện.",
+          "alt": "Áo choàng hoàng tử dạo bước cung điện"
+        }
+      },
+      "queen-king": {
+        "name": "Hoàng hậu / Quốc vương",
+        "badge": "Trang trọng & Cổ điển",
+        "tagline": "Trang nhã, cổ điển và uy nghi",
+        "feminine": {
+          "description": "Trang nhã, cổ điển và uy nghi. Chất liệu lụa đậm màu tôn lên nét đằm thắm, quý phái chuẩn phong cách hoàng gia.",
+          "alt": "Hanbok hoàng hậu bằng lụa trang trọng"
+        },
+        "masculine": {
+          "description": "Áo choàng dopo quý tộc với tay áo rộng và phom đứng lịch lãm, tái hiện hình ảnh bậc vương giả thời xưa.",
+          "alt": "Áo choàng dopo quý tộc uy nghiêm"
+        }
+      },
+      "royal": {
+        "name": "Hoàng gia Đại lễ (Royal)",
+        "badge": "Lộng lẫy & Cao cấp",
+        "tagline": "Sang trọng, lộng lẫy và mang tính nghi lễ",
+        "feminine": {
+          "description": "Sang trọng, lộng lẫy và mang tính nghi lễ cao. Thích hợp cho những ai muốn có bộ ảnh cung đình ấn tượng nhất với họa tiết thêu dát vàng.",
+          "alt": "Hanbok đại lễ hoàng gia lộng lẫy thêu dát vàng"
+        },
+        "masculine": {
+          "description": "Lễ phục hoàng gia với chi tiết thêu vàng quyền uy, mang lại ấn tượng thị giác mạnh mẽ khi chụp ảnh.",
+          "alt": "Lễ phục hoàng gia nam thêu họa tiết vàng"
+        }
+      }
     }
   }
 }

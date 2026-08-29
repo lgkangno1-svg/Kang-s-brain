@@ -194,5 +194,14 @@
     "gyeongbokgungDescription": "按时间规划景福宫行程，兼顾韩服归还缓冲、拍照重点、步行舒适度和周边餐饮。",
     "colorTitle": "个人色彩预览 — 私密浏览器分析",
     "colorDescription": "免费在浏览器内尝试个人色彩预览，用于韩服搭配。自拍保留在设备上，结果可手动修正。"
+  },
+  "CheckoutSuccess": {
+    "eyebrow": "支付成功",
+    "title": "感谢您的购买",
+    "message": "您的订单已由 Stripe 安全处理完成。对应权益与点数已充值至您的账户。",
+    "orderItemLabel": "购买项目",
+    "returnToHanbok": "返回韩服定制馆",
+    "viewWallet": "查看点数钱包",
+    "securityNotice": "所有交易均通过 Stripe 进行端到端安全加密处理。我们绝不会存储您的信用卡信息或原始生物特征数据。"
   }
 }

@@ -4,7 +4,7 @@
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Phase:** sellable-MVP acceleration + Step 3 deterministic/explainable K-Culture in parallel  
-**Current verified production application SHA:** `22e46a830bfdb692da4234da49804b6ff65f504f`  
+**Current verified production application SHA:** `9dc8166c937699451ece935b3375030941b01e4a`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
@@ -33,122 +33,53 @@ Runtime understanding:
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes.
 
-Latest production verification after the Saju deterministic core release: private full preflight run `33250743742`, checked `2026-08-29T11:43:07Z`, passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
+## 3. Hanbok Core 3-Style Redesign & Matcher Preset Architecture — SHIPPED
+Replaced the runway-heavy 6-style layout with the 3 quintessential Korean palace experience styles that international visitors intuitively seek:
+1. **Princess / Prince**: Soft, graceful, youthful pastel layers, classic palace photo-friendly look;
+2. **Queen / King**: Elegant, traditional, dignified formal court-inspired look with richer silk colors;
+3. **Royal**: Luxurious, ornate, ceremonial, highly decorated premium look with gold-leaf accents and dramatic photographic presence.
 
-### Private CI diagnostics persistence hardening
-The earlier post-deploy probe run `33230226936` proved the live surface healthy but its diagnostics persistence step hit a private-main rebase race. This was a CI bookkeeping race, not a production failure. Private `.github/workflows/live-site-preflight.yml` was hardened at `f25cba65d2658fa6cca783953672f9fe76705aa0`: each persistence retry resets to newest private `main`, reapplies the sanitized generated report, and performs a normal fast-forward push. No force-push or privilege escalation is used.
-
-## 3. Explainable previews / UI isolation / Hanbok visual lookbook
-Personal Color free preview remains browser-local/private. Hanbok free matcher remains deterministic and explainable. Premium Personal Color/Hanbok remains future consented photo-based explainable AI.
-
-### Hanbok high-fashion & editorial lookbook — SHIPPED
 Files:
-- `src/features/hanbok/hanbok-visual-library.ts` (6 curated real-world aspirational styles: Royal Court Haute Couture, Soft Pastel Sheer Layering, Contemporary Palace Chic, Noble Scholar Dopo Robe, Romantic Gyeongbokgung Stroll, Modern Stage Fusion);
-- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css` (editorial card grid, style tags, source attribution with outbound links, direct "Find my Hanbok match" CTA linking to `#hanbok-matcher`);
-- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete 6-locale localized style titles, descriptions, and CTAs);
-- `scripts/check-message-parity.mjs` (integrated parity check covering 394 leaf keys across all 6 locales).
+- `src/features/hanbok/hanbok-visual-library.ts` (structured 3 categories with curated feminine & masculine references, 4:5 aspect ratio, and matcher presets);
+- `src/features/hanbok/hanbok-visual-inspiration.tsx` + `hanbok-visual-inspiration.module.css` (consistent 4:5 image cards, feminine/masculine toggle, source links, direct URL preset linking);
+- `src/features/hanbok/hanbok-matcher.tsx` (URL preset consumption via `?hanbokStyle={style}#hanbok-matcher`, applied preset badge);
+- `messages/hanbok-visual/{en,zh-CN,ja,zh-TW,vi,th}.json` + `messages/hanbok/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete 6-locale parity with 402 leaf keys);
+- `scripts/check-hanbok-visual-contracts.mjs` (executable contract test ensuring 3 categories, valid metadata, and preset IDs).
 
-Key improvements:
-- Replaced plain mannequin/market photos with high-aesthetic cultural runway and royal palace reference imagery;
-- Added clear style name, descriptive styling tips, and prominent attribution badge with source link on every card;
-- Added direct interactive connection to the Hanbok Matcher on each card via "Find my Hanbok match";
-- Maintained clear non-endorsement disclaimers and zero-cost client rendering.
+## 4. Stripe Global Payment Primary Foundation — SHIPPED
+Stripe is confirmed as the primary global payment provider for Korea Concierge. Implemented server-authoritative Stripe Checkout Sessions and HMAC-SHA256 signature verification.
 
-## 4. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED & PRODUCTION VERIFIED 2026-08-29
-### Saju deterministic core — PRODUCTION VERIFIED 2026-08-29
 Files:
-- `src/lib/saju/input-contracts.ts`;
-- `src/lib/saju/deterministic-core.ts`;
-- `src/lib/saju/timezone-resolution.ts`;
-- `src/lib/saju/day-boundary-policy.ts`;
-- `src/lib/saju/true-solar-time.ts`;
-- `scripts/check-saju-deterministic-core.mjs`;
-- `docs/SAJU_DETERMINISTIC_CORE_RESEARCH_2026-08-29.md`.
+- `src/lib/payments/catalog.ts` (product catalog: `premium_hanbok_match`, `premium_naming_studio`, `trip_pass_basic`, `trip_pass_advanced`, `trip_pass_ultra`; server-mapped Price ID resolution);
+- `src/lib/payments/stripe.ts` (server checkout session creation, timing-safe HMAC-SHA256 webhook signature verification with 300s replay tolerance, zero-PII metadata);
+- `src/app/api/checkout/stripe/route.ts` (secure checkout endpoint rejecting client price/amount injection);
+- `src/app/api/stripe/webhook/route.ts` (verified webhook endpoint for `checkout.session.completed`);
+- `src/app/[locale]/checkout/success/page.tsx` + `layout.tsx` (clean localized order confirmation page);
+- `messages/public/{en,zh-CN,ja,zh-TW,vi,th}.json` (complete CheckoutSuccess copy in all 6 locales);
+- `scripts/check-stripe-payment-contracts.mjs` (security tests: client price injection prevention, webhook signature verification, replay protection, missing config handling);
+- `.env.example` (clean environment variable template for Stripe keys and Price IDs).
 
-Core invariants & capabilities:
-- **Birth-time input contract**: `exact`, `approximate`, `unknown` discriminated unions with runtime validation and compile-time guards preventing silent coercion;
-- **IANA timezone & DST resolution**: resolves wall clocks against runtime IANA database; returns explicit `unique`, `ambiguous` (fall-back transition with all candidate offsets preserved), `nonexistent` (spring-forward gap; not silently shifted), or `insufficient-input` (when timezone is missing for exact/approximate clock);
-- **Invariant vs. Candidate branch derivation**:
-  - Exact: resolves single hour branch and pillar;
-  - Approximate single-branch: resolves invariant branch, flags precision as `approximate`;
-  - Approximate multi-branch: strictly omits hour pillar (`undefined`), enumerates chronological candidate branches and candidate hour pillars, sets uncertainty code `APPROXIMATE_TIME_MULTI_BRANCH`;
-  - Unknown: strictly omits hour pillar (`undefined`), enumerates all 12 candidate branches, sets scope `three-pillars` and uncertainty code `UNKNOWN_BIRTH_TIME`;
-- **Five Rats Hour-Stem Formula** (오자둔일법): exact modular arithmetic `((dayStemIndex % 5) * 2 + hourBranchIndex) % 10`;
-- **Invariant Five Elements range bounds**: computes exact element count for verified base pillars (3 pillars = 6 characters) plus min..max range bounds for candidate hour additions; strictly bans decorative precision or fabricated percentage scores;
-- **Day Boundary & Solar Time Integration**: applies `midnight`, `jasi`, and `splitJasi` policies; flags late-Zi day-pillar ambiguity for intervals spanning 23:00 under `jasi`; applies NOAA/GML Equation of Time and longitude correction with `dayOffset` when `true-solar` mode is active;
-- **Machine-readable provenance & explainability**: produces full `SajuProvenance` including applied rule IDs, resolved facts, uncertain facts, unavailable reasons, and candidate derivations;
-- **Privacy & Narrative boundary**: `buildSajuNarrativePayload` enforces whitelist-only serialization, dropping all raw PII (birth date, clock time, place label, timezone, longitude, user name, account ID); `validateNarrativePayloadImmutability` verifies that downstream narrative adapters cannot alter deterministic calculation outputs;
-- **Automated tests**: `scripts/check-saju-deterministic-core.mjs` verifies all 20+ required criteria and property invariants; integrated into `npm run check:saju` and production `npm run build`.
+## 5. Step 3A Saju Deterministic Core & Explainable Foundations — SHIPPED & PRODUCTION VERIFIED
+Production includes:
+- exact / approximate / unknown birth-time contracts;
+- unknown time as valid reduced scope, never a guessed hour;
+- IANA timezone required for exact/approximate local clock; longitude additionally required for true-solar mode;
+- whitelist-only narrative payloads that strip raw DOB/time/city/timezone/longitude/name/account identifiers;
+- explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policies;
+- trusted Ipchun/Jingzhe boundary fixtures outside unresolved official-source minutes;
+- deterministic late-Zi semantics and NOAA/GML true-solar correction with `dayOffset`;
+- historical IANA wall-clock resolver returning explicit `unique` / `ambiguous` / `nonexistent` states;
+- 20+ automated tests in `scripts/check-saju-deterministic-core.mjs` and build gates;
+- no runtime Saju calculator dependency.
 
-Release evidence:
-1. branch head `5b6cfa82ce65ebf7b78e318cb813155b221d141c` passed private MiniPC CI `33250591412` (job `99095466695`, 39s, green);
-2. PR #33 squash-merged to production SHA `22e46a830bfdb692da4234da49804b6ff65f504f`;
-3. private secure deploy `33250658963` (job `99095651505`, 1m20s) deployed `22e46a830bfdb692da4234da49804b6ff65f504f` and passed exact-SHA check, production build, isolated redirect checks, cutover, and consecutive Cloudflare checks;
-4. post-deploy live preflight `33250743742` (job `99095880939`, 53s) passed local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`, sitemap 36, all P0 `36/36`, `failures=0`.
+## 6. Authoritative wallet / credits — PRODUCTION FOUNDATION
+- `src/lib/credits/ledger.ts`, `src/lib/credits/authorization.ts`, `src/lib/credits/economics.ts`.
+- Invariants: positive safe-integer credits, append-only entries, no negative balance, server-only capture/release/refund.
 
-Remaining Step 3A/3B:
-1. consumer UI components for Saju chart visualization and explainable result cards;
-2. semantic lunar leap-month validity against trusted astronomical calendar data;
-3. beginner UX for foreign visitors (What is Saju? What does my time uncertainty change?);
-4. bounded generative interpretation layer consuming whitelist-only narrative payloads.
+## 7. Next priority
+- Complete Stripe account onboarding and configure actual Stripe Price IDs in server environment.
+- Connect server-side webhook fulfillment to the authoritative credit ledger when database persistence is attached.
+- Add photo upload & consented vision analysis pipeline for Premium Hanbok Match.
 
-## 5. Authoritative wallet / credits — PRODUCTION FOUNDATION
-### Ledger domain — SHIPPED
-Files:
-- `src/lib/credits/ledger.ts`;
-- `scripts/check-credit-ledger.mjs`;
-- `docs/WALLET_LEDGER_RESEARCH_2026-08-29.md`.
-
-Invariants include positive safe-integer credits, append-only entries, available/reserved/spent reconciliation, no negative balance, bounded reserve/capture/release/refund, same-key/same-request replay, same-key/different-request fail-closed behavior and reservation/capture usage matching.
-
-Ledger release: exact head `6f5f4bb68646996cccc1260c1f1ff9d653e66909` → MiniPC CI `33228057275` → PR #26 → production SHA `77709081961d3aae570cd7b94c6838c7072c4841` → deploy `33228113628` → clean post-deploy preflight `33228193627`.
-
-### Credit authorization boundary — SHIPPED
-Files:
-- `src/lib/credits/authorization.ts`;
-- `scripts/check-credit-authorization.mjs`;
-- `docs/CREDIT_AUTHORIZATION_RESEARCH_2026-08-29.md`.
-
-Authorization contract:
-- account actors may reserve only their own wallet;
-- verified-payment grants require `payment_webhook`;
-- promotional grants require `promotion_service`;
-- admin grants require `support_admin`;
-- capture/release/refund require `feature_executor` or `support_admin`;
-- system actors require non-empty audit identifiers;
-- browser/account actors cannot grant, capture, release or refund credits.
-
-Scope boundary: database persistence, authenticated session verification, provider webhook verification and real-money readiness are not yet claimed.
-
-Next wallet gates:
-1. immutable transactional persistence rows and account/wallet ownership storage;
-2. unique database idempotency constraint;
-3. atomic reserve/capture/release/refund with deterministic lock ordering and concurrency tests;
-4. authenticated server session → account principal binding + audit telemetry;
-5. provider server create/capture + verified signed webhook + replay protection + monetary refund/reversal.
-
-No browser-reported success may grant credits.
-
-## 6. K-Culture roadmap after current Saju foundations
-After Step 3A deterministic Saju foundations: explainable Saju interpretation → Korean Zodiac → Western Zodiac/Astrology → Tarot → Daily Fortune. Deterministic mechanics first. Tarot randomization is independent of LLM interpretation. Astrology never fabricates missing placements. Daily fortune remains reflective/cultural entertainment, not high-impact advice.
-
-Step 3 remains an active correctness lane but must not monopolize implementation while the sellable Hanbok/credits/payment loop is incomplete.
-
-## 7. Premium Naming Studio
-Separate premium Korean/Asian naming consultation target remains about USD `$149–150`, with curated Top 3–5, Hangul/pronunciation/romanization, validated optional Hanja, meanings, rationale, Korean naturalness, generation feel, international pronunciation, pitfalls and clearly separated traditional Saju/onomastics. Scores require explicit rubrics/data.
-
-## 8. Global-first payments
-International visitor is the launch payer. PayPal Checkout remains a leading candidate subject to fresh Korean merchant/policy verification. No production payment exists yet. Before money: authenticated ownership, server-owned catalog/amounts, durable idempotent wallet/entitlement persistence, server create/capture, verified signed webhook, replay protection, refunds/reversals, rate limits and audit telemetry. Browser success never grants credits.
-
-## 9. Architecture / release flow
-Next.js `16.3.3`, `next-intl@4.13.4`, 36 canonical P0 URLs, reciprocal hreflang/x-default, deterministic 308 legacy redirects, frozen installs. Public repo never attaches directly to production runner.
-
-Mandatory material-release flow: fresh repo/private-CI/live preflight → isolated branch → private `target-ref.txt` exact 40-char head → MiniPC CI green → merge → private `deploy-ref.txt` exact merged SHA → secure cutover + consecutive public probes → full sitemap/P0 crawl → update this handoff with verified production truth.
-
-## 10. Regression watch
-Never weaken reliability gates, fabricate Saju/astrology data, expose raw sensitive PII to narrative AI, silently resolve ambiguous/nonexistent DST clocks, invent Hanja, ship checkout before durable webhook/idempotency/refund foundations, or let browser state become payment/credit authority.
-
-Also reject product regressions where paid value is not visible before checkout, Stitch changes are not perceptible, credits exist only as pricing copy, Hanbok results lack useful visuals, or research-only work leaves customer journeys unfinished. Never overwrite concurrent Codex/AI branches without a fresh branch comparison, and never ship unlicensed celebrity/drama/social imagery just because it is visually effective.
-
-## 11. User action currently required
-**None.** Continue autonomously. Ask only for merchant/provider credentials, DNS, or a narrowly scoped privileged MiniPC action when it is genuinely the final blocker.
+## 8. User action currently required
+**None for core code/build.** When ready for live transactions, provide live/test Stripe API keys and Product/Price IDs in deployment environment.

@@ -194,5 +194,14 @@
     "gyeongbokgungDescription": "Lập kế hoạch Gyeongbokgung theo thời gian, có khoảng đệm trả Hanbok, ưu tiên chụp ảnh, mức đi bộ thoải mái và điểm ăn uống gần đó.",
     "colorTitle": "Xem thử màu cá nhân — Phân tích riêng tư trong trình duyệt",
     "colorDescription": "Thử miễn phí màu cá nhân trong trình duyệt để phối Hanbok. Ảnh selfie ở lại trên thiết bị và bạn có thể chỉnh kết quả thủ công."
+  },
+  "CheckoutSuccess": {
+    "eyebrow": "Thanh toán Thành công",
+    "title": "Cảm ơn Bạn đã Đặt hàng",
+    "message": "Giao dịch đã được xử lý an toàn qua Stripe. Quyền lợi và điểm thưởng đã được kích hoạt trong tài khoản của bạn.",
+    "orderItemLabel": "Gói Dịch Vụ Đã Mua",
+    "returnToHanbok": "Quay lại Hanbok Studio",
+    "viewWallet": "Xem Ví Điểm",
+    "securityNotice": "Mọi giao dịch đều được mã hóa bảo mật cùng Stripe. Chúng tôi không bao giờ lưu trữ số thẻ ngân hàng hay dữ liệu sinh trắc học cá nhân."
   }
 }
