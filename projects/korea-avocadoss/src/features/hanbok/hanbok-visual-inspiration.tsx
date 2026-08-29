@@ -67,6 +67,8 @@ export function HanbokVisualInspiration() {
                   <img
                     src={activeRef.imageUrl}
                     alt={t(`categories.${category.id}.${activeGender}.alt`)}
+                    width={activeRef.sourceWidth}
+                    height={activeRef.sourceHeight}
                     loading="lazy"
                     decoding="async"
                     referrerPolicy="no-referrer"
