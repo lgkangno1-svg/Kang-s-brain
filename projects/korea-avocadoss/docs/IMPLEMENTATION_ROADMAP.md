@@ -1,6 +1,6 @@
 # Korea Concierge — Step-by-Step Implementation Roadmap
 
-**Date:** 2026-08-28  
+**Date:** 2026-08-29  
 **Rule:** implement one reviewable slice at a time. Before every material change inspect latest `main`, recent commits/open PRs, the full project tree, this roadmap, `PROJECT_HANDOFF.md`, private CI state and a fresh live-site preflight. Update `PROJECT_HANDOFF.md` in the same material run.
 
 ## Step 0 — Product baselines ✅
@@ -36,14 +36,20 @@ Production-verified foundations:
 - explicit `midnight` / `jasi` / `splitJasi` and `civil` / `true-solar` policies;
 - deterministic boundary fixture harness is part of `npm run check:saju` and the production build gate;
 - trusted 2024 Ipchun Year Pillar boundary samples: 17:26 KST → 癸卯, unresolved 17:27 minute, 17:28 → 甲辰;
-- trusted 2024 Jingzhe Month Pillar boundary samples: 11:22 KST → 丙寅, unresolved 11:23 minute, 11:24 → 丁卯;
+- trusted 2024 Jingzhe Month Pillar boundary samples: 11:22 → 丙寅, unresolved 11:23 minute, 11:24 → 丁卯;
 - executable 23:00 / 00:00 / 01:00 semantics for `midnight`, `jasi` and `splitJasi` with explicit convention labeling;
 - deterministic NOAA/GML Equation-of-Time + longitude/timezone correction with explicit `dayOffset`, fixture-covered Singapore/Seoul hour-branch crossings, Greenwich EoT isolation and previous-day rollover;
 - true-solar production release SHA `361ddfc8728dcbf8615890d37d477608db91f249` passed exact-head MiniPC CI, exact-SHA deploy, post-deploy 8/8 no-retry stability and 36/36 P0 crawl;
 - no Saju runtime calculator dependency.
 
-Remaining Step 3A gates:
-1. historical IANA timezone/DST fixture for foreign visitors, including ambiguous/nonexistent local times without guessing;
+Current review slice:
+- historical IANA timezone/DST resolver with explicit `unique` / `ambiguous` / `nonexistent` minute states;
+- NIST-backed 2024 New York spring-gap and fall-repeat fixtures plus Seoul no-DST fixture;
+- zero runtime dependency, zero network/AI calls, no silent earlier/later selection and no gap shifting;
+- research recorded in `docs/SAJU_TIMEZONE_DST_RESEARCH_2026-08-29.md`.
+
+Remaining Step 3A gates after this slice ships:
+1. consume IANA/DST resolution in exact/approximate birth-time instant conversion and expose explicit disambiguation UX where required;
 2. semantic lunar leap-month validity against trusted calendar data;
 3. exact pinned calculator candidate evaluation against trusted fixtures;
 4. foreign-user beginner UX for exact/rough/unknown time and minimal location input;
@@ -100,7 +106,7 @@ Track conversion, satisfaction and margin by locale/topic without sensitive cont
 9. full sitemap/P0 crawl before claiming production.
 
 ## Reliability invariant
-The 2026-08-27 Cloudflare incident stays closed only while local origin is healthy, the 10-minute private stability watch remains clean, deploy probes are consecutive, and live-site preflight never hides an intermittent 1033/530/502 with retries. Any sampled 1033/530/502 immediately reopens reliability priority. Never grant the repository-scoped runner general sudo/Docker access.
+The 2026-08-27 Cloudflare incident is formally closed as of 2026-08-29 after two separate genuine scheduled stability-sensitive runs plus a fresh 3/3-local, 12/12-public and 36/36-P0 confirmation. It stays closed only while local origin is healthy, the private 10-minute stability monitoring remains clean, deploy probes are consecutive, and live-site preflight never hides an intermittent 1033/530/502 with retries. Any sampled 1033/530/502 immediately reopens reliability priority. Never grant the repository-scoped runner general sudo/Docker access.
 
 ## Current user action required
 **None.** Merchant credentials, payment onboarding, production AI credentials and narrowly privileged MiniPC actions remain deferred until genuinely required.
