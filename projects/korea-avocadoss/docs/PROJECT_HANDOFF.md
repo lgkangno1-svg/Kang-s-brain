@@ -5,7 +5,7 @@
 **Project root:** `projects/korea-avocadoss`  
 **Phase:** customer-facing premium Hanbok experience + Stitch synchronization; Step 3 deterministic K-Culture continues in parallel  
 **Most recent merged main SHA:** `6f466c1a6262039612dafc0ada8303c7a989c668`  
-**Most recent user-reported verified production SHA:** `6f466c1a6262039612dafc0ada8303c7a989c668`  
+**Most recent verified production SHA:** `6f466c1a6262039612dafc0ada8303c7a989c668`  
 **CI/deploy control:** private `lgkangno1-svg/korea-concierge-ci`, isolated MiniPC runner  
 **Product north star:** `docs/PRODUCT_MASTER_SPEC.md`
 
@@ -26,7 +26,11 @@ Closure evidence already recorded:
 2. separate scheduled integrated stability/preflight `33216886289`: public stability clean, sitemap 36, P0 `36/36`, `failures=0`;
 3. closure confirmation `33227495587`: local `3/3`, public `12/12`, sitemap 36, P0 `36/36`, failures `0`.
 
-Latest Hanbok/Stripe merge `6f466c1a6262039612dafc0ada8303c7a989c668` was user-reported as deployed with MiniPC CI run `33258985277`, deploy run `33259043279`, and live preflight `33259127317`: local `3/3`, public `12/12`, sitemap/P0 failures `0`, 530/1033/502 = 0. Revalidate from private CI before the next merge rather than relying on this historical report.
+Fresh reliability evidence inspected before the current feature branch:
+- scheduled reliability evidence for run `33251346578`: local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`;
+- separate scheduled reliability evidence for run `33259127317`: local `3/3`, public `12/12`, `public_bad=0`, bad codes `none`.
+
+Latest Hanbok/Stripe merge `6f466c1a6262039612dafc0ada8303c7a989c668` was deployed with MiniPC CI run `33258985277`, deploy run `33259043279`, and live preflight `33259127317`; sitemap/P0 were clean and sampled 530/1033/502 were zero. Revalidate from private CI before the next merge rather than relying on historical state.
 
 Runtime understanding:
 - production is `korea-concierge.service` on `127.0.0.1:3100`;
@@ -36,20 +40,28 @@ Runtime understanding:
 
 Keep the private 10-minute stability workflow, no-retry full preflight and consecutive deploy probes.
 
-## 3. Hanbok Core — current shipped state
+## 3. Hanbok Core — current shipped state + current branch visual correction
 The customer-facing style system is intentionally simple:
 1. **Princess / Prince** — soft, graceful, youthful pastel layers, classic palace photo-friendly look;
 2. **Queen / King** — elegant, traditional, dignified formal court-inspired look with richer colors;
 3. **Royal** — luxurious, ornate, ceremonial, highly decorated premium experience label.
 
-Shipped files:
+Shipped core files:
 - `src/features/hanbok/hanbok-visual-library.ts`;
 - `src/features/hanbok/hanbok-visual-inspiration.tsx` + CSS module;
 - `src/features/hanbok/hanbok-matcher.tsx`;
 - `messages/hanbok-visual/**`, `messages/hanbok/**`;
 - `scripts/check-hanbok-visual-contracts.mjs`.
 
-Important quality issue still open: several primary references still come from `Korea_Hanbok_Fashion_Show_*` sources. The user explicitly rejected runway/fashion-show imagery as the defining visual for the three categories. Replace those with rights-reviewed, high-resolution real palace/ceremonial references before declaring the visual library final.
+Working branch `korea-concierge/hanbok-ai-ux-stitch-sync-20260830` corrects the visual-library quality issue that remained on main:
+- all primary `Korea_Hanbok_Fashion_Show_*` / runway references were removed;
+- replacements are rights-reviewed high-resolution Gyeongbokgung or royal-wedding reenactment references from Wikimedia Commons/Korea.net sources;
+- image metadata now records original width/height and the browser receives intrinsic dimensions while CSS keeps a consistent 4:5 frame;
+- Princess feminine reference uses a 3000×4000 Gyeongbokgung image under CC BY-SA 4.0;
+- royal-ceremony references use 3K–5K-pixel Korea.net/KOCIS originals under CC BY-SA 2.0;
+- contract tests now fail if `fashion show`/`runway` returns or if either source dimension is below 1200px.
+
+These are visual references, not promises that the pictured garments are available as rental inventory.
 
 ## 4. Personal Color → Hanbok continuity — IMPLEMENTED ON WORKING BRANCH, NOT YET MERGED
 Working branch: `korea-concierge/hanbok-ai-ux-stitch-sync-20260830`.
@@ -60,7 +72,7 @@ Current branch changes:
 - Hanbok visual style selection preserves the explicit undertone parameter;
 - matcher pre-fills the broad Hanbok palette from that explicit Personal Color result while style still controls mood/comfort;
 - the user can override all matcher selections;
-- `scripts/check-hanbok-visual-contracts.mjs` now covers this bridge.
+- `scripts/check-hanbok-visual-contracts.mjs` covers this bridge.
 
 This mapping is a documented product rule, not an AI confidence score or a claim that one color is objectively best.
 
@@ -83,10 +95,10 @@ Do **not** merge the stale Stitch branch back onto main. It can regress newer wo
 - future Premium AI Hanbok concept UX;
 - a formal rule that material UI changes must update the Stitch spec and refresh Stitch screens when tooling is available.
 
-External Stitch project regeneration is still pending because this ChatGPT run has repository access but no direct Stitch editing connector.
+External Stitch project regeneration is still pending because this ChatGPT environment has repository access but no Stitch editing connector/plugin. Plugin discovery for Stitch returned no installable connector. The stale external Stitch screen must therefore be regenerated later from current `main`/this spec in a Stitch-capable environment; do not use the old branch as an integration source.
 
 ## 6. Premium Hanbok — revised product direction
-Do not build a giant uncontrolled scraped-image dataset. The preferred architecture is hybrid:
+Do not build a giant uncontrolled scraped-image dataset. The preferred architecture is hybrid.
 
 ### A. Rights-reviewed real reference library
 Grow a smaller high-quality library first, eventually roughly hundreds rather than immediately thousands of images, with useful metadata:
@@ -167,14 +179,18 @@ Continue later with zodiac/astrology/tarot/daily-fortune foundations after the c
 
 No live Stripe-to-ledger fulfillment until persistence and webhook idempotency are attached.
 
-## 10. Immediate next priority
-1. Private MiniPC verification of the current Personal Color → Hanbok bridge branch.
-2. Replace runway-heavy Hanbok references with better rights-reviewed palace/royal-ceremony imagery.
-3. Build typed `PremiumHanbokStyleBrief` and image-generation provider seam without payment activation.
-4. Add explicit optional-photo consent, validation, EXIF stripping/transient-processing boundary before any remote vision use.
-5. Add generated Hanbok concept preview and measure real inference cost/latency.
-6. Refresh external Stitch Hanbok screen from `UI_STITCH_SPEC.md` v1.1 when Stitch tooling is available.
-7. Stripe live onboarding later.
+## 10. Current verification state and next priority
+The first MiniPC verification of feature SHA `95ad7c4943edbdba58915f8dce65ec5c95d18422` proved all Saju/Hanbok/payment/credit contract checks passed and the Next.js code compiled, but the production build correctly failed because `HanbokVisualInspiration` introduced `useSearchParams()` without its own Suspense boundary. The failure was treated as a real gate failure, not bypassed.
+
+A follow-up branch patch wraps the URL-aware visual section in Suspense. The branch must be re-targeted to the new exact head and MiniPC CI must PASS before PR/merge.
+
+After that:
+1. merge/deploy only after the private gate and post-deploy preflight are clean;
+2. build typed `PremiumHanbokStyleBrief` and image-generation provider seam without payment activation;
+3. add explicit optional-photo consent, validation, EXIF stripping/transient-processing boundary before any remote vision use;
+4. add generated Hanbok concept preview and measure real inference cost/latency;
+5. refresh external Stitch Hanbok screen from `UI_STITCH_SPEC.md` v1.1 when a Stitch-capable tool is available;
+6. Stripe live onboarding later.
 
 ## 11. User action currently required
 **None.** Continue autonomous product work. Ask only when a provider credential, actual Stripe live setup, or a narrowly scoped privileged MiniPC action is genuinely the final blocker.
