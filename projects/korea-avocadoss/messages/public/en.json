@@ -194,5 +194,14 @@
     "gyeongbokgungDescription": "Plan a time-aware Gyeongbokgung visit with Hanbok return buffers, photo priorities, walking comfort and nearby food or café stops.",
     "colorTitle": "Personal Color Preview — Private Browser Scan",
     "colorDescription": "Try a free browser-side personal-color preview for Hanbok styling. Your selfie stays on your device and the result can be corrected manually."
+  },
+  "CheckoutSuccess": {
+    "eyebrow": "Payment Successful",
+    "title": "Thank You for Your Order",
+    "message": "Your payment has been securely processed by Stripe. Your entitlements and passes are active in your account.",
+    "orderItemLabel": "Purchased Product",
+    "returnToHanbok": "Return to Hanbok Studio",
+    "viewWallet": "View Credit Wallet",
+    "securityNotice": "All transactions are authenticated server-to-server with Stripe. We never store credit card numbers or raw biometric data."
   }
 }

@@ -1,8 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { isValidHanbokStyle, HANBOK_STYLE_CATEGORIES } from './hanbok-visual-library';
 
 const COLOR_IDS = ['jadeIvory', 'roseNavy', 'moonBlue'] as const;
 const MOOD_IDS = ['elegant', 'royal', 'romantic', 'minimal', 'kdrama'] as const;
@@ -42,8 +44,8 @@ const HANBOK_LOOKS: readonly HanbokLook[] = [
   {
     id: 'look2',
     color: 'roseNavy',
-    moods: ['minimal', 'romantic'],
-    comforts: ['walking', 'balanced'],
+    moods: ['minimal', 'romantic', 'royal'],
+    comforts: ['walking', 'balanced', 'photoFirst'],
     destinations: ['stoneWall', 'bukchon'],
     seasons: ['springAutumn', 'winter'],
     jeogoriColor: '#C8B6DB',
@@ -52,7 +54,7 @@ const HANBOK_LOOKS: readonly HanbokLook[] = [
   {
     id: 'look3',
     color: 'moonBlue',
-    moods: ['royal', 'kdrama'],
+    moods: ['royal', 'kdrama', 'elegant'],
     comforts: ['photoFirst', 'balanced'],
     destinations: ['bukchon', 'hyangwonjeong'],
     seasons: ['winter', 'springAutumn'],
@@ -71,8 +73,6 @@ function scoreLook(
     season: SeasonId;
   },
 ) {
-  // Transparent rule score: 40 palette + 25 mood + 15 comfort + 10 backdrop + 10 season.
-  // This is a deterministic preference-fit score, not an AI confidence or objective beauty score.
   return (
     (look.color === choices.color ? 40 : 0) +
     (look.moods.includes(choices.mood) ? 25 : 0) +
@@ -94,11 +94,27 @@ function comfortFit(look: HanbokLook, comfort: ComfortId) {
 
 export function HanbokMatcher() {
   const t = useTranslations('HanbokMatcher');
+  const searchParams = useSearchParams();
+  const styleParam = searchParams.get('hanbokStyle');
+
   const [color, setColor] = useState<ColorId>('jadeIvory');
   const [mood, setMood] = useState<MoodId>('elegant');
   const [comfort, setComfort] = useState<ComfortId>('balanced');
   const [destination, setDestination] = useState<DestinationId>('stoneWall');
   const [season, setSeason] = useState<SeasonId>('springAutumn');
+  const [appliedPreset, setAppliedPreset] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isValidHanbokStyle(styleParam)) {
+      const category = HANBOK_STYLE_CATEGORIES.find((c) => c.id === styleParam);
+      if (category) {
+        setColor(category.matcherPreset.color);
+        setMood(category.matcherPreset.mood);
+        setComfort(category.matcherPreset.comfort);
+        setAppliedPreset(category.name);
+      }
+    }
+  }, [styleParam]);
 
   const rankedLooks = useMemo(() => HANBOK_LOOKS
     .map((look) => ({
@@ -117,6 +133,13 @@ export function HanbokMatcher() {
           <h2>{t('title')}</h2>
         </div>
         <p>{t('intro')}</p>
+        {appliedPreset && (
+          <div style={{ marginTop: '0.6rem', padding: '0.4rem 0.8rem', background: '#f1f7f4', borderRadius: '12px', border: '1px solid rgba(45, 90, 76, 0.2)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content' }}>
+            <span style={{ fontSize: '0.8rem', color: '#2d5a4c', fontWeight: 'bold' }}>
+              ✨ {t('presetAppliedLabel')}: {appliedPreset}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="hanbokMatcherGrid">
@@ -267,4 +290,3 @@ export function HanbokMatcher() {
     </div>
   );
 }
-
