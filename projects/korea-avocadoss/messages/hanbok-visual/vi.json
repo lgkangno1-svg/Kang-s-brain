@@ -1,27 +1,49 @@
 {
   "HanbokVisual": {
-    "eyebrow": "Tham khảo hình ảnh thực tế",
-    "title": "Xem phom dáng trước khi chọn bảng màu.",
-    "intro": "Các hình tham khảo này đã được kiểm tra điều kiện tái sử dụng, gồm trang phục trưng bày trong bảo tàng, dáng Hanbok toàn thân truyền thống và bảng màu thực tế tại cửa hàng Hanbok ở Seoul. Đây là tư liệu phong cách, không phải hàng cho thuê và không phải sự chứng thực của người nổi tiếng.",
-    "referenceBadge": "Tham khảo phong cách",
+    "eyebrow": "Cảm hứng Thời trang & Sân khấu",
+    "heroPill": "Bộ sưu tập Hanbok Cao cấp",
+    "title": "Phong cách Hanbok Tinh tế & Phom dáng Thực tế",
+    "intro": "Khám phá các thiết kế Hanbok cung đình sang trọng, phong cách nữ chính phim Hàn, tông màu pastel nhẹ nhàng và Hanbok cách tân hiện đại từ các sàn diễn danh giá. Hãy chọn phong cách bạn yêu thích và phối màu phù hợp bên dưới.",
+    "tryStyleAction": "Tìm Hanbok hợp với tôi",
     "sourceLabel": "Nguồn",
-    "licenseLabel": "Giấy phép",
+    "licenseLabel": "Bản quyền",
     "viewSource": "Xem nguồn gốc",
-    "notice": "Ảnh tham khảo chỉ giúp bạn hình dung hướng phong cách. Màu sắc và phối đồ do bộ ghép quy tắc miễn phí ở trên đưa ra không phải chính xác món đồ trong ảnh; hãy xác nhận sản phẩm cho thuê thực tế tại cửa hàng.",
-    "stageMuseum": {
-      "title": "Hanbok sân khấu K-pop · tham khảo trang phục bảo tàng",
-      "description": "Một mẫu Hanbok biểu diễn hiện đại được trưng bày trong bảo tàng. Dùng để tham khảo phom dáng, độ tương phản và cân bằng trang trí, không hàm ý người nổi tiếng chứng thực.",
-      "alt": "Hanbok biểu diễn Hàn Quốc hiện đại được trưng bày trong bảo tàng"
+    "notice": "Hình ảnh mang tính chất tham khảo phong cách từ các sự kiện văn hóa và truyền thông chính thức, không bao hàm chứng thực từ người nổi tiếng hay cam kết tồn kho của tiệm thuê. Vui lòng sử dụng công cụ bên dưới để phối trang phục chuẩn cho chuyến đi Seoul.",
+    "royalCourtCouture": {
+      "title": "Hanbok Cung Đình Hoàng Gia Cao Cấp",
+      "tag": "Cung Đình",
+      "description": "Chi tiết thêu chỉ vàng lộng lẫy kết hợp sắc đỏ thẫm quý phái, gợi nhớ hình ảnh hoàng hậu trong các bộ phim truyền hình lịch sử.",
+      "alt": "Hanbok cung đình hoàng gia trên sàn diễn thời trang văn hóa"
     },
-    "classicFullBody": {
-      "title": "Tham khảo Hanbok toàn thân cổ điển",
-      "description": "Ảnh CC0 có thể tái sử dụng để xem chiều dài jeogori, độ phồng của váy và tỷ lệ tổng thể trên dáng toàn thân.",
-      "alt": "Người mặc Hanbok truyền thống Hàn Quốc toàn thân"
+    "softPastelElegance": {
+      "title": "Sắc Pastel Dịu Dàng Thanh Thoát",
+      "tag": "Tông Pastel",
+      "description": "Áo jeogori trắng ngà mỏng nhẹ phối cùng chân váy bồng bềnh sắc hồng tím, mang lại vẻ đẹp thanh tú và cực kỳ bắt mắt khi chụp ảnh.",
+      "alt": "Hanbok hiện đại xếp lớp tông màu pastel nhẹ nhàng"
     },
-    "boutiquePalette": {
-      "title": "Bảng màu tại cửa hàng Hanbok Seoul",
-      "description": "Hình ảnh từ một cửa hàng Hanbok thực tế giúp bạn thấy nhiều màu trang phục cùng tồn tại trong không gian thật trước khi thu hẹp bảng màu của mình.",
-      "alt": "Nhiều bộ Hanbok được trưng bày trong một cửa hàng ở Seoul"
+    "contemporaryPalaceChic": {
+      "title": "Phong Cách Cung Điện Hiện Đại",
+      "tag": "Phong Cách Phim Hàn",
+      "description": "Sự kết hợp tinh tế giữa xanh ngọc bích và xanh navy đậm, mang vẻ trang nhã cổ điển pha nét thanh lịch hiện đại của nữ chính.",
+      "alt": "Hanbok hiện đại phong cách hoàng cung với tông xanh ngọc và xanh navy"
+    },
+    "nobleScholarDopo": {
+      "title": "Áo Choàng Dopo Quý Tộc",
+      "tag": "Áo Choàng Dopo",
+      "description": "Áo choàng xanh thẫm uy nghi với tay áo rộng và phom đứng sang trọng, biểu tượng của các bậc công tử quý tộc thời xưa.",
+      "alt": "Áo choàng dopo quý tộc nam trên sàn diễn văn hóa"
+    },
+    "romanticPalaceWalk": {
+      "title": "Dạo Bước Cung Điện Lãng Mạn",
+      "tag": "Lãng Mạn Cung Điện",
+      "description": "Chất liệu lụa bóng sang trọng nổi bật giữa không gian cổ kính của cung điện Gyeongbokgung, hoàn hảo cho bộ ảnh du lịch Seoul.",
+      "alt": "Hanbok lụa truyền thống trước khung cảnh cung điện Gyeongbokgung"
+    },
+    "modernStageFusion": {
+      "title": "Hanbok Cách Tân Sân Khấu Hiện Đại",
+      "tag": "Cách Tân",
+      "description": "Đường cắt may táo bạo điểm xuyết ánh vàng kim hiện đại, phong cách từng gây ấn tượng trên các sân khấu K-Pop quốc tế.",
+      "alt": "Thiết kế Hanbok cách tân hiện đại với chi tiết ánh kim"
     }
   }
 }

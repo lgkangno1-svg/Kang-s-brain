@@ -110,7 +110,7 @@ export function HanbokMatcher() {
     .sort((a, b) => b.score - a.score), [color, mood, comfort, destination, season]);
 
   return (
-    <div className="prototypePanel">
+    <div className="prototypePanel" id="hanbok-matcher">
       <div className="sectionHead hanbokMatcherHead">
         <div>
           <p className="eyebrow">{t('freeEyebrow')}</p>
@@ -267,3 +267,4 @@ export function HanbokMatcher() {
     </div>
   );
 }
+
