@@ -2,160 +2,66 @@
 from __future__ import annotations
 
 import argparse
-import base64
-from contextlib import ExitStack
 import json
-import os
 from pathlib import Path
+from PIL import Image, ImageOps
 
-from PIL import Image
-
-ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_IDS = ["thumb_1", "thumb_2"] + [f"image_{i}" for i in range(1, 13)]
-
-
-def api_dim(n: int) -> int:
-    return ((n + 15) // 16) * 16
+EXPECTED = {
+    "thumb_1": (1000, 1000), "thumb_2": (1000, 1000),
+    "image_1": (860, 1800), "image_2": (860, 1800), "image_3": (860, 1800),
+    "image_4": (860, 2000), "image_5": (860, 2000), "image_6": (860, 2200),
+    "image_7": (860, 2000), "image_8": (860, 1800), "image_9": (860, 1800),
+    "image_10": (860, 1800), "image_11": (860, 2500), "image_12": (860, 1500),
+}
 
 
 def load_jobs(path: Path) -> list[dict]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    jobs = data["jobs"] if isinstance(data, dict) and "jobs" in data else data
+    jobs = data.get("jobs", data) if isinstance(data, dict) else data
     if not isinstance(jobs, list):
-        raise SystemExit("04_image_jobs.json은 배열 또는 {'jobs': [...]} 형식이어야 합니다.")
+        raise SystemExit("04_image_jobs.json 형식 오류")
     return jobs
 
 
-def prompt_for(job: dict) -> str:
-    prompt = str(job.get("prompt", "")).strip()
-    main = str(job.get("main_copy", "")).strip()
-    sub = str(job.get("sub_copy", "")).strip()
-    points = job.get("points") or []
-    exact = []
-    if main:
-        exact.append(f"Main Copy (Korean, render exactly): {main}")
-    if sub:
-        exact.append(f"Sub Copy (Korean, render exactly): {sub}")
-    if points:
-        exact.append("Supporting Korean text: " + " / ".join(map(str, points)))
-    if exact:
-        prompt += "\n\nIMPORTANT TEXT REQUIREMENTS:\n" + "\n".join(exact)
-        prompt += "\nKeep Korean typography legible, correctly spelled, and commercially polished."
-    return prompt
-
-
-def generate_one(client, job: dict, model: str, quality: str, output_path: Path) -> None:
-    width, height = int(job["width"]), int(job["height"])
-    size = f"{api_dim(width)}x{api_dim(height)}"
-    prompt = prompt_for(job)
-    refs = [ROOT / Path(p) for p in (job.get("reference_images") or [])]
-    refs = [p for p in refs if p.exists()]
-
-    if refs:
-        with ExitStack() as stack:
-            files = [stack.enter_context(open(p, "rb")) for p in refs[:8]]
-            result = client.images.edit(
-                model=model,
-                image=files,
-                prompt=prompt,
-                size=size,
-                quality=quality,
-            )
-    else:
-        result = client.images.generate(
-            model=model,
-            prompt=prompt,
-            size=size,
-            quality=quality,
-        )
-
-    raw = base64.b64decode(result.data[0].b64_json)
-    tmp = output_path.with_suffix(".raw.png")
-    tmp.write_bytes(raw)
-
-    with Image.open(tmp) as im:
-        im = im.convert("RGB")
-        if im.size != (width, height):
-            im = im.resize((width, height), Image.Resampling.LANCZOS)
-        im.save(output_path, "PNG", optimize=True)
-    tmp.unlink(missing_ok=True)
-
-
-def make_detail_full(images_dir: Path, output: Path) -> None:
-    paths = [images_dir / f"image_{i}.png" for i in range(1, 13)]
-    if not all(p.exists() for p in paths):
-        return
-    opened = [Image.open(p).convert("RGB") for p in paths]
-    try:
-        width = 860
-        height = sum(im.height for im in opened)
-        canvas = Image.new("RGB", (width, height), "white")
-        y = 0
-        for im in opened:
-            if im.width != width:
-                im = im.resize((width, im.height), Image.Resampling.LANCZOS)
-            canvas.paste(im, (0, y))
-            y += im.height
-        canvas.save(output, "PNG", optimize=True)
-    finally:
-        for im in opened:
-            im.close()
-
-
 def main() -> None:
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Codex 이미지 생성 스킬 결과를 마스터 규격으로 정리합니다. API 호출은 하지 않습니다.")
     ap.add_argument("jobs_json", type=Path)
-    ap.add_argument("--force", action="store_true")
-    ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--only", nargs="*", default=None, help="예: --only thumb_1 image_1")
     args = ap.parse_args()
 
     jobs_path = args.jobs_json.resolve()
-    jobs = load_jobs(jobs_path)
     run_dir = jobs_path.parent
     images_dir = run_dir / "images"
+    raw_dir = images_dir / "raw"
     images_dir.mkdir(parents=True, exist_ok=True)
+    jobs = load_jobs(jobs_path)
+    by_id = {str(j.get("id")): j for j in jobs}
+    if set(by_id) != set(EXPECTED):
+        raise SystemExit("14개 이미지 ID가 마스터 규격과 일치하지 않습니다.")
 
-    ids = [str(j.get("id")) for j in jobs]
-    unknown = [i for i in ids if i not in EXPECTED_IDS]
-    if unknown:
-        raise SystemExit(f"알 수 없는 이미지 id: {unknown}")
+    for jid, size in EXPECTED.items():
+        candidates = [raw_dir / f"{jid}.png", raw_dir / f"{jid}.jpg", raw_dir / f"{jid}.jpeg", images_dir / f"{jid}.png"]
+        src = next((p for p in candidates if p.exists()), None)
+        if src is None:
+            raise SystemExit(f"Codex 이미지 생성 스킬 결과 없음: {jid}")
+        dst = images_dir / f"{jid}.png"
+        with Image.open(src) as im:
+            im = im.convert("RGB")
+            if im.size != size:
+                im = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+            im.save(dst, "PNG", optimize=True)
+        print(f"FINALIZE {jid} -> {size[0]}x{size[1]}")
 
-    selected = set(args.only or ids)
-    model = os.getenv("IMAGE_MODEL", "gpt-image-2")
-    quality = os.getenv("IMAGE_QUALITY", "medium")
-
-    if args.dry_run:
-        for job in jobs:
-            if job["id"] in selected:
-                print(job["id"], f'{job["width"]}x{job["height"]}',
-                      "->", f'{api_dim(int(job["width"]))}x{api_dim(int(job["height"]))}')
-        return
-
-    if not os.getenv("OPENAI_API_KEY"):
-        raise SystemExit("OPENAI_API_KEY가 없습니다. 이미지 프롬프트/기획은 완료할 수 있지만 실제 생성에는 1회 API 키 설정이 필요합니다.")
-
+    detail_paths = [images_dir / f"image_{i}.png" for i in range(1, 13)]
+    opened = [Image.open(p).convert("RGB") for p in detail_paths]
     try:
-        from openai import OpenAI
-    except ImportError:
-        raise SystemExit("openai 패키지가 없습니다. `pip install -r requirements.txt`를 실행하세요.")
-
-    client = OpenAI()
-    for job in jobs:
-        jid = job["id"]
-        if jid not in selected:
-            continue
-        out = images_dir / f"{jid}.png"
-        if out.exists() and not args.force:
-            print(f"SKIP exists: {out.name}")
-            continue
-        print(f"GENERATE {jid} ({job['width']}x{job['height']}) model={model} quality={quality}")
-        generate_one(client, job, model, quality, out)
-        print(f"OK {out}")
-
-    make_detail_full(images_dir, run_dir / "detail_full.png")
-    if (run_dir / "detail_full.png").exists():
-        print(f"OK {run_dir / 'detail_full.png'}")
+        canvas = Image.new("RGB", (860, sum(im.height for im in opened)), "white")
+        y = 0
+        for im in opened:
+            canvas.paste(im, (0, y)); y += im.height
+        canvas.save(run_dir / "detail_full.png", "PNG", optimize=True)
+    finally:
+        for im in opened: im.close()
+    print(f"OK {run_dir / 'detail_full.png'}")
 
 
 if __name__ == "__main__":
