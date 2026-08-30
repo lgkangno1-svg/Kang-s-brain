@@ -5,8 +5,9 @@ import argparse
 import json
 from pathlib import Path
 
+from prompt_registry import read_prompt
+
 ROOT = Path(__file__).resolve().parents[1]
-MASTER = ROOT / "source" / "상세페이지_마스터_원문.txt"
 BLANK_Q = ROOT / "source" / "TED_상페_Q1-Q10_빈양식.txt"
 PLACEHOLDER = "답변: [여기에 입력]"
 
@@ -34,6 +35,7 @@ def fill_template(template: str, answers: dict[str, str]) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("q_json", type=Path, help="runs/.../01_q1_q10.json")
+    ap.add_argument("--service", action="store_true", help="제품 오너가 제공한 최신 master fingerprint를 강제합니다.")
     args = ap.parse_args()
 
     q_json = args.q_json.resolve()
@@ -43,7 +45,11 @@ def main() -> None:
     answers = load_answers(q_json)
 
     q_txt = fill_template(BLANK_Q.read_text(encoding="utf-8"), answers)
-    master_txt = fill_template(MASTER.read_text(encoding="utf-8"), answers)
+    try:
+        master_source = read_prompt("ted_master_v3", require_owner_version=args.service)
+    except Exception as exc:
+        raise SystemExit(f"TED master 로드 실패: {exc}") from exc
+    master_txt = fill_template(master_source, answers)
 
     (run_dir / "01_Q1_Q10.txt").write_text(q_txt, encoding="utf-8")
     (run_dir / "02_master_filled.txt").write_text(master_txt, encoding="utf-8")
