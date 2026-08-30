@@ -1,0 +1,19 @@
+{
+  "plan_id": "trial",
+  "product_name": "사과대추",
+  "category": "fruit",
+  "product_description": "아삭하고 달콤한 제철 원물",
+  "specification": "",
+  "sale_price": "",
+  "main_visual_style": "product_only",
+  "model_shot_count": 0,
+  "tone": "white",
+  "copy_mood": "sales",
+  "info_density": "standard",
+  "highlight_points": ["taste", "freshness"],
+  "thumbnail_style": "strong_sales",
+  "must_include": "",
+  "must_exclude": "",
+  "uploads": [],
+  "accepted_image_text_risk": true
+}
