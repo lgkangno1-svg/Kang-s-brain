@@ -11,30 +11,24 @@ import {getLocaleDefinition} from '@/lib/i18n/locales';
 import '../globals.css';
 import '../locale-overflow.css';
 import '../stitch-premium.css';
+import '../stitch-feature-polish.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://korea.avocadoss.co.kr'),
-  title: {
-    default: 'Korea Concierge — Your Personal Korea Companion',
-    template: '%s | Korea Concierge',
-  },
+  title: {default: 'Korea Concierge — Your Personal Korea Companion', template: '%s | Korea Concierge'},
   description: 'Personal color, Hanbok matching, palace routes, food and Korean culture for international visitors.',
 };
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({locale}));
-}
+export function generateStaticParams() { return routing.locales.map((locale) => ({locale})); }
 
 export default async function LocaleLayout({children, params}: Readonly<{children: React.ReactNode; params: Promise<{locale: string}>;}>) {
   const {locale} = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-
   setRequestLocale(locale);
   const messages = await getMessages();
   const t = await getTranslations('Global');
   const help = await getTranslations('QuickHelp');
   const definition = getLocaleDefinition(locale);
-
   const nav = [
     [t('nav.gyeongbokgung'), '/explore/gyeongbokgung'],
     [t('nav.myColor'), '/color'],
@@ -56,15 +50,8 @@ export default async function LocaleLayout({children, params}: Readonly<{childre
               </nav>
               <LanguageSwitcher />
             </header>
-
             {children}
-
-            <footer className="siteFooter">
-              <strong>Korea Concierge</strong>
-              <p>{t('footerTagline')}</p>
-              <span>korea.avocadoss.co.kr</span>
-            </footer>
-
+            <footer className="siteFooter"><strong>Korea Concierge</strong><p>{t('footerTagline')}</p><span>korea.avocadoss.co.kr</span></footer>
             <nav className="mobileBottomNav" aria-label="Mobile bottom navigation">
               <Link className="mobileNavItem" href="/explore/gyeongbokgung"><span className="mobileNavIcon">⌖</span><span>{t('nav.gyeongbokgung')}</span></Link>
               <Link className="mobileNavItem" href="/color"><span className="mobileNavIcon">◐</span><span>{t('nav.myColor')}</span></Link>
@@ -72,7 +59,6 @@ export default async function LocaleLayout({children, params}: Readonly<{childre
               <Link className="mobileNavItem" href="/culture"><span className="mobileNavIcon">◎</span><span>{t('nav.kCulture')}</span></Link>
               <Link className="mobileNavItem" href="/credits"><span className="mobileNavIcon">○</span><span>{t('nav.credits')}</span></Link>
             </nav>
-
             <QuickHelp localePrefix={`/${locale}`} />
           </div>
         </NextIntlClientProvider>

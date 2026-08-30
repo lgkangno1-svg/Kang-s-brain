@@ -19,6 +19,13 @@ export function QuickHelp({localePrefix = ""}: {localePrefix?: string}) {
   const node = useMemo(() => QUICK_HELP_NODES[nodeId] ?? QUICK_HELP_NODES[QUICK_HELP_ROOT_ID], [nodeId]);
 
   useEffect(() => {
+    function syncHash() { if (window.location.hash === "#quick-help") setOpen(true); }
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     closeRef.current?.focus();
     function onKeyDown(event: KeyboardEvent) {
@@ -34,7 +41,6 @@ export function QuickHelp({localePrefix = ""}: {localePrefix?: string}) {
   function go(nextId: string) { if (!QUICK_HELP_NODES[nextId]) return; setHistory((items) => [...items.slice(-5), node.id]); setNodeId(nextId); }
   function back() { const previous = history.at(-1); if (!previous) { setNodeId(QUICK_HELP_ROOT_ID); return; } setHistory((items) => items.slice(0, -1)); setNodeId(previous); }
   function reset() { setNodeId(QUICK_HELP_ROOT_ID); setHistory([]); }
-
   const atRoot = nodeId === QUICK_HELP_ROOT_ID && history.length === 0;
   const ctaHref = node.cta?.href && node.cta.href.startsWith("/") ? `${localePrefix}${node.cta.href}` : node.cta?.href;
   const title = t(node.titleKey);
