@@ -4,12 +4,13 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import re
 
 from prompt_registry import read_prompt
 
 ROOT = Path(__file__).resolve().parents[1]
 BLANK_Q = ROOT / "source" / "TED_상페_Q1-Q10_빈양식.txt"
-PLACEHOLDER = "답변: [여기에 입력]"
+ANSWER_PLACEHOLDER_RE = re.compile(r"답변:\s*\[여기에 입력\]")
 
 
 def load_answers(path: Path) -> dict[str, str]:
@@ -24,11 +25,11 @@ def fill_template(template: str, answers: dict[str, str]) -> str:
     out = template
     for i in range(1, 11):
         answer = str(answers[f"q{i}"]).strip()
-        if PLACEHOLDER not in out:
-            raise SystemExit(f"템플릿 placeholder 부족: Q{i} 주입 전에 소진됨")
-        out = out.replace(PLACEHOLDER, f"답변: {answer}", 1)
-    if PLACEHOLDER in out:
-        raise SystemExit("템플릿에 사용되지 않은 placeholder가 남았습니다.")
+        out, count = ANSWER_PLACEHOLDER_RE.subn(f"답변:\n{answer}", out, count=1)
+        if count != 1:
+            raise SystemExit(f"템플릿 placeholder 부족: Q{i} 주입 실패")
+    if ANSWER_PLACEHOLDER_RE.search(out):
+        raise SystemExit("템플릿에 사용되지 않은 Q1~Q10 placeholder가 남았습니다.")
     return out
 
 
