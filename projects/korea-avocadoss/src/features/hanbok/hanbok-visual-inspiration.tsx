@@ -1,13 +1,17 @@
 'use client';
 
 import {useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
 
-import {HANBOK_STYLE_CATEGORIES, type HanbokStyleCategory} from './hanbok-visual-library';
+import {HANBOK_STYLE_CATEGORIES} from './hanbok-visual-library';
+import {isPersonalColorUndertone} from './personal-color-bridge';
 import styles from './hanbok-visual-inspiration.module.css';
 
 export function HanbokVisualInspiration() {
   const t = useTranslations('HanbokVisual');
+  const searchParams = useSearchParams();
+  const undertoneParam = searchParams.get('undertone');
   const [activeGender, setActiveGender] = useState<'feminine' | 'masculine'>('feminine');
 
   return (
@@ -45,6 +49,10 @@ export function HanbokVisualInspiration() {
       <div className={styles.grid}>
         {HANBOK_STYLE_CATEGORIES.map((category) => {
           const activeRef = activeGender === 'feminine' ? category.feminineRef : category.masculineRef;
+          const matcherQuery = new URLSearchParams({hanbokStyle: category.id});
+          if (isPersonalColorUndertone(undertoneParam)) {
+            matcherQuery.set('undertone', undertoneParam);
+          }
 
           return (
             <article className={styles.card} key={category.id} data-category={category.id}>
@@ -59,6 +67,8 @@ export function HanbokVisualInspiration() {
                   <img
                     src={activeRef.imageUrl}
                     alt={t(`categories.${category.id}.${activeGender}.alt`)}
+                    width={activeRef.sourceWidth}
+                    height={activeRef.sourceHeight}
                     loading="lazy"
                     decoding="async"
                     referrerPolicy="no-referrer"
@@ -83,7 +93,7 @@ export function HanbokVisualInspiration() {
                 <div className={styles.actionRow}>
                   <a
                     className={styles.tryButton}
-                    href={`?hanbokStyle=${category.id}#hanbok-matcher`}
+                    href={`?${matcherQuery.toString()}#hanbok-matcher`}
                     aria-label={`${t('findMatchAction')}: ${t(`categories.${category.id}.name`)}`}
                   >
                     <span>{t('findMatchAction')}</span>
