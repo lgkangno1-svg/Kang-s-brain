@@ -27,33 +27,43 @@ Codex에서 이 프로젝트 폴더를 연 뒤 아래처럼 말하면 됩니다.
 4. 상세페이지 마스터 원문에 자동 주입
 5. 골든서클/메시지 포트폴리오/중복 방지 맵 작성
 6. 14장 카피 + 이미지 생성 프롬프트 작성
-7. 실제 이미지 14장 생성
-8. 상세 12장 세로 결합
+7. **Codex의 내장 이미지 생성 스킬(GPT Image)로 실제 이미지 14장 생성**
+8. 생성 결과를 정확한 마스터 규격으로 정리하고 상세 12장 세로 결합
 9. 자동 검증
 
-## 이미지 생성 1회 설정
+## API 키 필요 없음
 
-실제 이미지까지 자동 생성하려면 OpenAI API 키를 환경 변수 `OPENAI_API_KEY`로 한 번만 등록하면 됩니다.
-키는 GitHub에 저장하지 않습니다.
+이 프로젝트의 기본 경로는 OpenAI API를 직접 호출하지 않습니다.
 
-PowerShell 예:
-```powershell
-setx OPENAI_API_KEY "여기에_API_KEY"
+- `OPENAI_API_KEY` 설정 불필요
+- 별도의 API 과금 경로 사용 안 함
+- ChatGPT 계정으로 로그인한 Codex에서 제공되는 이미지 생성 스킬을 사용
+- 이미지 생성 가능 여부와 사용량은 현재 Codex 플랜/환경의 기능 및 사용 한도를 따름
+
+즉, 사용자는 Codex에서 프로젝트를 열고 사진과 상품 설명만 전달하면 됩니다.
+
+## 이미지 생성 규칙
+
+Codex는 `04_image_jobs.json`을 만든 뒤 각 job의 `prompt`와 `reference_images`를 이용해 **설치된 이미지 생성 스킬**로 14장을 생성합니다.
+
+원본 생성 파일은 가능하면 아래처럼 저장합니다.
+
+```text
+runs/<RUN>/images/raw/thumb_1.png
+runs/<RUN>/images/raw/thumb_2.png
+runs/<RUN>/images/raw/image_1.png
+...
+runs/<RUN>/images/raw/image_12.png
 ```
 
-새 터미널/Codex 세션부터 적용됩니다.
-
-이미지 모델과 품질은 환경 변수로 바꿀 수 있습니다.
-- `IMAGE_MODEL` 기본값: `gpt-image-2`
-- `IMAGE_QUALITY` 기본값: `medium`
-
-## 수동 실행
+그다음 아래 스크립트는 API를 호출하지 않고 로컬 파일만 후처리합니다.
 
 ```bash
-python scripts/build_master.py runs/<RUN>/01_q1_q10.json
 python scripts/generate_images.py runs/<RUN>/04_image_jobs.json
 python scripts/validate_run.py runs/<RUN> --require-images
 ```
+
+`generate_images.py`라는 기존 파일명은 호환성을 위해 유지하지만, 현재 역할은 **Codex가 생성한 이미지의 정확한 규격 보정 + `detail_full.png` 결합**뿐입니다.
 
 ## 폴더 구조
 
@@ -76,4 +86,5 @@ docs/
 - 숫자/인증/원산지/가격/검사결과 등 하드 팩트는 발명 금지
 - 동일 메시지 반복 방지
 - 식품은 안전성만 반복하지 않고 맛·식감·신선도·활용·가격가치 등을 균형 있게 구성
-- 이미지 생성 중 실패해도 재실행하면 완료된 이미지는 건너뛰고 이어서 진행
+- 실제 상품 사진이 있으면 이미지 생성 시 참조 이미지로 적극 활용
+- API 키를 요구하거나 API 호출 방식으로 임의 전환하지 않음
