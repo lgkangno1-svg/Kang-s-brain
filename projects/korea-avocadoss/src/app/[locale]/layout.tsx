@@ -12,6 +12,7 @@ import '../globals.css';
 import '../locale-overflow.css';
 import '../stitch-premium.css';
 import '../stitch-feature-polish.css';
+import '../stitch-trust.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://korea.avocadoss.co.kr'),
