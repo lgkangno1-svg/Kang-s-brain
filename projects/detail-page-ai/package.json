@@ -1,0 +1,11 @@
+{
+  "name": "detail-page-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/config/catalog.mjs && node --check src/domain/order.mjs && node --check src/orchestration/prompt-router.mjs && node --check src/orchestration/reference-selector.mjs && node --check src/orchestration/prompt-context.mjs && node --check src/providers/image-request.mjs"
+  }
+}
