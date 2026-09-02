@@ -1,6 +1,6 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-08-30  
+**Last updated:** 2026-09-02  
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current product phase:** accepted Stitch premium visual system implementation across the live product surface  
@@ -44,12 +44,14 @@ Implemented on the branch so far:
 - Personal Color browser-local analysis restyled to the accepted editorial result language without replacing its deterministic analysis logic;
 - explicit Personal Color → Hanbok undertone URL continuity;
 - Hanbok 3-style discovery rebuilt around Princess/Prince, Queen/King, Royal with rights-reviewed palace/ceremony references and no runway/fashion-show primary imagery;
-- Hanbok matcher restyled into a premium styling tool while preserving deterministic preference scoring and user override controls;
+- Hanbok matcher restyled into a premium styling tool while preserving deterministic preference ordering and user override controls;
 - Culture/Saju surface restyled into a deep-navy editorial reading layout while retaining existing localized product content;
 - Gyeongbokgung guide redesigned as an image-led palace guide with 1H/2H/4H route cards;
 - Credits page restyled into the accepted account/credits visual language while retaining the existing authoritative economics data;
 - Quick Help restyled as the current contextual concierge surface and made addressable through `#quick-help` links;
-- responsive/mobile rules for all currently live product routes.
+- responsive/mobile rules for all currently live product routes;
+- 2026-09-02 truthfulness polish: removed the user-facing Personal Color “confidence” percentage because it is an internal heuristic rather than calibrated probability; raw measured/derived observations remain available without presenting false certainty;
+- 2026-09-02 Hanbok result polish: removed user-facing `/100`, backdrop `/5`, and comfort `/100` numbers that could read as calibrated quality/confidence; the deterministic rubric is retained only for ranking and the UI presents ordered recommendations plus concrete reasons.
 
 Current live route scope remains:
 - `/[locale]`;
@@ -117,8 +119,8 @@ Runtime understanding to preserve:
 Before merge/deploy of the current redesign: verify the exact feature SHA on the private MiniPC runner, require build/contracts PASS, merge through PR, deploy the exact merged SHA, then run local/public/sitemap P0 preflight and verify no 530/1033/502 samples.
 
 ## 9. Immediate next priority
-1. Finish exact-SHA MiniPC CI for the current Stitch redesign branch.
-2. Fix any build/contract failures without weakening gates.
+1. Exact-SHA MiniPC CI is pinned to the latest redesign head. As of 2026-09-02 the self-hosted jobs are queued rather than executing, so merge/deploy remains gated on runner reconnection; do not bypass this by attaching the public repository to production or weakening the private exact-SHA gate.
+2. When the runner executes, fix any build/contract failures without weakening gates.
 3. PR/merge only after exact feature SHA verification passes.
 4. Deploy exact merged SHA through private deploy controls.
 5. Run post-deploy local/public/P0 preflight.
@@ -126,4 +128,4 @@ Before merge/deploy of the current redesign: verify the exact feature SHA on the
 7. Stripe live onboarding later.
 
 ## 10. User action currently required
-**None.** Ask only when a real provider credential, live Stripe setup, or narrowly scoped privileged MiniPC operation is the final blocker.
+**None for application code.** Keep the runner issue isolated from product changes. Ask only when a real provider credential, live Stripe setup, or narrowly scoped privileged MiniPC operation is the final blocker.
