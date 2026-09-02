@@ -162,12 +162,6 @@ export function ColorScanner() {
               </div>
             </div>
 
-            <div className={styles.confidenceBanner}>
-              <span className={styles.confidenceScore}>
-                {t('confidence', { confidence: Math.round(result.confidence * 100), lightness: result.lightness })}
-              </span>
-            </div>
-
             {result.warnings.map((warning) => (
               <div className={styles.warning} key={warning}>{t('warnings.' + warning)}</div>
             ))}
