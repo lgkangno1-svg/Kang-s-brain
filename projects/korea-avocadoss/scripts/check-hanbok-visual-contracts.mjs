@@ -89,4 +89,10 @@ assert.match(visualSource, /width=\{activeRef\.sourceWidth\}/, 'Hanbok reference
 assert.match(visualSource, /height=\{activeRef\.sourceHeight\}/, 'Hanbok references must declare intrinsic image height');
 assert.match(matcherSource, /hanbokColorForUndertone\(undertoneParam\)/, 'Matcher must consume the explicit Personal Color bridge');
 
-console.log('✓ Hanbok visual, no-runway, high-resolution, style-preset, and Personal Color bridge contract tests passed!');
+// 6. Truthfulness guard: internal heuristics may rank choices, but the user-facing UI must not present
+// them as calibrated confidence/quality precision.
+assert.doesNotMatch(colorScannerSource, /result\.confidence/, 'Personal Color must not expose heuristic confidence as a user-facing percentage');
+assert.doesNotMatch(matcherSource, /\{score\}\/100/, 'Hanbok matcher must not expose preference score as calibrated /100 quality');
+assert.doesNotMatch(matcherSource, /backdrop\.toFixed|comfortScore\s*\}/, 'Hanbok matcher must not expose decorative backdrop/comfort precision');
+
+console.log('✓ Hanbok visual, no-runway, high-resolution, style-preset, Personal Color bridge, and truthfulness contract tests passed!');
