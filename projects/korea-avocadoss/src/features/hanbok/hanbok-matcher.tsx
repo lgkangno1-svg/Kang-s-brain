@@ -78,8 +78,8 @@ function scoreLook(
     season: SeasonId;
   },
 ) {
-  // Documented deterministic preference-fit rubric: 40 palette + 25 mood + 15 comfort + 10 destination + 10 season.
-  // This is not AI confidence, attractiveness, or calibrated probability.
+  // Deterministic preference-fit rubric used only for ordering: 40 palette + 25 mood + 15 comfort + 10 destination + 10 season.
+  // The numeric score is intentionally not shown to users because it is not calibrated confidence or attractiveness.
   return (
     (look.color === choices.color ? 40 : 0) +
     (look.moods.includes(choices.mood) ? 25 : 0) +
@@ -87,16 +87,6 @@ function scoreLook(
     (look.destinations.includes(choices.destination) ? 10 : 0) +
     (look.seasons.includes(choices.season) ? 10 : 0)
   );
-}
-
-function backdropFit(look: HanbokLook, destination: DestinationId) {
-  if (look.destinations[0] === destination) return 5;
-  if (look.destinations.includes(destination)) return 4.5;
-  return 3.5;
-}
-
-function comfortFit(look: HanbokLook, comfort: ComfortId) {
-  return look.comforts.includes(comfort) ? 100 : 60;
 }
 
 export function HanbokMatcher() {
@@ -141,8 +131,6 @@ export function HanbokMatcher() {
     .map((look) => ({
       look,
       score: scoreLook(look, { color, mood, comfort, destination, season }),
-      backdrop: backdropFit(look, destination),
-      comfortScore: comfortFit(look, comfort),
     }))
     .sort((a, b) => b.score - a.score), [color, mood, comfort, destination, season]);
 
@@ -155,9 +143,9 @@ export function HanbokMatcher() {
         </div>
         <p>{t('intro')}</p>
         {appliedPreset && (
-          <div style={{ marginTop: '0.6rem', padding: '0.4rem 0.8rem', background: '#f1f7f4', borderRadius: '12px', border: '1px solid rgba(45, 90, 76, 0.2)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content' }}>
-            <span style={{ fontSize: '0.8rem', color: '#2d5a4c', fontWeight: 'bold' }}>
-              ✨ {t('presetAppliedLabel')}: {appliedPreset}
+          <div style={{ marginTop: '0.6rem', padding: '0.4rem 0.8rem', background: '#f8f5e9', borderRadius: '2px', border: '1px solid rgba(0, 31, 91, 0.15)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content' }}>
+            <span style={{ fontSize: '0.75rem', color: '#2d5a4c', fontWeight: 700 }}>
+              {t('presetAppliedLabel')}: {appliedPreset}
             </span>
           </div>
         )}
@@ -251,11 +239,11 @@ export function HanbokMatcher() {
         <div className="hanbokLooksSection">
           <h4>{t('looksTitle')}</h4>
           <div className="hanbokLooksGrid">
-            {rankedLooks.map(({ look, score, backdrop, comfortScore }, index) => (
+            {rankedLooks.map(({ look }, index) => (
               <article className={`hanbokLookCard ${index === 0 ? 'hanbokLookCardFeatured' : ''}`} key={look.id}>
                 <div className="lookCardHeader">
                   <span className={index === 0 ? 'matchBadge' : 'matchBadgeSecondary'}>
-                    #{index + 1} · {score}/100
+                    #{index + 1}
                   </span>
                   <h5>{t(look.id + 'Title')}</h5>
                   <p>{t(look.id + 'Desc')}</p>
@@ -275,8 +263,6 @@ export function HanbokMatcher() {
                 <div className="lookMetaList">
                   <div><small>{t('fabricLabel')}</small><span>{t('seasons.' + season)}</span></div>
                   {index === 0 && <div><small>{t('accessoriesLabel')}</small><span>{t('accessoriesValue')}</span></div>}
-                  <div><small>{t('backdropRating')}</small><span>{backdrop.toFixed(1)} / 5.0</span></div>
-                  <div><small>{t('comfortScore')}</small><span>{comfortScore} / 100</span></div>
                 </div>
 
                 <div className="lookWhyList">
@@ -294,7 +280,7 @@ export function HanbokMatcher() {
 
         <div className="boutiqueNoticeCard">
           <div className="boutiqueNoticeHead">
-            <strong>📍 {t('rentalMapCta')}</strong>
+            <strong>{t('rentalMapCta')}</strong>
             <p>{t('walkingTimeNotice')}</p>
           </div>
           <Link href="/explore/gyeongbokgung" className="primaryButton">
