@@ -10,56 +10,56 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
   const {locale} = await params;
   setRequestLocale(locale);
   const meta = await getTranslations('Meta');
-
-  return {
-    title: meta('homeTitle'),
-    description: meta('homeDescription'),
-    alternates: localizedAlternates(locale, ''),
-  };
+  return {title: meta('homeTitle'), description: meta('homeDescription'), alternates: localizedAlternates(locale, '')};
 }
 
 export default async function LocalizedHome({params}: PageProps) {
   const {locale} = await params;
   setRequestLocale(locale);
-
   const home = await getTranslations('Home');
+  const global = await getTranslations('Global');
+  const help = await getTranslations('QuickHelp');
 
   return (
-    <main>
-      <section className="hero">
-        <div className="heroGrid">
-          <div>
-            <p className="eyebrow">{home('eyebrow')}</p>
-            <h1>{home('titleBefore')} <em>{home('titleEmphasis')}</em></h1>
-          </div>
-          <div>
-            <p className="heroText">{home('intro')}</p>
-            <div className="heroActions">
-              <Link className="primaryButton" href="/color">{home('primaryAction')}</Link>
-              <Link className="secondaryButton" href="/explore/gyeongbokgung">{home('secondaryAction')}</Link>
-            </div>
-            <div className="contextBox">{home('context')}</div>
-          </div>
+    <main className="stitchHome">
+      <section className="stitchHero" aria-labelledby="home-title">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeonghoeru_Pavilion_at_Gyeongbokgung_Palace.jpg?width=1800"
+          alt="Gyeonghoeru Pavilion at Gyeongbokgung Palace"
+          referrerPolicy="no-referrer"
+        />
+        <div className="stitchHeroCopy">
+          <h1 id="home-title">{home('titleBefore')} {home('titleEmphasis')}</h1>
+          <p>{home('intro')}</p>
         </div>
       </section>
 
-      <section className="section sectionDark">
-        <div className="sectionHead">
-          <h2>{home('modulesTitle')}</h2>
-          <p>{home('modulesIntro')}</p>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="sectionHead">
-          <h2>{home('travelerTitle')}</h2>
-          <p>{home('travelerIntro')}</p>
-        </div>
-        <div className="infoBand">
-          <div><strong>{home('freeTitle')}</strong><span>{home('freeText')}</span></div>
-          <div><strong>{home('paidTitle')}</strong><span>{home('paidText')}</span></div>
-          <div><strong>{home('internationalTitle')}</strong><span>{home('internationalText')}</span></div>
-        </div>
+      <section className="stitchServiceGrid" aria-label={home('modulesTitle')}>
+        <Link className="stitchServiceCard" href="/color">
+          <span className="stitchServiceMedia palette" aria-hidden="true" />
+          <strong>{global('nav.myColor')}</strong>
+          <span>{home('primaryAction')}</span>
+        </Link>
+        <Link className="stitchServiceCard" href="/hanbok">
+          <span className="stitchServiceMedia"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/One_girl_wearing_traditional_Korean_costume_in_Gyeongbokgung%2Cthe_Seoul_palace_04.jpg?width=700" alt="" referrerPolicy="no-referrer" /></span>
+          <strong>{global('nav.hanbok')}</strong>
+          <span>→</span>
+        </Link>
+        <Link className="stitchServiceCard" href="/culture">
+          <span className="stitchServiceMedia saju" aria-hidden="true">四柱</span>
+          <strong>{global('nav.kCulture')}</strong>
+          <span>→</span>
+        </Link>
+        <Link className="stitchServiceCard" href="/explore/gyeongbokgung">
+          <span className="stitchServiceMedia"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeonghoeru_Pavilion_at_Gyeongbokgung_Palace.jpg?width=700" alt="" referrerPolicy="no-referrer" /></span>
+          <strong>{global('nav.gyeongbokgung')}</strong>
+          <span>→</span>
+        </Link>
+        <a className="stitchServiceCard" href="#quick-help">
+          <span className="stitchServiceMedia ai" aria-hidden="true">◎</span>
+          <strong>{help('launcherTitle')}</strong>
+          <span>{help('launcherSubtitle')}</span>
+        </a>
       </section>
     </main>
   );

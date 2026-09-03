@@ -29,7 +29,9 @@ export default async function HanbokPage({params}: {params: Promise<{locale: str
         <h1>{t('title')}</h1>
         <p>{t('intro')}</p>
       </section>
-      <HanbokVisualInspiration />
+      <Suspense fallback={<div style={{minHeight: '420px'}} aria-hidden="true" />}>
+        <HanbokVisualInspiration />
+      </Suspense>
       <section className="prototype">
         <Suspense fallback={<div className="prototypePanel" style={{minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Loading Hanbok Studio...</div>}>
           <HanbokMatcher />

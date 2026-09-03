@@ -1,0 +1,28 @@
+.stitchPreviewBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(226,201,118,.55);
+  background: rgba(248,245,233,.1);
+  color: #e2c976;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.stitchPreviewRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.stitchPreviewRow h2 { margin: 0; }
+.stitchPreviewRow span {
+  color: var(--kc-crimson);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}

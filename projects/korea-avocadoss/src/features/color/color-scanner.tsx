@@ -71,6 +71,7 @@ export function ColorScanner() {
   const alternatePalettes = useMemo(() => getPalettes(alternateUndertone, depth), [alternateUndertone, depth]);
   const currentPrimaryPalette = palettes[0];
   const alternatePrimaryPalette = alternatePalettes[0];
+  const hanbokHref = `/hanbok?undertone=${encodeURIComponent(undertone)}#hanbok-matcher`;
 
   return (
     <div className={styles.shell}>
@@ -159,12 +160,6 @@ export function ColorScanner() {
                 <small>{t('contrastLabel')}</small>
                 <strong>{t('contrast.' + result.contrast)}</strong>
               </div>
-            </div>
-
-            <div className={styles.confidenceBanner}>
-              <span className={styles.confidenceScore}>
-                {t('confidence', { confidence: Math.round(result.confidence * 100), lightness: result.lightness })}
-              </span>
             </div>
 
             {result.warnings.map((warning) => (
@@ -272,7 +267,7 @@ export function ColorScanner() {
             </div>
 
             <div className={styles.hanbokActionCard}>
-              <Link href="/hanbok" className={styles.hanbokCtaButton}>
+              <Link href={hanbokHref} className={styles.hanbokCtaButton}>
                 {t('matchHanbokCta')}
               </Link>
             </div>
