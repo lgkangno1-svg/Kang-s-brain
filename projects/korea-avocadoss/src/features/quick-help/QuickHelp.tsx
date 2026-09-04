@@ -52,7 +52,7 @@ export function QuickHelp({localePrefix = ""}: {localePrefix?: string}) {
           <div className="quickHelpHeader"><div><small>{t("badge")}</small><strong id={TITLE_ID}>{title}</strong></div><button ref={closeRef} type="button" className="quickHelpIconButton" onClick={close} aria-label={t("close")}>×</button></div>
           <div className="quickHelpBody">
             <p id={ANSWER_ID} aria-live="polite" aria-atomic="true">{t(node.answerKey)}</p>
-            {node.choices?.length ? <div className="quickHelpChoices" aria-label={t("questionsAbout", {title})}>{node.choices.map((choice) => <button key={choice.nextId} type="button" onClick={() => go(choice.nextId)}>{t(choice.labelKey)}</button>)}</div> : null}
+            {node.choices?.length ? <><strong className="quickHelpSuggestedTitle">{t("topics")}</strong><div className="quickHelpChoices" aria-label={t("questionsAbout", {title})}>{node.choices.map((choice) => <button key={choice.nextId} type="button" onClick={() => go(choice.nextId)}>{t(choice.labelKey)}</button>)}</div></> : null}
             {node.cta && ctaHref ? <Link className="quickHelpCta" href={ctaHref} onClick={close}>{t(node.cta.labelKey)} →</Link> : null}
           </div>
           <div className="quickHelpFooter"><button type="button" onClick={back} disabled={atRoot}>{t("back")}</button><button type="button" onClick={reset} disabled={atRoot}>{t("topics")}</button><span aria-label={t("costAria")}>{t("zeroCredits")}</span></div>
