@@ -1,0 +1,451 @@
+/*
+ * Fidelity layer for the accepted 2026-08-30 Stitch premium reference.
+ * This file is intentionally imported last. It narrows visual drift without
+ * weakening product, locale, payment, privacy, or deterministic-Saju contracts.
+ */
+
+:root {
+  --stitch-paper: #fbfaf6;
+  --stitch-white: #fffefb;
+  --stitch-ink: #171611;
+  --stitch-muted: #5e5a50;
+  --stitch-gold: #aa9258;
+  --stitch-gold-soft: #cbb57b;
+  --stitch-line: #c9b98e;
+  --stitch-navy: #0e2238;
+  --stitch-shell: min(1034px, calc(100vw - 32px));
+}
+
+html { background: #f7f5ef; }
+body {
+  margin: 0;
+  background: #f7f5ef;
+  color: var(--stitch-ink);
+}
+.kcReferenceApp {
+  width: var(--stitch-shell);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--stitch-white);
+  box-shadow: 0 0 28px rgba(35, 30, 18, .04);
+}
+
+/* Canonical Stitch desktop header */
+.siteHeader.stitchReferenceHeader {
+  width: 100%;
+  min-height: 50px;
+  margin: 0;
+  padding: 0 56px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 26px;
+  border: 0;
+  border-bottom: 1px solid #d7d0bf;
+  background: #fffefb;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.stitchReferenceBrand {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.025em;
+  color: #171611;
+  white-space: nowrap;
+}
+.siteHeader .stitchReferenceNav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 25px;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.siteHeader .stitchReferenceNav a,
+.siteHeader .stitchReferenceNav span {
+  padding: 18px 0 16px;
+  color: #111;
+  border: 0;
+  background: transparent;
+}
+.siteHeader .stitchReferenceNav a:hover {
+  color: #786432;
+  border: 0;
+  background: transparent;
+}
+.stitchDisabledNav { cursor: default; }
+.stitchReferenceHeader .langButton {
+  min-width: 136px;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid #b8a677;
+  border-radius: 6px;
+  background: #fffefb;
+  box-shadow: none;
+  color: #111;
+  font-size: 11px;
+  text-transform: none;
+}
+
+/* Canonical homepage */
+.stitchReferenceHome {
+  width: 100%;
+  margin: 0;
+  padding: 0 17px;
+  background: #fffefb;
+}
+.stitchReferenceHero {
+  position: relative;
+  height: 372px;
+  overflow: hidden;
+  background: #d8d0bf;
+}
+.stitchReferenceHero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 52%;
+}
+.stitchReferenceHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11,13,10,.37) 0%, rgba(11,13,10,.11) 39%, rgba(11,13,10,0) 62%);
+  pointer-events: none;
+}
+.stitchReferenceHeroCopy {
+  position: absolute;
+  z-index: 1;
+  left: 42px;
+  bottom: 41px;
+  width: 410px;
+}
+.stitchReferenceHeroCopy h1 {
+  margin: 0;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 29px;
+  line-height: 1.08;
+  font-weight: 400;
+  letter-spacing: -.025em;
+  text-shadow: 0 1px 6px rgba(0,0,0,.28);
+}
+.stitchReferenceServices {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 17px;
+  padding: 42px 41px 43px;
+  background: #fffefb;
+}
+.stitchReferenceCard {
+  min-width: 0;
+  min-height: 214px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 7px 7px 13px;
+  border: 1px solid #b7a36e;
+  border-radius: 5px;
+  background: #fffefb;
+  color: #111;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(35,28,13,.035);
+}
+.stitchReferenceCard:hover {
+  color: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(35,28,13,.08);
+}
+.stitchReferenceMedia {
+  height: 108px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: #f2efe6;
+}
+.stitchReferenceMedia > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
+}
+.stitchReferenceCard > strong {
+  min-height: 51px;
+  display: grid;
+  place-items: center;
+  padding: 9px 3px 4px;
+  text-align: center;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.34;
+  font-weight: 400;
+}
+.stitchReferenceButton {
+  align-self: center;
+  min-width: 115px;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 13px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #b29b61, #9d864d);
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 1;
+  text-align: center;
+}
+.stitchReferenceCardDisabled { cursor: default; }
+.stitchReferenceCardDisabled:hover { transform: none; box-shadow: 0 2px 4px rgba(35,28,13,.035); }
+.stitchReferenceCardDisabled .stitchReferenceButton { opacity: .72; }
+
+.stitchColorMedia {
+  position: relative;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  padding: 12px;
+  background: linear-gradient(145deg, #f6efe7, #efe1d3);
+}
+.stitchColorMedia::before,
+.stitchColorMedia::after {
+  content: '';
+  position: absolute;
+  width: 58px;
+  height: 5px;
+  right: 10px;
+  bottom: 13px;
+  border-radius: 999px;
+  background: #a8674d;
+  transform: rotate(-23deg);
+  box-shadow: 0 9px 0 #27231e;
+}
+.stitchColorMedia i {
+  display: block;
+  width: 27px;
+  height: 17px;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 2px;
+  transform: rotate(-8deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.stitchColorMedia i:nth-child(1){background:#c8958d}.stitchColorMedia i:nth-child(2){background:#d8b08b}.stitchColorMedia i:nth-child(3){background:#cbb9a0}.stitchColorMedia i:nth-child(4){background:#c6b6c9}.stitchColorMedia i:nth-child(5){background:#91aaa4}.stitchColorMedia i:nth-child(6){background:#8399ac}.stitchColorMedia i:nth-child(7){background:#b09d66}.stitchColorMedia i:nth-child(8){background:#9c6c6c}
+.stitchSajuMedia {
+  color: #d1c496;
+  background:
+    radial-gradient(circle at center, transparent 0 18%, rgba(210,198,153,.6) 18.5% 19.4%, transparent 20% 30%, rgba(210,198,153,.42) 30.5% 31.3%, transparent 32%),
+    repeating-conic-gradient(from 0deg, rgba(210,198,153,.18) 0 1deg, transparent 1deg 30deg),
+    #101929;
+}
+.stitchSajuMedia span { font-family: Georgia, serif; font-size: 26px; letter-spacing: .08em; }
+.stitchNamingMedia {
+  color: #151515;
+  background:
+    linear-gradient(168deg, transparent 43%, rgba(18,18,18,.85) 44% 46%, transparent 47%),
+    linear-gradient(12deg, transparent 52%, rgba(18,18,18,.78) 53% 55%, transparent 56%),
+    #eee9df;
+}
+.stitchNamingMedia span { padding: 6px 11px; background: rgba(255,255,255,.72); font-family: Georgia, serif; font-size: 25px; transform: rotate(-7deg); }
+.stitchAiMedia { color: #a89158; background: #f5f2ea; }
+.stitchAiMedia svg { width: 62px; height: 62px; }
+
+.siteFooter.stitchReferenceFooter {
+  width: calc(100% - 116px);
+  min-height: 46px;
+  margin: 0 58px;
+  padding: 17px 0 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  border-top: 1px solid #d7d0bf;
+  background: #fffefb;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+}
+.stitchReferenceFooter > p { display: none; }
+.stitchFooterLinks { display: flex; gap: 24px; }
+.stitchSocialMarks { display: flex; gap: 12px; align-items: center; color: #9d8750; font-size: 13px; }
+.stitchSocialMarks span { display: inline-grid; place-items: center; min-width: 14px; }
+
+/* Hanbok reference screen */
+.stitchHanbokPage {
+  position: relative;
+  width: 100%;
+  min-height: 690px;
+  padding: 31px 56px 28px;
+  background:
+    radial-gradient(ellipse at 14% 8%, rgba(179,158,105,.09), transparent 28%),
+    linear-gradient(118deg, transparent 0 48%, rgba(172,153,107,.05) 49% 50%, transparent 51%),
+    #fbf9f1;
+}
+.stitchHanbokPage::before {
+  content: '';
+  position: absolute;
+  inset: 18px 20px;
+  pointer-events: none;
+  border: 1px solid #b6a064;
+  clip-path: polygon(1.5% 0,98.5% 0,98.5% 2.5%,100% 2.5%,100% 97.5%,98.5% 97.5%,98.5% 100%,1.5% 100%,1.5% 97.5%,0 97.5%,0 2.5%,1.5% 2.5%);
+}
+.stitchHanbokSelection {
+  position: relative;
+  z-index: 1;
+  width: min(1048px, 100%);
+  margin: 0 auto;
+  padding: 8px 78px 6px;
+}
+.stitchHanbokStep {
+  max-width: 402px;
+  margin: 0 auto;
+  text-align: center;
+  color: #151515;
+  font: 13px/1.2 Arial, sans-serif;
+}
+.stitchHanbokProgress { height: 4px; margin: 8px 0 17px; border-radius: 999px; background: linear-gradient(90deg,#b79a55 0 50%,#ded9cd 50%); }
+.stitchHanbokSelection h1 {
+  margin: 0 0 15px;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 44px;
+  font-weight: 400;
+  letter-spacing: -.025em;
+}
+.stitchHanbokToggleRow { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 21px; font: 15px/1 Arial, sans-serif; }
+.stitchHanbokSwitch {
+  width: 61px;
+  height: 31px;
+  position: relative;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#c7ad6b,#e4d7b2);
+  cursor: pointer;
+}
+.stitchHanbokSwitch::after { content:''; position:absolute; top:4px; width:23px; height:23px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:left .15s ease; }
+.stitchHanbokSwitch[data-gender="feminine"]::after { left: 34px; }
+.stitchHanbokSwitch[data-gender="masculine"]::after { left: 4px; }
+.stitchHanbokCards { display:grid; grid-template-columns:repeat(3,1fr); gap:23px; }
+.stitchHanbokCard {
+  position: relative;
+  min-width: 0;
+  padding: 12px 11px 17px;
+  border: 1px solid #b69b58;
+  border-radius: 7px;
+  background: rgba(255,255,255,.74);
+  box-shadow: 0 4px 9px rgba(80,62,22,.1);
+}
+.stitchHanbokCard::before { content:''; position:absolute; top:-1px; left:34%; width:32%; height:8px; border-radius:0 0 7px 7px; background:#bca25d; }
+.stitchHanbokCard h3 { margin: 7px 0 8px; text-align:center; font-family:Georgia,serif; font-size:23px; font-weight:400; }
+.stitchHanbokCard img { width:100%; aspect-ratio:310/217; object-fit:cover; object-position:center 22%; border-radius:5px; }
+.stitchHanbokCardDivider { width:40px; height:1px; margin:17px auto 14px; background:#c6aa66; }
+.stitchHanbokCard p { min-height:52px; margin:0; text-align:center; font:13px/1.35 Arial,sans-serif; }
+.stitchHanbokCardAction { display:flex; justify-content:center; margin-top:14px; }
+.stitchHanbokCardAction a { min-height:35px; display:inline-flex; align-items:center; justify-content:center; padding:0 17px; border:1px solid #b19758; border-radius:999px; background:#fffdf8; color:#151515; font:12px/1 Arial,sans-serif; box-shadow:0 3px 8px rgba(78,62,28,.12); }
+.stitchHanbokSource { display:block; margin-top:9px; text-align:center; color:#7b7465; font:8px/1.25 Arial,sans-serif; }
+.stitchHanbokMatcherWrap { position:relative; z-index:1; width:min(890px,100%); margin:34px auto 0; }
+
+/* Saju: preserve deterministic/planned truth while matching navy editorial frame */
+.stitchSajuReference {
+  width: min(696px, calc(100% - 72px));
+  margin: 0 auto;
+  min-height: 650px;
+  background: #fffefb;
+  box-shadow: 0 10px 26px rgba(12,26,43,.12);
+}
+.stitchSajuReferenceHead { padding: 35px 38px 34px; text-align:center; background: var(--stitch-navy); color:#fff; }
+.stitchSajuReferenceHead h1 { margin:0; color:#fff; font-family:Georgia,serif; font-size:31px; font-weight:700; }
+.stitchSajuReferenceHead p { margin:7px 0 0; color:#e7e6e1; font:11px/1.4 Georgia,serif; }
+.stitchSajuReferenceBody { padding:24px 36px 28px; }
+.stitchSajuDiagram {
+  min-height: 250px;
+  display:grid;
+  place-items:center;
+  border-radius:5px;
+  background:
+    radial-gradient(circle at center,#fff 0 42px,#383838 43px 47px,#fff 48px 100%),
+    #f9f8f4;
+  border:1px solid #eee9df;
+}
+.stitchSajuDiagramInner { width:80%; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:center; text-align:center; }
+.stitchSajuOrb { aspect-ratio:1; display:grid; place-items:center; border:4px solid #4a4a48; border-radius:50%; background:#fff; font-family:Georgia,serif; font-size:14px; box-shadow:inset 0 0 0 2px #ccc7bd; }
+.stitchSajuOrb small { display:block; font:8px Arial,sans-serif; color:#666; }
+.stitchSajuReferenceGrid { display:grid; grid-template-columns:1.2fr .8fr; gap:18px; margin-top:18px; }
+.stitchSajuExplanation h2,.stitchSajuPremium h2 { margin:0 0 9px; font-family:Georgia,serif; font-size:20px; font-weight:400; }
+.stitchSajuExplanation p,.stitchSajuPremium p { color:#31302c; font:10px/1.52 Arial,sans-serif; }
+.stitchSajuPremium { padding:18px; text-align:center; border:1px solid #d6cec0; background:#f8f6f1; }
+.stitchSajuPremium .primaryButton { min-height:31px; margin-top:10px; border-radius:999px; }
+
+/* Credits: screenshot-like dark account frame, but real catalog values only */
+.stitchCreditsWrap { width:100%; margin:0; padding:56px 58px; background:linear-gradient(135deg,#183651,#0d2237); }
+.stitchCreditsCard { overflow:hidden; border:0; border-radius:14px; background:#0b2034; box-shadow:0 16px 34px rgba(0,0,0,.24); }
+.stitchCreditsHead { padding:25px 58px 20px; border-bottom:0; background:#fbf7ea; color:#112236; }
+.stitchCreditsHead h1 { font-family:Arial,sans-serif; font-size:31px; font-weight:400; }
+.stitchCreditsHead .contextBox { max-width:420px; border:0; background:transparent; color:#5e5a50; }
+.stitchCreditsGrid { grid-template-columns:.72fr 1.28fr; gap:46px; padding:28px 58px 32px; background:radial-gradient(circle at 78% 10%,rgba(53,85,113,.3),transparent 45%),#091b2d; color:#fff; }
+.stitchCreditsBalance { padding:20px; border:1px solid rgba(144,174,200,.38); border-radius:12px; background:linear-gradient(135deg,#153653,#17334c); color:#fff; }
+.stitchCreditsBalance small,.stitchCreditsBalance span,.stitchCreditsBalance p { color:#d8e0e8; }
+.stitchCreditsBalance b { margin:18px 0 5px; color:#d3b16b; font-family:Arial,sans-serif; font-size:46px; }
+.stitchCreditsDetails { padding:20px; border:1px solid rgba(144,174,200,.38); border-radius:12px; background:linear-gradient(135deg,#153653,#17334c); }
+.stitchCreditsDetails h2 { color:#fff; font-family:Arial,sans-serif; font-size:20px; }
+.stitchCreditsDetails .stitchEditorialSection { border-color:rgba(159,185,205,.28); }
+.stitchCreditsDetails .creditPack { border-color:rgba(159,185,205,.3); background:rgba(255,255,255,.035); color:#fff; }
+.stitchCreditsDetails .creditPack small,.stitchCreditsDetails .creditPack p { color:#d7e0e8; }
+.stitchCreditsDetails .creditPack b { color:#d3b16b; }
+
+@media (max-width: 980px) {
+  .siteHeader.stitchReferenceHeader { padding:0 24px; gap:14px; }
+  .siteHeader .stitchReferenceNav { gap:13px; font-size:10px; }
+  .stitchReferenceServices { gap:10px; padding-left:20px; padding-right:20px; }
+  .stitchReferenceCard > strong { font-size:12px; }
+  .stitchHanbokSelection { padding-left:28px; padding-right:28px; }
+}
+
+@media (max-width: 860px) {
+  .kcReferenceApp { width:100%; }
+  .siteHeader.stitchReferenceHeader { min-height:54px; padding:0 16px; display:flex; justify-content:space-between; }
+  .siteHeader .stitchReferenceNav { display:none; }
+  .stitchReferenceBrand { font-size:17px; }
+  .stitchReferenceHeader .langButton { min-width:110px; }
+  .stitchReferenceHome { padding:0; }
+  .stitchReferenceHero { height:56vw; min-height:330px; max-height:430px; }
+  .stitchReferenceHeroCopy { left:24px; right:24px; bottom:28px; width:auto; }
+  .stitchReferenceHeroCopy h1 { max-width:430px; font-size:clamp(28px,7vw,38px); }
+  .stitchReferenceServices { grid-template-columns:repeat(2,1fr); padding:24px 18px 32px; }
+  .stitchReferenceCard:last-child { grid-column:span 2; }
+  .siteFooter.stitchReferenceFooter { width:calc(100% - 36px); margin:0 18px; padding-bottom:76px; }
+  .stitchFooterLinks { flex-wrap:wrap; gap:10px 18px; }
+  .stitchHanbokPage { padding:18px 12px 76px; }
+  .stitchHanbokPage::before { inset:8px; }
+  .stitchHanbokSelection { padding:20px 10px 8px; }
+  .stitchHanbokSelection h1 { font-size:36px; }
+  .stitchHanbokCards { grid-template-columns:1fr; gap:16px; }
+  .stitchHanbokCard { max-width:440px; width:100%; margin:0 auto; }
+  .stitchHanbokCard p { min-height:0; }
+  .stitchSajuReference { width:100%; margin:0; }
+  .stitchSajuReferenceBody { padding:20px 16px 72px; }
+  .stitchSajuReferenceGrid { grid-template-columns:1fr; }
+  .stitchCreditsWrap { padding:0 0 76px; }
+  .stitchCreditsCard { border-radius:0; }
+  .stitchCreditsHead { padding:25px 20px; }
+  .stitchCreditsGrid { grid-template-columns:1fr; gap:15px; padding:20px; }
+}
+
+@media (max-width: 520px) {
+  .stitchReferenceHero { min-height:360px; }
+  .stitchReferenceServices { grid-template-columns:1fr; }
+  .stitchReferenceCard:last-child { grid-column:auto; }
+  .stitchReferenceCard { min-height:205px; }
+  .stitchReferenceMedia { height:124px; }
+  .stitchHanbokSelection h1 { font-size:32px; }
+}
