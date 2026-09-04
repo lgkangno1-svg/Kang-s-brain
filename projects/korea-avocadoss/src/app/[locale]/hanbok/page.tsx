@@ -26,7 +26,7 @@ export default async function HanbokPage({params}: {params: Promise<{locale: str
       <Suspense fallback={<div style={{minHeight: '540px'}} aria-hidden="true" />}>
         <HanbokVisualInspiration />
       </Suspense>
-      <section className="prototype stitchHanbokMatcherWrap" id="hanbok-matcher">
+      <section className="prototype stitchHanbokMatcherWrap">
         <Suspense fallback={<div className="prototypePanel" style={{minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Loading Hanbok Studio...</div>}>
           <HanbokMatcher />
         </Suspense>
