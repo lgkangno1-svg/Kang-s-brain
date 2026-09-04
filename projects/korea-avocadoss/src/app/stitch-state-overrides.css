@@ -1,0 +1,12 @@
+/* State-dependent fidelity rules kept separate from static design tokens. */
+body:has(.stitchColorCompleted) .pageIntro { display: none; }
+body:has(.stitchColorCompleted) .prototype:has(.stitchColorCompleted) {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+body:has(.stitchColorCompleted) .siteFooter.stitchReferenceFooter { background: #fbfaf5; }
+
+@media (max-width: 860px) {
+  body:has(.stitchColorCompleted) .prototype:has(.stitchColorCompleted) { padding: 0; }
+}
