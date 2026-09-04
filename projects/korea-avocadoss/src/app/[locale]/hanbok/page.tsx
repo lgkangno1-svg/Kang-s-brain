@@ -20,19 +20,13 @@ export async function generateMetadata({params}: {params: Promise<{locale: strin
 export default async function HanbokPage({params}: {params: Promise<{locale: string}>}) {
   const {locale} = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('Hanbok');
 
   return (
-    <main>
-      <section className="pageIntro">
-        <p className="eyebrow">{t('eyebrow')}</p>
-        <h1>{t('title')}</h1>
-        <p>{t('intro')}</p>
-      </section>
-      <Suspense fallback={<div style={{minHeight: '420px'}} aria-hidden="true" />}>
+    <main className="stitchHanbokPage">
+      <Suspense fallback={<div style={{minHeight: '540px'}} aria-hidden="true" />}>
         <HanbokVisualInspiration />
       </Suspense>
-      <section className="prototype">
+      <section className="prototype stitchHanbokMatcherWrap" id="hanbok-matcher">
         <Suspense fallback={<div className="prototypePanel" style={{minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Loading Hanbok Studio...</div>}>
           <HanbokMatcher />
         </Suspense>
