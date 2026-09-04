@@ -1,0 +1,7 @@
+.quickHelpChoices::before { content: none !important; }
+.quickHelpSuggestedTitle {
+  display: block;
+  margin: 0 0 7px;
+  color: #141414;
+  font: 700 12px/1.2 Arial, sans-serif;
+}
