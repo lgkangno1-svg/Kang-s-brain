@@ -28,14 +28,19 @@ export const metadata: Metadata = {
 export function generateStaticParams() { return routing.locales.map((locale) => ({locale})); }
 
 type P0Locale = 'en' | 'zh-CN' | 'ja' | 'zh-TW' | 'vi' | 'th';
+type ShellCopy = {
+  explore: string; color: string; hanbok: string; saju: string; naming: string; ai: string;
+  comingSoon: string; futureConcierge: string;
+  about: string; contact: string; privacy: string; terms: string;
+};
 
-const NAV_COPY: Record<P0Locale, {explore: string; color: string; hanbok: string; saju: string; naming: string; ai: string}> = {
-  en: {explore: 'EXPLORE', color: 'PERSONAL COLOR', hanbok: 'HANBOK', saju: 'SAJU', naming: 'NAMING STUDIO', ai: 'AI CONCIERGE'},
-  'zh-CN': {explore: '探索', color: '个人色彩', hanbok: '韩服', saju: '四柱', naming: '韩文命名', ai: 'AI 礼宾'},
-  ja: {explore: '探す', color: 'パーソナルカラー', hanbok: '韓服', saju: '四柱', naming: '韓国名スタジオ', ai: 'AI コンシェルジュ'},
-  'zh-TW': {explore: '探索', color: '個人色彩', hanbok: '韓服', saju: '四柱', naming: '韓文命名', ai: 'AI 禮賓'},
-  vi: {explore: 'KHÁM PHÁ', color: 'MÀU CÁ NHÂN', hanbok: 'HANBOK', saju: 'SAJU', naming: 'ĐẶT TÊN HÀN', ai: 'AI CONCIERGE'},
-  th: {explore: 'สำรวจ', color: 'เพอร์ซันนัลคัลเลอร์', hanbok: 'ฮันบก', saju: 'ซาจู', naming: 'ตั้งชื่อเกาหลี', ai: 'AI CONCIERGE'},
+const SHELL_COPY: Record<P0Locale, ShellCopy> = {
+  en: {explore:'EXPLORE',color:'PERSONAL COLOR',hanbok:'HANBOK',saju:'SAJU',naming:'NAMING STUDIO',ai:'AI CONCIERGE',comingSoon:'Coming soon',futureConcierge:'Future premium concierge',about:'About Us',contact:'Contact',privacy:'Privacy Policy',terms:'Terms of Service'},
+  'zh-CN': {explore:'探索',color:'个人色彩',hanbok:'韩服',saju:'四柱',naming:'韩文命名',ai:'AI 礼宾',comingSoon:'即将推出',futureConcierge:'未来高级礼宾服务',about:'关于我们',contact:'联系我们',privacy:'隐私政策',terms:'服务条款'},
+  ja: {explore:'探す',color:'パーソナルカラー',hanbok:'韓服',saju:'四柱',naming:'韓国名スタジオ',ai:'AI コンシェルジュ',comingSoon:'近日公開',futureConcierge:'今後のプレミアムコンシェルジュ',about:'私たちについて',contact:'お問い合わせ',privacy:'プライバシーポリシー',terms:'利用規約'},
+  'zh-TW': {explore:'探索',color:'個人色彩',hanbok:'韓服',saju:'四柱',naming:'韓文命名',ai:'AI 禮賓',comingSoon:'即將推出',futureConcierge:'未來進階禮賓服務',about:'關於我們',contact:'聯絡我們',privacy:'隱私政策',terms:'服務條款'},
+  vi: {explore:'KHÁM PHÁ',color:'MÀU CÁ NHÂN',hanbok:'HANBOK',saju:'SAJU',naming:'ĐẶT TÊN HÀN',ai:'AI CONCIERGE',comingSoon:'Sắp ra mắt',futureConcierge:'Dịch vụ concierge cao cấp trong tương lai',about:'Về chúng tôi',contact:'Liên hệ',privacy:'Chính sách riêng tư',terms:'Điều khoản dịch vụ'},
+  th: {explore:'สำรวจ',color:'เพอร์ซันนัลคัลเลอร์',hanbok:'ฮันบก',saju:'ซาจู',naming:'ตั้งชื่อเกาหลี',ai:'AI CONCIERGE',comingSoon:'เร็ว ๆ นี้',futureConcierge:'คอนเซียร์จพรีเมียมในอนาคต',about:'เกี่ยวกับเรา',contact:'ติดต่อ',privacy:'นโยบายความเป็นส่วนตัว',terms:'ข้อกำหนดการใช้บริการ'},
 };
 
 export default async function LocaleLayout({children, params}: Readonly<{children: React.ReactNode; params: Promise<{locale: string}>;}>) {
@@ -46,7 +51,7 @@ export default async function LocaleLayout({children, params}: Readonly<{childre
   const t = await getTranslations('Global');
   const help = await getTranslations('QuickHelp');
   const definition = getLocaleDefinition(locale);
-  const nav = NAV_COPY[locale as P0Locale] ?? NAV_COPY.en;
+  const shell = SHELL_COPY[locale as P0Locale] ?? SHELL_COPY.en;
 
   return (
     <html lang={definition.htmlLang}>
@@ -56,19 +61,19 @@ export default async function LocaleLayout({children, params}: Readonly<{childre
             <header className="siteHeader stitchReferenceHeader">
               <Link className="brand stitchReferenceBrand" href="/">KOREA CONCIERGE</Link>
               <nav className="stitchReferenceNav" aria-label="Primary navigation">
-                <Link href="/explore/gyeongbokgung">{nav.explore}</Link>
-                <Link href="/color">{nav.color}</Link>
-                <Link href="/hanbok">{nav.hanbok}</Link>
-                <Link href="/culture">{nav.saju}</Link>
-                <span className="stitchDisabledNav" aria-disabled="true" title="Coming soon">{nav.naming}</span>
-                <span className="stitchDisabledNav" aria-disabled="true" title="Future premium concierge">{nav.ai}</span>
+                <Link href="/explore/gyeongbokgung">{shell.explore}</Link>
+                <Link href="/color">{shell.color}</Link>
+                <Link href="/hanbok">{shell.hanbok}</Link>
+                <Link href="/culture">{shell.saju}</Link>
+                <span className="stitchDisabledNav" aria-disabled="true" title={shell.comingSoon}>{shell.naming}</span>
+                <span className="stitchDisabledNav" aria-disabled="true" title={shell.futureConcierge}>{shell.ai}</span>
               </nav>
               <LanguageSwitcher />
             </header>
             {children}
             <footer className="siteFooter stitchReferenceFooter">
               <div className="stitchFooterLinks" aria-label="Footer">
-                <span>About Us</span><span>Contact</span><span>Privacy Policy</span><span>Terms of Service</span>
+                <span>{shell.about}</span><span>{shell.contact}</span><span>{shell.privacy}</span><span>{shell.terms}</span>
               </div>
               <p>{t('footerTagline')}</p>
               <div className="stitchSocialMarks" aria-hidden="true"><span>f</span><span>♥</span><span>◎</span><span>▶</span></div>
