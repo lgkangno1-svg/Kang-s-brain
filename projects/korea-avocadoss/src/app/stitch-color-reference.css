@@ -1,0 +1,173 @@
+/* Personal Color result fidelity layer */
+.stitchColorCompleted {
+  display: block !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.stitchColorCompleted .stitchColorPhotoColumn { display: none !important; }
+.stitchColorCompleted .stitchColorResultColumn {
+  width: 100%;
+  padding: 0 !important;
+  background:
+    radial-gradient(circle at 8% 86%, transparent 0 76px, rgba(194,174,126,.15) 77px 80px, transparent 81px),
+    radial-gradient(circle at 93% 18%, transparent 0 92px, rgba(194,174,126,.15) 93px 96px, transparent 97px),
+    #fbfaf5;
+}
+.stitchColorResultCard {
+  width: min(646px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 14px 26px 20px;
+  color: #10100e;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(55,45,24,.12);
+}
+.stitchColorResultBrand {
+  margin: -3px -26px 14px;
+  padding: 4px 0 0;
+  text-align: center;
+  background: #fbfaf5;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 23px;
+  line-height: 1.4;
+}
+.stitchColorResultBrand span { color: #9f8b58; }
+.stitchColorDirection {
+  margin: 0 -26px 17px;
+  padding: 30px 24px 20px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(210,145,88,.28), transparent 33%),
+    radial-gradient(circle at 82% 20%, rgba(209,118,73,.22), transparent 37%),
+    linear-gradient(105deg,#efc68e,#edb97e 48%,#e59e7b);
+}
+.stitchColorDirection h2 {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(24px,3.2vw,30px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+}
+.stitchColorDirection p {
+  max-width: 570px;
+  margin: 14px auto 0;
+  color: #191813;
+  font: 11px/1.35 Arial, Helvetica, sans-serif;
+}
+.stitchColorSwatches {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 10px 10px;
+  padding: 0 0 9px;
+}
+.stitchColorSwatch { min-width: 0; text-align: center; }
+.stitchColorSwatch i {
+  display: block;
+  height: 47px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px rgba(72,55,20,.08), 0 1px 2px rgba(0,0,0,.04);
+}
+.stitchColorSwatch span {
+  display: block;
+  margin-top: 4px;
+  color: #111;
+  font: 9px/1.15 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+}
+.stitchColorOrnament {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px -12px 12px;
+  color: #c4b083;
+  font-size: 16px;
+}
+.stitchColorOrnament::before,.stitchColorOrnament::after { content:''; height:1px; flex:1; background:#d5c8a9; }
+.stitchColorDetails { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.stitchColorDetails > div + div { border-left:1px solid #d9d2c3; padding-left:14px; }
+.stitchColorDetails h3,.stitchColorDetails h4,.stitchColorHanbokBridge h3 {
+  margin: 0 0 6px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.05;
+}
+.stitchColorDetails h4 { margin-top:14px; font-size:17px; }
+.stitchColorDetails p,.stitchColorDetails li,.stitchColorHanbokBridge p {
+  color:#1d1c18;
+  font:10px/1.45 Arial, Helvetica, sans-serif;
+}
+.stitchColorDetails ul { margin:0; padding-left:14px; }
+.stitchFabricGrid { display:grid; grid-template-columns:1fr 1fr; gap:10px 9px; }
+.stitchFabric { display:grid; grid-template-columns:47px 1fr; gap:7px; align-items:center; min-width:0; }
+.stitchFabric i {
+  width:47px;
+  height:47px;
+  display:block;
+  border-radius:3px;
+  border:1px solid rgba(92,72,33,.15);
+  background:linear-gradient(120deg,#d4b892,#f4e4c7 44%,#ad8a63 45% 48%,#efe2c9 55%,#b9966f);
+}
+.stitchFabric i[data-fabric="1"] { background:linear-gradient(145deg,#d9c7a7,#aa8d67 47%,#eee0c8 52%,#bea17d); }
+.stitchFabric i[data-fabric="2"] { background:linear-gradient(135deg,#032c22,#0d5543 50%,#001f17); }
+.stitchFabric i[data-fabric="3"] { background:linear-gradient(135deg,#c8c1b0,#ede8dc 50%,#aaa393); }
+.stitchFabric strong { display:block; font:600 10px/1.2 Arial,sans-serif; }
+.stitchFabric span { display:block; margin-top:2px; font:9px/1.2 Arial,sans-serif; }
+.stitchColorHanbokBridge {
+  min-height: 108px;
+  display:grid;
+  grid-template-columns:190px 1fr;
+  gap:20px;
+  align-items:center;
+  margin-top:3px;
+  padding:13px 17px;
+  border:1px solid #c9b98e;
+  border-radius:10px;
+  background:linear-gradient(90deg,#f7f2e7,#fbfaf6);
+}
+.stitchHanbokIllustration { display:flex; justify-content:center; align-items:flex-end; gap:0; height:78px; }
+.stitchHanbokIllustration span {
+  width:58px;
+  height:74px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:22px;
+  clip-path:polygon(38% 0,62% 0,72% 24%,89% 100%,11% 100%,28% 24%);
+  background:linear-gradient(#c97b4b 0 29%,#d85e42 30%);
+}
+.stitchHanbokIllustration span + span { margin-left:-4px; transform:scale(.92); background:linear-gradient(#a33b2f 0 29%,#174b3c 30%); }
+.stitchColorContinue {
+  min-height: 39px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:17px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#d5aa35,#c89423);
+  color:#fff;
+  font:700 16px/1 Arial,sans-serif;
+  box-shadow:0 4px 8px rgba(142,104,22,.2);
+}
+.stitchColorContinue:hover { color:#fff; filter:brightness(1.02); }
+.stitchColorAdjust { margin-top:12px; border-top:1px solid #e3ddcf; padding-top:8px; }
+.stitchColorAdjust summary { cursor:pointer; color:#6f6656; font:10px/1.4 Arial,sans-serif; text-align:center; }
+.stitchColorAdjust > div { margin-top:9px; }
+.stitchColorPrivacyNote { margin:12px 0 0; color:#786f60; text-align:center; font:9px/1.4 Arial,sans-serif; }
+
+.stitchSajuReferencePage { padding:0 0 34px; background:#f6f4ef; }
+
+@media (max-width:760px) {
+  .stitchColorResultCard { width:100%; padding:10px 16px 76px; box-shadow:none; }
+  .stitchColorResultBrand { margin:-3px -16px 12px; font-size:19px; }
+  .stitchColorDirection { margin:0 -16px 14px; padding:25px 16px 18px; }
+  .stitchColorDirection h2 { font-size:24px; }
+  .stitchColorSwatches { grid-template-columns:repeat(3,1fr); }
+  .stitchColorDetails { grid-template-columns:1fr; gap:16px; }
+  .stitchColorDetails > div + div { border-left:0; border-top:1px solid #d9d2c3; padding:14px 0 0; }
+  .stitchColorHanbokBridge { grid-template-columns:110px 1fr; padding:12px; }
+  .stitchHanbokIllustration span { width:45px; height:62px; }
+}
