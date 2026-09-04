@@ -1,14 +1,15 @@
 'use client';
 
 import {useState} from 'react';
+import {useLocale, useTranslations} from 'next-intl';
 import {useSearchParams} from 'next/navigation';
-import {useTranslations} from 'next-intl';
 
 import {HANBOK_STYLE_CATEGORIES} from './hanbok-visual-library';
 import {isPersonalColorUndertone} from './personal-color-bridge';
 
 export function HanbokVisualInspiration() {
   const t = useTranslations('HanbokVisual');
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const undertoneParam = searchParams.get('undertone');
   const [activeGender, setActiveGender] = useState<'feminine' | 'masculine'>('feminine');
@@ -17,14 +18,17 @@ export function HanbokVisualInspiration() {
     setActiveGender((current) => current === 'feminine' ? 'masculine' : 'feminine');
   }
 
+  const screenTitle = locale === 'en' ? 'Hanbok Style Selection' : t('title');
+  const stepLabel = locale === 'en' ? 'Step 2 of 4: Hanbok Selection' : t('eyebrow');
+
   return (
     <section className="stitchHanbokSelection" aria-labelledby="hanbok-visual-reference-title">
       <div className="stitchHanbokStep">
-        <span>Step 2 of 4: Hanbok Selection</span>
+        <span>{stepLabel}</span>
         <div className="stitchHanbokProgress" aria-hidden="true" />
       </div>
 
-      <h1 id="hanbok-visual-reference-title">Hanbok Style Selection</h1>
+      <h1 id="hanbok-visual-reference-title">{screenTitle}</h1>
 
       <div className="stitchHanbokToggleRow">
         <span>{t('feminineTab')}</span>
