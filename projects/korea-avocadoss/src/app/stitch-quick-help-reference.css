@@ -1,0 +1,168 @@
+/* Concierge panel chrome derived from the accepted Stitch AI Concierge screen.
+ * Product semantics remain Quick Help: fixed content, zero AI calls, zero credits.
+ */
+.quickHelp {
+  right: 26px !important;
+  bottom: 24px !important;
+}
+.quickHelpPanel {
+  width: min(548px, calc(100vw - 42px)) !important;
+  max-height: min(620px, calc(100vh - 92px)) !important;
+  overflow: hidden !important;
+  border: 1px solid #b8a36d !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+  box-shadow: 0 11px 28px rgba(23,35,45,.18) !important;
+}
+.quickHelpHeader {
+  min-height: 60px !important;
+  padding: 12px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid #ded9cd !important;
+  background: #fff !important;
+}
+.quickHelpHeader > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+}
+.quickHelpHeader > div::before {
+  content: '☷';
+  width: 33px;
+  height: 33px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #172a3c;
+  border-radius: 9px;
+  color: #172a3c;
+  font-size: 16px;
+}
+.quickHelpHeader small {
+  position: absolute !important;
+  left: 61px !important;
+  top: 36px !important;
+  color: #8b7b59 !important;
+  font: 8px/1 Arial,sans-serif !important;
+  letter-spacing: .02em !important;
+}
+.quickHelpHeader strong {
+  color: #0f1519 !important;
+  font: 600 17px/1.2 Arial,sans-serif !important;
+}
+.quickHelpIconButton {
+  width: 30px !important;
+  height: 30px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #28323a !important;
+  font-size: 22px !important;
+}
+.quickHelpBody {
+  overflow-y: auto !important;
+  max-height: 430px !important;
+  padding: 18px 16px 20px !important;
+  background: #fff !important;
+}
+.quickHelpBody > p {
+  max-width: 78% !important;
+  margin: 14px 0 18px 18px !important;
+  padding: 14px 16px !important;
+  border-radius: 15px 15px 15px 4px !important;
+  background: #e8f0f5 !important;
+  color: #12171b !important;
+  font: 13px/1.45 Arial,sans-serif !important;
+}
+.quickHelpChoices {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  margin: 0 0 20px !important;
+  padding: 0 0 17px !important;
+  border-bottom: 1px solid #e4e0d7 !important;
+}
+.quickHelpChoices::before {
+  content: 'Suggested Questions';
+  flex-basis: 100%;
+  margin-bottom: 2px;
+  color: #141414;
+  font: 700 12px/1.2 Arial,sans-serif;
+}
+.quickHelpChoices button {
+  min-height: 31px !important;
+  padding: 6px 12px !important;
+  border: 1px solid #c6d0d6 !important;
+  border-radius: 999px !important;
+  background: #eaf1f5 !important;
+  color: #111 !important;
+  font: 11px/1.2 Arial,sans-serif !important;
+  box-shadow: none !important;
+}
+.quickHelpChoices button:first-of-type {
+  border-color: #d2bd82 !important;
+  background: #efe4c6 !important;
+}
+.quickHelpCta {
+  min-height: 39px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 18px !important;
+  padding: 0 17px !important;
+  border-radius: 8px !important;
+  background: #24333f !important;
+  color: #fff !important;
+  font: 600 11px/1 Arial,sans-serif !important;
+}
+.quickHelpFooter {
+  min-height: 62px !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-top: 1px solid #ddd8cd !important;
+  background: #fff !important;
+}
+.quickHelpFooter button {
+  min-height: 31px !important;
+  padding: 0 12px !important;
+  border: 1px solid #c7b37c !important;
+  border-radius: 999px !important;
+  background: #fffefa !important;
+  color: #30302d !important;
+  font: 10px/1 Arial,sans-serif !important;
+}
+.quickHelpFooter span {
+  margin-left: auto !important;
+  color: #81765e !important;
+  font: 10px/1 Arial,sans-serif !important;
+}
+.quickHelpLauncher {
+  min-width: 160px !important;
+  min-height: 47px !important;
+  padding: 5px 14px 5px 6px !important;
+  border: 1px solid #af985f !important;
+  border-radius: 999px !important;
+  background: #fffdf7 !important;
+  color: #192d3e !important;
+  box-shadow: 0 7px 20px rgba(20,38,53,.14) !important;
+}
+.quickHelpLauncher > span:first-child {
+  width: 35px !important;
+  height: 35px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #223541 !important;
+  color: #d9bd75 !important;
+}
+.quickHelpLauncher strong { color:#172733 !important; font:600 12px/1.15 Arial,sans-serif !important; }
+.quickHelpLauncher small { color:#7c735e !important; font:9px/1.1 Arial,sans-serif !important; }
+
+@media (max-width: 640px) {
+  .quickHelp { right: 10px !important; bottom: 73px !important; left: 10px !important; }
+  .quickHelpPanel { width: 100% !important; max-height: calc(100vh - 150px) !important; }
+  .quickHelpBody > p { max-width: 92% !important; margin-left: 6px !important; }
+  .quickHelpLauncher { margin-left: auto !important; }
+}
