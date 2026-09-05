@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {getMessages, getTranslations, setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
@@ -18,11 +18,18 @@ import '../stitch-color-reference.css';
 import '../stitch-state-overrides.css';
 import '../stitch-quick-help-reference.css';
 import '../stitch-quick-help-localized.css';
+import '../responsive-system.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://korea.avocadoss.co.kr'),
   title: {default: 'Korea Concierge — Your Personal Korea Companion', template: '%s | Korea Concierge'},
   description: 'Personal color, Hanbok matching, palace routes, food and Korean culture for international visitors.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export function generateStaticParams() { return routing.locales.map((locale) => ({locale})); }
@@ -49,7 +56,6 @@ export default async function LocaleLayout({children, params}: Readonly<{childre
   setRequestLocale(locale);
   const messages = await getMessages();
   const t = await getTranslations('Global');
-  const help = await getTranslations('QuickHelp');
   const definition = getLocaleDefinition(locale);
   const shell = SHELL_COPY[locale as P0Locale] ?? SHELL_COPY.en;
 
