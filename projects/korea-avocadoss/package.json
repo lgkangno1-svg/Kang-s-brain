@@ -12,9 +12,10 @@
     "check:hanbok": "node scripts/check-hanbok-visual-contracts.mjs",
     "check:payments": "node scripts/check-stripe-payment-contracts.mjs",
     "check:credits-ledger": "node scripts/check-credit-ledger.mjs && node scripts/check-credit-authorization.mjs",
+    "check:responsive": "node scripts/check-responsive-contracts.mjs",
     "check:document-lang": "node scripts/check-built-document-languages.mjs",
     "check:legacy-redirects": "node scripts/check-legacy-redirects.mjs",
-    "build": "npm run check:i18n && npm run check:saju && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && next build",
+    "build": "npm run check:i18n && npm run check:saju && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && next build",
     "start": "next start"
   },
   "dependencies": {
