@@ -1,0 +1,441 @@
+/*
+ * Unified responsive foundation.
+ * Imported last so feature-specific Stitch fidelity layers remain visually useful
+ * without locking the product to one screenshot width.
+ */
+
+:root {
+  --kc-app-max: 1440px;
+  --kc-content-max: 1200px;
+  --kc-gutter: clamp(16px, 3.2vw, 48px);
+  --kc-touch: 44px;
+}
+
+html {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  min-width: 320px;
+  overflow-x: clip;
+}
+img, video, canvas, svg { max-width: 100%; }
+button, select, input, textarea { max-width: 100%; }
+
+/* Prevent grid/flex children and translated copy from forcing horizontal scroll. */
+[data-locale] *,
+.kcReferenceApp *,
+.siteHeader *,
+.stitchReferenceServices > *,
+.stitchRouteGrid > *,
+.stitchCreditsGrid > *,
+.stitchSajuReferenceGrid > *,
+.hanbokMatcherGrid > *,
+.hanbokLooksGrid > * {
+  min-width: 0;
+}
+
+[data-locale] p,
+[data-locale] strong,
+[data-locale] span,
+[data-locale] button,
+[data-locale] a,
+[data-locale] h1,
+[data-locale] h2,
+[data-locale] h3,
+[data-locale] h4 {
+  overflow-wrap: anywhere;
+}
+
+/* Desktop shell: use the available screen instead of the legacy ~1034 px screenshot width. */
+.kcReferenceApp {
+  width: min(100%, var(--kc-app-max)) !important;
+  max-width: var(--kc-app-max);
+  margin-inline: auto !important;
+}
+
+.siteHeader.stitchReferenceHeader {
+  width: 100% !important;
+  min-height: 60px !important;
+  padding-inline: var(--kc-gutter) !important;
+  gap: clamp(14px, 2vw, 28px) !important;
+}
+.stitchReferenceBrand {
+  font-size: clamp(17px, 1.45vw, 21px) !important;
+}
+.siteHeader .stitchReferenceNav {
+  gap: clamp(12px, 1.65vw, 24px) !important;
+  font-size: clamp(11px, .9vw, 13px) !important;
+}
+.stitchReferenceHeader .langButton {
+  min-width: 116px !important;
+  min-height: 38px !important;
+  font-size: 12px !important;
+}
+
+.stitchReferenceHome {
+  width: 100%;
+  padding-inline: clamp(16px, 2vw, 28px) !important;
+}
+.stitchReferenceHero {
+  height: clamp(430px, 38vw, 560px) !important;
+}
+.stitchReferenceHeroCopy {
+  left: clamp(28px, 4vw, 62px) !important;
+  bottom: clamp(30px, 4vw, 58px) !important;
+  width: min(590px, calc(100% - 56px)) !important;
+}
+.stitchReferenceHeroCopy h1 {
+  font-size: clamp(34px, 3.4vw, 52px) !important;
+  line-height: 1.08 !important;
+}
+.stitchReferenceServices {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: clamp(12px, 1.5vw, 20px) !important;
+  padding: clamp(28px, 3vw, 46px) var(--kc-gutter) !important;
+}
+.stitchReferenceCard {
+  min-height: 250px !important;
+}
+.stitchReferenceMedia {
+  height: clamp(118px, 11vw, 156px) !important;
+}
+.stitchReferenceCard > strong {
+  min-height: 58px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+.stitchReferenceButton {
+  min-height: 38px !important;
+  padding-inline: 15px !important;
+  font-size: 12px !important;
+}
+
+/* Shared feature widths and readable desktop typography. */
+.pageIntro,
+.prototype,
+.stitchPalaceHero,
+.stitchRoutePanel,
+.stitchHanbokSelection,
+.stitchHanbokMatcherWrap,
+.stitchCreditsWrap {
+  width: min(100%, var(--kc-content-max)) !important;
+  max-width: var(--kc-content-max) !important;
+}
+.pageIntro { padding-inline: var(--kc-gutter) !important; }
+.prototype { padding-inline: var(--kc-gutter) !important; }
+
+.stitchPalaceHero { min-height: clamp(420px, 36vw, 540px) !important; }
+.stitchPalaceHeroCopy { left: clamp(22px, 3vw, 44px) !important; right: clamp(22px, 3vw, 44px) !important; bottom: clamp(24px, 3vw, 40px) !important; }
+.stitchPalaceHeroCopy p { font-size: 13px !important; line-height: 1.6 !important; }
+.stitchRoutePanel h2 { font-size: clamp(25px, 2.2vw, 32px) !important; }
+.stitchRoute { padding: clamp(18px, 2.2vw, 28px) !important; }
+.stitchRoute b { font-size: 26px !important; }
+.stitchRoute strong { font-size: 14px !important; line-height: 1.35 !important; }
+.stitchRoute p { font-size: 12.5px !important; line-height: 1.62 !important; }
+.stitchRoutePanel .freshnessNote { font-size: 11px !important; line-height: 1.55 !important; }
+
+.stitchHanbokSelection { padding-inline: clamp(18px, 5vw, 72px) !important; }
+.stitchHanbokSelection h1 { font-size: clamp(36px, 4vw, 50px) !important; }
+.stitchHanbokCards { gap: clamp(14px, 2vw, 24px) !important; }
+.stitchHanbokCard p { font-size: 13px !important; line-height: 1.5 !important; }
+.stitchHanbokCardAction a { min-height: var(--kc-touch) !important; font-size: 12px !important; }
+.hanbokChoice { min-height: 38px; }
+.hanbokFieldHelp,
+.hanbokMatcherHead > p,
+.hanbokComfortNote,
+.lookMetaList,
+.lookWhyList,
+.boutiqueNoticeHead p,
+.hanbokBoundaryCard p { font-size: 11.5px !important; }
+
+.stitchSajuReference {
+  width: min(900px, calc(100% - 32px)) !important;
+}
+.stitchSajuReferenceHead h1 { font-size: clamp(30px, 3vw, 40px) !important; }
+.stitchSajuReferenceHead p,
+.stitchSajuExplanation p,
+.stitchSajuPremium p { font-size: 12.5px !important; line-height: 1.6 !important; }
+.stitchSajuReference .step p { font-size: 12px !important; }
+.stitchPreviewBadge { font-size: 10px !important; }
+
+.stitchCreditsWrap { margin-inline: auto !important; }
+.stitchCreditsHead { gap: 24px !important; }
+.stitchCreditsHead h1 { font-size: clamp(30px, 3vw, 42px) !important; }
+.stitchCreditsGrid { grid-template-columns: minmax(230px, .72fr) minmax(0, 1.28fr) !important; gap: clamp(20px, 3vw, 46px) !important; }
+.stitchCreditsDetails,
+.stitchCreditsBalance { min-width: 0; }
+.creditPack small,
+.creditPack p,
+.creditActionList .step p { font-size: 12px !important; line-height: 1.5 !important; }
+.creditPack b { font-size: 16px; }
+
+/* Result pages used 9–10 px screenshot typography. Keep the same hierarchy, make it readable. */
+.stitchColorResultCard { width: min(760px, calc(100% - 32px)) !important; }
+.stitchColorDirection p,
+.stitchColorDetails p,
+.stitchColorDetails li,
+.stitchColorHanbokBridge p { font-size: 12px !important; line-height: 1.55 !important; }
+.stitchColorSwatch span,
+.stitchFabric strong,
+.stitchFabric span,
+.stitchColorAdjust summary,
+.stitchColorPrivacyNote { font-size: 10.5px !important; line-height: 1.35 !important; }
+
+.siteFooter.stitchReferenceFooter {
+  width: calc(100% - (var(--kc-gutter) * 2)) !important;
+  margin-inline: var(--kc-gutter) !important;
+  font-size: 12px !important;
+}
+.stitchFooterLinks { flex-wrap: wrap; row-gap: 8px; }
+
+/* Mid-size laptops/tablets: remove disabled roadmap items before nav starts colliding. */
+@media (max-width: 1180px) {
+  .siteHeader .stitchDisabledNav { display: none !important; }
+  .siteHeader .stitchReferenceNav { gap: 16px !important; }
+
+  .stitchReferenceServices {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+  .stitchReferenceCard { grid-column: span 2; }
+  .stitchReferenceCard:nth-child(4),
+  .stitchReferenceCard:nth-child(5) { grid-column: span 3; }
+
+  .stitchCreditsGrid { grid-template-columns: 1fr !important; }
+  .stitchCreditsBalance { border-right: 0 !important; }
+  .creditPacks { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 860px) {
+  :root { --kc-gutter: clamp(14px, 4vw, 24px); }
+  body {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+  }
+  .kcReferenceApp { width: 100% !important; box-shadow: none !important; }
+
+  .siteHeader.stitchReferenceHeader {
+    min-height: 56px !important;
+    padding: 0 14px !important;
+    gap: 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+  .siteHeader .stitchReferenceNav { display: none !important; }
+  .stitchReferenceBrand {
+    flex: 1 1 auto;
+    max-width: calc(100% - 102px);
+    font-size: clamp(14px, 4.5vw, 18px) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .stitchReferenceHeader .langButton {
+    flex: 0 1 94px;
+    width: auto !important;
+    min-width: 82px !important;
+    max-width: 104px !important;
+    min-height: 40px !important;
+    padding-inline: 8px !important;
+    font-size: 11px !important;
+  }
+
+  .mobileBottomNav {
+    display: grid !important;
+    height: calc(66px + env(safe-area-inset-bottom)) !important;
+    padding: 4px 4px env(safe-area-inset-bottom) !important;
+    align-items: stretch !important;
+  }
+  .mobileNavItem {
+    min-height: 58px !important;
+    gap: 2px !important;
+    padding: 5px 2px !important;
+    font-size: clamp(9px, 2.45vw, 11px) !important;
+    line-height: 1.05 !important;
+    text-align: center;
+  }
+  .mobileNavItem > span:last-child {
+    min-height: 2.1em;
+    display: grid;
+    place-items: center;
+  }
+  .mobileNavIcon { font-size: 18px !important; line-height: 1; }
+
+  .stitchReferenceHome { padding: 0 !important; }
+  .stitchReferenceHero {
+    height: clamp(350px, 92vw, 460px) !important;
+    min-height: 0 !important;
+  }
+  .stitchReferenceHeroCopy {
+    left: 20px !important;
+    right: 20px !important;
+    bottom: 26px !important;
+    width: auto !important;
+  }
+  .stitchReferenceHeroCopy h1 {
+    font-size: clamp(29px, 8.5vw, 42px) !important;
+    max-width: 520px;
+  }
+  .stitchReferenceServices {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    padding: 20px 14px 28px !important;
+  }
+  .stitchReferenceCard,
+  .stitchReferenceCard:nth-child(4) { grid-column: auto !important; min-height: 220px !important; }
+  .stitchReferenceCard:nth-child(5) { grid-column: span 2 !important; }
+  .stitchReferenceMedia { height: 126px !important; }
+  .stitchReferenceCard > strong { min-height: 62px !important; font-size: 13px !important; }
+  .stitchReferenceButton { min-height: var(--kc-touch) !important; }
+
+  .pageIntro {
+    padding: 34px 16px 22px !important;
+    text-align: left !important;
+  }
+  .pageIntro h1 { font-size: clamp(34px, 10vw, 48px) !important; }
+  .pageIntro > p { font-size: 15px !important; }
+  .prototype { width: 100% !important; padding: 0 12px !important; }
+  .prototypePanel { padding: 18px !important; }
+
+  .stitchPalaceHero {
+    width: 100% !important;
+    min-height: clamp(360px, 112vw, 480px) !important;
+    margin-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+  .stitchPalaceHeroCopy { left: 18px !important; right: 18px !important; bottom: 20px !important; }
+  .stitchPalaceHeroCopy h1 { font-size: clamp(32px, 9vw, 44px) !important; }
+  .stitchPalaceHeroCopy p { font-size: 13px !important; }
+  .stitchRoutePanel { width: 100% !important; margin-bottom: 30px !important; border-left: 0 !important; border-right: 0 !important; }
+  .stitchRouteGrid { grid-template-columns: 1fr !important; }
+  .stitchRoute + .stitchRoute { border-left: 0 !important; border-top: 1px solid var(--kc-line) !important; }
+  .stitchRoute { padding: 18px !important; }
+
+  .stitchHanbokPage { padding: 14px 10px calc(80px + env(safe-area-inset-bottom)) !important; }
+  .stitchHanbokPage::before { inset: 7px !important; }
+  .stitchHanbokSelection { width: 100% !important; padding: 18px 8px 8px !important; }
+  .stitchHanbokSelection h1 { font-size: clamp(31px, 9vw, 40px) !important; }
+  .stitchHanbokToggleRow { flex-wrap: wrap; font-size: 14px !important; }
+  .stitchHanbokCards { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .stitchHanbokCard { width: min(100%, 520px) !important; margin-inline: auto !important; }
+  .stitchHanbokCard img { aspect-ratio: 4 / 3 !important; }
+  .hanbokMatcherHead,
+  .hanbokMatcherGrid,
+  .hanbokLooksGrid,
+  .hanbokResultSummary { grid-template-columns: 1fr !important; }
+  .hanbokFieldset:nth-child(5) { grid-column: auto !important; }
+  .hanbokChoice { min-height: var(--kc-touch) !important; font-size: 11px !important; }
+  .hanbokResultSummary > div + div { border-left: 0 !important; border-top: 1px solid var(--kc-line) !important; }
+  .boutiqueNoticeCard { flex-direction: column !important; align-items: stretch !important; }
+
+  .stitchSajuReferencePage { padding-bottom: 0 !important; }
+  .stitchSajuReference { width: 100% !important; margin: 0 !important; box-shadow: none !important; }
+  .stitchSajuReferenceHead { padding: 26px 18px 24px !important; }
+  .stitchSajuReferenceBody { padding: 18px 14px calc(82px + env(safe-area-inset-bottom)) !important; }
+  .stitchSajuReferenceGrid { grid-template-columns: 1fr !important; }
+  .stitchSajuDiagram { min-height: 230px !important; }
+  .stitchSajuDiagramInner { width: 100% !important; gap: 8px !important; }
+  .stitchSajuOrb { border-width: 3px !important; font-size: 12px !important; }
+  .cultureActionGroup .primaryButton,
+  .cultureActionGroup .secondaryButton { width: 100%; min-height: var(--kc-touch); }
+
+  .stitchCreditsWrap { width: 100% !important; margin: 0 !important; padding: 0 0 calc(78px + env(safe-area-inset-bottom)) !important; }
+  .stitchCreditsCard { border-radius: 0 !important; }
+  .stitchCreditsHead { padding: 24px 16px !important; flex-direction: column !important; align-items: stretch !important; }
+  .stitchCreditsGrid { grid-template-columns: 1fr !important; gap: 14px !important; padding: 16px !important; }
+  .stitchCreditsBalance,
+  .stitchCreditsDetails { padding: 18px !important; }
+  .creditPacks { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .creditPack { padding: 16px !important; }
+
+  .stitchColorResultCard { width: 100% !important; padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+  .stitchColorDetails { grid-template-columns: 1fr !important; }
+  .stitchColorDetails > div + div { border-left: 0 !important; border-top: 1px solid #d9d2c3 !important; padding: 14px 0 0 !important; }
+  .stitchColorHanbokBridge { grid-template-columns: 96px 1fr !important; gap: 12px !important; }
+
+  .siteFooter.stitchReferenceFooter {
+    width: calc(100% - 28px) !important;
+    margin: 0 14px !important;
+    padding: 20px 0 calc(82px + env(safe-area-inset-bottom)) !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 12px !important;
+  }
+  .stitchFooterLinks { gap: 10px 16px !important; font-size: 11px; }
+
+  .quickHelp {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+  }
+  .quickHelpPanel {
+    width: 100% !important;
+    max-height: calc(100dvh - 158px - env(safe-area-inset-bottom)) !important;
+  }
+  .quickHelpBody { max-height: calc(100dvh - 280px - env(safe-area-inset-bottom)) !important; }
+  .quickHelpChoices button,
+  .quickHelpFooter button,
+  .quickHelpCta,
+  .quickHelpIconButton { min-height: var(--kc-touch) !important; }
+  .quickHelpChoices button { font-size: 12px !important; }
+  .quickHelpCta { margin-left: 0 !important; width: 100% !important; }
+}
+
+@media (max-width: 520px) {
+  .stitchReferenceServices { grid-template-columns: 1fr !important; }
+  .stitchReferenceCard,
+  .stitchReferenceCard:nth-child(5) { grid-column: auto !important; }
+  .stitchReferenceCard { min-height: 205px !important; }
+  .stitchReferenceMedia { height: 138px !important; }
+
+  .creditPacks { grid-template-columns: 1fr !important; }
+  .stitchColorSwatches { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .stitchFabricGrid { grid-template-columns: 1fr !important; }
+  .stitchColorHanbokBridge { grid-template-columns: 1fr !important; text-align: center; }
+
+  .siteFooter.stitchReferenceFooter { grid-template-columns: 1fr !important; }
+  .stitchSocialMarks { justify-content: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .stitchReferenceBrand { font-size: 14px !important; }
+  .stitchReferenceHeader .langButton { max-width: 88px !important; min-width: 76px !important; font-size: 10px !important; }
+  .stitchReferenceHeroCopy h1 { font-size: 29px !important; }
+  .mobileNavItem { font-size: 9px !important; }
+  .quickHelpLauncher {
+    min-width: 48px !important;
+    width: 48px !important;
+    min-height: 48px !important;
+    padding: 6px !important;
+    border-radius: 50% !important;
+  }
+  .quickHelpLauncher > span:last-child { display: none !important; }
+  .quickHelpLauncher > span:first-child { width: 34px !important; height: 34px !important; }
+}
+
+@media (pointer: coarse) {
+  button,
+  select,
+  .primaryButton,
+  .secondaryButton,
+  .stitchReferenceButton,
+  .stitchHanbokCardAction a,
+  .mobileNavItem { min-height: var(--kc-touch); }
+}
+
+@media (hover: none) {
+  .stitchReferenceCard:hover,
+  .stitchServiceCard:hover,
+  .primaryButton:hover { transform: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
