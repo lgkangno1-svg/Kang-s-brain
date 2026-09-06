@@ -1,0 +1,144 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { assertManualReplacementAvailable, isVisionCachePayloadValid, makeStagedOutputPath, makeVisionCacheFingerprint, refreshManualReplacementAlternatives, renderReplacementStaged, VISION_CACHE_SCHEMA } from '../src/core/pipeline.mjs';
+
+test('manual replacement rejects a segment already used by another beat before rerender', () => {
+  const clips = [
+    { beatId: 'b1', segmentId: 's1' },
+    { beatId: 'b2', segmentId: 's2' }
+  ];
+
+  assert.throws(
+    () => assertManualReplacementAvailable(clips, 'b1', 's2'),
+    /already used by b2/
+  );
+});
+
+test('manual replacement allows the current beat segment and an unused segment', () => {
+  const clips = [
+    { beatId: 'b1', segmentId: 's1' },
+    { beatId: 'b2', segmentId: 's2' }
+  ];
+
+  assert.doesNotThrow(() => assertManualReplacementAvailable(clips, 'b1', 's1'));
+  assert.doesNotThrow(() => assertManualReplacementAvailable(clips, 'b1', 's3'));
+});
+
+test('manual replacement alternatives exclude the new current segment and preserve the previous choice', () => {
+  const clip = { alternatives: ['s2', 's3', 's2', 's4'] };
+
+  const alternatives = refreshManualReplacementAlternatives(clip, 's1', 's2');
+
+  assert.deepEqual(alternatives, ['s1', 's3', 's4']);
+  assert.deepEqual(clip.alternatives, ['s1', 's3', 's4']);
+  assert.equal(clip.alternatives.includes('s2'), false);
+});
+
+test('manual replacement renders to a same-format staging path', () => {
+  assert.equal(
+    makeStagedOutputPath('/tmp/output/shorts.mp4', 'test-nonce'),
+    '/tmp/output/.shorts.test-nonce.tmp.mp4'
+  );
+});
+
+test('failed manual replacement render leaves the prior output untouched and removes staging output', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'shorts-replace-'));
+  const outputPath = path.join(dir, 'shorts.mp4');
+  const stagedPath = makeStagedOutputPath(outputPath, 'failure-case');
+  await fs.writeFile(outputPath, 'previous-good-video');
+
+  const fakeRender = async ({ outputPath: candidatePath }) => {
+    assert.equal(candidatePath, stagedPath);
+    await fs.writeFile(candidatePath, 'partial-broken-render');
+    throw new Error('synthetic ffmpeg failure');
+  };
+
+  await assert.rejects(
+    renderReplacementStaged({
+      edl: [{ beatId: 'b1' }],
+      outputPath,
+      ttsPath: null,
+      fitMode: 'crop',
+      render: fakeRender,
+      nonce: 'failure-case'
+    }),
+    /synthetic ffmpeg failure/
+  );
+
+  assert.equal(await fs.readFile(outputPath, 'utf8'), 'previous-good-video');
+  await assert.rejects(fs.stat(stagedPath), { code: 'ENOENT' });
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
+test('Vision cache fingerprint changes when the semantic cache schema changes', () => {
+  const input = {
+    model: 'deepseek-v4-flash-vision-exp',
+    sourceHashes: [{ sourceId: 'V1', hash: 'abc123', duration: 9 }],
+    analysisWidth: 512,
+    sceneThreshold: 0.32,
+    segmenting: { min: 1, ideal: 3, max: 5.2, maxSegments: 80 }
+  };
+
+  const current = makeVisionCacheFingerprint(input);
+  const previousContract = makeVisionCacheFingerprint(input, VISION_CACHE_SCHEMA - 1);
+
+  assert.equal(current, makeVisionCacheFingerprint(input));
+  assert.notEqual(current, previousContract);
+});
+
+test('Vision cache accepts a complete payload matching the current semantic contract', () => {
+  const segments = [{ id: 's1' }, { id: 's2' }];
+  const cached = segments.map(({ id }) => ({
+    id,
+    description: `${id} description`,
+    subjects: ['상품'],
+    actions: ['보여주기'],
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  }));
+
+  assert.equal(isVisionCachePayloadValid(segments, cached), true);
+});
+
+test('Vision cache rejects duplicate IDs that hide a missing segment', () => {
+  const segments = [{ id: 's1' }, { id: 's2' }];
+  const row = {
+    id: 's1',
+    description: '상품 클로즈업',
+    subjects: ['상품'],
+    actions: ['보여주기'],
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  };
+
+  assert.equal(isVisionCachePayloadValid(segments, [row, { ...row }]), false);
+});
+
+test('Vision cache rejects malformed semantic fields even when IDs and length match', () => {
+  const segments = [{ id: 's1' }];
+  const cached = [{
+    id: 's1',
+    description: '상품 클로즈업',
+    subjects: ['상품'],
+    actions: '보여주기',
+    usabilityTags: ['디테일'],
+    shotType: 'close_up',
+    productVisibility: 0.9,
+    visualQuality: 0.8,
+    motionLevel: 0.3,
+    confidence: 0.95
+  }];
+
+  assert.equal(isVisionCachePayloadValid(segments, cached), false);
+});
