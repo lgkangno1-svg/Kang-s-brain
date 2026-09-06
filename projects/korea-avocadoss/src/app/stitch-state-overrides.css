@@ -7,6 +7,116 @@ body:has(.stitchColorCompleted) .prototype:has(.stitchColorCompleted) {
 }
 body:has(.stitchColorCompleted) .siteFooter.stitchReferenceFooter { background: #fbfaf5; }
 
+.routeStateShell {
+  min-height: clamp(32rem, 72vh, 48rem);
+  display: grid;
+  place-items: center;
+  padding: clamp(2rem, 6vw, 5rem) max(1rem, env(safe-area-inset-left));
+  background: #fbfaf5;
+}
+
+.routeStateCard {
+  width: min(100%, 42rem);
+  padding: clamp(2rem, 5vw, 4rem);
+  text-align: center;
+  border: 1px solid rgba(0, 31, 91, 0.2);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.routeStateEyebrow {
+  margin: 0 0 1.25rem;
+  color: #846d31;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.routeStateCard h1 {
+  margin: 1.25rem 0 0.75rem;
+  color: #001f5b;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: 1.08;
+}
+
+.routeStateCard > p:last-of-type {
+  max-width: 34rem;
+  margin: 0 auto;
+  color: #3f4652;
+  line-height: 1.7;
+}
+
+.routeStateSpinner,
+.routeStateMark {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto;
+  border-radius: 999px;
+}
+
+.routeStateSpinner {
+  border: 2px solid rgba(0, 31, 91, 0.14);
+  border-top-color: #001f5b;
+  animation: routeStateSpin 0.85s linear infinite;
+}
+
+.routeStateMark {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(156, 28, 43, 0.35);
+  color: #9c1c2b;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.5rem;
+}
+
+.routeStateActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.routeStatePrimary,
+.routeStateSecondary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid #001f5b;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.routeStatePrimary {
+  background: #001f5b;
+  color: #fff;
+}
+
+.routeStateSecondary {
+  background: transparent;
+  color: #001f5b;
+}
+
+.routeStatePrimary:focus-visible,
+.routeStateSecondary:focus-visible {
+  outline: 3px solid #c1a355;
+  outline-offset: 3px;
+}
+
+@keyframes routeStateSpin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .routeStateSpinner { animation: none; border-top-color: rgba(0, 31, 91, 0.14); }
+}
+
 @media (max-width: 860px) {
   body:has(.stitchColorCompleted) .prototype:has(.stitchColorCompleted) { padding: 0; }
+  .routeStateShell { min-height: 62vh; padding-block: 1.5rem 6rem; }
+  .routeStateCard { padding: 2rem 1.25rem; }
+  .routeStateActions { flex-direction: column; }
+  .routeStatePrimary, .routeStateSecondary { width: 100%; }
 }
