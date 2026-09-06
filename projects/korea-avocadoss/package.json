@@ -13,9 +13,10 @@
     "check:payments": "node scripts/check-stripe-payment-contracts.mjs && node scripts/check-payment-readiness.mjs",
     "check:credits-ledger": "node scripts/check-credit-ledger.mjs && node scripts/check-credit-authorization.mjs",
     "check:responsive": "node scripts/check-responsive-contracts.mjs",
+    "check:recovery": "node scripts/check-route-recovery-contracts.mjs",
     "check:document-lang": "node scripts/check-built-document-languages.mjs",
     "check:legacy-redirects": "node scripts/check-legacy-redirects.mjs",
-    "build": "npm run check:i18n && npm run check:saju && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && next build",
+    "build": "npm run check:i18n && npm run check:saju && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
     "start": "next start"
   },
   "dependencies": {
