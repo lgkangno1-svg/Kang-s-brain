@@ -1,5 +1,39 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-07 My Korea Look Paid Stylebook Launch (S1 & S2 Shipped)
+
+**Merged SHA:** `38ee3e8` · **PRs:** #44, #45
+
+Implements S1 & S2 of `BUILD_SPEC.md` to turn Korea Concierge into a live revenue-driving product for international visitors to Seoul.
+
+### Key Additions Shipped:
+1. **Curated Looks Catalog (`src/lib/looks/catalog.ts`):**
+   - 6 high-resolution reference looks from official Korean government cultural fashion showcases (Korea.net / KOCIS, CC BY-SA 2.0).
+   - Complete color harmony, 3 styling reasons, practical trade-offs, and palace location pairings.
+   - Bilingual Korean rental shop cards for travelers to show shop staff on mobile phones.
+
+2. **3 Public Demonstration Stylebooks (`/[locale]/style/sample/[slug]`):**
+   - `palace-elegance`: Queen & King traditional silk court dignity.
+   - `modern-pastel`: Princess & Prince luminous garden pastel.
+   - `royal-ceremony`: Imperial scarlet & gold dragon embroidery grandeur.
+
+3. **Interactive Intake & Free Preview (`/[locale]/style`):**
+   - 4-step quick consultation (aesthetic vibe, garment preference, color undertone, walking priority).
+   - Free instant match preview.
+   - $12 USD paid value stack offer card with Stripe checkout integration.
+
+4. **Site-Wide Discovery & Navigation:**
+   - Featured hero showcase banner on homepage (`/[locale]`).
+   - Callout banner on Hanbok page (`/[locale]/hanbok`).
+   - `MY LOOK` navigation item added to desktop header and mobile bottom nav across all 6 locales (en, zh-CN, ja, zh-TW, vi, th).
+   - Sitemap updated to index `/style`.
+
+5. **Verification:**
+   - All tests pass (i18n parity, Saju deterministic, Hanbok visual, Stripe payment, responsive, recovery).
+   - Next.js production build succeeded with 73/73 static pages prerendered.
+
+---
+
 ## Latest entry — 2026-09-07 revenue-first specification (documentation only)
 
 The user authorized a final implementation MD centered on paid revenue and allowed old planning documents to be superseded. **[BUILD_SPEC.md](BUILD_SPEC.md)** is now the single product/implementation authority. Read it before the historical entries below.
