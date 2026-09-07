@@ -1,8 +1,10 @@
 'use client';
 
-import {useLocale} from 'next-intl';
+import {usePathname} from 'next/navigation';
 
 type P0Locale = 'en' | 'zh-CN' | 'ja' | 'zh-TW' | 'vi' | 'th';
+
+const P0_LOCALES = new Set<P0Locale>(['en', 'zh-CN', 'ja', 'zh-TW', 'vi', 'th']);
 
 type NotFoundCopy = {
   eyebrow: string;
@@ -57,9 +59,15 @@ const NOT_FOUND_COPY: Record<P0Locale, NotFoundCopy> = {
   },
 };
 
+function localeFromPathname(pathname: string): P0Locale {
+  const firstSegment = pathname.split('/').filter(Boolean)[0] as P0Locale | undefined;
+  return firstSegment && P0_LOCALES.has(firstSegment) ? firstSegment : 'en';
+}
+
 export default function NotFound() {
-  const locale = useLocale() as P0Locale;
-  const copy = NOT_FOUND_COPY[locale] ?? NOT_FOUND_COPY.en;
+  const pathname = usePathname();
+  const locale = localeFromPathname(pathname);
+  const copy = NOT_FOUND_COPY[locale];
 
   return (
     <main className="routeStateShell">
