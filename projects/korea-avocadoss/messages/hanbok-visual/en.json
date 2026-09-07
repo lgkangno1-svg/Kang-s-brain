@@ -1,55 +1,56 @@
 {
   "HanbokVisual": {
-    "eyebrow": "Palace Experience Lookbook",
-    "heroPill": "Core Styling Gallery",
-    "title": "Classic Palace Hanbok Styles & Real Silhouettes",
-    "intro": "Explore the three quintessential Korean palace styles: youthful pastel Princess/Prince, dignified traditional Queen/King, and luxurious ornate Royal ceremonial robes. Choose a style to instantly apply its palette to your personalized recommendation below.",
-    "genderToggleAria": "Select feminine or masculine style reference",
-    "feminineTab": "Feminine Looks",
-    "masculineTab": "Masculine Looks",
+    "eyebrow": "Palace Lookbook · Official Cultural Showcase",
+    "heroPill": "Styled by Korea.net",
+    "title": "Hanbok Styles That Make You Want to Try One",
+    "intro": "These looks are from Korea's official national cultural showcases — professional runway photography of the three quintessential palace styles. Pick the one that calls to you, and we'll match it to your personality and coloring.",
+    "genderToggleAria": "Switch between feminine and masculine style references",
+    "feminineTab": "Feminine",
+    "masculineTab": "Masculine",
     "findMatchAction": "Find my Hanbok match",
+    "tryStyle": "Try this style",
     "sourceLabel": "Source",
     "licenseLabel": "License",
-    "viewSource": "Original Source",
-    "notice": "These references display authentic cultural showcase photography and official heritage media. They are provided for styling inspiration and do not imply celebrity endorsement or rental shop inventory guarantees.",
+    "viewSource": "View original",
+    "notice": "Images are official Korean government cultural showcase photography (Korea.net / KOCIS), licensed CC BY-SA 2.0. They represent Hanbok styling aesthetics — not an endorsement by any individual pictured, and not a guarantee of specific garment availability at rental shops.",
     "categories": {
       "princess-prince": {
         "name": "Princess / Prince",
         "badge": "Soft & Graceful",
-        "tagline": "Soft, graceful, and photo-friendly",
+        "tagline": "Luminous pastels · Perfect for palace photos",
         "feminine": {
-          "description": "Soft, graceful, and photo-friendly. A classic choice for first-time Hanbok experiences and airy palace garden photos with luminous pastel layers.",
-          "alt": "Princess style pastel chima-jeogori Hanbok"
+          "description": "The look every K-drama fan wants at Gyeongbokgung. Layers of luminous pastel silk catch the palace light beautifully — romantic, ethereal, and endlessly photogenic.",
+          "alt": "Luminous pastel chima-jeogori Hanbok from Korea's official cultural fashion showcase"
         },
         "masculine": {
-          "description": "Refined and youthful prince robe in bright cheerful tones, ideal for lighthearted palace strolling and couple photography.",
-          "alt": "Prince style bright palace stroll Hanbok robe"
+          "description": "Clean, bright, and effortlessly elegant. The lighter tones of this prince style are ideal for outdoor palace photography and look stunning in couples shots.",
+          "alt": "Bright and graceful masculine Hanbok palace look from Korea's official cultural fashion showcase"
         }
       },
       "queen-king": {
         "name": "Queen / King",
         "badge": "Dignified & Traditional",
-        "tagline": "Elegant, traditional, and dignified",
+        "tagline": "Rich jewel tones · Court-worthy elegance",
         "feminine": {
-          "description": "Elegant, traditional, and dignified. A refined choice featuring richer jewel-tone silk and formal royal-court composure.",
-          "alt": "Queen style ceremonial rich silk Hanbok"
+          "description": "Jewel-tone silk, commanding posture, deep royal colors. This is the look you see worn by leading actresses in sageuk dramas — dignified, timeless, and striking.",
+          "alt": "Rich jewel-tone court Hanbok worn at Korea's official cultural fashion showcase"
         },
         "masculine": {
-          "description": "Dignified noble scholar dopo robe with wide sweeping sleeves and deep classic tones, evoking beloved period drama nobility.",
-          "alt": "King style noble scholar dopo Hanbok robe"
+          "description": "The classic dopo robe worn by scholars and nobles. Wide, sweeping sleeves in deep traditional colors — exactly what you'd picture a Joseon nobleman wearing.",
+          "alt": "Noble scholar dopo robe Hanbok at Korea's official cultural fashion showcase"
         }
       },
       "royal": {
         "name": "Royal",
         "badge": "Luxurious & Ornate",
-        "tagline": "Luxurious, ornate, and ceremonial",
+        "tagline": "Gold embroidery · Maximum palace drama",
         "feminine": {
-          "description": "Luxurious, ornate, and ceremonial. Choose this for the most dramatic and richly decorated palace look with gold-leaf accents and regal presence.",
-          "alt": "Royal grand court haute couture ceremonial Hanbok"
+          "description": "The most dramatic look in the collection. Heavy silk, gold-thread embroidery, layers of ceremonial detail — this is the Hanbok worn at royal court ceremonies and high-fashion showcases.",
+          "alt": "Grand ceremonial royal Hanbok with ornate gold embroidery from Korea's official fashion showcase"
         },
         "masculine": {
-          "description": "High-ceremonial royal crown robe with bold embroidered gold emblems and commanding grandeur for maximum photographic impact.",
-          "alt": "Royal crown ceremonial Hanbok robe with gold embroidery"
+          "description": "Full ceremonial grandeur — bold embroidered motifs, rich deep tones, and commanding presence. Reserved for the most significant occasions; unforgettable in photos.",
+          "alt": "Grand ceremonial court Hanbok robe from Korea's official cultural fashion showcase"
         }
       }
     }

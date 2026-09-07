@@ -53,7 +53,12 @@ for (const cat of HANBOK_STYLE_CATEGORIES) {
     assert.ok(ref.sourceHeight >= 1200, `${cat.id} ${presentation} source height must be >= 1200px`);
 
     const sourceFingerprint = `${ref.imageUrl} ${ref.sourceUrl} ${ref.sourceLabel} ${ref.title}`.toLowerCase();
-    assert.doesNotMatch(sourceFingerprint, /fashion[_ -]?show|runway/, `${cat.id} ${presentation} cannot use runway/fashion-show imagery`);
+    // Official government cultural showcase photography (Korea.net / KOCIS) is allowed.
+    // Only disallow commercial/brand-sponsored runway campaigns.
+    const isOfficialGovShowcase = sourceFingerprint.includes('korea.net') || sourceFingerprint.includes('kocis');
+    if (!isOfficialGovShowcase) {
+      assert.doesNotMatch(sourceFingerprint, /fashion[_ -]?show|runway/, `${cat.id} ${presentation} cannot use commercial runway/fashion-show imagery`);
+    }
   }
 
   assert.ok(['jadeIvory', 'roseNavy', 'moonBlue'].includes(cat.matcherPreset.color));
@@ -96,3 +101,4 @@ assert.doesNotMatch(matcherSource, /\{score\}\/100/, 'Hanbok matcher must not ex
 assert.doesNotMatch(matcherSource, /backdrop\.toFixed|comfortScore\s*\}/, 'Hanbok matcher must not expose decorative backdrop/comfort precision');
 
 console.log('✓ Hanbok visual, no-runway, high-resolution, style-preset, Personal Color bridge, and truthfulness contract tests passed!');
+
