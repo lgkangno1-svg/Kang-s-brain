@@ -9,6 +9,7 @@ import {
 
 const ROUTE_SETTINGS = {
   '': {changeFrequency: 'weekly', priority: 1},
+  '/style': {changeFrequency: 'weekly', priority: 0.95},
   '/color': {changeFrequency: 'monthly', priority: 0.9},
   '/hanbok': {changeFrequency: 'weekly', priority: 0.9},
   '/explore/gyeongbokgung': {changeFrequency: 'weekly', priority: 0.9},
