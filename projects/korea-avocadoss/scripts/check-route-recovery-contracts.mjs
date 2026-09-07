@@ -8,6 +8,8 @@ const notFound = fs.readFileSync(path.join(root, 'src/app/[locale]/not-found.tsx
 const styles = fs.readFileSync(path.join(root, 'src/app/stitch-state-overrides.css'), 'utf8');
 
 const locales = ['en', 'zh-CN', 'ja', 'zh-TW', 'vi', 'th'];
+const hasLocaleKey = (source, locale) => source.includes(`${locale}:`) || source.includes(`'${locale}':`) || source.includes(`"${locale}":`);
+
 const checks = [
   ['loading uses locale context', loading.includes('useLocale()')],
   ['loading exposes busy state', loading.includes('aria-busy="true"')],
@@ -23,9 +25,9 @@ const checks = [
   ['controls meet minimum touch target', styles.includes('min-height: 44px')],
   ['reduced motion disables spinner animation', styles.includes('@media (prefers-reduced-motion: reduce)')],
   ...locales.flatMap((locale) => [
-    [`loading copy includes ${locale}`, loading.includes(locale === 'en' ? 'en:' : `'${locale}':`)],
-    [`error copy includes ${locale}`, error.includes(locale === 'en' ? 'en:' : `'${locale}':`)],
-    [`not-found copy includes ${locale}`, notFound.includes(locale === 'en' ? 'en:' : `'${locale}':`)],
+    [`loading copy includes ${locale}`, hasLocaleKey(loading, locale)],
+    [`error copy includes ${locale}`, hasLocaleKey(error, locale)],
+    [`not-found copy includes ${locale}`, hasLocaleKey(notFound, locale)],
   ]),
 ];
 
