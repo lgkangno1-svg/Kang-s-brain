@@ -50,7 +50,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2667,
       sourceHeight: 3883,
-      objectPosition: 'center 15%',
+      objectPosition: 'center 45%',
     },
     masculineRef: {
       title: 'Bright Palace Stroll Hanbok — Fashion Showcase',
@@ -61,7 +61,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2706,
       sourceHeight: 4227,
-      objectPosition: 'center 18%',
+      objectPosition: 'center 35%',
     },
     matcherPreset: {
       color: 'jadeIvory',
@@ -82,7 +82,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2738,
       sourceHeight: 3823,
-      objectPosition: 'center 12%',
+      objectPosition: 'center 30%',
     },
     masculineRef: {
       title: 'Noble Scholar Dopo Robe — Fashion Showcase',
@@ -93,7 +93,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2308,
       sourceHeight: 3318,
-      objectPosition: 'center 15%',
+      objectPosition: 'center 30%',
     },
     matcherPreset: {
       color: 'moonBlue',
@@ -114,7 +114,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2585,
       sourceHeight: 4097,
-      objectPosition: 'center 12%',
+      objectPosition: 'center 30%',
     },
     masculineRef: {
       title: 'Grand Court Ceremonial Robe — Fashion Showcase',
@@ -125,7 +125,7 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
       license: 'CC BY-SA 2.0',
       sourceWidth: 2658,
       sourceHeight: 3864,
-      objectPosition: 'center 12%',
+      objectPosition: 'center 30%',
     },
     matcherPreset: {
       color: 'roseNavy',
