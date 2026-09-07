@@ -54,6 +54,7 @@ export function HanbokVisualInspiration() {
             <article className="stitchHanbokCard" key={category.id} data-category={category.id}>
               <h3>{category.name}</h3>
               <a
+                className="stitchHanbokImageWrap"
                 href={activeRef.sourceUrl}
                 target="_blank"
                 rel="noreferrer noopener"
