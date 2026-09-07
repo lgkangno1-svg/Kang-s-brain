@@ -2,7 +2,7 @@
 
 ## Latest entry — 2026-09-07 My Korea Look Paid Stylebook Launch (S1 & S2 Shipped)
 
-**Merged SHA:** `38ee3e8` · **PRs:** #44, #45
+**Merged SHA:** `ab2f137` · **PRs:** #44, #45, #46, #47
 
 Implements S1 & S2 of `BUILD_SPEC.md` to turn Korea Concierge into a live revenue-driving product for international visitors to Seoul.
 
