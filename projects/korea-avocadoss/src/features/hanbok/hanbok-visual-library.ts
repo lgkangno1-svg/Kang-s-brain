@@ -28,9 +28,13 @@ export type HanbokVisualReference = {
 /**
  * 3 Core Palace Experience Style Categories for Korea Concierge Hanbok Studio.
  *
- * Primary references intentionally avoid runway/fashion-show photography. They are rights-reviewed
- * palace-wear or royal-ceremony references with explicit source/license metadata and high-resolution originals.
- * These images are visual references, not claims that the pictured garments are bookable inventory.
+ * All images: Korea.net / KOCIS official cultural showcase photography, CC BY-SA 2.0.
+ * Source: Korea Cultural and Information Service (KOCIS) via Korea.net Flickr stream.
+ * These are professional fashion-show and heritage-event photographs — not street or market photos.
+ *
+ * 1. Princess / Prince: Luminous pastel chima-jeogori, youthful and photo-magical.
+ * 2. Queen / King: Jewel-tone silk, formal court runway elegance.
+ * 3. Royal: Grand ceremonial couture with gold embroidery, maximum palace drama.
  */
 export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
   {
@@ -38,26 +42,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Princess / Prince',
     badge: 'Soft & Graceful',
     feminineRef: {
-      title: 'Classic Palace Chima-Jeogori',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/One_girl_wearing_traditional_Korean_costume_in_Gyeongbokgung%2Cthe_Seoul_palace_04.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:One_girl_wearing_traditional_Korean_costume_in_Gyeongbokgung,the_Seoul_palace_04.jpg',
-      sourceLabel: 'Wikimedia Commons · Gyeongbokgung',
-      credit: 'Andamy',
-      license: 'CC BY-SA 4.0',
-      sourceWidth: 3000,
-      sourceHeight: 4000,
-      objectPosition: 'center 22%',
+      title: 'Luminous Pastel Chima-Jeogori — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_02_%288423373334%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_02_(8423373334).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+      license: 'CC BY-SA 2.0',
+      sourceWidth: 2667,
+      sourceHeight: 3883,
+      objectPosition: 'center 15%',
     },
     masculineRef: {
-      title: 'Classic Palace Hanbok',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeongbokgung_Hanbok_01_%2832928645842%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Gyeongbokgung_Hanbok_01_(32928645842).jpg',
-      sourceLabel: 'Korea.net · Gyeongbokgung Palace',
+      title: 'Bright Palace Stroll Hanbok — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_05_%288422277933%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_05_(8422277933).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
       credit: 'Republic of Korea / Korea.net (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 4659,
-      sourceHeight: 2694,
-      objectPosition: 'center 25%',
+      sourceWidth: 2706,
+      sourceHeight: 4227,
+      objectPosition: 'center 18%',
     },
     matcherPreset: {
       color: 'jadeIvory',
@@ -70,26 +74,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Queen / King',
     badge: 'Dignified & Traditional',
     feminineRef: {
-      title: 'Formal Palace Hanbok',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeongbokgung_Hanbok_12_%2832269591293%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Gyeongbokgung_Hanbok_12_(32269591293).jpg',
-      sourceLabel: 'Korea.net · Gyeongbokgung Palace',
-      credit: 'Republic of Korea / Korea.net (Jeon Han)',
-      license: 'CC BY-SA 2.0',
-      sourceWidth: 3474,
-      sourceHeight: 5189,
-      objectPosition: 'center 20%',
-    },
-    masculineRef: {
-      title: 'Royal Wedding Ceremony Reference',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/KOCIS_Korea_Royal_Wedding_11_%289890520874%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:KOCIS_Korea_Royal_Wedding_11_(9890520874).jpg',
-      sourceLabel: 'Korea.net · Royal Wedding Reenactment',
+      title: 'Jewel-Tone Court Hanbok — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_15_%288423372530%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_15_(8423372530).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 4976,
-      sourceHeight: 3128,
-      objectPosition: 'center 22%',
+      sourceWidth: 2738,
+      sourceHeight: 3823,
+      objectPosition: 'center 12%',
+    },
+    masculineRef: {
+      title: 'Noble Scholar Dopo Robe — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_23_%288422278167%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_23_(8422278167).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
+      license: 'CC BY-SA 2.0',
+      sourceWidth: 2308,
+      sourceHeight: 3318,
+      objectPosition: 'center 15%',
     },
     matcherPreset: {
       color: 'moonBlue',
@@ -102,26 +106,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Royal',
     badge: 'Luxurious & Ornate',
     feminineRef: {
-      title: 'Grand Royal Wedding Ceremony',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/KOCIS_Korea_Royal_Wedding_01_%289890617553%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:KOCIS_Korea_Royal_Wedding_01_(9890617553).jpg',
-      sourceLabel: 'Korea.net · Royal Wedding Reenactment',
+      title: 'Grand Ceremonial Couture — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_19_%288422278471%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_19_(8422278471).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 3084,
-      sourceHeight: 5004,
-      objectPosition: 'center 18%',
+      sourceWidth: 2585,
+      sourceHeight: 4097,
+      objectPosition: 'center 12%',
     },
     masculineRef: {
-      title: 'Grand Ceremonial Court Reference',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/KOCIS_Korea_Royal_Wedding_12_%289890629013%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:KOCIS_Korea_Royal_Wedding_12_(9890629013).jpg',
-      sourceLabel: 'Korea.net · Royal Wedding Reenactment',
+      title: 'Grand Court Ceremonial Robe — Fashion Showcase',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_21_%288423372170%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_21_(8423372170).jpg',
+      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 4597,
-      sourceHeight: 2849,
-      objectPosition: 'center 20%',
+      sourceWidth: 2658,
+      sourceHeight: 3864,
+      objectPosition: 'center 12%',
     },
     matcherPreset: {
       color: 'roseNavy',
@@ -134,3 +138,4 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
 export function isValidHanbokStyle(style: string | null | undefined): style is HanbokStyleCategory {
   return Boolean(style && ['princess-prince', 'queen-king', 'royal'].includes(style));
 }
+
