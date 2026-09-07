@@ -1,5 +1,7 @@
 # Korea Concierge — Explainable Personalization & K-Culture Experience Contract
 
+> **2026-09-07 reference status:** [BUILD_SPEC.md](BUILD_SPEC.md) is the current product and implementation authority. This dated document is retained for technical/history reference. Its old prices, model versions, credit/wallet prerequisites, feature order and screenshot/QA scope do not override BUILD_SPEC. Revalidate relevant technical facts; preserve applicable privacy/security/correctness protections.
+
 **Date:** 2026-08-27  
 **Status:** product/architecture contract for future implementation  
 **Applies to:** Personal Color, Hanbok, Saju/Four Pillars, Korean Zodiac, Western Astrology, Daily Fortune, Tarot, discovery, food and itinerary recommendations.

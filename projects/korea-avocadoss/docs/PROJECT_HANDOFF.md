@@ -1,6 +1,26 @@
 # Korea Concierge — Living Project Handoff
 
-**Last updated:** 2026-09-04  
+## Latest entry — 2026-09-07 revenue-first specification (documentation only)
+
+The user authorized a final implementation MD centered on paid revenue and allowed old planning documents to be superseded. **[BUILD_SPEC.md](BUILD_SPEC.md)** is now the single product/implementation authority. Read it before the historical entries below.
+
+- First product: My Korea Look, USD 12 launch price hypothesis, adult 1 person, three complete looks, one successful revision within 30 days, results available for 90 days. These are target contracts, not shipped capabilities.
+- One-time order/product entitlement replaces a new credits wallet as the first-sale dependency. Future Trip Passes, Naming, Saju monetization and live translation require their own evidence and bounded implementation.
+- BUILD_SPEC specifies routes, free/paid scope, schemas, assets, ranking, owner-bound persistence, durable events/jobs, refunds, photo retention, minimal QA and S0–S7 execution.
+- Next implementation slice: refresh S0, then S1 (three public sample stylebooks with reusable visual renderer and a rights-checked look catalog).
+- Seven old planning documents and the old project README are preserved in [the archive](archive/pre-revenue-first-2026-09-07/README.md); former paths now route readers to the new specification. Historical handoff entries remain below.
+- Fresh public source baseline inspected: `95fe720a4d05d41eda16684a4371f72c0c4d33d6`. This is not a claim about the currently deployed release SHA.
+- The diverged `korea-concierge/hanbok-ai-ux-stitch-sync-20260830` branch contains older handoff/Stitch proposals; runtime/UI work was not imported or overwritten. The latest user-approved specification supersedes competing product priorities only.
+- Existing runtime remains unchanged: free tools/six locales and gated Stripe foundation. The webhook still needs durable payment/fulfillment and the success screen still needs real server order status before sales.
+- This change does not activate payments, configure provider accounts, deploy the app, or claim revenue. Documentation verification and published revision are recorded in the GitHub PR; runtime tests/releases belong to implementation slices.
+- Documentation validation: 45 relative links resolved, all seven archived planning originals and the old README matched the inspected source (line-ending normalized), historical handoff body preserved, and no runtime/messages/scripts/package/workflow diff. Independent payment/ownership/retention review findings were patched and rechecked. No application build or live transaction was needed for this docs-only publication.
+- No user credentials are needed to publish this specification. Future external configuration is listed in BUILD_SPEC section 21.
+
+## Historical entries — superseded product priorities; retain operational evidence
+
+The original text below is preserved. Its “current”, “next priority”, fixed SHA, Stripe/credit-first sequencing and screenshot directives describe the dated history, not today's product instruction. Verify operational facts against private CI/current source. Never weaken payment/privacy/runner protections because product priorities changed.
+
+**Last updated:** 2026-09-04
 **Repository:** `lgkangno1-svg/Kang-s-brain`  
 **Project root:** `projects/korea-avocadoss`  
 **Current product phase:** accepted Stitch premium visual system implementation with screenshot-fidelity follow-up  

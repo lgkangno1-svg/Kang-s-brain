@@ -1,71 +1,33 @@
 # Korea Concierge
 
-Rebuild target for `korea.avocadoss.co.kr`.
+Mobile-first, multilingual Korea style and travel experiences for international visitors.
 
-The product is a mobile-first international visitor website combining personal color guidance, Hanbok recommendations, Gyeongbokgung-area travel/food planning, a credit wallet, global-friendly payments, and a K-Culture Lab including Saju and zodiac experiences.
+## Start here
 
-## Start here before development
+**[Read the revenue-first BUILD_SPEC](docs/BUILD_SPEC.md)** before implementing or revising the product. It defines the first paid product **My Korea Look**, its visual results, customer journey, one-time purchase, order/fulfillment/recovery contract, privacy, implementation slices and acceptance criteria.
 
-Before changing this project:
+Then read [the newest handoff](docs/PROJECT_HANDOFF.md), [execution roadmap](docs/IMPLEMENTATION_ROADMAP.md), and fresh main/current code. [Documentation index](docs/README.md) separates current authority from historical references.
 
-1. inspect latest `main`, the project tree and recent commits because another AI/developer may have changed the repository;
-2. read `docs/PROJECT_HANDOFF.md` for the current implementation position, intent, completed work, blockers and exact next slice;
-3. follow `docs/IMPLEMENTATION_ROADMAP.md` in order;
-4. re-check the relevant source-of-truth documents before material feature changes;
-5. update `docs/PROJECT_HANDOFF.md` in the same run whenever implementation status, decisions, evidence/tests, blockers, risks, costs/security implications, user actions or the next step changes.
+## Current source versus target
 
-Do not restore an older remembered code state over newer work without first reconciling the latest repository state.
+At the inspected source baseline `95fe720a4d05d41eda16684a4371f72c0c4d33d6`, the project has six-locale public pages, browser-local Personal Color, a free Hanbok matcher, palace/K-Culture content, Quick Help, and a gated Stripe foundation. The new paid stylebook, durable orders, fulfillment, and refund recovery are planned in BUILD_SPEC; this docs-only change does not implement or activate them.
 
-## Current status
+First implementation slice: **three complete stylebook samples and their reusable visual renderer**, then the free-to-paid customer journey. Existing free functionality stays useful. A new credits wallet is not a prerequisite for the first one-time SKU.
 
-- Product baselines complete
-- Free deterministic Quick Help complete by static review: 0 credits, 0 AI API calls, no external sensitive-data transfer
-- P0 internationalization foundation complete for English, Simplified Chinese, Japanese, Traditional Chinese, Vietnamese and Thai
-- `next-intl@4.13.4` pinned and locale request/routing foundation established
-- Locale-aware navigation and accessible language selector established
-- Full P0 Quick Help tree localized with deterministic dictionary/key QA
-- Locale landing copy localized and `/[locale]/culture` migrated to a native localized route
-- Current roadmap position: **Step 2B-4** — native localized Gyeongbokgung discovery shell + localized metadata/mobile overflow review
-- Clean production build has not yet been proven in the prior execution environment; production deployment is not claimed
-- Production domain is **not switched yet**; the new site must pass production-readiness/staging checks first
+## Development
 
-## Local development
+Use the Node version in the current CI workflow (currently Node 22). In this project directory:
 
-```bash
-npm install
+```text
+npm ci --ignore-scripts --no-audit --no-fund
 npm run dev
+npm run build
 ```
 
-Then open `http://localhost:3000`.
+`npm run build` includes the existing localization, Saju, Hanbok, payment, credit, responsive and route-recovery contracts. Inspect package.json before adding or running other checks. For runtime releases, use the existing private MiniPC exact-SHA CI/deployment flow; public GitHub-hosted CI remains manual fallback.
 
-Production-oriented checks should include the project's i18n validation and real Next.js build. Do not upgrade a roadmap gate from static review to build-verified without actual executable evidence.
+## Evidence and recovery
 
-## Product routes
+Production: <https://korea.avocadoss.co.kr>. Runtime status must be verified, not inferred from this README. Keep secrets and user photos out of code/logs/docs. Preserve concurrent user changes and any real customer entitlements.
 
-Legacy/unprefixed routes remain temporarily available during localization migration. P0 locale-prefixed routes are being migrated under `/en`, `/zh-CN`, `/ja`, `/zh-TW`, `/vi`, `/th`.
-
-Core product areas include:
-
-- home
-- personal color
-- Hanbok match
-- Gyeongbokgung/local discovery
-- K-Culture Lab / Saju
-- credits / Trip Passes
-
-## Product / engineering source documents
-
-Read these before making material feature changes:
-
-- `docs/PROJECT_HANDOFF.md` — **living cross-session/cross-AI handoff; read first and update every material development run**
-- `docs/IMPLEMENTATION_ROADMAP.md` — ordered implementation plan and completion gates
-- `docs/PRD.md` — product baseline
-- `docs/ARCHITECTURE.md` — technical architecture
-- `docs/AI_ROUTING.md` — OpenRouter model, privacy, fallback and cost routing
-- `docs/CREDIT_ECONOMICS.md` — **current source of truth for credit packaging and margin rules**; supersedes older credit-pack hypotheses in PRD v1.0
-- `docs/SEO_AEO_GEO.md` — search / answer / generative-engine requirements
-- `docs/OPEN_SOURCE_DISCOVERY.md` — GitHub + Hugging Face discovery decisions
-- `docs/INTERNATIONALIZATION_MARKETS.md` — locale/market priorities and evidence rules
-- `docs/SECURITY_TOKEN_EFFICIENCY.md` — security, privacy and token/cost-efficiency requirements
-
-The existing site should not be destructively replaced until the new build passes production-readiness checks and rollback is prepared.
+[Previous project README](docs/archive/pre-revenue-first-2026-09-07/PROJECT_README.md) and older plans are archived for history; their old status and prices are not current authority.

@@ -1,5 +1,7 @@
 # Korea Concierge — Real-Time Voice Translation
 
+> **2026-09-07 reference status:** [BUILD_SPEC.md](BUILD_SPEC.md) is the current product and implementation authority. This dated document is retained for technical/history reference. Its old prices, model versions, credit/wallet prerequisites, feature order and screenshot/QA scope do not override BUILD_SPEC. Revalidate relevant technical facts; preserve applicable privacy/security/correctness protections.
+
 **Date:** 2026-08-27  
 **Status:** approved product/provider direction; implementation deferred until auth/wallet/payment entitlements exist  
 **Default provider/model:** Google Gemini API — `gemini-3.5-live-translate-preview`
