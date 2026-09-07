@@ -1,5 +1,7 @@
 ﻿# Korea Concierge — Stitch UI/UX Design System Specification
 
+> **2026-09-07 reference status:** [BUILD_SPEC.md](BUILD_SPEC.md) is the current product and implementation authority. This dated document is retained for technical/history reference. Its old prices, model versions, credit/wallet prerequisites, feature order and screenshot/QA scope do not override BUILD_SPEC. Revalidate relevant technical facts; preserve applicable privacy/security/correctness protections.
+
 **Version:** 1.0  
 **Date:** 2026-08-27  
 **Stitch Project ID:** `5491471407117217005` (`projects/5491471407117217005`)  
