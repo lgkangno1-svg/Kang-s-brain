@@ -321,7 +321,8 @@ button, select, input, textarea { max-width: 100%; }
   .stitchHanbokToggleRow { flex-wrap: wrap; font-size: 14px !important; }
   .stitchHanbokCards { grid-template-columns: 1fr !important; gap: 14px !important; }
   .stitchHanbokCard { width: min(100%, 520px) !important; margin-inline: auto !important; }
-  .stitchHanbokCard img { aspect-ratio: 4 / 3 !important; }
+  .stitchHanbokCard a:has(img), .stitchHanbokCard .stitchHanbokImageWrap { aspect-ratio: 3 / 4 !important; max-height: 500px !important; }
+  .stitchHanbokCard img { width: 100% !important; height: 100% !important; aspect-ratio: 3 / 4 !important; max-height: 500px !important; object-fit: cover !important; object-position: center 15% !important; }
   .hanbokMatcherHead,
   .hanbokMatcherGrid,
   .hanbokLooksGrid,
