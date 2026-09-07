@@ -28,13 +28,12 @@ export type HanbokVisualReference = {
 /**
  * 3 Core Palace Experience Style Categories for Korea Concierge Hanbok Studio.
  *
- * All images: Korea.net / KOCIS official cultural showcase photography, CC BY-SA 2.0.
- * Source: Korea Cultural and Information Service (KOCIS) via Korea.net Flickr stream.
- * These are professional fashion-show and heritage-event photographs — not street or market photos.
+ * Sourced from iconic K-Drama cultural showcases (Love in the Moonlight at Gyeongbokgung)
+ * and official Ministry of Culture Hanbok Day Gyeongbokgung showcases.
  *
- * 1. Princess / Prince: Luminous pastel chima-jeogori, youthful and photo-magical.
- * 2. Queen / King: Jewel-tone silk, formal court runway elegance.
- * 3. Royal: Grand ceremonial couture with gold embroidery, maximum palace drama.
+ * 1. Princess / Prince: Kim Yoo-jung & Park Bo-gum iconic K-Drama palace styles.
+ * 2. Queen / King: Dignified court Jang-ot cloak silk & noble champagne scholar dopo.
+ * 3. Royal: Grand floral fantasy ombre couture & imperial court ceremonial robe.
  */
 export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
   {
@@ -42,26 +41,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Princess / Prince',
     badge: 'Soft & Graceful',
     feminineRef: {
-      title: 'Luminous Pastel Chima-Jeogori — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_02_%288423373334%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_02_(8423373334).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
-      credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
-      license: 'CC BY-SA 2.0',
-      sourceWidth: 2667,
-      sourceHeight: 3883,
-      objectPosition: 'center 45%',
+      title: 'Kim Yoo-jung Luminous Pastel Hanbok & Floral Crown',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/161019_%EA%B5%AC%EB%A5%B4%EB%AF%B8_%EA%B7%B8%EB%A6%B0_%EB%8B%AC%EB%B9%9B_%ED%8C%AC%EC%82%AC%EC%9D%B8%ED%9A%8C_%284%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:161019_구르미_그린_달빛_팬사인회_(4).jpg',
+      sourceLabel: 'KBS · Love in the Moonlight Gyeongbokgung Showcase',
+      credit: 'Sayomi (사요미)',
+      license: 'CC BY 4.0',
+      sourceWidth: 2216,
+      sourceHeight: 3103,
+      objectPosition: 'center 20%',
     },
     masculineRef: {
-      title: 'Bright Palace Stroll Hanbok — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_05_%288422277933%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_05_(8422277933).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
-      credit: 'Republic of Korea / Korea.net (Jeon Han)',
-      license: 'CC BY-SA 2.0',
-      sourceWidth: 2706,
-      sourceHeight: 4227,
-      objectPosition: 'center 35%',
+      title: 'Park Bo-gum Crown Prince Scholar Robe & Traditional Gat',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/161019_%EA%B5%AC%EB%A5%B4%EB%AF%B8_%EA%B7%B8%EB%A6%B0_%EB%8B%AC%EB%B9%9B_%ED%8C%AC%EC%82%AC%EC%9D%B8%ED%9A%8C_%285%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:161019_구르미_그린_달빛_팬사인회_(5).jpg',
+      sourceLabel: 'KBS · Love in the Moonlight Gyeongbokgung Showcase',
+      credit: 'Sayomi (사요미)',
+      license: 'CC BY 4.0',
+      sourceWidth: 2800,
+      sourceHeight: 3400,
+      objectPosition: 'center 25%',
     },
     matcherPreset: {
       color: 'jadeIvory',
@@ -74,26 +73,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Queen / King',
     badge: 'Dignified & Traditional',
     feminineRef: {
-      title: 'Jewel-Tone Court Hanbok — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_15_%288423372530%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_15_(8423372530).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      title: 'Dignified Royal Court Silk Chima-Jeogori & Jang-ot Cloak',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanbok_Day_2016_18_%2829871548393%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hanbok_Day_2016_18_(29871548393).jpg',
+      sourceLabel: 'MCST · Official Hanbok Day Gyeongbokgung Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 2738,
-      sourceHeight: 3823,
-      objectPosition: 'center 30%',
+      sourceWidth: 2934,
+      sourceHeight: 4401,
+      objectPosition: 'center 20%',
     },
     masculineRef: {
-      title: 'Noble Scholar Dopo Robe — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_23_%288422278167%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_23_(8422278167).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      title: 'Noble Scholar Prince Champagne Silk Durumagi Robe',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanbok_Day_2016_30_%2829871510983%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hanbok_Day_2016_30_(29871510983).jpg',
+      sourceLabel: 'MCST · Official Hanbok Day Gyeongbokgung Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 2308,
-      sourceHeight: 3318,
-      objectPosition: 'center 30%',
+      sourceWidth: 2772,
+      sourceHeight: 4284,
+      objectPosition: 'center 20%',
     },
     matcherPreset: {
       color: 'moonBlue',
@@ -106,26 +105,26 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
     name: 'Royal',
     badge: 'Luxurious & Ornate',
     feminineRef: {
-      title: 'Grand Ceremonial Couture — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_19_%288422278471%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_19_(8422278471).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      title: 'Grand Floral Fantasy Ombre Palace Gown Hanbok',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanbok_Day_2016_35_%2829871497173%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hanbok_Day_2016_35_(29871497173).jpg',
+      sourceLabel: 'MCST · Official Hanbok Day Gyeongbokgung Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 2585,
-      sourceHeight: 4097,
-      objectPosition: 'center 30%',
+      sourceWidth: 3108,
+      sourceHeight: 4338,
+      objectPosition: 'center 25%',
     },
     masculineRef: {
-      title: 'Grand Court Ceremonial Robe — Fashion Showcase',
-      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Korea_Hanbok_Fashion_Show_21_%288423372170%29.jpg?width=1200',
-      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Korea_Hanbok_Fashion_Show_21_(8423372170).jpg',
-      sourceLabel: 'Korea.net · Official Hanbok Fashion Showcase',
+      title: 'Grand Court Imperial Black Silk Robe & Wonyugwan Crown',
+      imageUrl: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanbok_Day_2016_21_%2830386985862%29.jpg?width=1200',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hanbok_Day_2016_21_(30386985862).jpg',
+      sourceLabel: 'MCST · Official Hanbok Day Gyeongbokgung Showcase',
       credit: 'Korea.net / Korean Culture and Information Service (Jeon Han)',
       license: 'CC BY-SA 2.0',
-      sourceWidth: 2658,
-      sourceHeight: 3864,
-      objectPosition: 'center 30%',
+      sourceWidth: 3240,
+      sourceHeight: 4728,
+      objectPosition: 'center 20%',
     },
     matcherPreset: {
       color: 'roseNavy',
@@ -138,4 +137,3 @@ export const HANBOK_STYLE_CATEGORIES: readonly HanbokVisualReference[] = [
 export function isValidHanbokStyle(style: string | null | undefined): style is HanbokStyleCategory {
   return Boolean(style && ['princess-prince', 'queen-king', 'royal'].includes(style));
 }
-

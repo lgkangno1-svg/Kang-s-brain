@@ -2,8 +2,8 @@
   "HanbokVisual": {
     "eyebrow": "Palace Lookbook · Official Cultural Showcase",
     "heroPill": "Styled by Korea.net",
-    "title": "Hanbok Styles That Make You Want to Try One",
-    "intro": "These looks are from Korea's official national cultural showcases — professional runway photography of the three quintessential palace styles. Pick the one that calls to you, and we'll match it to your personality and coloring.",
+    "title": "Celebrity & Palace Heritage Hanbok Looks",
+    "intro": "Real celebrity styles worn by beloved Korean actors at Gyeongbokgung, alongside iconic palace showcase couture. Choose a look to inspire your personal styling below.",
     "genderToggleAria": "Switch between feminine and masculine style references",
     "feminineTab": "Feminine",
     "masculineTab": "Masculine",
@@ -12,19 +12,19 @@
     "sourceLabel": "Source",
     "licenseLabel": "License",
     "viewSource": "View original",
-    "notice": "Images are official Korean government cultural showcase photography (Korea.net / KOCIS), licensed CC BY-SA 2.0. They represent Hanbok styling aesthetics — not an endorsement by any individual pictured, and not a guarantee of specific garment availability at rental shops.",
+    "notice": "Photography features public cultural showcases and celebratory events (KBS / Korea.net / KOCIS, CC BY & CC BY-SA). Pictured actors do not endorse Korea Concierge; references illustrate styling aesthetics.",
     "categories": {
       "princess-prince": {
         "name": "Princess / Prince",
         "badge": "Soft & Graceful",
         "tagline": "Luminous pastels · Perfect for palace photos",
         "feminine": {
-          "description": "The look every K-drama fan wants at Gyeongbokgung. Layers of luminous pastel silk catch the palace light beautifully — romantic, ethereal, and endlessly photogenic.",
-          "alt": "Luminous pastel chima-jeogori Hanbok from Korea's official cultural fashion showcase"
+          "description": "Inspired by Kim Yoo-jung in Love in the Moonlight. Ethereal white silk with a delicate floral wreath — romantic, luminous, and radiant under palace sunlight.",
+          "alt": "Kim Yoo-jung wearing lovely pastel Hanbok and floral crown at Gyeongbokgung"
         },
         "masculine": {
-          "description": "Clean, bright, and effortlessly elegant. The lighter tones of this prince style are ideal for outdoor palace photography and look stunning in couples shots.",
-          "alt": "Bright and graceful masculine Hanbok palace look from Korea's official cultural fashion showcase"
+          "description": "Inspired by Park Bo-gum in Love in the Moonlight. Classic Crown Prince scholar robe with traditional black Gat and crystal strap — aristocratic and charismatic.",
+          "alt": "Park Bo-gum wearing noble scholar Hanbok and black Gat at Gyeongbokgung"
         }
       },
       "queen-king": {
@@ -32,12 +32,12 @@
         "badge": "Dignified & Traditional",
         "tagline": "Rich jewel tones · Court-worthy elegance",
         "feminine": {
-          "description": "Jewel-tone silk, commanding posture, deep royal colors. This is the look you see worn by leading actresses in sageuk dramas — dignified, timeless, and striking.",
-          "alt": "Rich jewel-tone court Hanbok worn at Korea's official cultural fashion showcase"
+          "description": "Dignified royal court lady silhouette featuring a sheer white ceremonial cloak (jang-ot) draped over crimson jeogori and powder-blue silk chima with traditional floral binyeo.",
+          "alt": "Dignified court lady Hanbok with jang-ot cloak at Gyeongbokgung Hanbok Day"
         },
         "masculine": {
-          "description": "The classic dopo robe worn by scholars and nobles. Wide, sweeping sleeves in deep traditional colors — exactly what you'd picture a Joseon nobleman wearing.",
-          "alt": "Noble scholar dopo robe Hanbok at Korea's official cultural fashion showcase"
+          "description": "Refined scholar prince in shimmering champagne-gold silk durumagi robe with crisp white collar, walking with effortless historical dignity.",
+          "alt": "Noble scholar prince in champagne silk durumagi robe at Gyeongbokgung"
         }
       },
       "royal": {
@@ -45,12 +45,12 @@
         "badge": "Luxurious & Ornate",
         "tagline": "Gold embroidery · Maximum palace drama",
         "feminine": {
-          "description": "The most dramatic look in the collection. Heavy silk, gold-thread embroidery, layers of ceremonial detail — this is the Hanbok worn at royal court ceremonies and high-fashion showcases.",
-          "alt": "Grand ceremonial royal Hanbok with ornate gold embroidery from Korea's official fashion showcase"
+          "description": "Breathtaking grand floral fantasy gown with hand-painted cherry blossom branches over gradient pastel green and fuchsia-pink ombre silk skirts.",
+          "alt": "Grand floral fantasy ombre gown Hanbok with flower tiara at Gyeongbokgung"
         },
         "masculine": {
-          "description": "Full ceremonial grandeur — bold embroidered motifs, rich deep tones, and commanding presence. Reserved for the most significant occasions; unforgettable in photos.",
-          "alt": "Grand ceremonial court Hanbok robe from Korea's official cultural fashion showcase"
+          "description": "Imperial court ceremonial robe in midnight black silk with crimson inner facing and traditional court crown (Wonyugwan), projecting commanding dynastic majesty.",
+          "alt": "Imperial black silk court ceremonial robe and crown at Gyeongbokgung"
         }
       }
     }
