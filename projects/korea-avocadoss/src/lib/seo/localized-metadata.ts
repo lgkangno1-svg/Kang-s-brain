@@ -6,6 +6,7 @@ export const SITE_ORIGIN = 'https://korea.avocadoss.co.kr';
 
 export const PUBLIC_LOCALE_PATHS = [
   '',
+  '/style',
   '/color',
   '/hanbok',
   '/explore/gyeongbokgung',
@@ -32,17 +33,17 @@ function requireP0Locale(locale: string): P0Locale {
   return locale as P0Locale;
 }
 
-export function localizedPublicUrl(locale: P0Locale, path: PublicLocalePath): string {
+export function localizedPublicUrl(locale: P0Locale, path: string): string {
   return `${SITE_ORIGIN}/${locale}${path}`;
 }
 
-export function localizedLanguageAlternates(path: PublicLocalePath): Record<string, string> {
+export function localizedLanguageAlternates(path: string): Record<string, string> {
   return Object.fromEntries(
     P0_LOCALES.map((candidate) => [HREFLANG[candidate], localizedPublicUrl(candidate, path)]),
   );
 }
 
-export function localizedAlternates(locale: string, path: PublicLocalePath): Metadata['alternates'] {
+export function localizedAlternates(locale: string, path: string): Metadata['alternates'] {
   const currentLocale = requireP0Locale(locale);
 
   return {

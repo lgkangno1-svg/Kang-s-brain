@@ -106,6 +106,73 @@ export default async function LocalizedHome({params}: PageProps) {
         <div className="stitchReferenceHeroCopy"><h1 id="home-title">{copy.hero}</h1></div>
       </section>
 
+      
+      <section style={{
+        margin: '20px auto 32px',
+        maxWidth: '1200px',
+        padding: '0 20px',
+        width: '100%',
+      }}>
+        <div style={{
+          background: 'linear-gradient(135deg, #1C1917 0%, #2D5A4C 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: '#FFFFFF',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          gap: '12px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+        }}>
+          <span style={{
+            background: 'rgba(212, 175, 55, 0.25)',
+            border: '1px solid #D4AF37',
+            color: '#D4AF37',
+            fontSize: '11px',
+            fontWeight: 700,
+            padding: '3px 12px',
+            borderRadius: '999px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}>
+            Featured Paid Service · $12 USD
+          </span>
+          <h2 style={{ fontSize: 'clamp(22px, 3vw, 28px)', fontWeight: 800, margin: 0 }}>
+            My Korea Look — Personalized Styling & Palace Photo Guidebook
+          </h2>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.85)', maxWidth: '640px', margin: 0, lineHeight: 1.6 }}>
+            Get 3 complete curated Hanbok looks matched to your coloring, bilingual Korean shop cards to show rental staff in Seoul, and a 2-hour palace photo route.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
+            <Link href="/style" style={{
+              background: 'var(--dancheong-crimson, #9E2A2B)',
+              color: '#FFFFFF',
+              fontWeight: 700,
+              fontSize: '14px',
+              padding: '12px 24px',
+              borderRadius: '999px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 14px rgba(158, 42, 43, 0.4)',
+            }}>
+              Get My Korea Look ($12 USD) →
+            </Link>
+            <Link href="/style/sample/palace-elegance" style={{
+              background: 'rgba(255,255,255,0.12)',
+              color: '#FFFFFF',
+              fontWeight: 600,
+              fontSize: '14px',
+              padding: '12px 20px',
+              borderRadius: '999px',
+              textDecoration: 'none',
+              border: '1px solid rgba(255,255,255,0.2)',
+            }}>
+              View Curated Samples
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="stitchReferenceServices" aria-label="Korea Concierge services">
         <Link className="stitchReferenceCard" href="/color">
           <span className="stitchReferenceMedia stitchColorMedia" aria-hidden="true">
