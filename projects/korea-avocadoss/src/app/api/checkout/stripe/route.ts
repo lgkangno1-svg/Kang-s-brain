@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {createStripeCheckoutSession} from '@/lib/payments/stripe';
-import {isApprovedProductKey} from '@/lib/payments/catalog';
+import {isLaunchCheckoutProductKey} from '@/lib/payments/catalog';
 import {DEFAULT_LOCALE, P0_LOCALES} from '@/lib/i18n/locales';
 
 const CHECKOUT_ENABLED = process.env.STRIPE_CHECKOUT_ENABLED === 'true';
@@ -23,15 +23,16 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {productKey, locale} = body ?? {};
 
-    if (!isApprovedProductKey(productKey)) {
+    if (!isLaunchCheckoutProductKey(productKey)) {
       return NextResponse.json(
-        {error: 'Invalid or unapproved product key. Amount/price injection is prohibited.'},
+        {error: 'This product is not enabled for launch checkout.', code: 'PRODUCT_NOT_LAUNCH_ENABLED'},
         {status: 400},
       );
     }
 
-    // Authentication must be resolved server-side before production credit fulfillment.
-    // Never accept a client-supplied userId/account id as the authoritative recipient.
+    // Authentication and durable ownership must be resolved server-side before this
+    // pre-launch checkout can ever be enabled. Never accept a client-supplied
+    // userId/account id as the authoritative payment recipient.
     const result = await createStripeCheckoutSession({
       productKey,
       locale: normalizeLocale(locale),
