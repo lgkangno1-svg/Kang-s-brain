@@ -2,13 +2,12 @@
   "name": "korea-concierge",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=20.9"
-  },
+  "engines": {"node": ">=20.9"},
   "scripts": {
     "dev": "next dev",
     "check:i18n": "node scripts/check-message-parity.mjs && node scripts/check-quick-help-keys.mjs && node scripts/check-color-message-keys.mjs && node scripts/check-hanbok-message-keys.mjs && node scripts/check-credits-message-keys.mjs",
     "check:saju": "node scripts/check-saju-input-contracts.mjs && node scripts/check-saju-boundary-fixtures.mjs && node scripts/check-saju-month-boundary-fixtures.mjs && node scripts/check-saju-day-boundary-policy.mjs && node scripts/check-saju-true-solar-time.mjs && node scripts/check-saju-timezone-resolution.mjs && node scripts/check-saju-deterministic-core.mjs",
+    "check:culture": "node scripts/check-kculture-experiences.mjs",
     "check:hanbok": "node scripts/check-hanbok-visual-contracts.mjs",
     "check:payments": "node scripts/check-stripe-payment-contracts.mjs && node scripts/check-payment-readiness.mjs",
     "check:credits-ledger": "node scripts/check-credit-ledger.mjs && node scripts/check-credit-authorization.mjs",
@@ -16,19 +15,9 @@
     "check:recovery": "node scripts/check-route-recovery-contracts.mjs",
     "check:document-lang": "node scripts/check-built-document-languages.mjs",
     "check:legacy-redirects": "node scripts/check-legacy-redirects.mjs",
-    "build": "npm run check:i18n && npm run check:saju && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
+    "build": "npm run check:i18n && npm run check:saju && npm run check:culture && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
     "start": "next start"
   },
-  "dependencies": {
-    "next": "16.3.3",
-    "next-intl": "4.13.4",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.9.0"
-  }
+  "dependencies": {"next":"16.3.3","next-intl":"4.13.4","react":"19.2.0","react-dom":"19.2.0"},
+  "devDependencies": {"@types/node":"^22.0.0","@types/react":"^19.0.0","@types/react-dom":"^19.0.0","typescript":"^5.9.0"}
 }
