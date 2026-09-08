@@ -1,14 +1,18 @@
 /**
- * Korea Concierge Stripe Product & Price Catalog.
+ * Korea Concierge payment product & price catalog.
  *
  * Strict Security Rules:
  * 1. Clients ONLY pass an internal product key from `APPROVED_PRODUCT_KEYS`.
- * 2. Clients NEVER specify amounts, currencies, or arbitrary Stripe price IDs.
- * 3. Server maps internal product key -> approved configured Stripe Price ID.
- * 4. Zero invented/placeholder prices. When Stripe Price ID is not configured, returns explicit unconfigured status.
+ * 2. Clients NEVER specify amounts, currencies, or arbitrary provider price IDs.
+ * 3. Server maps internal product key -> approved configured provider Price ID.
+ * 4. Zero invented/placeholder prices. When a provider Price ID is not configured, returns explicit unconfigured status.
+ * 5. `LAUNCH_CHECKOUT_PRODUCT_KEY` is the only SKU allowed through the first-product checkout route.
  */
 
+export const LAUNCH_CHECKOUT_PRODUCT_KEY = 'my_korea_look_v1' as const;
+
 export const APPROVED_PRODUCT_KEYS = [
+  LAUNCH_CHECKOUT_PRODUCT_KEY,
   'premium_hanbok_match',
   'premium_naming_studio',
   'trip_pass_basic',
@@ -27,10 +31,17 @@ export type ProductDefinition = {
 };
 
 export const PRODUCT_CATALOG: Record<ProductKey, ProductDefinition> = {
+  my_korea_look_v1: {
+    key: 'my_korea_look_v1',
+    name: 'My Korea Look',
+    description: 'One adult, one private stylebook with three completed looks and the launch-specified delivery/revision terms.',
+    priceEnvVar: 'STRIPE_PRICE_ID_MY_KOREA_LOOK_V1',
+    category: 'styling',
+  },
   premium_hanbok_match: {
     key: 'premium_hanbok_match',
     name: 'Premium Hanbok Match',
-    description: 'Consented photo-aware explainable Hanbok styling recommendation with personalized palette analysis.',
+    description: 'Legacy premium Hanbok matching SKU. Not eligible for the first-product launch checkout.',
     priceEnvVar: 'STRIPE_PRICE_ID_HANBOK_MATCH',
     category: 'styling',
   },
@@ -66,6 +77,10 @@ export const PRODUCT_CATALOG: Record<ProductKey, ProductDefinition> = {
 
 export function isApprovedProductKey(key: unknown): key is ProductKey {
   return typeof key === 'string' && (APPROVED_PRODUCT_KEYS as readonly string[]).includes(key);
+}
+
+export function isLaunchCheckoutProductKey(key: unknown): key is typeof LAUNCH_CHECKOUT_PRODUCT_KEY {
+  return key === LAUNCH_CHECKOUT_PRODUCT_KEY;
 }
 
 export function resolveStripePriceId(key: ProductKey): { priceId: string | null; error?: string } {
