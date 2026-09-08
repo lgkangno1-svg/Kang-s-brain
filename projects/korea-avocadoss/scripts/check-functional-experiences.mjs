@@ -13,7 +13,7 @@ const required=[
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
- 'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v2.tsx',
+ 'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v2.tsx','src/lib/looks/recommend.ts','src/lib/looks/deliverable.ts',
  'src/features/quick-help/QuickHelp.tsx'
 ];
 for(const p of required)assert.ok(existsSync(path.join(root,p)),`${p} missing`);
@@ -88,9 +88,16 @@ assert.match(naming,/generateKoreanNames|rank|candidate|CATALOG/i,'Naming Studio
 
 const stylePage=read('src/app/[locale]/style/page.tsx');
 const style=read('src/features/looks/style-consultation-v2.tsx');
+const lookRecommend=read('src/lib/looks/recommend.ts');
+const deliverable=read('src/lib/looks/deliverable.ts');
 assert.match(stylePage,/StyleConsultationV2/,'My Korea Look page must use the functional ranked matcher');
 for(const state of ['setStyle','setGarment','setTone','setPriority','setSeason'])assert.match(style,new RegExp(state),`My Korea Look missing ${state}`);
-assert.match(style,/score\(look/,'My Korea Look choices must drive ranking');
+assert.match(style,/rankCuratedLooks\(/,'Free preview must use the same shared deterministic ranking family as paid deliverables');
+assert.match(lookRecommend,/export function rankCuratedLooks/,'My Korea Look needs a reusable deterministic ranking engine');
+assert.match(deliverable,/buildMyKoreaLookDeliverable/,'Paid product must have an explicit deliverable generator before checkout opens');
+assert.match(deliverable,/slice\(0,3\)/,'Paid My Korea Look contract must generate three ranked looks');
+for(const field of ['rentalShopCard','photoRoute','tradeOff','recommendedLocation','source'])assert.match(deliverable,new RegExp(field),`Paid deliverable missing ${field}`);
+assert.match(deliverable,/productKey:'my_korea_look_v1'/,'Deliverable version must be bound to the launch SKU');
 assert.match(style,/my_korea_look_v1/,'Checkout request must use the launch SKU');
 assert.doesNotMatch(style,/premium_hanbok_match/,'Legacy checkout SKU must not return');
 assert.match(style,/CHECKOUT_DISABLED/,'Pre-launch checkout failure must be handled explicitly');
@@ -99,4 +106,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok, Saju, Naming, timed Gyeongbokgung, Food, deterministic 3-look deliverable, and zero-API Quick Help are wired to real interactions.');
