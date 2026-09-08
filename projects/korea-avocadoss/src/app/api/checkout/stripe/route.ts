@@ -4,6 +4,8 @@ import {isLaunchCheckoutProductKey} from '@/lib/payments/catalog';
 import {DEFAULT_LOCALE, P0_LOCALES} from '@/lib/i18n/locales';
 
 const CHECKOUT_ENABLED = process.env.STRIPE_CHECKOUT_ENABLED === 'true';
+const OWNERSHIP_READY = process.env.KOREA_PAYMENT_OWNERSHIP_READY === 'true';
+const FULFILLMENT_READY = process.env.KOREA_PAYMENT_FULFILLMENT_READY === 'true';
 
 function normalizeLocale(value: unknown) {
   return typeof value === 'string' && (P0_LOCALES as readonly string[]).includes(value)
@@ -12,9 +14,17 @@ function normalizeLocale(value: unknown) {
 }
 
 export async function POST(request: Request) {
-  if (!CHECKOUT_ENABLED) {
+  if (!CHECKOUT_ENABLED || !OWNERSHIP_READY || !FULFILLMENT_READY) {
     return NextResponse.json(
-      {error: 'Checkout is not enabled for this environment.', code: 'CHECKOUT_DISABLED'},
+      {
+        error: 'Checkout is not enabled for this environment.',
+        code: 'CHECKOUT_DISABLED',
+        readiness: {
+          checkout: CHECKOUT_ENABLED,
+          ownership: OWNERSHIP_READY,
+          fulfillment: FULFILLMENT_READY,
+        },
+      },
       {status: 503},
     );
   }
@@ -30,9 +40,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Authentication and durable ownership must be resolved server-side before this
-    // pre-launch checkout can ever be enabled. Never accept a client-supplied
-    // userId/account id as the authoritative payment recipient.
+    // This route must remain closed until server-side authenticated ownership and
+    // durable fulfillment are both wired. Client-provided user/account identifiers
+    // are never authoritative payment ownership.
     const result = await createStripeCheckoutSession({
       productKey,
       locale: normalizeLocale(locale),
