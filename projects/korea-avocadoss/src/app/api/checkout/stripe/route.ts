@@ -6,6 +6,8 @@ import {DEFAULT_LOCALE, P0_LOCALES} from '@/lib/i18n/locales';
 const CHECKOUT_ENABLED = process.env.STRIPE_CHECKOUT_ENABLED === 'true';
 const OWNERSHIP_READY = process.env.KOREA_PAYMENT_OWNERSHIP_READY === 'true';
 const FULFILLMENT_READY = process.env.KOREA_PAYMENT_FULFILLMENT_READY === 'true';
+const WEBHOOK_PERSISTENCE_READY = process.env.KOREA_PAYMENT_WEBHOOK_PERSISTENCE_READY === 'true';
+const DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED = false;
 
 function normalizeLocale(value: unknown) {
   return typeof value === 'string' && (P0_LOCALES as readonly string[]).includes(value)
@@ -14,7 +16,7 @@ function normalizeLocale(value: unknown) {
 }
 
 export async function POST(request: Request) {
-  if (!CHECKOUT_ENABLED || !OWNERSHIP_READY || !FULFILLMENT_READY) {
+  if (!CHECKOUT_ENABLED || !OWNERSHIP_READY || !FULFILLMENT_READY || !WEBHOOK_PERSISTENCE_READY || !DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED) {
     return NextResponse.json(
       {
         error: 'Checkout is not enabled for this environment.',
@@ -23,6 +25,7 @@ export async function POST(request: Request) {
           checkout: CHECKOUT_ENABLED,
           ownership: OWNERSHIP_READY,
           fulfillment: FULFILLMENT_READY,
+          webhookPersistence: WEBHOOK_PERSISTENCE_READY && DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED,
         },
       },
       {status: 503},
@@ -40,9 +43,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // This route must remain closed until server-side authenticated ownership and
-    // durable fulfillment are both wired. Client-provided user/account identifiers
-    // are never authoritative payment ownership.
+    // This path becomes reachable only in the same patch that replaces the
+    // compile-time durable-persistence gate with a tested server-owned order flow.
+    // Never accept a client-supplied user/account identifier as payment ownership.
     const result = await createStripeCheckoutSession({
       productKey,
       locale: normalizeLocale(locale),
