@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import {DEFAULT_LOCALE,P0_LOCALES,type P0Locale} from '@/lib/i18n/locales';
 export const SITE_ORIGIN='https://korea.avocadoss.co.kr';
-export const PUBLIC_LOCALE_PATHS=['','/style','/color','/hanbok','/explore/gyeongbokgung','/explore/food','/culture','/culture/saju','/culture/naming','/credits'] as const;
+export const PUBLIC_LOCALE_PATHS=['','/style','/color','/hanbok','/explore/gyeongbokgung','/explore/food','/culture','/culture/saju','/culture/naming','/credits','/about','/contact','/privacy','/terms'] as const;
 export type PublicLocalePath=(typeof PUBLIC_LOCALE_PATHS)[number];
 const HREFLANG:Record<P0Locale,string>={en:'en','zh-CN':'zh-Hans',ja:'ja','zh-TW':'zh-Hant',vi:'vi',th:'th'};
 function requireP0Locale(locale:string):P0Locale{if(!(P0_LOCALES as readonly string[]).includes(locale))throw new Error(`Unsupported production locale: ${locale}`);return locale as P0Locale;}
