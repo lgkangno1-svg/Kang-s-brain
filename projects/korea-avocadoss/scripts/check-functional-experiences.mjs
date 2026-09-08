@@ -7,7 +7,7 @@ const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=(p)=>readFileSync(path.join(root,p),'utf8');
 const required=[
  'src/app/[locale]/page.tsx',
- 'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx',
+ 'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx','src/features/color/validate-color-upload.ts',
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
@@ -26,9 +26,17 @@ assert.doesNotMatch(home,/Featured Paid Service · \$12 USD/,'Home must not clai
 assert.doesNotMatch(home,/namingAction:'Coming Soon'/,'Working Naming Studio must not be presented as coming soon');
 
 const color=read('src/features/color/color-scanner.tsx');
+const colorUpload=read('src/features/color/validate-color-upload.ts');
+assert.match(color,/validateColorUpload\(selected\)/,'Personal Color must validate a photo before creating the active preview');
 assert.match(color,/analyzeVisibleTone\(file\)/,'Personal Color must perform real local image analysis');
+assert.match(color,/accept="image\/jpeg,image\/png,image\/webp"/,'Personal Color upload picker must advertise only tested browser formats');
 assert.match(color,/setUndertone/);assert.match(color,/setDepth/);
 assert.match(color,/href=\{hanbokHref\}/,'Personal Color result must bridge to Hanbok');
+assert.match(colorUpload,/maxBytes:12\*1024\*1024/,'Personal Color must cap compressed upload size');
+assert.match(colorUpload,/maxPixels:36_000_000/,'Personal Color must cap decoded pixel count');
+assert.match(colorUpload,/minWidth:240/);assert.match(colorUpload,/minHeight:240/);
+assert.match(colorUpload,/bitmap\?\.close\(\)/,'Upload validation must release decoded bitmap memory');
+assert.doesNotMatch(color,/fetch\s*\(/,'Personal Color must remain browser-local at launch');
 
 const hanbok=read('src/features/hanbok/hanbok-matcher.tsx');
 assert.match(hanbok,/scoreLook\(/);assert.match(hanbok,/rankedLooks/);
@@ -80,4 +88,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, Color, Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
