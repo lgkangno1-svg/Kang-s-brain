@@ -12,11 +12,14 @@ const envExample = readFileSync(path.join(projectRoot, '.env.example'), 'utf8');
 
 console.log('--- Testing Payment Launch Readiness Guards ---');
 
-for (const flag of ['STRIPE_CHECKOUT_ENABLED','KOREA_PAYMENT_OWNERSHIP_READY','KOREA_PAYMENT_FULFILLMENT_READY']) {
+const gates=['STRIPE_CHECKOUT_ENABLED','KOREA_PAYMENT_OWNERSHIP_READY','KOREA_PAYMENT_FULFILLMENT_READY','KOREA_PAYMENT_WEBHOOK_PERSISTENCE_READY'];
+for (const flag of gates) {
   assert.match(checkoutRoute, new RegExp(flag), `${flag} must gate checkout.`);
   assert.match(envExample, new RegExp(`^${flag}=false$`, 'm'), `${flag} must default false in the example environment.`);
 }
-assert.match(checkoutRoute, /!CHECKOUT_ENABLED\s*\|\|\s*!OWNERSHIP_READY\s*\|\|\s*!FULFILLMENT_READY/,
+assert.match(checkoutRoute, /DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED\s*=\s*false/,
+  'Checkout must remain compile-time blocked until durable event persistence is implemented in code.');
+assert.match(checkoutRoute, /!CHECKOUT_ENABLED[\s\S]*!OWNERSHIP_READY[\s\S]*!FULFILLMENT_READY[\s\S]*!WEBHOOK_PERSISTENCE_READY[\s\S]*!DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED/,
   'Checkout must require all launch readiness gates simultaneously.');
 assert.match(checkoutRoute, /CHECKOUT_DISABLED/,
   'Disabled environments must fail closed instead of attempting live checkout.');
@@ -37,6 +40,12 @@ assert.match(envExample, /SUPABASE_SECRET_KEY=/,
 assert.doesNotMatch(envExample, /NEXT_PUBLIC_SUPABASE_(SERVICE_ROLE|SECRET)/,
   'Supabase server secrets must never be exposed as NEXT_PUBLIC variables.');
 assert.match(webhookRoute, /verifyStripeWebhookSignature/,
-  'Stripe webhook must verify signatures before processing events.');
+  'Stripe webhook must verify signatures before any handling.');
+assert.match(webhookRoute, /DURABLE_PAYMENT_PERSISTENCE_IMPLEMENTED\s*=\s*false/,
+  'Webhook must remain compile-time blocked until durable persistence is implemented.');
+assert.match(webhookRoute, /WEBHOOK_PERSISTENCE_DISABLED/,
+  'Verified events must return a retryable failure instead of false success before persistence exists.');
+assert.doesNotMatch(webhookRoute, /console\.log\(`\[Stripe Webhook\]/,
+  'Webhook must not substitute logging for durable payment event acceptance.');
 
-console.log('✓ Payment remains fail-closed behind checkout, ownership and fulfillment readiness gates.');
+console.log('✓ Payment remains fail-closed behind checkout, ownership, fulfillment, webhook and compile-time persistence gates.');
