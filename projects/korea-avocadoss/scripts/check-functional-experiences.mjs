@@ -9,7 +9,7 @@ const required=[
  'src/app/[locale]/page.tsx',
  'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx',
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx',
- 'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlanner.tsx',
+ 'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
@@ -35,10 +35,17 @@ assert.match(hanbok,/scoreLook\(/);assert.match(hanbok,/rankedLooks/);
 assert.match(hanbok,/undertoneParam/,'Hanbok must consume Personal Color bridge');
 assert.match(hanbok,/setDestination/);assert.match(hanbok,/setSeason/);
 
-const explore=read('src/features/explore/GyeongbokgungPlanner.tsx');
+const explorePage=read('src/app/[locale]/explore/gyeongbokgung/page.tsx');
+const explore=read('src/features/explore/GyeongbokgungPlannerV2.tsx');
+assert.match(explorePage,/GyeongbokgungPlannerV2/,'Gyeongbokgung page must render the timed planner V2');
 assert.match(explore,/ROUTES/);assert.match(explore,/isTuesday/);
 assert.match(explore,/royal\.khs\.go\.kr/,'Explore must expose the official palace source');
-assert.match(explore,/setDuration/);assert.match(explore,/setFocus/);
+for(const state of ['setDuration','setFocus','setStart','setDate'])assert.match(explore,new RegExp(state),`Explore planner missing ${state}`);
+assert.match(explore,/new Date\(\)\.toISOString\(\)\.slice\(0,10\)/,'Visit date must initialize dynamically rather than from a stale literal');
+assert.doesNotMatch(explore,/const today=['"]2026-09-09['"]/,'Planner must never ship a hard-coded current date');
+assert.match(explore,/planStops\(duration,focus\)/,'Selected time budget and focus must drive the itinerary');
+assert.match(explore,/\/explore\/food/,'Timed route must continue into Food Finder');
+assert.match(explore,/href="\/hanbok"/,'Timed route must connect to Hanbok planning');
 
 const food=read('src/features/explore/FoodFinder.tsx');
 const foodData=read('src/lib/travel/gyeongbokgung-food.ts');
@@ -73,4 +80,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, Color, Hanbok, Saju, Naming, Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, Color, Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
