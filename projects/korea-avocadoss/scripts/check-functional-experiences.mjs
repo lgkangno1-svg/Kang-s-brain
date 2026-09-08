@@ -8,7 +8,7 @@ const read=(p)=>readFileSync(path.join(root,p),'utf8');
 const required=[
  'src/app/[locale]/page.tsx',
  'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx','src/features/color/validate-color-upload.ts',
- 'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx',
+ 'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx','src/features/hanbok/rank-catalog.ts','src/features/hanbok/HanbokCatalogResults.tsx','src/lib/looks/catalog.ts',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
@@ -39,9 +39,20 @@ assert.match(colorUpload,/bitmap\?\.close\(\)/,'Upload validation must release d
 assert.doesNotMatch(color,/fetch\s*\(/,'Personal Color must remain browser-local at launch');
 
 const hanbok=read('src/features/hanbok/hanbok-matcher.tsx');
+const hanbokRank=read('src/features/hanbok/rank-catalog.ts');
+const hanbokVisual=read('src/features/hanbok/HanbokCatalogResults.tsx');
+const looksCatalog=read('src/lib/looks/catalog.ts');
 assert.match(hanbok,/scoreLook\(/);assert.match(hanbok,/rankedLooks/);
 assert.match(hanbok,/undertoneParam/,'Hanbok must consume Personal Color bridge');
 assert.match(hanbok,/setDestination/);assert.match(hanbok,/setSeason/);
+assert.match(hanbok,/HanbokCatalogResults/,'Hanbok matcher must expose the richer licensed visual candidate set');
+assert.match(hanbokRank,/CURATED_LOOKS_CATALOG\.map/,'Hanbok catalog ranker must score the maintained curated catalog');
+for(const factor of ['preferredStyle','preferredUndertone','preferredWalking','seasonMatches','destinationMatches'])assert.match(hanbokRank,new RegExp(factor),`Hanbok catalog ranker missing ${factor}`);
+assert.match(hanbokVisual,/slice\(0,6\)/,'Hanbok matcher must show more than the legacy three visual candidates');
+assert.match(hanbokVisual,/look\.sourceUrl/,'Every displayed visual reference must preserve its source link');
+assert.match(hanbokVisual,/look\.license/,'Every displayed visual reference must preserve license attribution');
+assert.match(looksCatalog,/CC BY|CC0|public domain|Korea\.net|Korean Culture/i,'Curated look catalog must retain provenance/license evidence');
+assert.doesNotMatch(hanbok,/fetch\s*\(/,'Free Hanbok ranking must remain zero-API');
 
 const explorePage=read('src/app/[locale]/explore/gyeongbokgung/page.tsx');
 const explore=read('src/features/explore/GyeongbokgungPlannerV2.tsx');
@@ -88,4 +99,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok, Saju, Naming, timed Gyeongbokgung, Food, My Korea Look and zero-API Quick Help are wired to real interactions.');
