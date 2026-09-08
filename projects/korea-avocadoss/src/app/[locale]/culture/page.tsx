@@ -1,67 +1,16 @@
 import type {Metadata} from 'next';
-import {getTranslations, setRequestLocale} from 'next-intl/server';
+import {getTranslations,setRequestLocale} from 'next-intl/server';
 import {Link} from '@/i18n/navigation';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
-type PageProps = {params: Promise<{locale: string}>};
-
-export async function generateMetadata({params}: PageProps): Promise<Metadata> {
-  const {locale} = await params;
-  setRequestLocale(locale);
-  const meta = await getTranslations('Meta');
-  return {title: meta('cultureTitle'), description: meta('cultureDescription'), alternates: localizedAlternates(locale, '/culture')};
-}
-
-export default async function LocalizedCulturePage({params}: PageProps) {
-  const {locale} = await params;
-  setRequestLocale(locale);
-  const culture = await getTranslations('Culture');
-
-  return (
-    <main className="stitchSajuReferencePage">
-      <section className="stitchSajuReference" aria-labelledby="saju-title">
-        <header className="stitchSajuReferenceHead">
-          <span className="stitchPreviewBadge">{culture('planned')}</span>
-          <h1 id="saju-title">{culture('heroTitle')}</h1>
-          <p>{culture('heroIntro')}</p>
-        </header>
-
-        <div className="stitchSajuReferenceBody">
-          <div className="stitchSajuDiagram" aria-describedby="saju-preview-note">
-            <div className="stitchSajuDiagramInner" aria-hidden="true">
-              <div className="stitchSajuOrb">木<small>Wood</small></div>
-              <div className="stitchSajuOrb">火<small>Fire</small></div>
-              <div className="stitchSajuOrb">土<small>Earth</small></div>
-              <div className="stitchSajuOrb">金<small>Metal</small></div>
-              <div className="stitchSajuOrb">四柱<small>Saju</small></div>
-              <div className="stitchSajuOrb">水<small>Water</small></div>
-            </div>
-          </div>
-
-          <p id="saju-preview-note" className="freshnessNote">{culture('intro')}</p>
-
-          <div className="stitchSajuReferenceGrid">
-            <section className="stitchSajuExplanation">
-              <h2>{culture('sajuExplorerTitle')}</h2>
-              <p>{culture('sajuExplorerIntro')}</p>
-              <div className="stepList">
-                <div className="step"><b>띠</b><div><strong>{culture('zodiacTitle')}</strong><p>{culture('zodiacText')}</p></div></div>
-                <div className="step"><b>四柱</b><div><strong>{culture('sajuTitle')}</strong><p>{culture('sajuText')}</p></div></div>
-                <div className="step"><b>五行</b><div><strong>{culture('colorTitle')}</strong><p>{culture('colorText')}</p></div></div>
-              </div>
-            </section>
-
-            <aside className="stitchSajuPremium">
-              <h2>{culture('photoSpotTitle')}</h2>
-              <p>{culture('photoSpotName')}</p>
-              <div className="cultureActionGroup">
-                <Link href="/color" className="primaryButton">{culture('actionPairColor')}</Link>
-                <Link href="/explore/gyeongbokgung" className="secondaryButton">{culture('actionExplorePalace')}</Link>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
+type PageProps={params:Promise<{locale:string}>};
+const HUB:Record<string,{eyebrow:string;saju:string;sajuText:string;naming:string;namingText:string;free:string}>={
+ en:{eyebrow:'K-CULTURE LAB',saju:'Try Saju',sajuText:'Enter your birth date and exact, rough, or unknown birth time. The chart is calculated deterministically and never guesses a missing hour.',naming:'Try Korean Naming Studio',namingText:'Choose a vibe and sound to get Korean-style name ideas from a curated catalog. No AI API or account needed.',free:'Free cultural experiences'},
+ 'zh-CN':{eyebrow:'韩国文化实验室',saju:'体验四柱',sajuText:'输入出生日期，并选择准确、大概或未知出生时间。系统使用确定性计算，绝不会猜测缺失的时柱。',naming:'体验韩文命名',namingText:'选择氛围与发音，从人工整理的名字库获得韩文风格名字灵感。无需 AI API 或账号。',free:'免费文化体验'},
+ ja:{eyebrow:'K-CULTURE LAB',saju:'四柱を試す',sajuText:'生年月日と正確・おおよそ・不明の出生時刻を入力。決定論的に計算し、不明な時柱は推測しません。',naming:'韓国名スタジオを試す',namingText:'雰囲気と響きを選び、選定済みカタログから韓国風の名前候補を作れます。AI APIやアカウントは不要です。',free:'無料の文化体験'},
+ 'zh-TW':{eyebrow:'韓國文化實驗室',saju:'體驗四柱',sajuText:'輸入出生日期，並選擇準確、大概或未知出生時間。系統使用確定性計算，絕不猜測缺少的時柱。',naming:'體驗韓文命名',namingText:'選擇氛圍與發音，從人工整理的名字庫取得韓文風格名字靈感。無需 AI API 或帳號。',free:'免費文化體驗'},
+ vi:{eyebrow:'K-CULTURE LAB',saju:'Thử Saju',sajuText:'Nhập ngày sinh và giờ sinh chính xác, ước chừng hoặc không biết. Hệ thống tính xác định và không bao giờ đoán trụ giờ bị thiếu.',naming:'Thử Korean Naming Studio',namingText:'Chọn phong cách và âm thanh để nhận ý tưởng tên kiểu Hàn từ danh mục tuyển chọn. Không cần AI API hay tài khoản.',free:'Trải nghiệm văn hóa miễn phí'},
+ th:{eyebrow:'K-CULTURE LAB',saju:'ลองซาจู',sajuText:'กรอกวันเกิดและเวลาเกิดแบบแม่นยำ โดยประมาณ หรือไม่ทราบ ระบบคำนวณแบบกำหนดแน่นอนและไม่เดาเสาเวลาที่หายไป',naming:'ลอง Korean Naming Studio',namingText:'เลือกบรรยากาศและเสียงเพื่อรับไอเดียชื่อสไตล์เกาหลีจากคลังที่คัดสรรไว้ ไม่ใช้ AI API และไม่ต้องมีบัญชี',free:'ประสบการณ์วัฒนธรรมฟรี'}
+};
+export async function generateMetadata({params}:PageProps):Promise<Metadata>{const {locale}=await params;setRequestLocale(locale);const meta=await getTranslations('Meta');return{title:meta('cultureTitle'),description:meta('cultureDescription'),alternates:localizedAlternates(locale,'/culture')}}
+export default async function CulturePage({params}:PageProps){const {locale}=await params;setRequestLocale(locale);const culture=await getTranslations('Culture');const h=HUB[locale]??HUB.en;return <main className="stitchSajuReferencePage"><section className="stitchSajuReference"><header className="stitchSajuReferenceHead"><span className="stitchPreviewBadge">{h.eyebrow}</span><h1>{culture('heroTitle')}</h1><p>{culture('heroIntro')}</p></header><div className="stitchSajuReferenceBody"><p className="freshnessNote">{h.free}</p><div className="stitchSajuReferenceGrid"><section className="stitchSajuExplanation"><h2>{h.saju}</h2><p>{h.sajuText}</p><Link href="/culture/saju" className="primaryButton">{h.saju}</Link></section><section className="stitchSajuPremium"><h2>{h.naming}</h2><p>{h.namingText}</p><Link href="/culture/naming" className="primaryButton">{h.naming}</Link></section></div><div className="cultureActionGroup" style={{marginTop:24}}><Link href="/color" className="secondaryButton">{culture('actionPairColor')}</Link><Link href="/explore/gyeongbokgung" className="secondaryButton">{culture('actionExplorePalace')}</Link></div></div></section></main>}
