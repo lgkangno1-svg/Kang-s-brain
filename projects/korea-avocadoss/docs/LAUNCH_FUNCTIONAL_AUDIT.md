@@ -21,6 +21,7 @@ This checklist treats **working end-to-end behavior** as the minimum bar. A page
 | Saju | HARDENING | Real DOB + IANA birthplace timezone, exact/rough/unknown birth time, deterministic pillars/elements/zodiac, no AI call, no silent Seoul default, localized uncertainty. | Expand KASI/manseryeok cross-validation and historical timezone/boundary fixtures; final cultural wording review. |
 | Korean Naming Studio | WORKING | Deterministic catalog/ranking, multiple candidate results, optional surname, Hangul/romanization/Hanja examples, six-locale shell, zero API. | Editorial/native-speaker review of candidate meanings/romanization before high-traffic launch. |
 | Gyeongbokgung planner | HARDENING | Dynamic visit date, start time, 1/2/4h budget, photo/history/relaxed focus, timed stop allocation, opening/closing warnings, food/Hanbok continuation. | Live official-hours refresh strategy, holiday closure exceptions, real walking-time calibration and map integration. |
+| Nearby Explorer | HARDENING | 1–3h deterministic routes now consume the selected visit date, omit source-verified fixed weekly closures such as the Gwanghwamun Tourist Information Center Saturday closure, retain time-window warnings, and disclose that holiday/temporary closures require source re-check. | Expand fixed-closure coverage, holiday exception data, walking-time calibration and route-level map handoff. |
 | Food & cafe finder | HARDENING | Source-checked official tourism records, category filters, hours/address/dietary notes, checked-at/source link. | Expand verified inventory, geospatial distance, localization of business descriptions, automated stale-data review. |
 | Quick Help | WORKING | Deterministic decision tree, keyboard recovery, 0 credits, no fetch/LLM. | Keep answers synchronized with live feature routes and policy changes. |
 | My Korea Look free preview | HARDENING | Full curated catalog ranking responds to style/garment/tone/priority/season; sample route remains accessible. | Final multilingual content, deterministic 3-look deliverable generator, saved result flow, PDF/export QA. |
@@ -58,7 +59,7 @@ Real checkout may not open until all are true:
 
 1. Keep MiniPC exact-SHA build green for the current functional branch.
 2. Complete Personal Color and Hanbok edge-case/device QA.
-3. Improve Explore geospatial/freshness behavior.
+3. Continue Explore geospatial/freshness hardening after date-aware fixed-closure filtering.
 4. Build deterministic My Korea Look deliverable generation and persistence interface.
 5. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.
 6. Implement auth/order/webhook/fulfillment against that dedicated project.
