@@ -1,5 +1,17 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-09 P0 Style Studio metadata localization hardening
+
+**Candidate branch:** `fix/korea-style-hanbok-handoff-20260909`
+
+- Active requirements remain `docs/BUILD_SPEC.md` as designated by `docs/PRD.md`.
+- `/[locale]/style` now emits locale-native search metadata for all P0 locales (`en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`) while preserving locale-aware canonical and hreflang alternates.
+- A dedicated regression contract is part of `check:functionality`, covering all six metadata entries, native-language signals, safe unexpected-locale fallback, and localized alternates.
+- The first exact-SHA MiniPC candidate exposed an overly strict test assumption about quoted TypeScript object keys; the product code was not promoted. The contract was repaired without weakening its product guarantees and the corrected exact candidate passed MiniPC CI before PR promotion.
+- No payment, Stripe, credit-purchase, entitlement, live secret, or merchant activation changes are included. Checkout remains fail-closed.
+
+---
+
 ## Latest entry — 2026-09-07 My Korea Look Paid Stylebook Launch (S1 & S2 Shipped)
 
 **Merged SHA:** `ab2f137` · **PRs:** #44, #45, #46, #47
