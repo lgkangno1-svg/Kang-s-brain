@@ -3,7 +3,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {useLocale} from 'next-intl';
 import {rankHanbokCatalog,type HanbokCatalogComfort,type HanbokCatalogDestination,type HanbokCatalogMood,type HanbokCatalogSeason} from './rank-catalog';
-import type {HanbokMatcherColorId} from './personal-color-bridge';
+import type {HanbokMatcherColorId,PersonalColorContrast,PersonalColorDepth} from './personal-color-bridge';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
 type Copy={title:string;intro:string;source:string;license:string;palette:string;reference:string;notice:string;save:string;saved:string;compare:string;remove:string;compareTitle:string;compareHint:string;maxCompare:string;clearCompare:string;walking:string;seasons:string;location:string};
@@ -17,15 +17,17 @@ const C:Record<Locale,Copy>={
 };
 const FAVORITES_KEY='kc-hanbok-favorites-v1';
 
-export function HanbokCatalogResults({color,mood,comfort,destination,season}:{color:HanbokMatcherColorId;mood:HanbokCatalogMood;comfort:HanbokCatalogComfort;destination:HanbokCatalogDestination;season:HanbokCatalogSeason}){
+type Props={color:HanbokMatcherColorId;mood:HanbokCatalogMood;comfort:HanbokCatalogComfort;destination:HanbokCatalogDestination;season:HanbokCatalogSeason;depth?:PersonalColorDepth;contrast?:PersonalColorContrast};
+
+export function HanbokCatalogResults({color,mood,comfort,destination,season,depth,contrast}:Props){
  const locale=useLocale();const l=(locale in C?locale:'en') as Locale;const c=C[l];
- const fullRanked=useMemo(()=>rankHanbokCatalog({color,mood,comfort,destination,season}),[color,mood,comfort,destination,season]);
+ const fullRanked=useMemo(()=>rankHanbokCatalog({color,mood,comfort,destination,season,personalColor:{depth,contrast}}),[color,mood,comfort,destination,season,depth,contrast]);
  const ranked=fullRanked.slice(0,6);
  const [favorites,setFavorites]=useState<Set<string>>(new Set());
  const [compareIds,setCompareIds]=useState<Set<string>>(new Set());
  const [message,setMessage]=useState('');
  useEffect(()=>{try{const raw=localStorage.getItem(FAVORITES_KEY);if(raw){const ids=JSON.parse(raw);if(Array.isArray(ids))setFavorites(new Set(ids.filter((id):id is string=>typeof id==='string')));}}catch{}},[]);
- useEffect(()=>{const visible=new Set(ranked.map(item=>item.look.id));setCompareIds(previous=>new Set([...previous].filter(id=>visible.has(id))));},[color,mood,comfort,destination,season]);
+ useEffect(()=>{const visible=new Set(ranked.map(item=>item.look.id));setCompareIds(previous=>new Set([...previous].filter(id=>visible.has(id))));},[color,mood,comfort,destination,season,depth,contrast]);
  function toggleFavorite(id:string){setFavorites(previous=>{const next=new Set(previous);if(next.has(id))next.delete(id);else next.add(id);try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...next]));}catch{}return next;});}
  function toggleCompare(id:string){setMessage('');setCompareIds(previous=>{const next=new Set(previous);if(next.has(id)){next.delete(id);return next;}if(next.size>=3){setMessage(c.maxCompare);return previous;}next.add(id);return next;});}
  const compared=fullRanked.filter(item=>compareIds.has(item.look.id));
