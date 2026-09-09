@@ -1,7 +1,6 @@
 'use client';
 
 import {useMemo,useState} from 'react';
-import {useSearchParams} from 'next/navigation';
 import {nearbyMapUrl,nearbyRoute,nearbyRouteMapUrl,nearbyStopAvailabilityAt,type NearbyBudget,type NearbyFocus,type NearbyStop} from '@/lib/travel/gyeongbokgung-nearby-core';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
@@ -17,10 +16,10 @@ const C:Record<Locale,Copy>={
 function toMinutes(value:string){const [h,m]=value.split(':').map(Number);return h*60+m;}
 function clock(value:number){const wrapped=((value%1440)+1440)%1440;return`${String(Math.floor(wrapped/60)).padStart(2,'0')}:${String(wrapped%60).padStart(2,'0')}`;}
 function localToday(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-export function NearbyExplorer({locale,stops}:{locale:string;stops:readonly NearbyStop[]}){
- const l=(locale in C?locale:'en') as Locale,c=C[l],params=useSearchParams();
- const [date,setDate]=useState(params.get('date')??localToday());
- const [start,setStart]=useState(params.get('time')??'14:00');
+export function NearbyExplorer({locale,stops,initialDate,initialTime}:{locale:string;stops:readonly NearbyStop[];initialDate?:string;initialTime?:string}){
+ const l=(locale in C?locale:'en') as Locale,c=C[l];
+ const [date,setDate]=useState(initialDate??localToday());
+ const [start,setStart]=useState(initialTime??'14:00');
  const [budget,setBudget]=useState<NearbyBudget>(120);
  const [focus,setFocus]=useState<NearbyFocus>('seochon');
  const [message,setMessage]=useState('');
