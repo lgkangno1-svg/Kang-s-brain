@@ -1,5 +1,18 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-10 Personal Color mobile camera memory hardening
+
+**Candidate branch:** `fix/korea-color-mobile-memory-20260910`
+
+- Active requirements remain `docs/BUILD_SPEC.md` as designated by `docs/PRD.md`.
+- Personal Color now prepares an accepted camera/gallery photo once: browser-native EXIF orientation is made explicit, the validated image is normalized locally to a maximum 1280 px longest edge, and the original full-resolution bitmap is released immediately.
+- The UI retains and previews only the normalized Blob; visible-tone analysis consumes that same bounded Blob instead of re-decoding/retaining the original full-resolution `File`. This reduces the retained mobile working set and strips original file metadata from the retained working copy without sending the photo to a server.
+- `scripts/check-color-photo-processing.mjs` is part of `check:functionality` and guards the bounded edge, orientation handling, Blob-only preview/analysis path, full-resolution bitmap release, and zero-API behavior.
+- This closes one concrete low-memory/camera-processing gap but does not claim exhaustive real-device camera fixture coverage. See `docs/audits/FUNCTIONAL_LOOP_2026-09-10_COLOR_MOBILE_MEMORY.md`.
+- No payment, Stripe, credit-purchase, entitlement, live secret, or merchant activation changes are included. Checkout remains fail-closed.
+
+---
+
 ## Latest entry — 2026-09-09 P0 Style Studio metadata localization hardening
 
 **Candidate branch:** `fix/korea-style-hanbok-handoff-20260909`
