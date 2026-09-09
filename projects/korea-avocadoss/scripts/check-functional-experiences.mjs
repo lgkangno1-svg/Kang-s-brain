@@ -7,7 +7,7 @@ const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=(p)=>readFileSync(path.join(root,p),'utf8');
 const required=[
  'src/app/[locale]/page.tsx',
- 'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx','src/features/color/validate-color-upload.ts','src/features/color/decode-color-image.ts',
+ 'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx','src/features/color/validate-color-upload.ts','src/features/color/read-color-image-dimensions.ts','src/features/color/decode-color-image.ts',
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx','src/features/hanbok/rank-catalog.ts','src/features/hanbok/HanbokCatalogResults.tsx','src/features/hanbok/HanbokRentalFinder.tsx','src/lib/travel/gyeongbokgung-hanbok-rentals.ts','src/lib/looks/catalog.ts',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts','src/lib/travel/gyeongbokgung-food-core.ts','src/lib/content/travel-content.ts',
@@ -28,6 +28,7 @@ assert.doesNotMatch(home,/namingAction:'Coming Soon'/,'Working Naming Studio mus
 
 const color=read('src/features/color/color-scanner.tsx');
 const colorUpload=read('src/features/color/validate-color-upload.ts');
+const colorDimensions=read('src/features/color/read-color-image-dimensions.ts');
 const colorDecoder=read('src/features/color/decode-color-image.ts');
 assert.match(color,/validateColorUpload\(selected\)/,'Personal Color must validate a photo before creating the active preview');
 assert.match(color,/analyzeVisibleTone\(file\)/,'Personal Color must perform real local image analysis');
@@ -37,7 +38,10 @@ assert.match(color,/href=\{hanbokHref\}/,'Personal Color result must bridge to H
 assert.match(colorUpload,/maxBytes:12\*1024\*1024/,'Personal Color must cap compressed upload size');
 assert.match(colorUpload,/maxPixels:36_000_000/,'Personal Color must cap decoded pixel count');
 assert.match(colorUpload,/minWidth:240/);assert.match(colorUpload,/minHeight:240/);
-assert.match(colorUpload,/decoded\?\.release\(\)/,'Upload validation must release decoded image resources');
+assert.match(colorUpload,/readColorImageDimensions\(file\)/,'Upload validation must preflight dimensions before allocating decoded pixels');
+assert.doesNotMatch(colorUpload,/decodeColorImage|createImageBitmap|new Image\s*\(/,'Upload validation must not decode a full bitmap merely to enforce size and pixel caps');
+assert.match(colorDimensions,/file\.arrayBuffer\(\)/,'Dimension preflight must inspect compressed browser-local bytes');
+assert.doesNotMatch(colorDimensions,/fetch\s*\(/,'Dimension preflight must not add a remote image path');
 assert.match(colorDecoder,/URL\.revokeObjectURL\(url\)/,'Fallback image decoding must release browser-local object URLs');
 assert.doesNotMatch(color,/fetch\s*\(/,'Personal Color must remain browser-local at launch');
 
