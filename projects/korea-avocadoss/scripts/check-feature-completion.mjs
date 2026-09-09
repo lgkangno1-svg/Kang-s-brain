@@ -24,12 +24,31 @@ assert.match(hanbok,/aria-pressed=\{selected\}/,'Compare state must be exposed a
 const planner=read('src/features/explore/GyeongbokgungPlannerV2.tsx');
 const food=read('src/features/explore/FoodFinder.tsx');
 const foodData=read('src/lib/travel/gyeongbokgung-food.ts');
+assert.match(planner,/withHanbok/,'Palace planner must support Hanbok-aware timing.');
+assert.match(planner,/fitMinutes=withHanbok\?45:0/,'Hanbok fitting must add a conservative pre-entry buffer.');
+assert.match(planner,/returnMinutes=withHanbok\?30:0/,'Hanbok return must add a conservative post-palace buffer.');
 assert.match(planner,/foodHref=`\/explore\/food\?date=/,'Palace planner must carry the selected date into Food Finder.');
-assert.match(planner,/time=\$\{encodeURIComponent\(clock\(end\)\)\}/,'Palace planner must carry its calculated end time into Food Finder.');
+assert.match(planner,/time=\$\{encodeURIComponent\(clock\(foodArrival\)\)\}/,'Food handoff must use arrival time after any Hanbok return buffer.');
 assert.match(food,/useSearchParams/,'Food Finder must consume itinerary context from the planner.');
 assert.match(food,/foodAvailabilityAt\(place,date,time\)/,'Food Finder must evaluate each place at the planned arrival time.');
 assert.match(food,/openOnly/,'Food Finder must let visitors hide clearly unavailable options.');
 for(const field of ['openMinute','closeMinute','closedWeekdays','scheduleConfidence'])assert.match(foodData,new RegExp(field),`Food schedule data missing ${field}.`);
 assert.match(foodData,/scheduleConfidence==='recheck'/,'Uncertain schedules must remain verify-only, never guessed open.');
+assert.ok((foodData.match(/id:'/g)??[]).length>=7,'Food Finder must retain a useful source-checked launch inventory.');
 
-console.log('Feature completion contracts passed: robust local color ROI, Hanbok save/compare, and itinerary-aware food discovery.');
+const saju=read('src/features/culture/SajuExperience.tsx');
+const sajuSummary=read('src/lib/saju/cultural-summary.ts');
+assert.match(saju,/summarizeElementBalance/,'Saju result must expose a deterministic symbolic element summary.');
+assert.match(saju,/copySummary/,'Saju result must be copyable without storing raw birth details.');
+assert.match(saju,/localToday/,'Saju date max must use the browser local calendar date.');
+assert.doesNotMatch(saju,/localStorage|sessionStorage/,'Saju must not persist raw birth details in browser storage by default.');
+assert.match(sajuSummary,/does not infer personality, compatibility, health/,'Saju symbolic summary must explicitly exclude high-impact interpretations.');
+
+const naming=read('src/features/culture/NamingStudio.tsx');
+assert.match(naming,/STORAGE_KEY='kc-korean-name-shortlist-v1'/,'Naming shortlist needs a versioned browser-storage key.');
+assert.match(naming,/shortlist\.length>=3/,'Naming shortlist must remain intentionally small.');
+assert.match(naming,/copyShortlist/,'Naming shortlist must be reusable outside the page.');
+assert.match(naming,/not sent anywhere or saved|不会上传或保存|外部送信・保存されません/,'Personal seed copy must disclose that it is not persisted.');
+assert.doesNotMatch(naming,/fetch\s*\(/,'Naming Studio must remain zero-API.');
+
+console.log('Feature completion contracts passed: robust local color ROI, Hanbok save/compare, Hanbok-aware itinerary+food, safe Saju summary, and Korean-name shortlist.');
