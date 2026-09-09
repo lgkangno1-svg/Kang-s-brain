@@ -31,7 +31,10 @@ assert.match(core,/weekdayFromIso/,'Weekly closure evaluation must derive weekda
 assert.match(core,/if\(date&&nearbyStopAvailabilityAt\(base,date,720\)==='closed'\)continue/,'Routes must omit stops with a known fixed closure on the selected date.');
 assert.match(data,/Lunar New Year and Chuseok closures also require a source re-check/,'Unmodeled holiday closures must remain explicit rather than guessed.');
 
-assert.match(explorer,/useSearchParams/,'Nearby Explorer must accept itinerary handoff context.');
+assert.doesNotMatch(explorer,/useSearchParams/,'Nearby Explorer must not force the functional shell behind a client-only search-param bailout.');
+assert.match(explorer,/initialDate\?:string;initialTime\?:string/,'Nearby Explorer must accept validated server-resolved itinerary handoff values.');
+assert.match(explorer,/useState\(initialDate\?\?localToday\(\)\)/,'Nearby date state must seed from validated server handoff while preserving a local default.');
+assert.match(explorer,/useState\(initialTime\?\?'14:00'\)/,'Nearby time state must seed from validated server handoff.');
 assert.match(explorer,/stops:readonly NearbyStop\[\]/,'Nearby Explorer must consume server-resolved content rather than owning the catalog.');
 assert.match(explorer,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby Explorer must recalculate routes from server content and explicit visitor choices including date.');
 assert.match(explorer,/nearbyRouteMapUrl\(routeStops\)/,'Nearby Explorer must build a single full-route map handoff from the chosen deterministic stops.');
@@ -45,11 +48,15 @@ assert.doesNotMatch(explorer,/gyeongbokgung-nearby';/,'Nearby client must not im
 assert.doesNotMatch(explorer,/fetch\s*\(/,'Nearby Explorer must remain zero-API.');
 assert.doesNotMatch(explorer,/openai|openrouter|anthropic/i,'Nearby Explorer must not depend on an AI provider.');
 
+assert.match(page,/searchParams:Promise/,'The Nearby Server Component must own URL handoff parsing so the functional shell remains server-renderable.');
+assert.match(page,/validDate\(one\(query\.date\)\)/,'The Nearby page must validate date handoff input before it reaches deterministic planning.');
+assert.match(page,/validTime\(one\(query\.time\)\)/,'The Nearby page must validate time handoff input before it reaches deterministic planning.');
 assert.match(page,/getGyeongbokgungNearbyStops\(\)/,'The localized Nearby Server Component must resolve source-checked content.');
-assert.match(page,/stops=\{stops\}/,'The localized Nearby page must pass resolved content into the actual planner.');
+assert.match(page,/initialDate=\{validDate\(one\(query\.date\)\)\}/,'The localized Nearby page must pass validated date context into the planner.');
+assert.match(page,/initialTime=\{validTime\(one\(query\.time\)\)\}/,'The localized Nearby page must pass validated time context into the planner.');
 assert.match(palace,/href="\/explore\/nearby"/,'Gyeongbokgung must continue into Nearby Explorer.');
 assert.match(quickHelp,/href:'\/explore\/nearby'/,'Quick Help nearby guidance must open the real Nearby Explorer.');
 assert.match(seo,/'\/explore\/nearby'/,'Nearby Explorer must participate in localized canonical/hreflang URLs.');
 assert.match(sitemap,/'\/explore\/nearby'/,'Nearby Explorer must be included in the public sitemap.');
 
-console.log('Nearby Explorer contracts passed: server-resolved source-checked content, deterministic 1–3h local routes, date-aware closures, time restrictions, full walking-route/copy/map handoff, real navigation, and zero AI API.');
+console.log('Nearby Explorer contracts passed: server-renderable URL handoff, source-checked deterministic 1–3h routes, date-aware closures, time restrictions, full walking-route/copy/map handoff, real navigation, and zero AI API.');
