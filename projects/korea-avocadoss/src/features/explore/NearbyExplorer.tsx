@@ -1,0 +1,40 @@
+'use client';
+
+import {useMemo,useState} from 'react';
+import {useSearchParams} from 'next/navigation';
+import {nearbyMapUrl,nearbyRoute,type NearbyBudget,type NearbyFocus} from '@/lib/travel/gyeongbokgung-nearby';
+
+type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
+type Copy={title:string;intro:string;date:string;start:string;budget:string;focus:string;seochon:string;bukchon:string;insadong:string;easy:string;route:string;arrive:string;stay:string;walk:string;minutes:string;map:string;source:string;checked:string;warning:string;copy:string;copied:string;privacy:string;empty:string};
+const C:Record<Locale,Copy>={
+ en:{title:'What should I do after Gyeongbokgung?',intro:'Build a simple 1–3 hour nearby route from source-checked Seoul tourism information. No AI API is used.',date:'Date',start:'Start after the palace',budget:'Extra time',focus:'Area / mood',seochon:'Seochon · quieter local walk',bukchon:'Bukchon · hanok heritage',insadong:'Insadong · crafts & tea',easy:'Gwanghwamun · easiest walking',route:'Your nearby route',arrive:'Arrive',stay:'Stay',walk:'Transfer',minutes:'min',map:'Open map',source:'Official source',checked:'Source checked',warning:'Timing note',copy:'Copy route',copied:'Route copied',privacy:'This planner runs locally and does not send your itinerary to an AI provider.',empty:'No route fits this time budget.'},
+ 'zh-CN':{title:'逛完景福宫后去哪里？',intro:'根据已核对的首尔官方旅游信息，生成1–3小时周边路线，不使用 AI API。',date:'日期',start:'离开宫殿后的开始时间',budget:'额外时间',focus:'区域 / 氛围',seochon:'西村 · 安静本地散步',bukchon:'北村 · 韩屋文化',insadong:'仁寺洞 · 工艺与茶',easy:'光化门 · 最轻松步行',route:'你的周边路线',arrive:'到达',stay:'停留',walk:'移动',minutes:'分钟',map:'打开地图',source:'官方来源',checked:'来源核对',warning:'时间提示',copy:'复制路线',copied:'已复制路线',privacy:'此规划在本地运行，不会把行程发送给 AI 服务商。',empty:'当前时间预算没有合适路线。'},
+ ja:{title:'景福宮のあと、どこへ行く？',intro:'確認済みのソウル公式観光情報から1〜3時間の近隣ルートを作ります。AI APIは使いません。',date:'日付',start:'宮殿後の開始時刻',budget:'追加時間',focus:'エリア / 雰囲気',seochon:'西村 · 静かなローカル散歩',bukchon:'北村 · 韓屋文化',insadong:'仁寺洞 · 工芸とお茶',easy:'光化門 · 歩きやすさ優先',route:'近隣ルート',arrive:'到着',stay:'滞在',walk:'移動',minutes:'分',map:'地図を開く',source:'公式情報',checked:'出典確認',warning:'時間メモ',copy:'ルートをコピー',copied:'ルートをコピーしました',privacy:'このプランナーは端末内で動作し、旅程をAI事業者へ送りません。',empty:'この時間では適切なルートがありません。'},
+ 'zh-TW':{title:'逛完景福宮後去哪裡？',intro:'依據已核對的首爾官方旅遊資訊，建立1–3小時周邊路線，不使用 AI API。',date:'日期',start:'離開宮殿後的開始時間',budget:'額外時間',focus:'區域 / 氛圍',seochon:'西村 · 安靜在地散步',bukchon:'北村 · 韓屋文化',insadong:'仁寺洞 · 工藝與茶',easy:'光化門 · 最輕鬆步行',route:'你的周邊路線',arrive:'抵達',stay:'停留',walk:'移動',minutes:'分鐘',map:'開啟地圖',source:'官方來源',checked:'來源核對',warning:'時間提示',copy:'複製路線',copied:'已複製路線',privacy:'此規劃在本機執行，不會將行程傳送給 AI 服務商。',empty:'目前時間預算沒有合適路線。'},
+ vi:{title:'Sau Gyeongbokgung nên đi đâu?',intro:'Tạo lộ trình quanh cung điện 1–3 giờ từ nguồn du lịch Seoul đã kiểm tra. Không dùng AI API.',date:'Ngày',start:'Bắt đầu sau cung điện',budget:'Thời gian thêm',focus:'Khu vực / không khí',seochon:'Seochon · đi bộ yên tĩnh',bukchon:'Bukchon · di sản hanok',insadong:'Insadong · thủ công & trà',easy:'Gwanghwamun · đi bộ dễ nhất',route:'Lộ trình quanh khu vực',arrive:'Đến',stay:'Ở lại',walk:'Di chuyển',minutes:'phút',map:'Mở bản đồ',source:'Nguồn chính thức',checked:'Đã kiểm tra nguồn',warning:'Lưu ý thời gian',copy:'Sao chép lộ trình',copied:'Đã sao chép lộ trình',privacy:'Công cụ chạy cục bộ và không gửi lịch trình tới nhà cung cấp AI.',empty:'Không có lộ trình phù hợp quỹ thời gian này.'},
+ th:{title:'หลังคยองบกกุงควรไปไหนต่อ?',intro:'สร้างเส้นทางใกล้พระราชวัง 1–3 ชั่วโมงจากข้อมูลท่องเที่ยวโซลที่ตรวจสอบแล้ว โดยไม่ใช้ AI API',date:'วันที่',start:'เวลาเริ่มหลังพระราชวัง',budget:'เวลาเพิ่มเติม',focus:'ย่าน / บรรยากาศ',seochon:'ซอชน · เดินแบบท้องถิ่นเงียบ ๆ',bukchon:'บุกชน · วัฒนธรรมฮันอก',insadong:'อินซาดง · งานฝีมือและชา',easy:'ควังฮวามุน · เดินง่ายที่สุด',route:'เส้นทางใกล้เคียง',arrive:'ถึง',stay:'อยู่',walk:'เดินทาง',minutes:'นาที',map:'เปิดแผนที่',source:'แหล่งข้อมูลทางการ',checked:'ตรวจสอบแหล่งข้อมูล',warning:'หมายเหตุเวลา',copy:'คัดลอกเส้นทาง',copied:'คัดลอกเส้นทางแล้ว',privacy:'ตัววางแผนทำงานในเครื่องและไม่ส่งแผนการเดินทางไปยังผู้ให้บริการ AI',empty:'ไม่มีเส้นทางที่เหมาะกับเวลานี้'}
+};
+function toMinutes(value:string){const [h,m]=value.split(':').map(Number);return h*60+m;}
+function clock(value:number){const wrapped=((value%1440)+1440)%1440;return`${String(Math.floor(wrapped/60)).padStart(2,'0')}:${String(wrapped%60).padStart(2,'0')}`;}
+function localToday(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+export function NearbyExplorer({locale}:{locale:string}){
+ const l=(locale in C?locale:'en') as Locale,c=C[l],params=useSearchParams();
+ const [date,setDate]=useState(params.get('date')??localToday());
+ const [start,setStart]=useState(params.get('time')??'14:00');
+ const [budget,setBudget]=useState<NearbyBudget>(120);
+ const [focus,setFocus]=useState<NearbyFocus>('seochon');
+ const [message,setMessage]=useState('');
+ const stops=useMemo(()=>nearbyRoute(focus,budget),[focus,budget]);
+ const timeline=useMemo(()=>{let cursor=toMinutes(start);return stops.map((stop,index)=>{if(index)cursor+=stop.transferMinutes;const arrival=cursor;cursor+=stop.minutes;return{...stop,arrival};});},[stops,start]);
+ async function copyRoute(){const text=[`${c.route} · ${date} · ${start} · ${budget} ${c.minutes}`,...timeline.flatMap((stop,index)=>[`${index+1}. ${stop.name} (${stop.koreanName})`,`${c.arrive}: ${clock(stop.arrival)} · ${c.stay}: ${stop.minutes} ${c.minutes}`,`${stop.note}`,nearbyMapUrl(stop.mapQuery)])].join('\n');try{await navigator.clipboard?.writeText(text);setMessage(c.copied);}catch{setMessage('');}}
+ return <section style={{maxWidth:1050,margin:'0 auto',padding:'30px 20px 72px'}}><h1>{c.title}</h1><p>{c.intro}</p><p><small>{c.privacy}</small></p>
+  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:12,alignItems:'end',margin:'22px 0'}}>
+   <label style={{display:'grid',gap:6}}>{c.date}<input type="date" value={date} onChange={e=>{setDate(e.target.value);setMessage('');}}/></label>
+   <label style={{display:'grid',gap:6}}>{c.start}<input type="time" value={start} onChange={e=>{setStart(e.target.value);setMessage('');}}/></label>
+   <label style={{display:'grid',gap:6}}>{c.budget}<select value={budget} onChange={e=>{setBudget(Number(e.target.value) as NearbyBudget);setMessage('');}}><option value={60}>1H</option><option value={120}>2H</option><option value={180}>3H</option></select></label>
+   <label style={{display:'grid',gap:6}}>{c.focus}<select value={focus} onChange={e=>{setFocus(e.target.value as NearbyFocus);setMessage('');}}><option value="seochon">{c.seochon}</option><option value="bukchon">{c.bukchon}</option><option value="insadong">{c.insadong}</option><option value="easy">{c.easy}</option></select></label>
+  </div>
+  <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center',flexWrap:'wrap'}}><h2>{c.route}</h2><button type="button" className="secondaryButton" onClick={copyRoute} disabled={!timeline.length}>{c.copy}</button></div>{message?<p role="status"><strong>{message}</strong></p>:null}
+  {timeline.length?<ol style={{display:'grid',gap:12,paddingLeft:22}}>{timeline.map((stop,index)=>{const window=stop.restrictedWindow;const warning=window&&(stop.arrival<window.openMinute||stop.arrival>=window.closeMinute);return <li key={stop.id}><article style={{border:'1px solid rgba(0,0,0,.12)',borderRadius:12,padding:15}}><h3 style={{marginTop:0}}>{stop.name} · {stop.koreanName}</h3><p><strong>{c.arrive}:</strong> {clock(stop.arrival)} · <strong>{c.stay}:</strong> {stop.minutes} {c.minutes}{index?` · ${c.walk}: ~${stop.transferMinutes} ${c.minutes}`:''}</p><p>{stop.note}</p>{warning?<p role="alert"><strong>{c.warning}:</strong> {window.note}</p>:null}<div style={{display:'flex',gap:10,flexWrap:'wrap'}}><a className="secondaryButton" href={nearbyMapUrl(stop.mapQuery)} target="_blank" rel="noreferrer">{c.map}</a><a href={stop.sourceUrl} target="_blank" rel="noreferrer">{c.source} ↗</a></div><p><small>{c.checked}: {stop.checkedAt}</small></p></article></li>})}</ol>:<p>{c.empty}</p>}
+ </section>;
+}
