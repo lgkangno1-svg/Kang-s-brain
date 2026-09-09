@@ -8,6 +8,7 @@ const ROUTE_SETTINGS={
  '/hanbok':{changeFrequency:'weekly',priority:0.9},
  '/explore/gyeongbokgung':{changeFrequency:'weekly',priority:0.9},
  '/explore/food':{changeFrequency:'weekly',priority:0.85},
+ '/explore/nearby':{changeFrequency:'weekly',priority:0.85},
  '/culture':{changeFrequency:'weekly',priority:0.8},
  '/culture/saju':{changeFrequency:'monthly',priority:0.85},
  '/culture/naming':{changeFrequency:'monthly',priority:0.85},
