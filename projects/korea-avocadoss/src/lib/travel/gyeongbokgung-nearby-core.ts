@@ -61,3 +61,13 @@ export function nearbyRoute(stops:readonly NearbyStop[],focus:NearbyFocus,budget
 }
 
 export function nearbyMapUrl(query:string){return`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;}
+
+export function nearbyRouteMapUrl(stops:readonly NearbyStop[],origin='Gyeongbokgung Palace'){
+ if(!stops.length)return'';
+ const destination=stops.at(-1)?.mapQuery;
+ if(!destination)return'';
+ const waypoints=stops.slice(0,-1).map(stop=>stop.mapQuery).join('|');
+ const params=new URLSearchParams({api:'1',origin,destination,travelmode:'walking'});
+ if(waypoints)params.set('waypoints',waypoints);
+ return`https://www.google.com/maps/dir/?${params.toString()}`;
+}
