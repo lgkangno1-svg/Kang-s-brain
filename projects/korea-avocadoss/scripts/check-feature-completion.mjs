@@ -55,6 +55,12 @@ assert.match(planner,/foodHref=`\/explore\/food\?date=/,'Palace planner must car
 assert.match(planner,/time=\$\{encodeURIComponent\(clock\(foodArrival\)\)\}/,'Food handoff must use arrival time after any Hanbok return buffer.');
 assert.match(planner,/hanbokHref=`\/hanbok\?date=/,'Palace planner must carry visit context into the Hanbok Rental Finder.');
 assert.match(planner,/#rental-finder/,'Palace planner Hanbok handoff must land on the rental decision tool.');
+assert.match(planner,/STORAGE_KEY='kc-gyeongbokgung-plan-v1'/,'Palace plan persistence needs a versioned local key.');
+assert.match(planner,/type SavedPlan=\{version:1;date:string;start:string;duration:Duration;focus:Focus;withHanbok:boolean\}/,'Saved palace plan must be limited to non-sensitive travel preferences.');
+assert.match(planner,/localStorage\.setItem\(STORAGE_KEY,JSON\.stringify\(payload\)\)/,'Palace plan must save locally without an account or API.');
+assert.match(planner,/validSavedPlan\(parsed\)/,'Saved palace data must be validated before restoration.');
+assert.match(planner,/function restorePlan\(\)/,'Palace planner must restore a saved plan.');
+assert.match(planner,/async function copyPlan\(\)/,'Palace itinerary must be copyable for use during the trip.');
 assert.match(food,/useSearchParams/,'Food Finder must consume itinerary context from the planner.');
 assert.match(food,/foodAvailabilityAt\(place,date,time\)/,'Food Finder must evaluate each place at the planned arrival time.');
 assert.match(food,/openOnly/,'Food Finder must let visitors hide clearly unavailable options.');
@@ -84,4 +90,4 @@ assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not pres
 assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
 assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
 
-console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder, Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
+console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder, reusable Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
