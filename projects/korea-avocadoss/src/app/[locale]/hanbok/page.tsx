@@ -6,6 +6,7 @@ import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
 import {HanbokRentalFinder} from '@/features/hanbok/HanbokRentalFinder';
 import {HanbokVisualInspiration} from '@/features/hanbok/hanbok-visual-inspiration';
 import {Link} from '@/i18n/navigation';
+import {getGyeongbokgungHanbokRentalShops} from '@/lib/content/travel-content';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
@@ -26,6 +27,7 @@ export async function generateMetadata({params}: {params: Promise<{locale: strin
 
 export default async function HanbokPage({params}: {params: Promise<{locale: string}>}) {
   const {locale} = await params;setRequestLocale(locale);const copy=PREVIEW_COPY[(locale in PREVIEW_COPY?locale:'en') as Locale];
+  const rentalShops=await getGyeongbokgungHanbokRentalShops();
   return (
     <main className="stitchHanbokPage">
       <Suspense fallback={<div style={{minHeight: '540px'}} aria-hidden="true" />}><HanbokVisualInspiration /></Suspense>
@@ -36,7 +38,7 @@ export default async function HanbokPage({params}: {params: Promise<{locale: str
         </div>
       </div>
       <section className="prototype stitchHanbokMatcherWrap"><Suspense fallback={<div className="prototypePanel" style={{minHeight:'300px',display:'flex',alignItems:'center',justifyContent:'center'}}>Loading Hanbok Studio...</div>}><HanbokMatcher /></Suspense></section>
-      <Suspense fallback={<div style={{minHeight:320}} aria-hidden="true" />}><HanbokRentalFinder /></Suspense>
+      <Suspense fallback={<div style={{minHeight:320}} aria-hidden="true" />}><HanbokRentalFinder shops={rentalShops} /></Suspense>
     </main>
   );
 }

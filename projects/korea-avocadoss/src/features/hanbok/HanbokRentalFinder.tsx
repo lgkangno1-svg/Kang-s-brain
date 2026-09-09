@@ -3,7 +3,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {useLocale} from 'next-intl';
 import {useSearchParams} from 'next/navigation';
-import {GYEONGBOKGUNG_HANBOK_RENTALS,hanbokRentalAvailabilityAt,hanbokRentalMapHref,type HanbokRentalLanguage} from '@/lib/travel/gyeongbokgung-hanbok-rentals';
+import {hanbokRentalAvailabilityAt,hanbokRentalMapHref,type HanbokRentalLanguage,type HanbokRentalShop} from '@/lib/travel/gyeongbokgung-hanbok-rentals';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
 type Copy={title:string;intro:string;date:string;time:string;language:string;any:string;english:string;japanese:string;chinese:string;available:string;price:string;from:string;hours:string;support:string;map:string;source:string;checked:string;copy:string;copied:string;open:string;closed:string;recheck:string;none:string;notice:string;save:string;saved:string;showSaved:string;storageNote:string};
@@ -19,18 +19,18 @@ const C:Record<Locale,Copy>={
 function localToday(){const now=new Date();return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;}
 const LANGS:Array<['any'|HanbokRentalLanguage,string]>=[['any','any'],['en','english'],['ja','japanese'],['zh','chinese']];
 const FAVORITES_KEY='kc-hanbok-rental-favorites-v1';
-const VALID_SHOP_IDS=new Set(GYEONGBOKGUNG_HANBOK_RENTALS.map(shop=>shop.id));
 
-export function HanbokRentalFinder(){
+export function HanbokRentalFinder({shops}: {shops:readonly HanbokRentalShop[]}){
  const locale=useLocale();const l=(locale in C?locale:'en') as Locale,c=C[l];const params=useSearchParams();
  const queryDate=params.get('date');const queryTime=params.get('time');
  const [date,setDate]=useState(/^\d{4}-\d{2}-\d{2}$/.test(queryDate??'')?queryDate!:localToday());
  const [time,setTime]=useState(/^\d{2}:\d{2}$/.test(queryTime??'')?queryTime!:'09:00');
  const [language,setLanguage]=useState<'any'|HanbokRentalLanguage>('any');const [hideClosed,setHideClosed]=useState(true);const [copied,setCopied]=useState('');
  const [favorites,setFavorites]=useState<Set<string>>(new Set());const [showSaved,setShowSaved]=useState(false);
- useEffect(()=>{try{const raw=localStorage.getItem(FAVORITES_KEY);if(!raw)return;const parsed=JSON.parse(raw);if(!Array.isArray(parsed)){localStorage.removeItem(FAVORITES_KEY);return;}const ids=parsed.filter((id):id is string=>typeof id==='string'&&VALID_SHOP_IDS.has(id));setFavorites(new Set(ids));if(ids.length!==parsed.length)localStorage.setItem(FAVORITES_KEY,JSON.stringify(ids));}catch{try{localStorage.removeItem(FAVORITES_KEY);}catch{}}},[]);
- function toggleFavorite(id:string){setFavorites(previous=>{const next=new Set(previous);if(next.has(id))next.delete(id);else next.add(id);try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...next]));}catch{}return next;});}
- const rows=useMemo(()=>GYEONGBOKGUNG_HANBOK_RENTALS.map(shop=>({shop,availability:hanbokRentalAvailabilityAt(shop,date,time)})).filter(({shop,availability})=>(!hideClosed||availability!=='closed')&&(language==='any'||shop.interpretationLanguages.includes(language))&&(!showSaved||favorites.has(shop.id))).sort((a,b)=>({open:0,recheck:1,closed:2}[a.availability]-{open:0,recheck:1,closed:2}[b.availability])),[date,time,language,hideClosed,showSaved,favorites]);
+ const validShopIds=useMemo(()=>new Set(shops.map(shop=>shop.id)),[shops]);
+ useEffect(()=>{try{const raw=localStorage.getItem(FAVORITES_KEY);if(!raw)return;const parsed=JSON.parse(raw);if(!Array.isArray(parsed)){localStorage.removeItem(FAVORITES_KEY);return;}const ids=parsed.filter((id):id is string=>typeof id==='string'&&validShopIds.has(id));setFavorites(new Set(ids));if(ids.length!==parsed.length)localStorage.setItem(FAVORITES_KEY,JSON.stringify(ids));}catch{try{localStorage.removeItem(FAVORITES_KEY);}catch{}}},[validShopIds]);
+ function toggleFavorite(id:string){if(!validShopIds.has(id))return;setFavorites(previous=>{const next=new Set(previous);if(next.has(id))next.delete(id);else next.add(id);try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...next]));}catch{}return next;});}
+ const rows=useMemo(()=>shops.map(shop=>({shop,availability:hanbokRentalAvailabilityAt(shop,date,time)})).filter(({shop,availability})=>(!hideClosed||availability!=='closed')&&(language==='any'||shop.interpretationLanguages.includes(language))&&(!showSaved||favorites.has(shop.id))).sort((a,b)=>({open:0,recheck:1,closed:2}[a.availability]-{open:0,recheck:1,closed:2}[b.availability])),[shops,date,time,language,hideClosed,showSaved,favorites]);
  async function copyAddress(id:string,address:string){try{await navigator.clipboard?.writeText(address);setCopied(id);}catch{setCopied('');}}
  const statusLabel=(value:'open'|'closed'|'recheck')=>value==='open'?c.open:value==='closed'?c.closed:c.recheck;
  return <section id="rental-finder" style={{maxWidth:1120,margin:'28px auto 72px',padding:'0 20px'}}>

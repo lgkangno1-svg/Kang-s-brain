@@ -1,5 +1,20 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-10 Hanbok rental server-content boundary
+
+**Candidate branch:** `feat/korea-rental-headless-20260910`
+
+- `docs/PRD.md` still designates `docs/BUILD_SPEC.md` as the active requirements source.
+- The isolated headless-content sequence in `HEADLESS_CMS_PERFORMANCE_2026-09-10.md` is continuing one domain at a time: food/cafe first, Hanbok rental second, Nearby later.
+- The Hanbok page now resolves source-checked rental records in the Server Component through `getGyeongbokgungHanbokRentalShops()` and passes them as serializable props to `HanbokRentalFinder`.
+- `HanbokRentalFinder` no longer imports the full local rental catalog into the Client Component. Date/time availability, language filtering, save/filter/map/copy interactions remain deterministic browser behavior.
+- Optional Sanity records are server-only, cached for six hours, schema-validated including provenance/freshness fields, and fail closed to the verified local catalog on empty, malformed, partial-invalid or failed responses. Production remains `KOREA_CONTENT_SOURCE=local` until a dedicated Korea Concierge CMS account exists.
+- Saved browser shop IDs are revalidated against the currently server-resolved catalog; stale or unknown IDs are removed rather than retained as authoritative records.
+- No `next-sanity`, live subscription, model, payment, Stripe, credit, entitlement, account or photo-processing dependency was added. The existing direct server `fetch` adapter remains lower-complexity for the current dataset.
+- Exact-SHA CI/deploy/live evidence must be recorded before this slice is called production-complete. The branch documentation itself is not a deployment claim.
+
+---
+
 ## Latest entry — 2026-09-09 P0 Style Studio metadata localization hardening
 
 **Candidate branch:** `fix/korea-style-hanbok-handoff-20260909`
