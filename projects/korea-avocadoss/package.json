@@ -3,6 +3,7 @@
   "scripts":{
     "dev":"next dev",
     "check:i18n":"node scripts/check-message-parity.mjs && node scripts/check-quick-help-keys.mjs && node scripts/check-color-message-keys.mjs && node scripts/check-hanbok-message-keys.mjs && node scripts/check-credits-message-keys.mjs",
+    "check:content":"node scripts/check-content-architecture.mjs",
     "check:saju":"node scripts/check-saju-input-contracts.mjs && node scripts/check-saju-boundary-fixtures.mjs && node scripts/check-saju-month-boundary-fixtures.mjs && node scripts/check-saju-day-boundary-policy.mjs && node scripts/check-saju-true-solar-time.mjs && node scripts/check-saju-timezone-resolution.mjs && node scripts/check-saju-deterministic-core.mjs",
     "check:culture":"node scripts/check-kculture-experiences.mjs",
     "check:functionality":"node scripts/check-functional-experiences.mjs && node scripts/check-feature-completion.mjs && node scripts/check-nearby-explorer.mjs && node scripts/check-gyeongbokgung-closure-recovery.mjs && node scripts/check-style-plan-recovery.mjs && node scripts/check-hanbok-rental-recovery.mjs && node scripts/check-style-metadata-localization.mjs",
@@ -14,7 +15,7 @@
     "check:recovery":"node scripts/check-route-recovery-contracts.mjs",
     "check:document-lang":"node scripts/check-built-document-languages.mjs",
     "check:legacy-redirects":"node scripts/check-legacy-redirects.mjs",
-    "build":"npm run check:i18n && npm run check:saju && npm run check:culture && npm run check:functionality && npm run check:database && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
+    "build":"npm run check:i18n && npm run check:content && npm run check:saju && npm run check:culture && npm run check:functionality && npm run check:database && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
     "start":"next start"
   },
   "dependencies":{"next":"16.3.3","next-intl":"4.13.4","react":"19.2.0","react-dom":"19.2.0"},
