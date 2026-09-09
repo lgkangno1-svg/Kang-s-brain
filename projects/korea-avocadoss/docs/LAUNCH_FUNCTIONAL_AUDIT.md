@@ -16,7 +16,7 @@ This checklist treats **working end-to-end behavior** as the minimum bar. A page
 | Feature | Status | Current functional evidence | Remaining before payment-grade launch |
 |---|---|---|---|
 | Home / navigation | WORKING | Live Saju, Naming, Explore, Color and Hanbok routes are linked; paid banner is explicitly pre-launch. | Final responsive/browser QA and legal/footer destinations. |
-| Personal Color | HARDENING | Browser-local JPEG/PNG/WebP validation, size/dimension/pixel caps, local Lab/skin-pixel analysis, lighting warnings, manual correction, Hanbok bridge, orientation-aware `createImageBitmap` decoding with a browser-local `<img>` fallback and explicit decoder resource cleanup. Visitors can explicitly revoke the selected object URL, release the in-memory File reference, clear the derived result and recover to idle without persistence or network transfer. | Real-device/fixture coverage for rotated camera JPEGs and constrained-memory devices, plus final privacy/consent copy review. |
+| Personal Color | HARDENING | Browser-local JPEG/PNG/WebP validation, size/dimension/pixel caps, local Lab/skin-pixel analysis, lighting warnings, manual correction, Hanbok bridge, orientation-aware `createImageBitmap` decoding with a browser-local `<img>` fallback and explicit decoder resource cleanup. Visitors can explicitly revoke the selected object URL, release the in-memory File reference, clear the derived result and recover to idle without persistence or network transfer. The scanner now stays unmounted until the visitor explicitly accepts a six-locale disclosure that the photo remains browser-local, is not sent to AI, is tab-ephemeral/removable, and is not used to infer sensitive traits. | Real-device/fixture coverage for rotated camera JPEGs and constrained-memory devices, plus final native/legal review of privacy/consent wording. |
 | Hanbok matcher | HARDENING | Color/mood/comfort/destination/season ranking plus Personal Color bridge. Curated 12-look licensed catalog is re-ranked and top six visual references shown with source/license. Rental-finder date/time handoff is sanitized in the Server Component so source-checked shop content remains present in server HTML instead of hiding behind a client `useSearchParams` bailout. | More locale-native catalog descriptions, verified rental inventory entity layer, broader visual regression tests. |
 | Saju | HARDENING | Real DOB + IANA birthplace timezone, exact/rough/unknown birth time, deterministic pillars/elements/zodiac, no AI call, no silent Seoul default, localized uncertainty. | Expand KASI/manseryeok cross-validation and historical timezone/boundary fixtures; final cultural wording review. |
 | Korean Naming Studio | WORKING | Deterministic catalog/ranking, multiple candidate results, optional surname, Hangul/romanization/Hanja examples, six-locale shell, zero API. | Editorial/native-speaker review of candidate meanings/romanization before high-traffic launch. |
@@ -58,10 +58,11 @@ Real checkout may not open until all are true:
 ## Current engineering priority
 
 1. Keep MiniPC exact-SHA build green for the current functional branch.
-2. Complete remaining Personal Color real-device fixtures/consent review and Hanbok edge-case/device QA.
-3. Continue Explore freshness/geospatial hardening after full-route map handoff, focusing on walking-time calibration and closure exceptions.
-4. Continue My Korea Look locale-native result/export hardening, then build the private persistence interface required by the paid flow.
-5. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.
-6. Implement auth/order/webhook/fulfillment against that dedicated project.
-7. Run Stripe **test-mode** E2E including retries/duplicate events/refunds.
-8. Only then consider live payment enablement.
+2. Complete remaining Personal Color real-device fixtures and constrained-memory QA; consent is now explicitly gated but still needs final native/legal wording review.
+3. Continue Hanbok edge-case/device QA.
+4. Continue Explore freshness/geospatial hardening after full-route map handoff, focusing on walking-time calibration and closure exceptions.
+5. Continue My Korea Look locale-native result/export hardening, then build the private persistence interface required by the paid flow.
+6. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.
+7. Implement auth/order/webhook/fulfillment against that dedicated project.
+8. Run Stripe **test-mode** E2E including retries/duplicate events/refunds.
+9. Only then consider live payment enablement.
