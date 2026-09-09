@@ -30,8 +30,10 @@ assert.doesNotMatch(stripeHelper, /\buserId\??\s*:/,
   'Stripe checkout helper must not expose a userId parameter before authenticated order ownership exists.');
 assert.doesNotMatch(stripeHelper, /body\.set\(['"]client_reference_id['"]/,
   'Stripe checkout helper must not attach client_reference_id before it can come from verified server ownership.');
-assert.match(stripeHelper, /verified server session.*durable order/is,
-  'Stripe checkout helper must document the required future source of payment ownership.');
+assert.match(stripeHelper, /verified server session/i,
+  'Stripe checkout helper must require future payment ownership to originate from a verified server session.');
+assert.match(stripeHelper, /durable[\s\S]{0,80}server-created order/i,
+  'Stripe checkout helper must require future payment ownership to be attached through a durable server-created order.');
 assert.match(checkoutRoute, /P0_LOCALES/,
   'Checkout locale must be constrained to supported launch locales.');
 assert.match(checkoutRoute, /isLaunchCheckoutProductKey/,
