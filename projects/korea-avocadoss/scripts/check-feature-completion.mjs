@@ -29,6 +29,12 @@ assert.match(hanbok,/compareIds/,'Hanbok visual results must support explicit co
 assert.match(hanbok,/next\.size>=3/,'Hanbok comparison must cap the decision set at three looks.');
 assert.match(hanbok,/aria-pressed=\{saved\}/,'Favorite state must be exposed accessibly.');
 assert.match(hanbok,/aria-pressed=\{selected\}/,'Compare state must be exposed accessibly.');
+assert.match(hanbok,/look\.rentalShopCard\.hangulTitle/,'Every ranked Hanbok look must expose its curated Korean rental request title.');
+assert.match(hanbok,/look\.rentalShopCard\.hangulStaffNote/,'Every ranked Hanbok look must expose its curated Korean rental request note.');
+assert.match(hanbok,/RENTAL_CONFIRMATION_KO/,'Rental request cards must include a fixed stock/extra-fee confirmation line.');
+assert.match(hanbok,/navigator\.clipboard\?\.writeText/,'Korean rental request cards must be copyable without an API.');
+assert.match(hanbok,/async function copyRentalRequest/,'Hanbok results must provide an explicit in-shop copy action.');
+assert.doesNotMatch(hanbok,/fetch\s*\(/,'Hanbok request cards must stay zero-API and use curated text.');
 assert.match(hanbokBridge,/PersonalColorDepth/);assert.match(hanbokBridge,/PersonalColorContrast/);
 assert.match(hanbokMatcher,/isPersonalColorDepth\(depthParam\)/,'Hanbok matcher must validate bridged Personal Color depth.');
 assert.match(hanbokMatcher,/isPersonalColorContrast\(contrastParam\)/,'Hanbok matcher must validate bridged Personal Color contrast.');
@@ -90,4 +96,4 @@ assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not pres
 assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
 assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
 
-console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder, reusable Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
+console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
