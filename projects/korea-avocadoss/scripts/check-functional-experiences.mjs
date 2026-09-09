@@ -10,7 +10,7 @@ const required=[
  'src/app/[locale]/color/page.tsx','src/features/color/color-scanner.tsx','src/features/color/validate-color-upload.ts',
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx','src/features/hanbok/rank-catalog.ts','src/features/hanbok/HanbokCatalogResults.tsx','src/features/hanbok/HanbokRentalFinder.tsx','src/lib/travel/gyeongbokgung-hanbok-rentals.ts','src/lib/looks/catalog.ts',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
- 'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
+ 'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts','src/lib/travel/gyeongbokgung-food-core.ts','src/lib/content/travel-content.ts',
  'src/app/[locale]/explore/nearby/page.tsx','src/features/explore/NearbyExplorer.tsx','src/lib/travel/gyeongbokgung-nearby.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
@@ -71,9 +71,12 @@ assert.match(explore,/\/explore\/food/,'Timed route must continue into Food Find
 assert.match(explore,/hanbokHref=`\/hanbok\?date=/,'Timed route must continue into Hanbok rental planning with visit context');
 assert.match(explorePage,/href="\/explore\/nearby"/,'Palace experience must continue into the nearby route planner');
 
+const foodPage=read('src/app/[locale]/explore/food/page.tsx');
 const food=read('src/features/explore/FoodFinder.tsx');
 const foodData=read('src/lib/travel/gyeongbokgung-food.ts');
-assert.match(food,/filterFoodPlaces\(category\)/,'Food finder filters must drive visible results');
+assert.match(foodPage,/getGyeongbokgungFoodPlaces\(\)/,'Food page must resolve public content on the server');
+assert.match(food,/filterFoodPlaces\(contentPlaces,category\)/,'Food finder filters must drive visible results from server-provided content');
+assert.doesNotMatch(food,/from '@\/lib\/travel\/gyeongbokgung-food'/,'Food client must not bundle the local content payload');
 assert.match(food,/Verify source|查看官方来源|公式情報を確認/,'Food finder must tell visitors to re-check live source data');
 assert.match(foodData,/visitkorea\.or\.kr/,'Food data must include official Korea Tourism Organization evidence');
 assert.match(foodData,/visitseoul\.net/,'Food data must include official Visit Seoul evidence');
@@ -120,4 +123,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, Food, date-aware Nearby Explorer, free deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, server-delivered Food, date-aware Nearby Explorer, free deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
