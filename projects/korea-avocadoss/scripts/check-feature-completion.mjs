@@ -46,7 +46,13 @@ assert.match(hanbokRank,/score\+=depthBonus/,'Depth must remain a bounded rankin
 assert.match(hanbokRank,/score\+=contrastBonus/,'Contrast must remain a bounded ranking bonus rather than replace explicit preferences.');
 assert.match(hanbokPage,/HanbokRentalFinder/,'Hanbok page must expose the actual rental finder.');
 assert.doesNotMatch(hanbokPage,/Get My Korea Look \(\$12\)|\$12 USD/,'Hanbok must not advertise a live paid checkout before payment launch.');
-assert.match(rentalFinder,/useSearchParams/,'Rental Finder must consume itinerary handoff context.');
+assert.match(hanbokPage,/searchParams:Promise/,'Hanbok page must resolve itinerary handoff context on the server.');
+assert.match(hanbokPage,/initialDate=validDate\(one\(query\.date\)\)/,'Hanbok page must validate handed-off visit dates.');
+assert.match(hanbokPage,/initialTime=validTime\(one\(query\.time\)\)/,'Hanbok page must validate handed-off arrival times.');
+assert.match(hanbokPage,/HanbokRentalFinder shops=\{rentalShops\} initialDate=\{initialDate\} initialTime=\{initialTime\}/,'Hanbok page must server-render rental content with sanitized itinerary context.');
+assert.match(rentalFinder,/initialDate\?\?localToday\(\)/,'Rental Finder must preserve a browser-local fallback date.');
+assert.match(rentalFinder,/initialTime\?\?'09:00'/,'Rental Finder must preserve a safe default arrival time.');
+assert.doesNotMatch(rentalFinder,/useSearchParams/,'Rental Finder must not client-bail the server-rendered shell behind useSearchParams.');
 assert.match(rentalFinder,/hanbokRentalAvailabilityAt/,'Rental Finder must evaluate source-checked schedules locally.');
 assert.match(rentalFinder,/interpretationLanguages/,'Rental Finder language filtering must be based on explicitly verified interpretation support.');
 assert.ok((rentalData.match(/id:'/g)??[]).length>=3,'Rental Finder needs a useful source-checked initial shop set.');
@@ -69,7 +75,7 @@ assert.match(planner,/STORAGE_KEY='kc-gyeongbokgung-plan-v1'/,'Palace plan persi
 assert.match(planner,/type SavedPlan=\{version:1;date:string;start:string;duration:Duration;focus:Focus;withHanbok:boolean\}/,'Saved palace plan must be limited to non-sensitive travel preferences.');
 assert.match(planner,/localStorage\.setItem\(STORAGE_KEY,JSON\.stringify\(payload\)\)/,'Palace plan must save locally without an account or API.');
 assert.match(planner,/validSavedPlan\(parsed\)/,'Saved palace data must be validated before restoration.');
-assert.match(planner,/function restorePlan\(\)/,'Palace planner must restore a saved plan.');
+assert.match(planner,/function restorePlan\(\)/,'Saved palace data must be recoverable.');
 assert.match(planner,/async function copyPlan\(\)/,'Palace itinerary must be copyable for use during the trip.');
 assert.match(food,/useSearchParams/,'Food Finder must consume itinerary context from the planner.');
 assert.match(food,/foodAvailabilityAt\(place,date,time\)/,'Food Finder must evaluate each place at the planned arrival time.');
@@ -106,4 +112,4 @@ assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not pres
 assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
 assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
 
-console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+server-delivered food favorites, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
+console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, server-rendered Hanbok rental handoff + save/compare/Korean request cards, reusable Hanbok-aware itinerary+server-delivered food favorites, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');

@@ -2,7 +2,6 @@
 
 import {useEffect,useMemo,useState} from 'react';
 import {useLocale} from 'next-intl';
-import {useSearchParams} from 'next/navigation';
 import {hanbokRentalAvailabilityAt,hanbokRentalMapHref,type HanbokRentalLanguage,type HanbokRentalShop} from '@/lib/travel/gyeongbokgung-hanbok-rentals';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
@@ -20,11 +19,11 @@ function localToday(){const now=new Date();return `${now.getFullYear()}-${String
 const LANGS:Array<['any'|HanbokRentalLanguage,string]>=[['any','any'],['en','english'],['ja','japanese'],['zh','chinese']];
 const FAVORITES_KEY='kc-hanbok-rental-favorites-v1';
 
-export function HanbokRentalFinder({shops}: {shops:readonly HanbokRentalShop[]}){
- const locale=useLocale();const l=(locale in C?locale:'en') as Locale,c=C[l];const params=useSearchParams();
- const queryDate=params.get('date');const queryTime=params.get('time');
- const [date,setDate]=useState(/^\d{4}-\d{2}-\d{2}$/.test(queryDate??'')?queryDate!:localToday());
- const [time,setTime]=useState(/^\d{2}:\d{2}$/.test(queryTime??'')?queryTime!:'09:00');
+type HanbokRentalFinderProps={shops:readonly HanbokRentalShop[];initialDate?:string;initialTime?:string};
+export function HanbokRentalFinder({shops,initialDate,initialTime}:HanbokRentalFinderProps){
+ const locale=useLocale();const l=(locale in C?locale:'en') as Locale,c=C[l];
+ const [date,setDate]=useState(initialDate??localToday());
+ const [time,setTime]=useState(initialTime??'09:00');
  const [language,setLanguage]=useState<'any'|HanbokRentalLanguage>('any');const [hideClosed,setHideClosed]=useState(true);const [copied,setCopied]=useState('');
  const [favorites,setFavorites]=useState<Set<string>>(new Set());const [showSaved,setShowSaved]=useState(false);
  const validShopIds=useMemo(()=>new Set(shops.map(shop=>shop.id)),[shops]);
