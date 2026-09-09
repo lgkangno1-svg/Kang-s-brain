@@ -20,11 +20,17 @@ assert.match(data,/restrictedWindow/,'Nearby data must model time-sensitive visi
 assert.match(data,/Bukchon-ro 11-gil/,'Bukchon restricted-area timing must be explicit rather than generalized to all of Bukchon.');
 assert.match(data,/sourceUrl:OFFICIAL/,'Nearby stops must retain official source URLs.');
 assert.match(data,/google\.com\/maps\/search/,'Nearby route must use a zero-API map handoff.');
+assert.match(data,/closedWeekdays:\[6\]/,'Known fixed weekly closures must be modeled explicitly from official source data.');
+assert.match(data,/nearbyStopAvailabilityAt/,'Nearby data layer must expose deterministic date/time availability evaluation.');
+assert.match(data,/weekdayFromIso/,'Weekly closure evaluation must derive weekday from the visitor-selected ISO date.');
+assert.match(data,/if\(date&&nearbyStopAvailabilityAt\(base,date,720\)==='closed'\)continue/,'Routes must omit stops with a known fixed closure on the selected date.');
+assert.match(data,/Lunar New Year and Chuseok closures also require a source re-check/,'Unmodeled holiday closures must remain explicit rather than guessed.');
 
 assert.match(explorer,/useSearchParams/,'Nearby Explorer must accept itinerary handoff context.');
-assert.match(explorer,/nearbyRoute\(focus,budget\)/,'Nearby Explorer must recalculate routes from explicit visitor choices.');
+assert.match(explorer,/nearbyRoute\(focus,budget,date\)/,'Nearby Explorer must recalculate routes from explicit visitor choices including date.');
+assert.match(explorer,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must evaluate time restrictions against each planned arrival.');
 assert.match(explorer,/navigator\.clipboard\?\.writeText/,'Nearby route must be copyable for use during the trip.');
-assert.match(explorer,/window\.note/,'Nearby Explorer must surface time restriction warnings.');
+assert.match(explorer,/closurePolicy/,'Nearby Explorer must disclose fixed-closure filtering and holiday re-check limits in every P0 locale.');
 assert.doesNotMatch(explorer,/fetch\s*\(/,'Nearby Explorer must remain zero-API.');
 assert.doesNotMatch(explorer,/openai|openrouter|anthropic/i,'Nearby Explorer must not depend on an AI provider.');
 
@@ -34,4 +40,4 @@ assert.match(quickHelp,/href:'\/explore\/nearby'/,'Quick Help nearby guidance mu
 assert.match(seo,/'\/explore\/nearby'/,'Nearby Explorer must participate in localized canonical/hreflang URLs.');
 assert.match(sitemap,/'\/explore\/nearby'/,'Nearby Explorer must be included in the public sitemap.');
 
-console.log('Nearby Explorer contracts passed: source-checked 1–3h local routes, time restrictions, copy/map handoff, real navigation, and zero AI API.');
+console.log('Nearby Explorer contracts passed: source-checked 1–3h local routes, date-aware fixed closures, time restrictions, copy/map handoff, real navigation, and zero AI API.');
