@@ -4,7 +4,6 @@ import { resolveStripePriceId, isApprovedProductKey, type ProductKey, PRODUCT_CA
 export type StripeCheckoutParams = {
   productKey: ProductKey;
   locale: string;
-  userId?: string;
   siteUrl?: string;
 };
 
@@ -104,6 +103,13 @@ export function verifyStripeWebhookSignature(
 /**
  * Creates a Stripe-hosted Checkout Session.
  * Server owns price IDs, URLs, and allowed products.
+ *
+ * Payment ownership is intentionally absent from this helper until the authenticated
+ * order foundation exists. Do not add user/account identifiers here from request
+ * payloads, query parameters, local storage, or other client-controlled state.
+ * The future owner reference must come from a verified server session and a durable
+ * server-created order record before checkout is enabled.
+ *
  * Never includes raw birth data, face photos, or sensitive PII in Stripe metadata.
  */
 export async function createStripeCheckoutSession(
@@ -141,7 +147,8 @@ export async function createStripeCheckoutSession(
   const successUrl = `${siteUrl}/${locale}/checkout/success?session_id={CHECKOUT_SESSION_ID}&product=${params.productKey}`;
   const cancelUrl = `${siteUrl}/${locale}/hanbok`;
 
-  // Server-sanitized metadata: only opaque IDs and product key
+  // Server-sanitized metadata: launch product only. Ownership must later be attached
+  // from a verified server session + durable order, never from client input.
   const body = new URLSearchParams({
     mode: 'payment',
     'line_items[0][price]': priceRes.priceId,
@@ -150,10 +157,6 @@ export async function createStripeCheckoutSession(
     cancel_url: cancelUrl,
     'metadata[productKey]': params.productKey,
   });
-
-  if (params.userId) {
-    body.set('client_reference_id', params.userId);
-  }
 
   try {
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
