@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { ColorScanner } from '@/features/color/color-scanner';
+import { ColorConsentGate } from '@/features/color/color-consent-gate';
 import { localizedAlternates } from '@/lib/seo/localized-metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -27,7 +27,7 @@ export default async function ColorPage({ params }: { params: Promise<{ locale: 
         <p>{t('intro')}</p>
       </section>
       <section className="prototype">
-        <ColorScanner />
+        <ColorConsentGate />
       </section>
     </main>
   );
