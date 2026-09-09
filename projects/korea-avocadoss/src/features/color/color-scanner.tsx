@@ -104,7 +104,7 @@ export function ColorScanner() {
   }
 
   const completed = status === 'done';
-  const hanbokHref = `/hanbok?undertone=${encodeURIComponent(undertone)}#hanbok-matcher`;
+  const hanbokHref = `/hanbok?undertone=${encodeURIComponent(undertone)}&depth=${encodeURIComponent(depth)}&contrast=${encodeURIComponent(result.contrast)}#hanbok-matcher`;
   const resultLabel = locale === 'en' ? 'Personal Color Result' : t('resultTitle');
   const directionLabel = locale === 'en' ? 'YOUR COLOR DIRECTION' : t('resultTitle');
 
