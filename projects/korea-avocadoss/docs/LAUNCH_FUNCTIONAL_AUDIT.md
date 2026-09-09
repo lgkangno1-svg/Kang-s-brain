@@ -24,7 +24,7 @@ This checklist treats **working end-to-end behavior** as the minimum bar. A page
 | Nearby Explorer | HARDENING | 1–3h deterministic routes now consume the selected visit date, omit source-verified fixed weekly closures such as the Gwanghwamun Tourist Information Center Saturday closure, retain time-window warnings, and disclose that holiday/temporary closures require source re-check. | Expand fixed-closure coverage, holiday exception data, walking-time calibration and route-level map handoff. |
 | Food & cafe finder | HARDENING | Source-checked official tourism records, category filters, hours/address/dietary notes, checked-at/source link. | Expand verified inventory, geospatial distance, localization of business descriptions, automated stale-data review. |
 | Quick Help | WORKING | Deterministic decision tree, keyboard recovery, 0 credits, no fetch/LLM. | Keep answers synchronized with live feature routes and policy changes. |
-| My Korea Look free preview | HARDENING | Full curated catalog ranking responds to style/garment/tone/priority/season; sample route remains accessible. | Final multilingual content, deterministic 3-look deliverable generator, saved result flow, PDF/export QA. |
+| My Korea Look free preview | HARDENING | Full curated catalog ranking responds to style/garment/tone/priority/season; sample route remains accessible; `/style` search metadata now has locale-native title/description for all six P0 locales while retaining localized canonical/hreflang alternates. | More locale-native catalog/result prose, saved-result/export QA, and the private paid-result persistence path. |
 | Credits catalog | HARDENING | Economics/catalog and authorization contracts exist. | Do not sell credits until durable account ledger/refund/idempotency flow is deployed and E2E tested. |
 
 ## Payment and ownership
@@ -60,7 +60,7 @@ Real checkout may not open until all are true:
 1. Keep MiniPC exact-SHA build green for the current functional branch.
 2. Complete Personal Color and Hanbok edge-case/device QA.
 3. Continue Explore geospatial/freshness hardening after date-aware fixed-closure filtering.
-4. Build deterministic My Korea Look deliverable generation and persistence interface.
+4. Continue My Korea Look locale-native result/export hardening, then build the private persistence interface required by the paid flow.
 5. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.
 6. Implement auth/order/webhook/fulfillment against that dedicated project.
 7. Run Stripe **test-mode** E2E including retries/duplicate events/refunds.
