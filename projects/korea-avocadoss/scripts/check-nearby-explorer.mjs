@@ -20,7 +20,11 @@ assert.ok((data.match(/checkedAt:'2026-09-09'/g)??[]).length>=5,'Nearby inventor
 assert.match(data,/restrictedWindow/,'Nearby data must model time-sensitive visitor restrictions.');
 assert.match(data,/Bukchon-ro 11-gil/,'Bukchon restricted-area timing must be explicit rather than generalized to all of Bukchon.');
 assert.match(data,/sourceUrl:OFFICIAL/,'Nearby stops must retain official source URLs.');
-assert.match(core,/google\.com\/maps\/search/,'Nearby route must use a zero-API map handoff.');
+assert.match(core,/google\.com\/maps\/search/,'Nearby stops must use a zero-API map handoff.');
+assert.match(core,/nearbyRouteMapUrl/,'Nearby core must expose a route-level map handoff.');
+assert.match(core,/google\.com\/maps\/dir/,'The full-route handoff must use provider-native directions rather than a new routing API.');
+assert.match(core,/travelmode:'walking'/,'Nearby route handoff must explicitly request walking directions.');
+assert.match(core,/params\.set\('waypoints',waypoints\)/,'Multi-stop Nearby routes must preserve intermediate stops as waypoints.');
 assert.match(data,/closedWeekdays:\[6\]/,'Known fixed weekly closures must be modeled explicitly from official source data.');
 assert.match(core,/nearbyStopAvailabilityAt/,'Nearby deterministic core must expose date/time availability evaluation.');
 assert.match(core,/weekdayFromIso/,'Weekly closure evaluation must derive weekday from the visitor-selected ISO date.');
@@ -30,8 +34,12 @@ assert.match(data,/Lunar New Year and Chuseok closures also require a source re-
 assert.match(explorer,/useSearchParams/,'Nearby Explorer must accept itinerary handoff context.');
 assert.match(explorer,/stops:readonly NearbyStop\[\]/,'Nearby Explorer must consume server-resolved content rather than owning the catalog.');
 assert.match(explorer,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby Explorer must recalculate routes from server content and explicit visitor choices including date.');
+assert.match(explorer,/nearbyRouteMapUrl\(routeStops\)/,'Nearby Explorer must build a single full-route map handoff from the chosen deterministic stops.');
+assert.match(explorer,/href=\{routeMap\}/,'The generated full walking route must be directly actionable from the result.');
+assert.ok((explorer.match(/fullRoute:/g)??[]).length===6,'The full-route action must have native copy for all six P0 locales.');
 assert.match(explorer,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must evaluate time restrictions against each planned arrival.');
 assert.match(explorer,/navigator\.clipboard\?\.writeText/,'Nearby route must be copyable for use during the trip.');
+assert.match(explorer,/routeMap\]\.filter\(Boolean\)/,'Copied itinerary text must include the full-route map handoff when available.');
 assert.match(explorer,/closurePolicy/,'Nearby Explorer must disclose fixed-closure filtering and holiday re-check limits in every P0 locale.');
 assert.doesNotMatch(explorer,/gyeongbokgung-nearby';/,'Nearby client must not import the verified local content module.');
 assert.doesNotMatch(explorer,/fetch\s*\(/,'Nearby Explorer must remain zero-API.');
@@ -44,4 +52,4 @@ assert.match(quickHelp,/href:'\/explore\/nearby'/,'Quick Help nearby guidance mu
 assert.match(seo,/'\/explore\/nearby'/,'Nearby Explorer must participate in localized canonical/hreflang URLs.');
 assert.match(sitemap,/'\/explore\/nearby'/,'Nearby Explorer must be included in the public sitemap.');
 
-console.log('Nearby Explorer contracts passed: server-resolved source-checked content, deterministic 1–3h local routes, date-aware closures, time restrictions, copy/map handoff, real navigation, and zero AI API.');
+console.log('Nearby Explorer contracts passed: server-resolved source-checked content, deterministic 1–3h local routes, date-aware closures, time restrictions, full walking-route/copy/map handoff, real navigation, and zero AI API.');
