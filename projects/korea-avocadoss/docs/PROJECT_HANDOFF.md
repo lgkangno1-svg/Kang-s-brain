@@ -1,5 +1,20 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-10 Nearby Explorer server-content boundary
+
+**Candidate branch:** `feat/korea-nearby-headless-20260910`
+
+- `docs/PRD.md` still designates `docs/BUILD_SPEC.md` as the active requirements source.
+- The third isolated headless-content slice moves source-checked Nearby Explorer stop records behind the existing Server Component content adapter while leaving date/time availability, route budgeting, map handoff and copy behavior deterministic and zero-API in application code.
+- `/[locale]/explore/nearby` resolves `getGyeongbokgungNearbyStops()` on the server and passes serializable stop records to `NearbyExplorer`; the Client Component no longer imports the verified local content module.
+- Local records remain the production-safe fallback. Optional Sanity records are server-only, cached for six hours, all-or-nothing schema validated with `sourceUrl`/`checkedAt` provenance, and use a dedicated allowlisted revalidation tag.
+- The route core accepts the server-resolved catalog as input and skips missing stop IDs safely rather than trusting CMS completeness. Known fixed weekly closures and arrival-time restrictions remain deterministic visitor-side calculations.
+- Fresh GitHub discovery reconfirmed the maintained official `sanity-io/next-sanity` integration, but adding it or live subscriptions does not beat the existing server `fetch` adapter on current bundle/maintenance/request-volume needs. The Hugging Face model-search action was unavailable in this run; no ML dependency is justified for deterministic content delivery/routing.
+- No payment, Stripe, credits, entitlement, account, model or photo-processing behavior changes. `KOREA_CONTENT_SOURCE=local` remains the default.
+- Exact-SHA CI/deploy/live evidence is still required before this candidate can be called production-complete.
+
+---
+
 ## Latest entry — 2026-09-10 Hanbok rental server-content boundary
 
 **Candidate branch:** `feat/korea-rental-headless-20260910`
