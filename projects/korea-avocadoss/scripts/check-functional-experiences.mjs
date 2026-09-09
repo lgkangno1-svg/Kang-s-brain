@@ -80,7 +80,8 @@ assert.match(foodData,/visitseoul\.net/,'Food data must include official Visit S
 for(const field of ['checkedAt','sourceUrl','hours','address'])assert.match(foodData,new RegExp(field),`Food data missing ${field}`);
 
 const nearby=read('src/features/explore/NearbyExplorer.tsx');
-assert.match(nearby,/nearbyRoute\(focus,budget\)/,'Nearby Explorer choices must drive a real route');
+assert.match(nearby,/nearbyRoute\(focus,budget,date\)/,'Nearby Explorer focus, time budget and selected visit date must drive a real route');
+assert.match(nearby,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must enforce deterministic date/time availability at each planned arrival');
 assert.match(nearby,/navigator\.clipboard\?\.writeText/,'Nearby route must be reusable during the trip');
 assert.doesNotMatch(nearby,/fetch\s*\(/,'Nearby Explorer must remain zero-API');
 
@@ -119,4 +120,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, Food, Nearby Explorer, free deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, Food, date-aware Nearby Explorer, free deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
