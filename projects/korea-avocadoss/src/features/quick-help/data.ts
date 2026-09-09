@@ -7,7 +7,7 @@ export const QUICK_HELP_NODES:Record<string,QuickHelpNode>={
  palace:{id:'palace',titleKey:'nodes.palace.title',answerKey:'nodes.palace.answer',choices:[{labelKey:'nodes.palace.choices.hanbok',nextId:'palace-hanbok'},{labelKey:'nodes.palace.choices.time',nextId:'palace-time'},{labelKey:'nodes.palace.choices.nearby',nextId:'palace-nearby'}],cta:{labelKey:'nodes.palace.cta',href:'/explore/gyeongbokgung'}},
  'palace-hanbok':{id:'palace-hanbok',titleKey:'nodes.palaceHanbok.title',answerKey:'nodes.palaceHanbok.answer',cta:{labelKey:'nodes.palaceHanbok.cta',href:'/hanbok'}},
  'palace-time':{id:'palace-time',titleKey:'nodes.palaceTime.title',answerKey:'nodes.palaceTime.answer',cta:{labelKey:'nodes.palaceTime.cta',href:'/explore/gyeongbokgung'}},
- 'palace-nearby':{id:'palace-nearby',titleKey:'nodes.palaceNearby.title',answerKey:'nodes.palaceNearby.answer',cta:{labelKey:'nodes.palaceNearby.cta',href:'/explore/gyeongbokgung'}},
+ 'palace-nearby':{id:'palace-nearby',titleKey:'nodes.palaceNearby.title',answerKey:'nodes.palaceNearby.answer',cta:{labelKey:'nodes.palaceNearby.cta',href:'/explore/nearby'}},
  hanbok:{id:'hanbok',titleKey:'nodes.hanbok.title',answerKey:'nodes.hanbok.answer',choices:[{labelKey:'nodes.hanbok.choices.colors',nextId:'hanbok-colors'},{labelKey:'nodes.hanbok.choices.style',nextId:'hanbok-style'},{labelKey:'nodes.hanbok.choices.comfort',nextId:'hanbok-comfort'}],cta:{labelKey:'nodes.hanbok.cta',href:'/hanbok'}},
  'hanbok-colors':{id:'hanbok-colors',titleKey:'nodes.hanbokColors.title',answerKey:'nodes.hanbokColors.answer',cta:{labelKey:'nodes.hanbokColors.cta',href:'/color'}},
  'hanbok-style':{id:'hanbok-style',titleKey:'nodes.hanbokStyle.title',answerKey:'nodes.hanbokStyle.answer',cta:{labelKey:'nodes.hanbokStyle.cta',href:'/hanbok'}},
