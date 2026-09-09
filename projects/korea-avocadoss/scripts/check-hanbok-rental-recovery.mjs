@@ -6,7 +6,7 @@ const target=path.join(root,'src/features/hanbok/HanbokRentalFinder.tsx');
 const source=fs.readFileSync(target,'utf8');
 const required=[
   "kc-hanbok-rental-favorites-v1",
-  'VALID_SHOP_IDS',
+  'validShopIds',
   'localStorage.getItem(FAVORITES_KEY)',
   'localStorage.removeItem(FAVORITES_KEY)',
   'localStorage.setItem(FAVORITES_KEY',
@@ -20,8 +20,12 @@ if(missing.length){
   console.error(`Hanbok rental recovery contract failed. Missing: ${missing.join(', ')}`);
   process.exit(1);
 }
-if(!source.includes("typeof id==='string'&&VALID_SHOP_IDS.has(id)")){
-  console.error('Hanbok rental recovery contract failed: persisted shop IDs are not allowlisted against the curated catalog.');
+if(!source.includes("typeof id==='string'&&validShopIds.has(id)")){
+  console.error('Hanbok rental recovery contract failed: persisted shop IDs are not allowlisted against the current server-resolved catalog.');
   process.exit(1);
 }
-console.log('Hanbok rental save/recovery contract passed.');
+if(!source.includes('if(!validShopIds.has(id))return')){
+  console.error('Hanbok rental recovery contract failed: new favorites are not constrained to the current server-resolved catalog.');
+  process.exit(1);
+}
+console.log('Hanbok rental save/recovery contract passed with server-catalog allowlisting.');
