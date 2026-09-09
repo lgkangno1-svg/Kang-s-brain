@@ -2,7 +2,7 @@
 
 import {useEffect,useMemo,useState} from 'react';
 import {useSearchParams} from 'next/navigation';
-import {filterFoodPlaces,foodAvailabilityAt,type FoodCategory} from '@/lib/travel/gyeongbokgung-food';
+import {filterFoodPlaces,foodAvailabilityAt,type FoodCategory,type FoodPlace} from '@/lib/travel/gyeongbokgung-food-core';
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
 type Copy={title:string;intro:string;all:string;meal:string;halal:string;tea:string;coffee:string;hours:string;closed:string;address:string;source:string;diet:string;empty:string;plan:string;date:string;time:string;openOnly:string;available:string;unavailable:string;verify:string;checked:string;save:string;saved:string;showSaved:string;copyAddress:string;copied:string;map:string;storageNote:string};
 const C:Record<Locale,Copy>={
@@ -15,15 +15,16 @@ const C:Record<Locale,Copy>={
 };
 const FAVORITES_KEY='kc-food-favorites-v1';
 function mapHref(name:string,address:string){return`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name}, ${address}`)}`;}
-export function FoodFinder({locale}:{locale:string}){
+export function FoodFinder({locale,places:contentPlaces}:{locale:string;places:readonly FoodPlace[]}){
  const l=(locale in C?locale:'en') as Locale,c=C[l];const searchParams=useSearchParams();
  const [category,setCategory]=useState<FoodCategory|'all'>('all');
  const [date,setDate]=useState(searchParams.get('date')??'');const [time,setTime]=useState(searchParams.get('time')??'');const [openOnly,setOpenOnly]=useState(Boolean(searchParams.get('date')&&searchParams.get('time')));
  const [favorites,setFavorites]=useState<Set<string>>(new Set());const [showSaved,setShowSaved]=useState(false);const [copied,setCopied]=useState('');
- useEffect(()=>{try{const raw=localStorage.getItem(FAVORITES_KEY);if(raw){const ids=JSON.parse(raw);if(Array.isArray(ids))setFavorites(new Set(ids.filter((id):id is string=>typeof id==='string')));}}catch{}},[]);
+ const validPlaceIds=useMemo(()=>new Set(contentPlaces.map(place=>place.id)),[contentPlaces]);
+ useEffect(()=>{try{const raw=localStorage.getItem(FAVORITES_KEY);if(raw){const ids=JSON.parse(raw);if(Array.isArray(ids)){const valid=ids.filter((id):id is string=>typeof id==='string'&&validPlaceIds.has(id));setFavorites(new Set(valid));if(valid.length!==ids.length)localStorage.setItem(FAVORITES_KEY,JSON.stringify(valid));}}}catch{}},[validPlaceIds]);
  function toggleFavorite(id:string){setFavorites(previous=>{const next=new Set(previous);if(next.has(id))next.delete(id);else next.add(id);try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...next]));}catch{}return next;});}
  async function copyAddress(id:string,address:string){try{await navigator.clipboard?.writeText(address);setCopied(id);}catch{setCopied('');}}
- const places=useMemo(()=>filterFoodPlaces(category).map(place=>({place,status:foodAvailabilityAt(place,date,time)})).filter(item=>(!openOnly||item.status!=='closed')&&(!showSaved||favorites.has(item.place.id))),[category,date,time,openOnly,showSaved,favorites]);
+ const places=useMemo(()=>filterFoodPlaces(contentPlaces,category).map(place=>({place,status:foodAvailabilityAt(place,date,time)})).filter(item=>(!openOnly||item.status!=='closed')&&(!showSaved||favorites.has(item.place.id))),[contentPlaces,category,date,time,openOnly,showSaved,favorites]);
  const statusText=(status:'open'|'closed'|'verify'|'unknown')=>status==='open'?c.available:status==='closed'?c.unavailable:status==='verify'?c.verify:'';
  return <section style={{maxWidth:1000,margin:'0 auto',padding:'28px 20px 70px'}}><h1>{c.title}</h1><p>{c.intro}</p>
   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:12,alignItems:'end',margin:'20px 0'}}>
