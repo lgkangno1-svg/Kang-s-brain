@@ -15,6 +15,10 @@ assert.match(gate,/AI service|AI 服务|AI サービス|dịch vụ AI|บริ
 assert.match(gate,/race, ethnicity, nationality, health or attractiveness|种族、族裔、国籍、健康状况或吸引力|人種、民族、国籍、健康状態、魅力度|chủng tộc, sắc tộc, quốc tịch, sức khỏe hoặc mức độ hấp dẫn|เชื้อชาติ ชาติพันธุ์ สัญชาติ สุขภาพ หรือความน่าดึงดูด/,'Consent copy must bound sensitive-trait inference');
 assert.match(gate,/href="\/privacy"/,'Consent gate must link to the privacy notice');
 assert.doesNotMatch(gate,/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest/,'Consent state must remain ephemeral and must not add persistence or network transfer');
-for (const locale of ['en','zh-CN','ja','zh-TW','vi','th']) assert.ok(gate.includes(locale === 'en' ? 'en:{title' : `'${locale}':{title`),`Missing consent copy for ${locale}`);
+for (const locale of ['en','zh-CN','ja','zh-TW','vi','th']) {
+  const quoted=`'${locale}':{title`;
+  const unquoted=`${locale}:{title`;
+  assert.ok(gate.includes(quoted)||gate.includes(unquoted),`Missing consent copy for ${locale}`);
+}
 
 console.log('Personal Color consent contracts passed: scanner is gated behind explicit, ephemeral, six-locale browser-local photo consent with privacy handoff.');
