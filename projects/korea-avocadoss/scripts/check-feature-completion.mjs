@@ -70,6 +70,11 @@ assert.match(planner,/async function copyPlan\(\)/,'Palace itinerary must be cop
 assert.match(food,/useSearchParams/,'Food Finder must consume itinerary context from the planner.');
 assert.match(food,/foodAvailabilityAt\(place,date,time\)/,'Food Finder must evaluate each place at the planned arrival time.');
 assert.match(food,/openOnly/,'Food Finder must let visitors hide clearly unavailable options.');
+assert.match(food,/FAVORITES_KEY='kc-food-favorites-v1'/,'Food favorites need a versioned browser-storage key.');
+assert.match(food,/localStorage\.setItem\(FAVORITES_KEY,JSON\.stringify\(\[\.\.\.next\]\)\)/,'Food Finder must persist only saved place IDs.');
+assert.match(food,/showSaved/,'Food Finder must let travelers narrow the list to saved places.');
+assert.match(food,/async function copyAddress/,'Food Finder addresses must be reusable outside the page.');
+assert.match(food,/google\.com\/maps\/search/,'Food Finder must provide a zero-API map handoff.');
 for(const field of ['openMinute','closeMinute','closedWeekdays','scheduleConfidence'])assert.match(foodData,new RegExp(field),`Food schedule data missing ${field}.`);
 assert.match(foodData,/scheduleConfidence==='recheck'/,'Uncertain schedules must remain verify-only, never guessed open.');
 assert.ok((foodData.match(/id:'/g)??[]).length>=7,'Food Finder must retain a useful source-checked launch inventory.');
@@ -96,4 +101,4 @@ assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not pres
 assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
 assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
 
-console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
+console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+food favorites, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
