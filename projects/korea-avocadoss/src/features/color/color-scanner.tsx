@@ -51,7 +51,7 @@ export function ColorScanner() {
   const p0Locale=(locale in UPLOAD_COPY?locale:'en') as P0Locale;
   const fabricCopy = FABRIC_COPY[p0Locale] ?? FABRIC_COPY.en;
   const uploadCopy=UPLOAD_COPY[p0Locale];
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<Blob | null>(null);
   const [photoUrl, setPhotoUrl] = useState('');
   const [result, setResult] = useState<VisibleToneResult>(DEFAULT_RESULT);
   const [undertone, setUndertone] = useState<Undertone>('neutral');
@@ -74,10 +74,10 @@ export function ColorScanner() {
     if (!selected) return;
     setStatus('checking');setUploadError('');setErrorCode('');
     try{
-      await validateColorUpload(selected);
+      const prepared=await validateColorUpload(selected);
       if (photoUrl) URL.revokeObjectURL(photoUrl);
-      setFile(selected);
-      setPhotoUrl(URL.createObjectURL(selected));
+      setFile(prepared.blob);
+      setPhotoUrl(URL.createObjectURL(prepared.blob));
       setStatus('ready');
     }catch(error){
       const code=error instanceof ColorUploadError?error.code:'decodeFailed';
