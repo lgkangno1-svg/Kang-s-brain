@@ -34,10 +34,10 @@ function getStats(pixels:RGB[]){
   return{average,luminanceStdDev:Math.sqrt(variance),robustCount:robust.length};
 }
 
-export async function analyzeVisibleTone(file:File):Promise<VisibleToneResult>{
+export async function analyzeVisibleTone(source:Blob):Promise<VisibleToneResult>{
   let bitmap:ImageBitmap|undefined;
   try{
-    bitmap=await createImageBitmap(file);
+    bitmap=await createImageBitmap(source,{imageOrientation:'from-image'});
     const detectionMax=220;
     const scale=Math.min(1,detectionMax/Math.max(bitmap.width,bitmap.height));
     const detectionWidth=Math.max(32,Math.round(bitmap.width*scale));
