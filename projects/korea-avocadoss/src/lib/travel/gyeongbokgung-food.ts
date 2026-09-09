@@ -1,6 +1,6 @@
-export type FoodCategory='korean-meal'|'halal'|'traditional-tea'|'coffee';
-export type ScheduleConfidence='verified'|'recheck';
-export type FoodPlace={id:string;name:string;category:FoodCategory;summary:string;hours:string;closed:string;address:string;sourceUrl:string;checkedAt:string;dietaryNote?:string;openMinute:number;closeMinute:number;closedWeekdays:number[];scheduleConfidence:ScheduleConfidence};
+import type {FoodPlace} from './gyeongbokgung-food-core';
+export type {FoodCategory,ScheduleConfidence,FoodPlace} from './gyeongbokgung-food-core';
+
 export const GYEONGBOKGUNG_FOOD_PLACES:readonly FoodPlace[]=[
  {id:'tosokchon',name:'Tosokchon Samgyetang',category:'korean-meal',summary:'Traditional samgyetang (ginseng chicken soup) in a hanok near Gyeongbokgung.',hours:'10:00–22:00 · last order 21:00',closed:'Open all year according to the current official tourism listing.',address:'5 Jahamun-ro 5-gil, Jongno-gu, Seoul',sourceUrl:'https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=97919',checkedAt:'2026-09-09',openMinute:600,closeMinute:1320,closedWeekdays:[],scheduleConfidence:'verified'},
  {id:'iftar',name:'iftar',category:'halal',summary:'Traditional Korean dishes using ingredients described by Visit Seoul as certified under strict halal standards.',hours:'11:30–19:30',closed:'Check the current listing before visiting.',address:'1F, 50-1 Jahamun-ro 1-gil, Jongno-gu, Seoul',sourceUrl:'https://english.visitseoul.net/restaurants/iftar/ENPjp7b57',checkedAt:'2026-09-09',dietaryNote:'Visit Seoul lists no alcohol for sale and Muslim cooks available. Always confirm individual dietary requirements directly.',openMinute:690,closeMinute:1170,closedWeekdays:[],scheduleConfidence:'recheck'},
@@ -10,12 +10,3 @@ export const GYEONGBOKGUNG_FOOD_PLACES:readonly FoodPlace[]=[
  {id:'cafe-haven',name:'Cafe Haven',category:'coffee',summary:'Seochon cafe where a traditional wooden Hanok structure is visible inside a modern exterior.',hours:'11:00–22:00',closed:'Monday',address:'52-1 Jahamun-ro, Jongno-gu, Seoul',sourceUrl:'https://english.visitseoul.net/PalaceArea/Cafe-HAVEN/ENPn8s2yl',checkedAt:'2026-09-09',openMinute:660,closeMinute:1320,closedWeekdays:[1],scheduleConfidence:'verified'},
  {id:'cafe-sinola',name:'Cafe Sinola',category:'coffee',summary:'LP-themed Seochon cafe known for drip coffee and brunch along the Gyeongbokgung stone-wall route.',hours:'09:00–19:00 · last order 18:00',closed:'Daily according to the current Visit Seoul listing.',address:'116 Jahamun-ro, Jongno-gu, Seoul',sourceUrl:'https://english.visitseoul.net/area/2024-sinola/ENP680zw5',checkedAt:'2026-09-09',dietaryNote:'Visit Seoul currently lists this venue as no-kids; confirm the current policy before visiting with children.',openMinute:540,closeMinute:1140,closedWeekdays:[],scheduleConfidence:'verified'},
 ];
-export function filterFoodPlaces(category:FoodCategory|'all'){return category==='all'?[...GYEONGBOKGUNG_FOOD_PLACES]:GYEONGBOKGUNG_FOOD_PLACES.filter(place=>place.category===category);}
-export function foodAvailabilityAt(place:FoodPlace,date:string,time:string):'open'|'closed'|'verify'|'unknown'{
- if(!date||!time||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!/^\d{2}:\d{2}$/.test(time))return 'unknown';
- if(place.scheduleConfidence==='recheck')return 'verify';
- const day=new Date(`${date}T12:00:00+09:00`).getUTCDay();
- if(place.closedWeekdays.includes(day))return 'closed';
- const [h,m]=time.split(':').map(Number);const minute=h*60+m;
- return minute>=place.openMinute&&minute<place.closeMinute?'open':'closed';
-}
