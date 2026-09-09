@@ -6,6 +6,7 @@ import path from 'node:path';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(here, '..');
 const checkoutRoute = readFileSync(path.join(projectRoot, 'src/app/api/checkout/stripe/route.ts'), 'utf8');
+const stripeHelper = readFileSync(path.join(projectRoot, 'src/lib/payments/stripe.ts'), 'utf8');
 const webhookRoute = readFileSync(path.join(projectRoot, 'src/app/api/stripe/webhook/route.ts'), 'utf8');
 const catalog = readFileSync(path.join(projectRoot, 'src/lib/payments/catalog.ts'), 'utf8');
 const envExample = readFileSync(path.join(projectRoot, '.env.example'), 'utf8');
@@ -25,6 +26,12 @@ assert.match(checkoutRoute, /CHECKOUT_DISABLED/,
   'Disabled environments must fail closed instead of attempting live checkout.');
 assert.doesNotMatch(checkoutRoute, /const\s*\{[^}]*userId[^}]*\}\s*=\s*body/,
   'Checkout route must never trust a client-supplied userId as the payment recipient.');
+assert.doesNotMatch(stripeHelper, /\buserId\??\s*:/,
+  'Stripe checkout helper must not expose a userId parameter before authenticated order ownership exists.');
+assert.doesNotMatch(stripeHelper, /body\.set\(['"]client_reference_id['"]/,
+  'Stripe checkout helper must not attach client_reference_id before it can come from verified server ownership.');
+assert.match(stripeHelper, /verified server session.*durable order/is,
+  'Stripe checkout helper must document the required future source of payment ownership.');
 assert.match(checkoutRoute, /P0_LOCALES/,
   'Checkout locale must be constrained to supported launch locales.');
 assert.match(checkoutRoute, /isLaunchCheckoutProductKey/,
@@ -48,4 +55,4 @@ assert.match(webhookRoute, /WEBHOOK_PERSISTENCE_DISABLED/,
 assert.doesNotMatch(webhookRoute, /console\.log\(`\[Stripe Webhook\]/,
   'Webhook must not substitute logging for durable payment event acceptance.');
 
-console.log('✓ Payment remains fail-closed behind checkout, ownership, fulfillment, webhook and compile-time persistence gates.');
+console.log('✓ Payment remains fail-closed behind checkout, verified ownership, fulfillment, webhook and compile-time persistence gates.');
