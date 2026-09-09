@@ -13,7 +13,16 @@ assert.match(source,/localStorage\.setItem\(STORAGE_KEY,JSON\.stringify\(payload
 assert.match(source,/function restorePlan\(\)/,'Visitors must have an explicit recovery path for their saved free-plan choices.');
 assert.match(source,/if\(!isSavedPlan\(parsed\)\)\{localStorage\.removeItem\(STORAGE_KEY\)/,'Invalid or stale saved plan data must fail closed and be discarded.');
 assert.match(source,/function clearPlan\(\)/,'Visitors must be able to delete saved free-plan choices from the device.');
-assert.match(source,/Saved choices stay on this device|保存的选择只保留在此设备|保存内容はこの端末だけに残ります/,'At least the core P0 copy must disclose browser-local persistence.');
-assert.doesNotMatch(source,/fetch\s*\(/,'Free My Korea Look save/recovery must remain zero-API.');
+assert.match(source,/const planText=useMemo\(/,'The exported artifact must be derived from the currently ranked three-look result.');
+assert.match(source,/\.\.\.look\.reasons\.map\(reason=>`- \$\{reason\}`\)/,'Export must preserve the recommendation reasons instead of reducing the plan to titles only.');
+assert.match(source,/if\(!navigator\.clipboard\?\.writeText\)\{setMessage\(c\.copyFailed\);return;\}/,'Clipboard absence must fail visibly instead of reporting a false success.');
+assert.match(source,/catch\{setMessage\(c\.copyFailed\);\}/,'Clipboard rejection must expose a localized recovery message.');
+assert.match(source,/function downloadPlan\(\)/,'Visitors need an offline export path when clipboard access is blocked.');
+assert.match(source,/new Blob\(\[planText\],\{type:'text\/plain;charset=utf-8'\}\)/,'Downloaded plan must be generated locally from the current result.');
+assert.match(source,/anchor\.download=`my-korea-look-\$\{l\}\.txt`/,'The local export must use an explicit downloadable text filename.');
+assert.match(source,/URL\.revokeObjectURL\(objectUrl\)/,'Temporary export object URLs must be revoked after use.');
+assert.match(source,/role="status"/,'Copy, download, save and recovery feedback must be announced to assistive technology.');
+assert.match(source,/exports are created locally|导出文件也在本地生成|書き出しも端末内で作成されます/,'Core P0 copy must disclose that exports are created locally.');
+assert.doesNotMatch(source,/fetch\s*\(/,'Free My Korea Look save/export/recovery must remain zero-API.');
 
-console.log('My Korea Look free-plan recovery contract passed: validated, device-local save/restore/delete with no API call.');
+console.log('My Korea Look free-plan recovery contract passed: validated local save/restore/delete plus truthful copy and local export recovery with no API call.');
