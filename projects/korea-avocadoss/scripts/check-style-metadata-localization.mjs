@@ -1,11 +1,17 @@
 import fs from 'node:fs';
 
 const source=fs.readFileSync(new URL('../src/app/[locale]/style/page.tsx',import.meta.url),'utf8');
-const requiredLocales=['en','zh-CN','ja','zh-TW','vi','th'];
+const requiredLocaleEntries=[
+  ['en','en:{'],
+  ['zh-CN',"'zh-CN':{"],
+  ['ja','ja:{'],
+  ['zh-TW',"'zh-TW':{"],
+  ['vi','vi:{'],
+  ['th','th:{']
+];
 
-for(const locale of requiredLocales){
-  const key=locale==='en'?/^\s*en:\{/m:new RegExp(`['\"]${locale}['\"]:\\{`);
-  if(!key.test(source))throw new Error(`Missing localized /style metadata entry for ${locale}`);
+for(const [locale,entry] of requiredLocaleEntries){
+  if(!source.includes(entry))throw new Error(`Missing localized /style metadata entry for ${locale}`);
 }
 
 if(!source.includes("localizedAlternates(safeLocale,'/style')"))throw new Error('/style metadata must keep locale-aware canonical/hreflang alternates');
