@@ -6,7 +6,7 @@ import {useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {isValidHanbokStyle,HANBOK_STYLE_CATEGORIES} from './hanbok-visual-library';
 import {HanbokCatalogResults} from './HanbokCatalogResults';
-import {hanbokColorForUndertone,isPersonalColorUndertone,type HanbokMatcherColorId} from './personal-color-bridge';
+import {hanbokColorForUndertone,isPersonalColorContrast,isPersonalColorDepth,isPersonalColorUndertone,type HanbokMatcherColorId} from './personal-color-bridge';
 
 const COLOR_IDS=['jadeIvory','roseNavy','moonBlue'] as const satisfies readonly HanbokMatcherColorId[];
 const MOOD_IDS=['elegant','royal','romantic','minimal','kdrama'] as const;
@@ -33,7 +33,8 @@ function scoreLook(look:HanbokLook,choices:{color:ColorId;mood:MoodId;comfort:Co
 }
 
 export function HanbokMatcher(){
- const t=useTranslations('HanbokMatcher');const searchParams=useSearchParams();const styleParam=searchParams.get('hanbokStyle');const undertoneParam=searchParams.get('undertone');
+ const t=useTranslations('HanbokMatcher');const searchParams=useSearchParams();const styleParam=searchParams.get('hanbokStyle');const undertoneParam=searchParams.get('undertone');const depthParam=searchParams.get('depth');const contrastParam=searchParams.get('contrast');
+ const personalDepth=isPersonalColorDepth(depthParam)?depthParam:undefined;const personalContrast=isPersonalColorContrast(contrastParam)?contrastParam:undefined;
  const [color,setColor]=useState<ColorId>('jadeIvory');const [mood,setMood]=useState<MoodId>('elegant');const [comfort,setComfort]=useState<ComfortId>('balanced');const [destination,setDestination]=useState<DestinationId>('stoneWall');const [season,setSeason]=useState<SeasonId>('springAutumn');const [appliedPreset,setAppliedPreset]=useState<string|null>(null);
 
  useEffect(()=>{let styleWasApplied=false;if(isValidHanbokStyle(styleParam)){const category=HANBOK_STYLE_CATEGORIES.find(item=>item.id===styleParam);if(category){setColor(category.matcherPreset.color);setMood(category.matcherPreset.mood);setComfort(category.matcherPreset.comfort);setAppliedPreset(category.name);styleWasApplied=true;}}if(isPersonalColorUndertone(undertoneParam))setColor(hanbokColorForUndertone(undertoneParam));if(!styleWasApplied)setAppliedPreset(null);},[styleParam,undertoneParam]);
@@ -58,7 +59,7 @@ export function HanbokMatcher(){
 
    <div className="hanbokLooksSection"><h4>{t('looksTitle')}</h4><div className="hanbokLooksGrid">{rankedLooks.map(({look},index)=><article className={`hanbokLookCard ${index===0?'hanbokLookCardFeatured':''}`} key={look.id}><div className="lookCardHeader"><span className={index===0?'matchBadge':'matchBadgeSecondary'}>#{index+1}</span><h5>{t(look.id+'Title')}</h5><p>{t(look.id+'Desc')}</p></div><div className="lookSwatches" aria-label={t('resultPalette')}><div className="swatchPair"><i style={{backgroundColor:look.jeogoriColor}}/><span>{look.jeogoriColor}</span></div><div className="swatchPair"><i style={{backgroundColor:look.chimaColor}}/><span>{look.chimaColor}</span></div></div><div className="lookMetaList"><div><small>{t('fabricLabel')}</small><span>{t('seasons.'+season)}</span></div>{index===0&&<div><small>{t('accessoriesLabel')}</small><span>{t('accessoriesValue')}</span></div>}</div><div className="lookWhyList"><strong>{t('whySuitsTitle')}</strong><ul><li>{t('resultPalette')}: {t('colors.'+color)}</li><li>{t('moodLegend')}: {t('moods.'+mood)}</li><li>{t('destinationLegend')}: {t('destinations.'+destination)}</li></ul></div></article>)}</div></div>
 
-   <HanbokCatalogResults color={color} mood={mood} comfort={comfort} destination={destination} season={season}/>
+   <HanbokCatalogResults color={color} mood={mood} comfort={comfort} destination={destination} season={season} depth={personalDepth} contrast={personalContrast}/>
 
    <div className="boutiqueNoticeCard"><div className="boutiqueNoticeHead"><strong>{t('rentalMapCta')}</strong><p>{t('walkingTimeNotice')}</p></div><Link href="/explore/gyeongbokgung" className="primaryButton">{t('rentalMapCta')}</Link></div>
    <div className="hanbokBoundaryCard"><strong>{t('freeBoundaryTitle')}</strong><p>{t('freeBoundaryText')}</p><p className="hanbokPaidNote">{t('paidBoundaryText')}</p></div>
