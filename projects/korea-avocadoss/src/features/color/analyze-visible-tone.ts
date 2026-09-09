@@ -1,3 +1,4 @@
+import {decodeColorImage} from './decode-color-image';
 import {findLikelyFaceRegion,isLikelySkinPixel,trimPixelsByLuminance,type PixelRgb} from './skin-region';
 
 export type Undertone='warm'|'neutral'|'cool';
@@ -35,18 +36,21 @@ function getStats(pixels:RGB[]){
 }
 
 export async function analyzeVisibleTone(file:File):Promise<VisibleToneResult>{
-  let bitmap:ImageBitmap|undefined;
+  let decoded:Awaited<ReturnType<typeof decodeColorImage>>|undefined;
   try{
-    bitmap=await createImageBitmap(file);
+    decoded=await decodeColorImage(file);
+    const image=decoded.source;
+    const imageWidth=decoded.width;
+    const imageHeight=decoded.height;
     const detectionMax=220;
-    const scale=Math.min(1,detectionMax/Math.max(bitmap.width,bitmap.height));
-    const detectionWidth=Math.max(32,Math.round(bitmap.width*scale));
-    const detectionHeight=Math.max(32,Math.round(bitmap.height*scale));
+    const scale=Math.min(1,detectionMax/Math.max(imageWidth,imageHeight));
+    const detectionWidth=Math.max(32,Math.round(imageWidth*scale));
+    const detectionHeight=Math.max(32,Math.round(imageHeight*scale));
     const detectionCanvas=document.createElement('canvas');
     detectionCanvas.width=detectionWidth;detectionCanvas.height=detectionHeight;
     const detectionContext=detectionCanvas.getContext('2d',{willReadFrequently:true});
     if(!detectionContext)throw new VisibleToneError('canvasUnavailable');
-    detectionContext.drawImage(bitmap,0,0,detectionWidth,detectionHeight);
+    detectionContext.drawImage(image,0,0,detectionWidth,detectionHeight);
     const detectionData=detectionContext.getImageData(0,0,detectionWidth,detectionHeight);
     const detectedRegion=findLikelyFaceRegion(detectionData.data,detectionWidth,detectionHeight);
 
@@ -56,16 +60,16 @@ export async function analyzeVisibleTone(file:File):Promise<VisibleToneResult>{
     if(!context)throw new VisibleToneError('canvasUnavailable');
 
     if(detectedRegion){
-      const sx=detectedRegion.x/detectionWidth*bitmap.width;
-      const sy=detectedRegion.y/detectionHeight*bitmap.height;
-      const sw=detectedRegion.width/detectionWidth*bitmap.width;
-      const sh=detectedRegion.height/detectionHeight*bitmap.height;
-      context.drawImage(bitmap,sx,sy,sw,sh,0,0,width,height);
+      const sx=detectedRegion.x/detectionWidth*imageWidth;
+      const sy=detectedRegion.y/detectionHeight*imageHeight;
+      const sw=detectedRegion.width/detectionWidth*imageWidth;
+      const sh=detectedRegion.height/detectionHeight*imageHeight;
+      context.drawImage(image,sx,sy,sw,sh,0,0,width,height);
     }else{
       // Conservative fallback for portraits where the colour mask cannot form a stable component.
-      const sourceWidth=bitmap.width*0.5,sourceHeight=bitmap.height*0.48;
-      const sourceX=bitmap.width*0.25,sourceY=bitmap.height*0.12;
-      context.drawImage(bitmap,sourceX,sourceY,sourceWidth,sourceHeight,0,0,width,height);
+      const sourceWidth=imageWidth*0.5,sourceHeight=imageHeight*0.48;
+      const sourceX=imageWidth*0.25,sourceY=imageHeight*0.12;
+      context.drawImage(image,sourceX,sourceY,sourceWidth,sourceHeight,0,0,width,height);
     }
 
     const data=context.getImageData(0,0,width,height).data;
@@ -103,6 +107,6 @@ export async function analyzeVisibleTone(file:File):Promise<VisibleToneResult>{
     const confidence=clamp(0.38+regionBonus+skinRatio*1.7-warnings.length*0.06,0.34,0.88);
     return{undertone,depth,contrast,confidence,lightness:Math.round(lab.l),warnings};
   }finally{
-    bitmap?.close();
+    decoded?.release();
   }
 }
