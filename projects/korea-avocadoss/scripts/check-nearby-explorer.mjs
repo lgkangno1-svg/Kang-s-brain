@@ -36,7 +36,7 @@ assert.match(explorer,/stops:readonly NearbyStop\[\]/,'Nearby Explorer must cons
 assert.match(explorer,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby Explorer must recalculate routes from server content and explicit visitor choices including date.');
 assert.match(explorer,/nearbyRouteMapUrl\(routeStops\)/,'Nearby Explorer must build a single full-route map handoff from the chosen deterministic stops.');
 assert.match(explorer,/href=\{routeMap\}/,'The generated full walking route must be directly actionable from the result.');
-assert.ok((explorer.match(/fullRoute:/g)??[]).length===6,'The full-route action must have native copy for all six P0 locales.');
+assert.ok((explorer.match(/fullRoute:'/g)??[]).length===6,'The full-route action must have native copy for all six P0 locales.');
 assert.match(explorer,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must evaluate time restrictions against each planned arrival.');
 assert.match(explorer,/navigator\.clipboard\?\.writeText/,'Nearby route must be copyable for use during the trip.');
 assert.match(explorer,/routeMap\]\.filter\(Boolean\)/,'Copied itinerary text must include the full-route map handoff when available.');
