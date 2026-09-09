@@ -3,7 +3,6 @@
 import {useMemo,useState,useEffect} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
-import {Link} from '@/i18n/navigation';
 import {isValidHanbokStyle,HANBOK_STYLE_CATEGORIES} from './hanbok-visual-library';
 import {HanbokCatalogResults} from './HanbokCatalogResults';
 import {hanbokColorForUndertone,isPersonalColorContrast,isPersonalColorDepth,isPersonalColorUndertone,type HanbokMatcherColorId} from './personal-color-bridge';
@@ -61,7 +60,7 @@ export function HanbokMatcher(){
 
    <HanbokCatalogResults color={color} mood={mood} comfort={comfort} destination={destination} season={season} depth={personalDepth} contrast={personalContrast}/>
 
-   <div className="boutiqueNoticeCard"><div className="boutiqueNoticeHead"><strong>{t('rentalMapCta')}</strong><p>{t('walkingTimeNotice')}</p></div><Link href="/explore/gyeongbokgung" className="primaryButton">{t('rentalMapCta')}</Link></div>
+   <div className="boutiqueNoticeCard"><div className="boutiqueNoticeHead"><strong>{t('rentalMapCta')}</strong><p>{t('walkingTimeNotice')}</p></div><a href="#rental-finder" className="primaryButton">{t('rentalMapCta')}</a></div>
    <div className="hanbokBoundaryCard"><strong>{t('freeBoundaryTitle')}</strong><p>{t('freeBoundaryText')}</p><p className="hanbokPaidNote">{t('paidBoundaryText')}</p></div>
   </div>
  </div>;
