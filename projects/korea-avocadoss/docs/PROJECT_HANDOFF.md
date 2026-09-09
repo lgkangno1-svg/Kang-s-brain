@@ -1,5 +1,20 @@
 # Korea Concierge — Living Project Handoff
 
+## Latest entry — 2026-09-10 Personal Color decode recovery hardening
+
+**Candidate branch:** `korea/personal-color-decode-fallback`
+
+- `docs/PRD.md` still designates `docs/BUILD_SPEC.md` as the active requirements source.
+- Personal Color previously depended directly on `createImageBitmap` for both upload validation and local analysis. A browser with no reliable ImageBitmap decoder, or a file rejected by that decoder despite being displayable, could hit an avoidable dead-end before analysis.
+- A shared browser-local decoder now feature-detects `createImageBitmap`, requests source orientation, and falls back to the standards-based `<img>` decoder when needed. The fallback keeps the object URL alive only until drawing is complete and revokes it explicitly.
+- Validation and analysis use the same decoder boundary and release decoded resources in `finally`, preserving the existing JPEG/PNG/WebP, byte, dimension and pixel caps and the no-network privacy contract.
+- `check:functionality` now includes a dedicated decode-recovery contract proving orientation-aware primary decoding, local fallback, cleanup, and absence of remote fetch behavior.
+- This closes a code-level mobile/browser recovery gap but does not substitute for real-device rotated-camera and constrained-memory fixture testing; those remain in `LAUNCH_FUNCTIONAL_AUDIT.md`.
+- No AI/model, CMS, account, payment, Stripe, credit or merchant behavior changed. Checkout remains fail-closed.
+- Exact-SHA MiniPC CI, merge-SHA CI, deployment and live `/color` verification are required before calling this production-complete.
+
+---
+
 ## Latest entry — 2026-09-10 Nearby Explorer server-content boundary
 
 **Candidate branch:** `feat/korea-nearby-headless-20260910`
