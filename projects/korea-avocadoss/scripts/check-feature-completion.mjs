@@ -53,6 +53,7 @@ assert.match(rentalData,/scheduleConfidence==='verified'\?'open':'recheck'/,'Con
 const planner=read('src/features/explore/GyeongbokgungPlannerV2.tsx');
 const food=read('src/features/explore/FoodFinder.tsx');
 const foodData=read('src/lib/travel/gyeongbokgung-food.ts');
+const foodCore=read('src/lib/travel/gyeongbokgung-food-core.ts');
 assert.match(planner,/withHanbok/,'Palace planner must support Hanbok-aware timing.');
 assert.match(planner,/fitMinutes=withHanbok\?45:0/,'Hanbok fitting must add a conservative pre-entry buffer.');
 assert.match(planner,/returnMinutes=withHanbok\?30:0/,'Hanbok return must add a conservative post-palace buffer.');
@@ -76,7 +77,8 @@ assert.match(food,/showSaved/,'Food Finder must let travelers narrow the list to
 assert.match(food,/async function copyAddress/,'Food Finder addresses must be reusable outside the page.');
 assert.match(food,/google\.com\/maps\/search/,'Food Finder must provide a zero-API map handoff.');
 for(const field of ['openMinute','closeMinute','closedWeekdays','scheduleConfidence'])assert.match(foodData,new RegExp(field),`Food schedule data missing ${field}.`);
-assert.match(foodData,/scheduleConfidence==='recheck'/,'Uncertain schedules must remain verify-only, never guessed open.');
+assert.match(foodCore,/scheduleConfidence==='recheck'/,'Uncertain schedules must remain verify-only, never guessed open.');
+assert.match(foodCore,/closedWeekdays\.includes\(day\)/,'Known weekly closures must still be enforced after content/data separation.');
 assert.ok((foodData.match(/id:'/g)??[]).length>=7,'Food Finder must retain a useful source-checked launch inventory.');
 
 const saju=read('src/features/culture/SajuExperience.tsx');
@@ -101,4 +103,4 @@ assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not pres
 assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
 assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
 
-console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+food favorites, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
+console.log('Feature completion contracts passed: full Personal Color→Hanbok bridge, Hanbok save/compare+rental finder+Korean request cards, reusable Hanbok-aware itinerary+server-delivered food favorites, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
