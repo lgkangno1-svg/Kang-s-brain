@@ -17,22 +17,22 @@ Adopt a **server-first, CMS-optional content layer** for frequently changing pub
 - Saju deterministic calendar/pillar calculation
 - Naming Studio deterministic ranking
 - Quick Help decision logic where zero-API behavior is required
+- Nearby itinerary budgeting, date/time closure evaluation and map handoff
 - payment/security/credit authorization logic
 
 ## Why this architecture
 
-The existing travel records were imported from TypeScript modules directly by client components. That couples public content updates to application deploys and can put static content into the client JavaScript graph.
+Frequently changing travel records should not be owned by Client Components. The isolated migrations now cover Gyeongbokgung food/cafe records, Hanbok rental shops and Nearby Explorer stops:
 
-The first migration moved Gyeongbokgung food/cafe records behind a Server Component content adapter. The second isolated migration applies the same boundary to source-checked Hanbok rental-shop records:
-
-1. `FoodPage` and the Hanbok page resolve their public travel content on the server.
-2. `FoodFinder` and `HanbokRentalFinder` receive only serializable records as props and keep filtering/favorites/map handoff in the browser.
+1. Server Components resolve public travel content through `src/lib/content/travel-content.ts`.
+2. Interactive Client Components receive only serializable source-checked records as props.
 3. Local verified records remain the default source and fail-safe fallback.
 4. An optional Sanity adapter can read published records without adding a client CMS dependency.
 5. Remote records are runtime-validated; malformed, partial, empty, or failed CMS responses fall back to local verified records.
 6. CMS reads use Next.js server fetch caching and do not refetch per visitor.
 7. A secured, allowlisted tag-revalidation endpoint supports immediate publish invalidation later.
-8. Browser-saved rental IDs are validated against the current server-resolved catalog so removed or malformed records do not remain authoritative favorites.
+8. Deterministic visitor logic remains application code: filtering/favorites for food/rental, and route budgeting/date-time availability/map/copy behavior for Nearby.
+9. Nearby route calculation accepts the server-resolved stop catalog as input and safely skips unknown/missing IDs instead of treating CMS content as executable logic.
 
 ## Cache policy
 
@@ -40,7 +40,8 @@ Current policy:
 - `revalidate: 21600` (6 hours)
 - food content tag: `content:travel:gyeongbokgung-food`
 - rental content tag: `content:travel:gyeongbokgung-hanbok-rentals`
-- CMS publish webhook can call the secured tag endpoint for either allowlisted domain
+- Nearby content tag: `content:travel:gyeongbokgung-nearby`
+- CMS publish webhook can call the secured tag endpoint for an allowlisted domain
 - local verified fallback is always available
 
 This is intentionally conservative. Travel facts can change, but they do not need a live subscription for every visitor. The cache interval can be tuned from production freshness and request-volume data.
@@ -49,14 +50,9 @@ This is intentionally conservative. Travel facts can change, but they do not nee
 
 **ADAPT, not full dependency adoption yet.**
 
-Reviewed:
-- `sanity-io/next-sanity` — official maintained integration
-- official Sanity Next.js caching/revalidation guidance
-- official Sanity warning about Next.js 16 + older `next-sanity` Live setups increasing request/ISR volume
+Fresh GitHub discovery on 2026-09-10 again surfaced `sanity-io/next-sanity` as the maintained official integration. The existing direct Sanity Content Lake HTTP adapter through Next.js server `fetch` remains the better current fit because the dataset is small and this avoids another runtime dependency, live-prefetch behavior and unnecessary request complexity.
 
-Current implementation uses the Sanity Content Lake HTTP endpoint through Next.js server `fetch` instead of adding `next-sanity` or `SanityLive`. This minimizes dependencies and avoids live-prefetch request amplification while the content volume is small.
-
-If visual editing or draft preview becomes operationally important later, reassess current `next-sanity` v13+ and Cache Components support before adoption.
+Do not add `SanityLive` by default. If visual editing or draft preview becomes operationally important later, reassess the then-current `next-sanity` v13+ and Next.js Cache Components guidance before adoption.
 
 ## Other CMS candidates
 
@@ -66,7 +62,7 @@ If visual editing or draft preview becomes operationally important later, reasse
 
 ### Self-hosted Strapi-style CMS
 - Similar operational cost: another service, database lifecycle, security patching, backups and admin surface.
-- Rejected for the first performance slices.
+- Rejected for the current performance/content slices.
 
 ### Git-only content
 - Cheap and fast but does not give a true editorial CMS workflow and still couples most edits to repository operations.
@@ -74,7 +70,9 @@ If visual editing or draft preview becomes operationally important later, reasse
 
 ## Hugging Face review
 
-A runtime ML model is not useful for CMS retrieval/caching. The connected Hugging Face model-search endpoint was unavailable during the first slice; a fresh search for this rental continuation also did not surface a model, dataset or Space that improves deterministic retrieval/schema validation. No model was adopted. Adding embeddings, translation models or generated summaries to the request path would increase latency/cost without improving the core content-delivery problem.
+A fresh Hugging Face model-search attempt for multilingual travel-itinerary recommendation returned a connector `tool not found` error in this slice. This is recorded as an unavailable discovery endpoint, not as evidence that no models exist. No ML model is needed for the actual engineering problem: public-record delivery, schema validation, caching, deterministic time-window filtering and map handoff are more reliable, private and cheaper as code plus curated data.
+
+**Decision:** adopt no model, dataset or Space. Re-run discovery if a future PRD requirement genuinely needs inference rather than deterministic planning.
 
 ## Security
 
@@ -85,7 +83,7 @@ A runtime ML model is not useful for CMS retrieval/caching. The connected Huggin
 - remote records must include source URL and `checkedAt` provenance and pass schema validation.
 - partial-invalid remote datasets fail closed instead of silently mixing unverified records.
 - CMS failure never removes all visitor content.
-- deterministic Hanbok ranking, payment and other security-sensitive logic remain outside the CMS.
+- deterministic routing, Hanbok ranking, payment and other security-sensitive logic remain outside the CMS.
 
 ## Deployment behavior before a CMS account exists
 
@@ -93,7 +91,7 @@ Production remains:
 
 `KOREA_CONTENT_SOURCE=local`
 
-So these migrations are safe to deploy without a Sanity account. They create the server content boundary while the verified local dataset remains authoritative. No production speed percentage is claimed from architecture alone.
+So these migrations are safe to deploy without a Sanity account. They establish a server content boundary while the verified local dataset remains authoritative. No production speed percentage is claimed from architecture alone.
 
 When a dedicated Korea Concierge Sanity project is available, set the server environment values and populate the validated schemas; the frontend does not need to be rewritten.
 
@@ -102,22 +100,22 @@ When a dedicated Korea Concierge Sanity project is available, set the server env
 Completed as isolated slices:
 1. Gyeongbokgung food/cafe content → server content props.
 2. Hanbok rental-shop content → server content props with validated favorite recovery.
+3. Nearby Explorer stop content → server content props while preserving zero-API deterministic routing/date-time logic.
 
 Next independent slices:
-1. Nearby Explorer place content → server content props while preserving zero-API route calculation.
-2. Public travel/culture editorial content.
-3. Evaluate Cache Components / partial prefetching only with rendered performance evidence.
+1. Public travel/culture editorial content where an editorial update cadence justifies the boundary.
+2. Evaluate Cache Components / partial prefetching only with rendered performance evidence.
 
 Do not migrate deterministic calculators or security-sensitive state into the CMS.
 
 ## Measurement
 
-Do not claim a fixed speed percentage from this refactor. After production rollout compare:
-- route client JS payload for `/en/explore/food` and `/en/hanbok`
+Do not claim a fixed speed percentage from these refactors. After production rollout compare:
+- route client JS payload for `/en/explore/food`, `/en/hanbok` and `/en/explore/nearby`
 - TTFB and LCP on cached requests
 - RSC/navigation behavior
 - CMS request count once enabled
 - cache hit/revalidation frequency
 - failure/fallback rate
 
-The target is lower browser work and independent content freshness without introducing a per-request CMS dependency.
+The target is lower browser-owned content coupling and independent content freshness without introducing a per-request CMS dependency.
