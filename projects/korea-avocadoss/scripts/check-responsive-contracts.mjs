@@ -11,8 +11,9 @@ const responsive = fs.readFileSync(responsivePath, 'utf8');
 const checks = [
   ['responsive system imported', layout.includes("import '../responsive-system.css';")],
   ['responsive import is after localized quick help', layout.indexOf("stitch-quick-help-localized.css") < layout.indexOf("responsive-system.css")],
-  ['device-width viewport configured', layout.includes("width: 'device-width'")],
-  ['safe-area viewport configured', layout.includes("viewportFit: 'cover'")],
+  ['typed Next.js viewport export exists', /export const viewport\s*:\s*Viewport\s*=/.test(layout)],
+  ['device-width viewport configured', /width\s*:\s*['"]device-width['"]/.test(layout)],
+  ['safe-area viewport configured', /viewportFit\s*:\s*['"]cover['"]/.test(layout)],
   ['large desktop breakpoint exists', responsive.includes('@media (max-width: 1180px)')],
   ['mobile breakpoint exists', responsive.includes('@media (max-width: 860px)')],
   ['small phone breakpoint exists', responsive.includes('@media (max-width: 380px)')],
