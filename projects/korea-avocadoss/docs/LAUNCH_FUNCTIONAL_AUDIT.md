@@ -16,7 +16,7 @@ This checklist treats **working end-to-end behavior** as the minimum bar. A page
 | Feature | Status | Current functional evidence | Remaining before payment-grade launch |
 |---|---|---|---|
 | Home / navigation | WORKING | Live Saju, Naming, Explore, Color and Hanbok routes are linked; paid banner is explicitly pre-launch. | Final responsive/browser QA and legal/footer destinations. |
-| Personal Color | HARDENING | Browser-local JPEG/PNG/WebP validation, size/dimension/pixel caps, local Lab/skin-pixel analysis, lighting warnings, manual correction, Hanbok bridge. | More fixture/device testing, camera orientation/low-memory testing, explicit consent copy review. |
+| Personal Color | HARDENING | Browser-local JPEG/PNG/WebP validation, size/dimension/pixel caps, local Lab/skin-pixel analysis, lighting warnings, manual correction, Hanbok bridge, orientation-aware `createImageBitmap` decoding with a browser-local `<img>` fallback and explicit decoder resource cleanup. | Real-device/fixture coverage for rotated camera JPEGs and constrained-memory devices, plus explicit consent copy review. |
 | Hanbok matcher | HARDENING | Color/mood/comfort/destination/season ranking plus Personal Color bridge. Curated 12-look licensed catalog is re-ranked and top six visual references shown with source/license. | More locale-native catalog descriptions, verified rental inventory entity layer, broader visual regression tests. |
 | Saju | HARDENING | Real DOB + IANA birthplace timezone, exact/rough/unknown birth time, deterministic pillars/elements/zodiac, no AI call, no silent Seoul default, localized uncertainty. | Expand KASI/manseryeok cross-validation and historical timezone/boundary fixtures; final cultural wording review. |
 | Korean Naming Studio | WORKING | Deterministic catalog/ranking, multiple candidate results, optional surname, Hangul/romanization/Hanja examples, six-locale shell, zero API. | Editorial/native-speaker review of candidate meanings/romanization before high-traffic launch. |
@@ -58,7 +58,7 @@ Real checkout may not open until all are true:
 ## Current engineering priority
 
 1. Keep MiniPC exact-SHA build green for the current functional branch.
-2. Complete Personal Color and Hanbok edge-case/device QA.
+2. Complete remaining Personal Color real-device fixtures/consent review and Hanbok edge-case/device QA.
 3. Continue Explore freshness/geospatial hardening after full-route map handoff, focusing on walking-time calibration and closure exceptions.
 4. Continue My Korea Look locale-native result/export hardening, then build the private persistence interface required by the paid flow.
 5. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.

@@ -6,7 +6,7 @@
     "check:content":"node scripts/check-content-architecture.mjs",
     "check:saju":"node scripts/check-saju-input-contracts.mjs && node scripts/check-saju-boundary-fixtures.mjs && node scripts/check-saju-month-boundary-fixtures.mjs && node scripts/check-saju-day-boundary-policy.mjs && node scripts/check-saju-true-solar-time.mjs && node scripts/check-saju-timezone-resolution.mjs && node scripts/check-saju-deterministic-core.mjs",
     "check:culture":"node scripts/check-kculture-experiences.mjs",
-    "check:functionality":"node scripts/check-functional-experiences.mjs && node scripts/check-feature-completion.mjs && node scripts/check-nearby-explorer.mjs && node scripts/check-gyeongbokgung-closure-recovery.mjs && node scripts/check-style-plan-recovery.mjs && node scripts/check-hanbok-rental-recovery.mjs && node scripts/check-style-metadata-localization.mjs",
+    "check:functionality":"node scripts/check-functional-experiences.mjs && node scripts/check-color-decode-recovery.mjs && node scripts/check-feature-completion.mjs && node scripts/check-nearby-explorer.mjs && node scripts/check-gyeongbokgung-closure-recovery.mjs && node scripts/check-style-plan-recovery.mjs && node scripts/check-hanbok-rental-recovery.mjs && node scripts/check-style-metadata-localization.mjs",
     "check:database":"node scripts/check-database-security.mjs",
     "check:hanbok":"node scripts/check-hanbok-visual-contracts.mjs",
     "check:payments":"node scripts/check-stripe-payment-contracts.mjs && node scripts/check-payment-readiness.mjs",

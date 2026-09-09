@@ -6,11 +6,14 @@ const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=(p)=>readFileSync(path.join(root,p),'utf8');
 
 const analyzer=read('src/features/color/analyze-visible-tone.ts');
+const colorDecoder=read('src/features/color/decode-color-image.ts');
 const skinRegion=read('src/features/color/skin-region.ts');
 const colorScanner=read('src/features/color/color-scanner.tsx');
 assert.match(analyzer,/findLikelyFaceRegion/,'Personal Color must prefer a detected portrait skin ROI over a fixed crop.');
 assert.match(analyzer,/trimPixelsByLuminance/,'Personal Color must use robust trimmed luminance statistics.');
-assert.match(analyzer,/bitmap\?\.close\(\)/,'Personal Color must always release decoded bitmap memory.');
+assert.match(analyzer,/decoded\?\.release\(\)/,'Personal Color analysis must always release the shared decoded image resource.');
+assert.match(colorDecoder,/bitmap\.close\(\)/,'The shared decoder must close ImageBitmap resources.');
+assert.match(colorDecoder,/URL\.revokeObjectURL\(url\)/,'The shared decoder fallback must revoke browser object URLs.');
 assert.match(skinRegion,/connected skin-colour components|queueX/,'Personal Color ROI detection must use a local connected-component search.');
 assert.doesNotMatch(analyzer,/fetch\s*\(/,'Personal Color must remain server-free at launch.');
 assert.match(colorScanner,/&depth=\$\{encodeURIComponent\(depth\)\}/,'Personal Color must preserve depth when continuing to Hanbok.');
