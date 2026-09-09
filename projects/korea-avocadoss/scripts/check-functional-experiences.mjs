@@ -11,6 +11,7 @@ const required=[
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx','src/features/hanbok/rank-catalog.ts','src/features/hanbok/HanbokCatalogResults.tsx','src/features/hanbok/HanbokRentalFinder.tsx','src/lib/travel/gyeongbokgung-hanbok-rentals.ts','src/lib/looks/catalog.ts',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts',
+ 'src/app/[locale]/explore/nearby/page.tsx','src/features/explore/NearbyExplorer.tsx','src/lib/travel/gyeongbokgung-nearby.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
  'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v2.tsx','src/lib/looks/recommend.ts','src/lib/looks/deliverable.ts',
@@ -68,6 +69,7 @@ assert.doesNotMatch(explore,/const today=['"]2026-09-09['"]/,'Planner must never
 assert.match(explore,/planStops\(duration,focus\)/,'Selected time budget and focus must drive the itinerary');
 assert.match(explore,/\/explore\/food/,'Timed route must continue into Food Finder');
 assert.match(explore,/hanbokHref=`\/hanbok\?date=/,'Timed route must continue into Hanbok rental planning with visit context');
+assert.match(explorePage,/href="\/explore\/nearby"/,'Palace experience must continue into the nearby route planner');
 
 const food=read('src/features/explore/FoodFinder.tsx');
 const foodData=read('src/lib/travel/gyeongbokgung-food.ts');
@@ -76,6 +78,11 @@ assert.match(food,/Verify source|查看官方来源|公式情報を確認/,'Food
 assert.match(foodData,/visitkorea\.or\.kr/,'Food data must include official Korea Tourism Organization evidence');
 assert.match(foodData,/visitseoul\.net/,'Food data must include official Visit Seoul evidence');
 for(const field of ['checkedAt','sourceUrl','hours','address'])assert.match(foodData,new RegExp(field),`Food data missing ${field}`);
+
+const nearby=read('src/features/explore/NearbyExplorer.tsx');
+assert.match(nearby,/nearbyRoute\(focus,budget\)/,'Nearby Explorer choices must drive a real route');
+assert.match(nearby,/navigator\.clipboard\?\.writeText/,'Nearby route must be reusable during the trip');
+assert.doesNotMatch(nearby,/fetch\s*\(/,'Nearby Explorer must remain zero-API');
 
 const saju=read('src/features/culture/SajuExperience.tsx');
 assert.match(saju,/calculateSajuExperience/,'Saju UI must invoke the deterministic engine');
@@ -95,18 +102,21 @@ const lookRecommend=read('src/lib/looks/recommend.ts');
 const deliverable=read('src/lib/looks/deliverable.ts');
 assert.match(stylePage,/StyleConsultationV2/,'My Korea Look page must use the functional ranked matcher');
 for(const state of ['setStyle','setGarment','setTone','setPriority','setSeason'])assert.match(style,new RegExp(state),`My Korea Look missing ${state}`);
-assert.match(style,/rankCuratedLooks\(/,'Free preview must use the same shared deterministic ranking family as paid deliverables');
+assert.match(style,/rankCuratedLooks\(/,'Free 3-look planner must use the shared deterministic ranking family');
+assert.match(style,/slice\(0,3\)/,'Free My Korea Look must expose three ranked looks before payment work resumes');
+assert.match(style,/look\.rentalShopCard\.hangulTitle/,'Free 3-look plan must include an in-shop Korean request card');
+assert.match(style,/look\.photoRoute\.map/,'Free 3-look plan must include a practical photo route');
+assert.match(style,/navigator\.clipboard\?\.writeText/,'Free 3-look plan must be copyable');
+assert.match(style,/href="\/hanbok#rental-finder"/,'Free 3-look plan must continue into the real rental finder');
+assert.doesNotMatch(style,/\/api\/checkout|my_korea_look_v1|CHECKOUT_DISABLED|\$12/,'User-facing My Korea Look must not call or advertise checkout before functionality is complete');
 assert.match(lookRecommend,/export function rankCuratedLooks/,'My Korea Look needs a reusable deterministic ranking engine');
-assert.match(deliverable,/buildMyKoreaLookDeliverable/,'Paid product must have an explicit deliverable generator before checkout opens');
-assert.match(deliverable,/slice\(0,3\)/,'Paid My Korea Look contract must generate three ranked looks');
-for(const field of ['rentalShopCard','photoRoute','tradeOff','recommendedLocation','source'])assert.match(deliverable,new RegExp(field),`Paid deliverable missing ${field}`);
-assert.match(deliverable,/productKey:'my_korea_look_v1'/,'Deliverable version must be bound to the launch SKU');
-assert.match(style,/my_korea_look_v1/,'Checkout request must use the launch SKU');
-assert.doesNotMatch(style,/premium_hanbok_match/,'Legacy checkout SKU must not return');
-assert.match(style,/CHECKOUT_DISABLED/,'Pre-launch checkout failure must be handled explicitly');
+assert.match(deliverable,/buildMyKoreaLookDeliverable/,'Future paid product must keep an explicit deliverable generator behind the disabled payment boundary');
+assert.match(deliverable,/slice\(0,3\)/,'Future paid deliverable contract must generate three ranked looks');
+for(const field of ['rentalShopCard','photoRoute','tradeOff','recommendedLocation','source'])assert.match(deliverable,new RegExp(field),`Future paid deliverable missing ${field}`);
+assert.match(deliverable,/productKey:'my_korea_look_v1'/,'Future deliverable version must remain bound to the launch SKU internally');
 
 const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, local-date timed Gyeongbokgung, Food, deterministic 3-look deliverable, and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, Food, Nearby Explorer, free deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
