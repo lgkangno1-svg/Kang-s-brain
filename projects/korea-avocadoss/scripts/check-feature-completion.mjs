@@ -51,4 +51,11 @@ assert.match(naming,/copyShortlist/,'Naming shortlist must be reusable outside t
 assert.match(naming,/not sent anywhere or saved|不会上传或保存|外部送信・保存されません/,'Personal seed copy must disclose that it is not persisted.');
 assert.doesNotMatch(naming,/fetch\s*\(/,'Naming Studio must remain zero-API.');
 
-console.log('Feature completion contracts passed: robust local color ROI, Hanbok save/compare, Hanbok-aware itinerary+food, safe Saju summary, and Korean-name shortlist.');
+const layout=read('src/app/[locale]/layout.tsx');
+const quickHelp=read('src/features/quick-help/QuickHelp.tsx');
+assert.match(layout,/href="\/#quick-help"/,'Primary navigation must provide a real Quick Help entry point.');
+assert.doesNotMatch(layout,/stitchDisabledNav/,'Primary navigation must not present Quick Help as a disabled future feature.');
+assert.match(quickHelp,/window\.location\.hash === "#quick-help"/,'Quick Help must open from its navigation hash.');
+assert.doesNotMatch(quickHelp,/fetch\s*\(/,'Quick Help must remain zero-API.');
+
+console.log('Feature completion contracts passed: local Personal Color, Hanbok save/compare, Hanbok-aware itinerary+food, safe Saju summary, Korean-name shortlist, and reachable zero-API Quick Help.');
