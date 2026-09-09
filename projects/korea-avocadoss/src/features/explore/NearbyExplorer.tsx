@@ -2,7 +2,7 @@
 
 import {useMemo,useState} from 'react';
 import {useSearchParams} from 'next/navigation';
-import {nearbyMapUrl,nearbyRoute,nearbyStopAvailabilityAt,type NearbyBudget,type NearbyFocus} from '@/lib/travel/gyeongbokgung-nearby';
+import {nearbyMapUrl,nearbyRoute,nearbyStopAvailabilityAt,type NearbyBudget,type NearbyFocus,type NearbyStop} from '@/lib/travel/gyeongbokgung-nearby-core';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
 type Copy={title:string;intro:string;date:string;start:string;budget:string;focus:string;seochon:string;bukchon:string;insadong:string;easy:string;route:string;arrive:string;stay:string;walk:string;minutes:string;map:string;source:string;checked:string;warning:string;copy:string;copied:string;privacy:string;empty:string;closurePolicy:string};
@@ -17,15 +17,15 @@ const C:Record<Locale,Copy>={
 function toMinutes(value:string){const [h,m]=value.split(':').map(Number);return h*60+m;}
 function clock(value:number){const wrapped=((value%1440)+1440)%1440;return`${String(Math.floor(wrapped/60)).padStart(2,'0')}:${String(wrapped%60).padStart(2,'0')}`;}
 function localToday(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-export function NearbyExplorer({locale}:{locale:string}){
+export function NearbyExplorer({locale,stops}:{locale:string;stops:readonly NearbyStop[]}){
  const l=(locale in C?locale:'en') as Locale,c=C[l],params=useSearchParams();
  const [date,setDate]=useState(params.get('date')??localToday());
  const [start,setStart]=useState(params.get('time')??'14:00');
  const [budget,setBudget]=useState<NearbyBudget>(120);
  const [focus,setFocus]=useState<NearbyFocus>('seochon');
  const [message,setMessage]=useState('');
- const stops=useMemo(()=>nearbyRoute(focus,budget,date),[focus,budget,date]);
- const timeline=useMemo(()=>{let cursor=toMinutes(start);return stops.map((stop,index)=>{if(index)cursor+=stop.transferMinutes;const arrival=cursor;cursor+=stop.minutes;return{...stop,arrival};});},[stops,start]);
+ const routeStops=useMemo(()=>nearbyRoute(stops,focus,budget,date),[stops,focus,budget,date]);
+ const timeline=useMemo(()=>{let cursor=toMinutes(start);return routeStops.map((stop,index)=>{if(index)cursor+=stop.transferMinutes;const arrival=cursor;cursor+=stop.minutes;return{...stop,arrival};});},[routeStops,start]);
  async function copyRoute(){const text=[`${c.route} · ${date} · ${start} · ${budget} ${c.minutes}`,...timeline.flatMap((stop,index)=>[`${index+1}. ${stop.name} (${stop.koreanName})`,`${c.arrive}: ${clock(stop.arrival)} · ${c.stay}: ${stop.minutes} ${c.minutes}`,`${stop.note}`,nearbyMapUrl(stop.mapQuery)])].join('\n');try{await navigator.clipboard?.writeText(text);setMessage(c.copied);}catch{setMessage('');}}
  return <section style={{maxWidth:1050,margin:'0 auto',padding:'30px 20px 72px'}}><h1>{c.title}</h1><p>{c.intro}</p><p><small>{c.privacy}</small></p>
   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:12,alignItems:'end',margin:'22px 0'}}>

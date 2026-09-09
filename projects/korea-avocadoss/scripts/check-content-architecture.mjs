@@ -10,6 +10,9 @@ const foodPage=read('src/app/[locale]/explore/food/page.tsx');
 const foodClient=read('src/features/explore/FoodFinder.tsx');
 const hanbokPage=read('src/app/[locale]/hanbok/page.tsx');
 const rentalClient=read('src/features/hanbok/HanbokRentalFinder.tsx');
+const nearbyPage=read('src/app/[locale]/explore/nearby/page.tsx');
+const nearbyClient=read('src/features/explore/NearbyExplorer.tsx');
+const nearbyCore=read('src/lib/travel/gyeongbokgung-nearby-core.ts');
 const revalidate=read('src/app/api/content/revalidate/route.ts');
 const env=read('.env.example');
 
@@ -18,10 +21,14 @@ assert.match(provider,/SANITY_PROJECT_ID/,'The headless adapter must support San
 assert.match(provider,/next:\{revalidate:21600,tags:/,'Published CMS content must use Next.js server cache revalidation rather than refetching per visitor.');
 assert.match(provider,/remote\?\?GYEONGBOKGUNG_FOOD_PLACES/,'Food CMS failure must fall back to source-checked local content.');
 assert.match(provider,/remote\?\?GYEONGBOKGUNG_HANBOK_RENTALS/,'Rental CMS failure must fall back to source-checked local content.');
+assert.match(provider,/remote\?\?GYEONGBOKGUNG_NEARBY_STOPS/,'Nearby CMS failure must fall back to source-checked local content.');
 assert.match(provider,/valid\.length===body\.result\.length&&valid\.length>0/,'Remote content must fail closed on malformed or partial records.');
 assert.match(provider,/gyeongbokgungHanbokRentals:'content:travel:gyeongbokgung-hanbok-rentals'/,'Rental content must have an isolated revalidation tag.');
+assert.match(provider,/gyeongbokgungNearby:'content:travel:gyeongbokgung-nearby'/,'Nearby content must have an isolated revalidation tag.');
 assert.match(provider,/_type == "hanbokRentalShop"/,'Rental CMS reads must use a dedicated record type.');
+assert.match(provider,/_type == "nearbyPlace"/,'Nearby CMS reads must use a dedicated record type.');
 assert.match(provider,/isHanbokRentalShop/,'Rental CMS records must be schema validated before use.');
+assert.match(provider,/isNearbyStop/,'Nearby CMS records must be schema validated before use.');
 assert.match(provider,/sourceUrl/,'Remote travel content must preserve provenance fields.');
 assert.match(provider,/checkedAt/,'Remote travel content must preserve freshness metadata.');
 
@@ -38,6 +45,14 @@ assert.match(rentalClient,/shops:readonly HanbokRentalShop\[\]/,'HanbokRentalFin
 assert.match(rentalClient,/shops\.map\(shop=>/,'Rental filtering must operate on the server-provided payload.');
 assert.match(rentalClient,/validShopIds=useMemo\(\(\)=>new Set\(shops\.map/,'Saved rental IDs must be revalidated against the current server-provided catalog.');
 
+assert.match(nearbyPage,/getGyeongbokgungNearbyStops\(\)/,'Nearby content must be resolved in the Nearby Server Component.');
+assert.match(nearbyPage,/stops=\{stops\}/,'The Nearby client must receive only resolved stop records as serializable props.');
+assert.doesNotMatch(nearbyClient,/from '@\/lib\/travel\/gyeongbokgung-nearby';/,'Nearby client bundle must not import the verified local content payload.');
+assert.match(nearbyClient,/stops:readonly NearbyStop\[\]/,'NearbyExplorer must accept server-resolved content.');
+assert.match(nearbyClient,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby route calculation must operate on the server-provided payload.');
+assert.match(nearbyCore,/export function nearbyRoute\(stops:readonly NearbyStop\[\]/,'Nearby routing must remain deterministic application logic rather than moving into the CMS.');
+assert.doesNotMatch(nearbyCore,/process\.env|fetch\s*\(/,'Nearby deterministic core must remain independent of CMS/network state.');
+
 assert.match(revalidate,/timingSafeEqual/,'CMS cache invalidation secret must use constant-time comparison.');
 assert.match(revalidate,/ALLOWED_TAGS/,'CMS webhooks must only invalidate an allowlisted content tag.');
 assert.match(revalidate,/revalidateTag\(tag,'max'\)/,'CMS publish invalidation must use stale-while-revalidate semantics.');
@@ -45,4 +60,4 @@ assert.match(env,/KOREA_CONTENT_SOURCE=local/,'Local verified content must remai
 assert.match(env,/CONTENT_REVALIDATE_SECRET=/,'CMS webhook secret must be server-only configuration.');
 assert.doesNotMatch(env,/NEXT_PUBLIC_SANITY_READ_TOKEN|NEXT_PUBLIC_CONTENT_REVALIDATE_SECRET/,'CMS secrets must never be exposed to the browser.');
 
-console.log('Content architecture contracts passed: food and rental server payloads, cached validated fallbacks, saved-ID recovery, and secured revalidation.');
+console.log('Content architecture contracts passed: food, rental and Nearby server payloads, cached validated fallbacks, deterministic client logic, and secured revalidation.');

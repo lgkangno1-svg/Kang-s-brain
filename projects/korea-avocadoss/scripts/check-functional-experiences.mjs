@@ -11,7 +11,7 @@ const required=[
  'src/app/[locale]/hanbok/page.tsx','src/features/hanbok/hanbok-matcher.tsx','src/features/hanbok/rank-catalog.ts','src/features/hanbok/HanbokCatalogResults.tsx','src/features/hanbok/HanbokRentalFinder.tsx','src/lib/travel/gyeongbokgung-hanbok-rentals.ts','src/lib/looks/catalog.ts',
  'src/app/[locale]/explore/gyeongbokgung/page.tsx','src/features/explore/GyeongbokgungPlannerV2.tsx',
  'src/app/[locale]/explore/food/page.tsx','src/features/explore/FoodFinder.tsx','src/lib/travel/gyeongbokgung-food.ts','src/lib/travel/gyeongbokgung-food-core.ts','src/lib/content/travel-content.ts',
- 'src/app/[locale]/explore/nearby/page.tsx','src/features/explore/NearbyExplorer.tsx','src/lib/travel/gyeongbokgung-nearby.ts',
+ 'src/app/[locale]/explore/nearby/page.tsx','src/features/explore/NearbyExplorer.tsx','src/lib/travel/gyeongbokgung-nearby.ts','src/lib/travel/gyeongbokgung-nearby-core.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
  'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v2.tsx','src/lib/looks/recommend.ts','src/lib/looks/deliverable.ts',
@@ -83,7 +83,7 @@ assert.match(foodData,/visitseoul\.net/,'Food data must include official Visit S
 for(const field of ['checkedAt','sourceUrl','hours','address'])assert.match(foodData,new RegExp(field),`Food data missing ${field}`);
 
 const nearby=read('src/features/explore/NearbyExplorer.tsx');
-assert.match(nearby,/nearbyRoute\(focus,budget,date\)/,'Nearby Explorer focus, time budget and selected visit date must drive a real route');
+assert.match(nearby,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby Explorer must combine server-resolved source-checked stops with the visitor focus, time budget and visit date');
 assert.match(nearby,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must enforce deterministic date/time availability at each planned arrival');
 assert.match(nearby,/navigator\.clipboard\?\.writeText/,'Nearby route must be reusable during the trip');
 assert.doesNotMatch(nearby,/fetch\s*\(/,'Nearby Explorer must remain zero-API');
