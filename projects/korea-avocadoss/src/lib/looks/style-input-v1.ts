@@ -22,6 +22,8 @@ export type StyleInputV1={
  colorSource:StyleColorSource;
 };
 
+type RankedStyleLook=CuratedLook&{visualSrc:string;visualAlt:string};
+
 const DATE_RE=/^\d{4}-\d{2}-\d{2}$/;
 export function isValidVisitDate(value:string){
  if(!DATE_RE.test(value))return false;
@@ -70,9 +72,14 @@ function destinationScore(look:CuratedLook,destination:StyleDestination){
  return look.walkingSuitability==='easy'?10:look.styleId==='princess-prince'?7:5;
 }
 
+function withVisualAliases(look:CuratedLook):RankedStyleLook{
+ return {...look,visualSrc:look.src,visualAlt:look.alt};
+}
+
 export function rankStyleInputV1(input:StyleInputV1){
  const effectiveSeason=input.visitDate?seasonFromVisitDate(input.visitDate)??input.season:input.season;
- return CURATED_LOOKS_CATALOG.map((look,index)=>{
+ return CURATED_LOOKS_CATALOG.map((catalogLook,index)=>{
+  const look=withVisualAliases(catalogLook);
   if(input.garment!=='either'&&look.garmentType!==input.garment)return{look,index,score:-1000};
   if(look.coverage!==input.coverage)return{look,index,score:-1000};
   const score=(look.styleId===input.style?30:0)+paletteScore(look,input.palette)+comfortScore(look,input.comfort)+seasonScore(look,effectiveSeason)+destinationScore(look,input.destination)+moodScore(look,input.mood);
