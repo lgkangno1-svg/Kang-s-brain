@@ -23,6 +23,13 @@ for(const phrase of ['device storage','设备存储','端末ストレージ','�
 }
 assert.match(source,/const planText=useMemo\(/,'The exported artifact must be derived from the currently ranked three-look result.');
 assert.match(source,/\.\.\.look\.reasons\.map\(reason=>`- \$\{reason\}`\)/,'Export must preserve the recommendation reasons instead of reducing the plan to titles only.');
+assert.match(source,/\$\{c\.source\}: \$\{look\.creator\} · \$\{look\.license\} · \$\{look\.sourceUrl\}/,'Export must preserve creator, license and source provenance for each recommended visual.');
+assert.match(source,/href=\{look\.sourceUrl\}/,'Each visual recommendation must expose its source link immediately with the image.');
+assert.match(source,/\{look\.creator\} · \{look\.license\}/,'Each visual recommendation must identify creator and license beside the source link.');
+assert.match(source,/look\.kind==='style-illustration'\?'Style illustration':'Reference photo'/,'Each visual must identify whether it is a style illustration or reference photo.');
+for(const phrase of ['Visual source','图片来源','画像の出典','圖片來源','Nguồn hình ảnh','แหล่งที่มาของภาพ']){
+ assert.ok(source.includes(phrase),`Visual provenance label must be present in every P0 locale: ${phrase}`);
+}
 assert.match(source,/if\(!navigator\.clipboard\?\.writeText\)\{setMessage\(c\.copyFailed\);return;\}/,'Clipboard absence must fail visibly instead of reporting a false success.');
 assert.match(source,/catch\{setMessage\(c\.copyFailed\);\}/,'Clipboard rejection must expose a localized recovery message.');
 assert.match(source,/function downloadPlan\(\)/,'Visitors need an offline export path when clipboard access is blocked.');
@@ -33,4 +40,4 @@ assert.match(source,/role="status"/,'Copy, download, save and recovery feedback 
 assert.match(source,/exports are created locally|导出文件也在本地生成|書き出しも端末内で作成されます/,'Core P0 copy must disclose that exports are created locally.');
 assert.doesNotMatch(source,/fetch\s*\(/,'Free My Korea Look save/export/recovery must remain zero-API.');
 
-console.log('My Korea Look free-plan recovery contract passed: validated local save/restore/delete, corrupt-data cleanup, explicit storage failure recovery, truthful copy and local export recovery with no API call.');
+console.log('My Korea Look free-plan recovery contract passed: validated local persistence/export recovery plus visible visual provenance with no API call.');
