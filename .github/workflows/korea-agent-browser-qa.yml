@@ -1,0 +1,135 @@
+name: Korea Concierge agent-browser QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/korea-live-functional-qa-20260910
+    paths:
+      - 'projects/korea-avocadoss/**'
+      - '.github/workflows/korea-agent-browser-qa.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: korea-agent-browser-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  functional-browser-qa:
+    name: Functional browser QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CI: '1'
+      NEXT_TELEMETRY_DISABLED: '1'
+      AGENT_BROWSER_VERSION: '0.37.1'
+      AGENT_BROWSER_SHA256: 'f8e5f9294bd0da70dda61854f12004fd61c668cd682bfb600cdf6d0df73dea69'
+    defaults:
+      run:
+        working-directory: projects/korea-avocadoss
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+
+      - name: Validate and install app dependencies
+        run: |
+          set -euo pipefail
+          node scripts/check-lockfile-policy.mjs
+          npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install pinned agent-browser binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/vercel-labs/agent-browser/releases/download/v${AGENT_BROWSER_VERSION}/agent-browser-linux-x64"
+          curl --fail --silent --show-error --location "$url" --output "$RUNNER_TEMP/agent-browser"
+          printf '%s  %s\n' "$AGENT_BROWSER_SHA256" "$RUNNER_TEMP/agent-browser" | sha256sum --check --strict
+          chmod +x "$RUNNER_TEMP/agent-browser"
+          sudo install -m 0755 "$RUNNER_TEMP/agent-browser" /usr/local/bin/agent-browser
+          browser="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser" || { echo 'No Chrome/Chromium executable found.' >&2; exit 1; }
+          echo "AGENT_BROWSER_EXECUTABLE_PATH=$browser" >> "$GITHUB_ENV"
+          agent-browser --version
+          agent-browser skills get core --full > "$RUNNER_TEMP/agent-browser-core-skill.md"
+          test -s "$RUNNER_TEMP/agent-browser-core-skill.md"
+
+      - name: Run static contracts and production build
+        run: npm run beta:verify
+
+      - name: Start exact-SHA app
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm exec -- next start --hostname 127.0.0.1 --port 4173 > "$RUNNER_TEMP/korea-next.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/korea-next.pid"
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent --show-error http://127.0.0.1:4173/en >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/korea-next.log" >&2
+          exit 1
+
+      - name: agent-browser local functional journey
+        shell: bash
+        run: |
+          set -euo pipefail
+          QA_ORIGIN=http://127.0.0.1:4173 \
+          QA_SESSION=korea-local-${GITHUB_RUN_ID} \
+          QA_MODE=local \
+          QA_ARTIFACT_DIR=artifacts/agent-browser/local \
+          bash scripts/agent-browser-functional-qa.sh
+
+      - name: agent-browser production diagnostic
+        id: production_qa
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          QA_ORIGIN=https://korea.avocadoss.co.kr \
+          QA_SESSION=korea-production-${GITHUB_RUN_ID} \
+          QA_MODE=production \
+          QA_ARTIFACT_DIR=artifacts/agent-browser/production \
+          bash scripts/agent-browser-functional-qa.sh
+
+      - name: Write QA summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Korea Concierge agent-browser QA'
+            echo
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo '- Local exact-SHA journey: required hard gate'
+            echo "- Production diagnostic step outcome: \`${{ steps.production_qa.outcome }}\`"
+            echo '- Payment routes are intentionally excluded.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload browser screenshots and server log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: korea-agent-browser-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            projects/korea-avocadoss/artifacts/agent-browser/**
+            ${{ runner.temp }}/korea-next.log
+
+      - name: Stop local server
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$RUNNER_TEMP/korea-next.pid" ]]; then
+            kill "$(cat "$RUNNER_TEMP/korea-next.pid")" 2>/dev/null || true
+          fi
