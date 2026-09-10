@@ -43,6 +43,12 @@ function stemInfo(stem: string) {
   return {element, polarity: index % 2 === 0 ? 'yang' as const : 'yin' as const};
 }
 
+function requiredBasePillars(result: SajuExperienceResult) {
+  const {year, month, day, hour} = result.pillars;
+  if (!year || !month || !day) throw new RangeError('Saju result is missing a required base pillar.');
+  return {year, month, day, hour};
+}
+
 /**
  * Traditional Ten Gods classification for a visible heavenly stem relative to the Day Master.
  * This is a deterministic symbolic classification, not a prediction or probability.
@@ -61,18 +67,20 @@ export function tenGodForStem(dayStem: string, targetStem: string): TenGod {
 }
 
 export function visibleStemRoles(result: SajuExperienceResult): VisibleStemRole[] {
-  const dayStem = result.pillars.day.stem;
+  const {year, month, day, hour} = requiredBasePillars(result);
+  const dayStem = day.stem;
   const roles: VisibleStemRole[] = [
-    {pillar: 'year', stem: result.pillars.year.stem, tenGod: tenGodForStem(dayStem, result.pillars.year.stem)},
-    {pillar: 'month', stem: result.pillars.month.stem, tenGod: tenGodForStem(dayStem, result.pillars.month.stem)},
+    {pillar: 'year', stem: year.stem, tenGod: tenGodForStem(dayStem, year.stem)},
+    {pillar: 'month', stem: month.stem, tenGod: tenGodForStem(dayStem, month.stem)},
     {pillar: 'day', stem: dayStem, tenGod: 'self'},
   ];
-  if (result.pillars.hour) roles.push({pillar: 'hour', stem: result.pillars.hour.stem, tenGod: tenGodForStem(dayStem, result.pillars.hour.stem)});
+  if (hour) roles.push({pillar: 'hour', stem: hour.stem, tenGod: tenGodForStem(dayStem, hour.stem)});
   return roles;
 }
 
 export function buildFiveYearOutlooks(result: SajuExperienceResult, startYear: number): FiveYearOutlook[] {
-  const dayStem = result.pillars.day.stem;
+  const {day} = requiredBasePillars(result);
+  const dayStem = day.stem;
   const dayElement = stemInfo(dayStem).element;
   return Array.from({length: 5}, (_, offset) => {
     const year = startYear + offset;
