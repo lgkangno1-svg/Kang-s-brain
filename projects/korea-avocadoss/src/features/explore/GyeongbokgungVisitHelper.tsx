@@ -1,0 +1,81 @@
+'use client';
+
+import {useMemo,useState} from 'react';
+import {
+  GYEONGBOKGUNG_OFFICIAL_GUIDE_SOURCE,
+  GYEONGBOKGUNG_OFFICIAL_VISIT_SOURCE,
+  GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT,
+  gyeongbokgungGuidedTourTimes,
+  gyeongbokgungVisitFacts,
+  type GyeongbokgungGuideLanguage
+} from '@/lib/travel/gyeongbokgung-visit-facts';
+
+type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
+type Copy={
+  title:string;intro:string;date:string;hours:string;last:string;closed:string;verify:string;
+  guide:string;english:string;japanese:string;chinese:string;slots:string;none:string;meeting:string;
+  duration:string;individual:string;group:string;copy:string;copied:string;source:string;checked:string;privacy:string;
+};
+
+const C:Record<Locale,Copy>={
+  en:{title:'Entry cutoff & guided tours',intro:'Check the official seasonal last-admission time and foreign-language tour schedule before fixing your route.',date:'Visit date',hours:'Regular hours',last:'Last admission',closed:'Tuesday is the regular closure day.',verify:'Public holidays can move the closure. Verify the official notice before relying on a Tuesday visit.',guide:'Guided tour language',english:'English',japanese:'Japanese',chinese:'Chinese',slots:'Regular tour time',none:'Choose a tour time',meeting:'Meeting point: Gyeongbokgung Information Center inside Heungnyemun Gate.',duration:'Official duration: about 60–90 minutes.',individual:'Individual visitors under 10 people can normally join without a separate reservation.',group:'Groups of 10 or more require advance phone reservation. Re-check the official page before visiting.',copy:'Copy visit note',copied:'Visit note copied',source:'Official source',checked:'Source checked',privacy:'Deterministic helper: no AI API and no itinerary data is sent anywhere.'},
+  'zh-CN':{title:'入场截止与外语讲解',intro:'确定路线前先核对官方季节停止入场时间和外语讲解时段。',date:'参观日期',hours:'常规开放时间',last:'停止入场',closed:'周二为常规休宫日。',verify:'节假日可能调整休宫日，周二出行前请核对官方公告。',guide:'讲解语言',english:'英语',japanese:'日语',chinese:'中文',slots:'常规讲解时间',none:'选择讲解时间',meeting:'集合地点：兴礼门内景福宫咨询处前。',duration:'官方说明时长约60–90分钟。',individual:'少于10人的个人游客通常无需单独预约即可参加。',group:'10人及以上团体需提前电话预约，出发前请再次核对官方页面。',copy:'复制参观备注',copied:'已复制参观备注',source:'官方来源',checked:'来源核对',privacy:'本工具采用确定性规则，不使用AI API，也不会发送行程数据。'},
+  ja:{title:'入場締切と外国語ガイド',intro:'ルートを確定する前に、公式の季節別入場締切と外国語ガイド時間を確認します。',date:'訪問日',hours:'通常観覧時間',last:'入場締切',closed:'火曜日は通常の休宮日です。',verify:'祝日は休宮日が移動する場合があります。火曜日は公式告知を確認してください。',guide:'ガイド言語',english:'英語',japanese:'日本語',chinese:'中国語',slots:'通常の開始時刻',none:'ガイド時刻を選ぶ',meeting:'集合場所：興礼門内、景福宮案内所前。',duration:'公式所要時間：約60〜90分。',individual:'10人未満の個人観覧客は通常、別途予約なしで参加できます。',group:'10人以上の団体は事前電話予約が必要です。訪問前に公式ページを再確認してください。',copy:'訪問メモをコピー',copied:'訪問メモをコピーしました',source:'公式情報',checked:'出典確認',privacy:'決定論的に動作し、AI APIを使わず、旅程データを外部送信しません。'},
+  'zh-TW':{title:'入場截止與外語導覽',intro:'確定路線前先核對官方季節停止入場時間與外語導覽時段。',date:'參觀日期',hours:'一般開放時間',last:'停止入場',closed:'週二為一般休宮日。',verify:'國定假日可能調整休宮日，週二出發前請核對官方公告。',guide:'導覽語言',english:'英文',japanese:'日文',chinese:'中文',slots:'一般導覽時間',none:'選擇導覽時間',meeting:'集合地點：興禮門內景福宮服務處前。',duration:'官方說明時間約60–90分鐘。',individual:'少於10人的個人旅客通常可免另外預約參加。',group:'10人以上團體需提前電話預約，出發前請再次核對官方頁面。',copy:'複製參觀備註',copied:'已複製參觀備註',source:'官方來源',checked:'來源核對',privacy:'本工具採本機確定性規則，不使用AI API，也不會傳送行程資料。'},
+  vi:{title:'Giờ ngừng vào cửa & tour ngoại ngữ',intro:'Kiểm tra giờ vào cửa cuối theo mùa và lịch tour ngoại ngữ chính thức trước khi chốt lộ trình.',date:'Ngày tham quan',hours:'Giờ mở cửa thường lệ',last:'Giờ vào cửa cuối',closed:'Thứ Ba là ngày đóng cửa thường lệ.',verify:'Ngày lễ có thể làm thay đổi ngày đóng cửa. Hãy kiểm tra thông báo chính thức nếu đi thứ Ba.',guide:'Ngôn ngữ tour',english:'Tiếng Anh',japanese:'Tiếng Nhật',chinese:'Tiếng Trung',slots:'Giờ tour thường lệ',none:'Chọn giờ tour',meeting:'Điểm gặp: Trung tâm Thông tin Gyeongbokgung bên trong cổng Heungnyemun.',duration:'Thời lượng chính thức: khoảng 60–90 phút.',individual:'Khách lẻ dưới 10 người thường có thể tham gia mà không cần đặt riêng.',group:'Nhóm từ 10 người cần đặt trước qua điện thoại. Hãy kiểm tra lại trang chính thức trước khi đi.',copy:'Sao chép ghi chú',copied:'Đã sao chép ghi chú',source:'Nguồn chính thức',checked:'Đã kiểm tra nguồn',privacy:'Công cụ xác định, không dùng AI API và không gửi dữ liệu hành trình ra ngoài.'},
+  th:{title:'เวลาปิดรับเข้าและทัวร์ภาษาต่างประเทศ',intro:'ตรวจเวลาปิดรับเข้าตามฤดูกาลและรอบทัวร์ภาษาต่างประเทศจากข้อมูลทางการก่อนกำหนดเส้นทาง',date:'วันที่เที่ยว',hours:'เวลาชมปกติ',last:'เวลาปิดรับเข้า',closed:'วันอังคารเป็นวันปิดประจำ',verify:'วันหยุดราชการอาจทำให้วันปิดเปลี่ยน โปรดตรวจประกาศทางการหากจะไปวันอังคาร',guide:'ภาษาทัวร์',english:'อังกฤษ',japanese:'ญี่ปุ่น',chinese:'จีน',slots:'รอบทัวร์ปกติ',none:'เลือกรอบทัวร์',meeting:'จุดนัดพบ: ศูนย์ข้อมูลคยองบกกุงด้านในประตูฮึงรเยมุน',duration:'ระยะเวลาตามข้อมูลทางการประมาณ 60–90 นาที',individual:'ผู้เข้าชมรายบุคคลน้อยกว่า 10 คนโดยทั่วไปเข้าร่วมได้โดยไม่ต้องจองแยก',group:'กลุ่ม 10 คนขึ้นไปต้องจองล่วงหน้าทางโทรศัพท์ โปรดตรวจหน้าทางการอีกครั้งก่อนเดินทาง',copy:'คัดลอกบันทึกการเที่ยว',copied:'คัดลอกบันทึกแล้ว',source:'แหล่งข้อมูลทางการ',checked:'ตรวจสอบแหล่งข้อมูล',privacy:'ตัวช่วยนี้ใช้กฎแบบกำหนดแน่นอน ไม่ใช้ AI API และไม่ส่งข้อมูลแผนการเดินทางออกไป'}
+};
+
+function localToday(){
+  const d=new Date();
+  return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function defaultLanguage(locale:Locale):GyeongbokgungGuideLanguage{
+  if(locale==='ja')return'ja';
+  if(locale==='zh-CN'||locale==='zh-TW')return'zh-CN';
+  return'en';
+}
+
+export function GyeongbokgungVisitHelper({locale}:{locale:string}){
+  const l=(locale in C?locale:'en') as Locale;
+  const c=C[l];
+  const [date,setDate]=useState(localToday);
+  const [language,setLanguage]=useState<GyeongbokgungGuideLanguage>(()=>defaultLanguage(l));
+  const [selected,setSelected]=useState('');
+  const [status,setStatus]=useState('');
+  const facts=useMemo(()=>gyeongbokgungVisitFacts(date),[date]);
+  const tours=useMemo(()=>gyeongbokgungGuidedTourTimes(date,language),[date,language]);
+
+  function changeDate(value:string){setDate(value);setSelected('');setStatus('');}
+  function changeLanguage(value:GyeongbokgungGuideLanguage){setLanguage(value);setSelected('');setStatus('');}
+  async function copyVisitNote(){
+    const languageLabel=language==='ja'?c.japanese:language==='zh-CN'?c.chinese:c.english;
+    const lines=[
+      `Gyeongbokgung · ${date}`,
+      `${c.hours}: ${facts.open}–${facts.close}`,
+      `${c.last}: ${facts.lastAdmission}`,
+      `${c.guide}: ${languageLabel}${selected?` · ${selected}`:''}`,
+      c.meeting,c.duration
+    ];
+    try{await navigator.clipboard?.writeText(lines.join('\n'));setStatus(c.copied);}catch{setStatus('');}
+  }
+
+  return <section id="palace-visit-helper" style={{maxWidth:1050,margin:'0 auto',padding:'8px 20px 28px'}}>
+    <div style={{border:'1px solid rgba(0,0,0,.12)',borderRadius:14,padding:18}}>
+      <h2>{c.title}</h2><p>{c.intro}</p><p><small>{c.privacy}</small></p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:12,alignItems:'end'}}>
+        <label style={{display:'grid',gap:6}}>{c.date}<input type="date" value={date} onChange={e=>changeDate(e.target.value)}/></label>
+        <label style={{display:'grid',gap:6}}>{c.guide}<select value={language} onChange={e=>changeLanguage(e.target.value as GyeongbokgungGuideLanguage)}><option value="en">{c.english}</option><option value="ja">{c.japanese}</option><option value="zh-CN">{c.chinese}</option></select></label>
+        <label style={{display:'grid',gap:6}}>{c.slots}<select value={selected} disabled={!tours.length} onChange={e=>{setSelected(e.target.value);setStatus('');}}><option value="">{c.none}</option>{tours.map(t=><option key={t} value={t}>{t}</option>)}</select></label>
+      </div>
+      <div style={{marginTop:16}}>
+        <p><strong>{c.hours}:</strong> {facts.open}–{facts.close} · <strong>{c.last}:</strong> {facts.lastAdmission}</p>
+        {facts.regularTuesdayClosure?<p role="alert"><strong>{c.closed}</strong> {c.verify}</p>:null}
+        {selected?<p><strong>{c.slots}:</strong> {selected}<br/>{c.meeting}<br/>{c.duration}</p>:null}
+        <p><small>{c.individual}<br/>{c.group}</small></p>
+        <div style={{display:'flex',gap:10,flexWrap:'wrap'}}><button type="button" className="secondaryButton" onClick={copyVisitNote}>{c.copy}</button><a className="secondaryButton" href={GYEONGBOKGUNG_OFFICIAL_VISIT_SOURCE} target="_blank" rel="noreferrer">{c.source}: hours ↗</a><a className="secondaryButton" href={GYEONGBOKGUNG_OFFICIAL_GUIDE_SOURCE} target="_blank" rel="noreferrer">{c.source}: tours ↗</a></div>
+        <p><small>{c.checked}: {GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT}</small></p>{status?<p role="status"><strong>{status}</strong></p>:null}
+      </div>
+    </div>
+  </section>;
+}
