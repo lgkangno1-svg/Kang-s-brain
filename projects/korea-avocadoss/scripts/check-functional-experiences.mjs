@@ -14,7 +14,7 @@ const required=[
  'src/app/[locale]/explore/nearby/page.tsx','src/features/explore/NearbyExplorer.tsx','src/lib/travel/gyeongbokgung-nearby.ts','src/lib/travel/gyeongbokgung-nearby-core.ts',
  'src/app/[locale]/culture/saju/page.tsx','src/features/culture/SajuExperience.tsx',
  'src/app/[locale]/culture/naming/page.tsx','src/features/culture/NamingStudio.tsx',
- 'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v4.tsx','src/lib/looks/style-input-v1.ts','src/lib/looks/recommend.ts','src/lib/looks/deliverable.ts',
+ 'src/app/[locale]/style/page.tsx','src/features/looks/style-consultation-v5.tsx','src/lib/looks/style-input-v1.ts','src/lib/looks/recommend.ts','src/lib/looks/deliverable.ts',
  'src/features/quick-help/QuickHelp.tsx'
 ];
 for(const p of required)assert.ok(existsSync(path.join(root,p)),`${p} missing`);
@@ -107,11 +107,11 @@ assert.doesNotMatch(naming,/fetch\s*\(/,'Naming Studio must remain zero-API at l
 assert.match(naming,/generateKoreanNames|rank|candidate|CATALOG/i,'Naming Studio must produce deterministic candidate results');
 
 const stylePage=read('src/app/[locale]/style/page.tsx');
-const style=read('src/features/looks/style-consultation-v4.tsx');
+const style=read('src/features/looks/style-consultation-v5.tsx');
 const styleInput=read('src/lib/looks/style-input-v1.ts');
 const lookRecommend=read('src/lib/looks/recommend.ts');
 const deliverable=read('src/lib/looks/deliverable.ts');
-assert.match(stylePage,/StyleConsultationV4/,'My Korea Look page must use the current full-input result-depth matcher');
+assert.match(stylePage,/StyleConsultationV5/,'My Korea Look page must use the current locale-native result matcher');
 for(const state of ['setStyle','setGarment','setPalette','setMood','setComfort','setCoverage','setSeason','setDestination','setVisitDate'])assert.match(style,new RegExp(state),`My Korea Look missing ${state}`);
 assert.match(style,/rankStyleInputV1\(input\)/,'Free 3-look planner must use the PRD-aligned deterministic ranking engine');
 assert.match(style,/slice\(0,3\)/,'Free My Korea Look must expose three ranked looks before payment work resumes');
@@ -123,6 +123,7 @@ assert.match(style,/look\.rentalShopCard\.hangulTitle/,'Free 3-look plan must in
 assert.match(style,/look\.photoRoute\.map/,'Free 3-look plan must include a practical photo route');
 assert.match(style,/navigator\.clipboard\?\.writeText/,'Free 3-look plan must be copyable');
 assert.match(style,/href="\/hanbok#rental-finder"/,'Free 3-look plan must continue into the real rental finder');
+assert.match(style,/LABELS:Record<Locale/,'My Korea Look options and generated guidance must be locale-native');
 assert.doesNotMatch(style,/\/api\/checkout|my_korea_look_v1|CHECKOUT_DISABLED|\$12/,'User-facing My Korea Look must not call or advertise checkout before functionality is complete');
 for(const dimension of ['paletteScore','comfortScore','seasonScore','destinationScore','moodScore'])assert.match(styleInput,new RegExp(dimension),`Full-input ranker missing ${dimension}`);
 assert.match(styleInput,/look\.coverage!==input\.coverage/,'Coverage must remain a hard filter');
@@ -137,4 +138,4 @@ const help=read('src/features/quick-help/QuickHelp.tsx');
 assert.doesNotMatch(help,/fetch\s*\(/,'Free Quick Help must stay zero-API');
 assert.doesNotMatch(help,/openrouter|OpenAI|anthropic/i,'Free Quick Help must stay zero-LLM');
 
-console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, server-delivered Food, date-aware Nearby Explorer, full-input result-depth deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');
+console.log('Functional experience checks passed: Home, safe local Color, expanded Hanbok+rental finder, Saju, Naming, timed/reusable Gyeongbokgung, server-delivered Food, date-aware Nearby Explorer, full-input locale-native deterministic 3-look planning, and zero-API Quick Help are wired to real interactions.');

@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
-import {StyleConsultationV4} from '@/features/looks/style-consultation-v4';
+import {StyleConsultationV5} from '@/features/looks/style-consultation-v5';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
@@ -25,5 +25,5 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
 export default async function StylePage({params}:{params:Promise<{locale:string}>}){
   const {locale}=await params;
   setRequestLocale(locale);
-  return <main><StyleConsultationV4/></main>;
+  return <main><StyleConsultationV5/></main>;
 }
