@@ -40,8 +40,8 @@ export function relationBetween(dayMaster:FiveElementsElement,yearElement:FiveEl
 }
 
 function extrema(counts:Partial<Record<FiveElementsElement,number>>){
-  let strongest:ELEMENTS[number]='wood';
-  let weakest:ELEMENTS[number]='wood';
+  let strongest:FiveElementsElement='wood';
+  let weakest:FiveElementsElement='wood';
   for(const element of ELEMENTS){
     const value=counts[element]??0;
     if(value>(counts[strongest]??0))strongest=element;
