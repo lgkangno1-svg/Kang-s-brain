@@ -13,10 +13,10 @@ export type KoreaLookInput={
 
 export function scoreCuratedLook(look:CuratedLook,input:KoreaLookInput){
  if(input.garment!=='either'&&look.garmentType!==input.garment)return -1000;
- if(input.coverage&&look.coverage!==input.coverage)return -1000;
  let score=0;
  if(look.styleId===input.style)score+=45;
  if(look.palette.undertone===input.tone||look.palette.undertone==='universal')score+=25;
+ if(input.coverage&&look.coverage===input.coverage)score+=35;
  if(look.seasons.includes(input.season)||look.seasons.includes('all-season'))score+=15;
  if(input.priority==='walking'&&look.walkingSuitability==='easy')score+=15;
  if(input.priority==='photo'&&look.walkingSuitability==='photo-focused')score+=15;
