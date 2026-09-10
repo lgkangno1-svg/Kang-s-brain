@@ -81,7 +81,10 @@ export function rankStyleInputV1(input:StyleInputV1){
  return CURATED_LOOKS_CATALOG.map((catalogLook,index)=>{
   const look=withVisualAliases(catalogLook);
   if(input.garment!=='either'&&look.garmentType!==input.garment)return{look,index,score:-1000};
-  if(look.coverage!==input.coverage)return{look,index,score:-1000};
+  // Coverage is a minimum requirement: a more-covered look also satisfies "standard".
+  // The stricter preference remains a hard filter and never returns standard-coverage looks.
+  const coverageMismatch=look.coverage!==input.coverage;
+  if(input.coverage==='more-coverage'&&coverageMismatch)return{look,index,score:-1000};
   const score=(look.styleId===input.style?30:0)+paletteScore(look,input.palette)+comfortScore(look,input.comfort)+seasonScore(look,effectiveSeason)+destinationScore(look,input.destination)+moodScore(look,input.mood);
   return{look,index,score};
  }).filter(x=>x.score>-1000).sort((a,b)=>b.score-a.score||a.look.id.localeCompare(b.look.id)||a.index-b.index);
