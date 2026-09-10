@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import {getTranslations,setRequestLocale} from 'next-intl/server';
 import {GyeongbokgungPlannerV2} from '@/features/explore/GyeongbokgungPlannerV2';
+import {GyeongbokgungVisitHelper} from '@/features/explore/GyeongbokgungVisitHelper';
 import {Link} from '@/i18n/navigation';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
@@ -29,6 +30,7 @@ export default async function GyeongbokgungPage({params}:PageProps){
    <div className="stitchRouteGrid"><article className="stitchRoute"><b>1H</b><strong>{guide('oneHourTitle')}</strong><p>{guide('oneHourText')}</p></article><article className="stitchRoute"><b>2H</b><strong>{guide('twoHourTitle')}</strong><p>{guide('twoHourText')}</p></article><article className="stitchRoute"><b>4H</b><strong>{guide('fourHourTitle')}</strong><p>{guide('fourHourText')}</p></article></div>
    <p className="freshnessNote">{guide('freshnessNote')}</p>
   </section>
+  <GyeongbokgungVisitHelper locale={locale}/>
   <GyeongbokgungPlannerV2 locale={locale}/>
   <section style={{maxWidth:1050,margin:'0 auto',padding:'0 20px 72px'}}><Link className="secondaryButton" href="/explore/nearby">{nearbyCopy[locale]??nearbyCopy.en}</Link></section>
  </main>;
