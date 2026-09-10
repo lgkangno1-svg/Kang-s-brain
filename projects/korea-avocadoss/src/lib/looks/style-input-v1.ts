@@ -41,6 +41,10 @@ export function seasonFromVisitDate(value:string):StyleSeason|null{
  return 'springAutumn';
 }
 
+export function styleInputNeedsPaletteChoice(input:Pick<StyleInputV1,'palette'|'colorSource'>){
+ return input.palette==='suggest'&&input.colorSource==='manual';
+}
+
 function paletteScore(look:CuratedLook,palette:StylePalette){
  if(palette==='suggest')return 0;
  const u=look.palette.undertone;
@@ -77,6 +81,9 @@ function withVisualAliases(look:CuratedLook):RankedStyleLook{
 }
 
 export function rankStyleInputV1(input:StyleInputV1){
+ // BUILD_SPEC: "suggest" cannot invent a color direction. Until a valid local-preview
+ // color source exists, the customer must explicitly choose one of the verified palettes.
+ if(styleInputNeedsPaletteChoice(input))return [];
  const effectiveSeason=input.visitDate?seasonFromVisitDate(input.visitDate)??input.season:input.season;
  return CURATED_LOOKS_CATALOG.map((catalogLook,index)=>{
   const look=withVisualAliases(catalogLook);
