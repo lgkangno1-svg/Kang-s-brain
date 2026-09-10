@@ -59,8 +59,6 @@ jobs:
           test -n "$browser" || { echo 'No Chrome/Chromium executable found.' >&2; exit 1; }
           echo "AGENT_BROWSER_EXECUTABLE_PATH=$browser" >> "$GITHUB_ENV"
           agent-browser --version
-          agent-browser skills get core --full > "$RUNNER_TEMP/agent-browser-core-skill.md"
-          test -s "$RUNNER_TEMP/agent-browser-core-skill.md"
 
       - name: Run static contracts and production build
         run: npm run beta:verify
