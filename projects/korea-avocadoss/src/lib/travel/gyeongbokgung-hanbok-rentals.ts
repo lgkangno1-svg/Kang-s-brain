@@ -56,6 +56,18 @@ export function hanbokRentalAvailabilityAt(shop:HanbokRentalShop,date:string,tim
  return shop.scheduleConfidence==='verified'?'open':'recheck';
 }
 
+export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,time:string){
+ const minute=toMinute(time);
+ if(!Number.isFinite(minute)||minute<shop.openMinute||minute>=shop.closeMinute)return null;
+ return shop.closeMinute-minute;
+}
+
 export function hanbokRentalMapHref(shop:HanbokRentalShop){
  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.name}, ${shop.address}`)}`;
+}
+
+export function hanbokRentalToPalaceDirectionsHref(shop:HanbokRentalShop){
+ const origin=encodeURIComponent(`${shop.name}, ${shop.address}`);
+ const destination=encodeURIComponent('Gyeongbokgung Palace, 161 Sajik-ro, Jongno-gu, Seoul');
+ return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=walking`;
 }
