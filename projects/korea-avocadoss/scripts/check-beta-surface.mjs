@@ -52,7 +52,7 @@ if(!failures.length){
  const robots=read('src/app/robots.ts');
  const sitemap=read('src/app/sitemap.ts');
  requireText(robots,'robots',['robots']);
- requireText(sitemap,'sitemap',['sitemap','routing.locales']);
+ requireText(sitemap,'sitemap',['sitemap','P0_LOCALES','PUBLIC_LOCALE_PATHS']);
 }
 
 if(failures.length){
