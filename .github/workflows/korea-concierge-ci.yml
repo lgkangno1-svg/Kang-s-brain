@@ -17,9 +17,9 @@ concurrency:
 
 jobs:
   verify:
-    name: i18n and production build
+    name: beta readiness and production build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       CI: '1'
       NEXT_TELEMETRY_DISABLED: '1'
@@ -43,14 +43,8 @@ jobs:
       - name: Install frozen dependencies without lifecycle scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
 
-      - name: Validate P0 localization contracts
-        run: npm run check:i18n
-
-      - name: Build production application
-        run: npm exec -- next build
-
-      - name: Verify generated document languages
-        run: npm run check:document-lang
+      - name: Run beta readiness contracts and production build
+        run: npm run beta:verify
 
       - name: Verify deterministic legacy redirects
         shell: bash
