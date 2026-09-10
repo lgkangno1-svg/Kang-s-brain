@@ -45,7 +45,11 @@ const namesA=naming.generateKoreanNames(input,6);const namesB=naming.generateKor
 assert.equal(namesA.length,6);assert.deepEqual(namesA,namesB,'same naming input must be deterministic');
 assert.equal(new Set(namesA.map(x=>x.fullHangul)).size,6,'name ideas must be distinct');
 
-for(const required of ['src/app/[locale]/culture/saju/page.tsx','src/app/[locale]/culture/naming/page.tsx','src/features/culture/SajuExperience.tsx','src/features/culture/NamingStudio.tsx'])assert.ok(existsSync(path.join(projectRoot,required)),`${required} must exist`);
+for(const required of ['src/app/[locale]/culture/page.tsx','src/app/[locale]/culture/saju/page.tsx','src/app/[locale]/culture/naming/page.tsx','src/features/culture/SajuExperience.tsx','src/features/culture/NamingStudio.tsx'])assert.ok(existsSync(path.join(projectRoot,required)),`${required} must exist`);
 const layout=readFileSync(path.join(projectRoot,'src/app/[locale]/layout.tsx'),'utf8');
-assert.match(layout,/href="\/culture\/saju"/);assert.match(layout,/href="\/culture\/naming"/);assert.doesNotMatch(layout,/stitchDisabledNav[^\n]+\{shell\.naming\}/,'Naming Studio must not remain a disabled nav placeholder');
-console.log('K-Culture experience checks passed: real Saju base pillars, unknown-time safety, boundary safety, deterministic Naming Studio, and live routes.');
+const cultureHub=readFileSync(path.join(projectRoot,'src/app/[locale]/culture/page.tsx'),'utf8');
+assert.match(layout,/href="\/culture"/,'primary navigation must expose the K-Culture hub');
+assert.match(cultureHub,/href="\/culture\/saju"/,'K-Culture hub must link to Saju');
+assert.match(cultureHub,/href="\/culture\/naming"/,'K-Culture hub must link to Naming Studio');
+assert.doesNotMatch(layout,/stitchDisabledNav[^\n]+\{shell\.naming\}/,'Naming Studio must not remain a disabled nav placeholder');
+console.log('K-Culture experience checks passed: real Saju base pillars, unknown-time safety, boundary safety, deterministic Naming Studio, and hub-linked live routes.');

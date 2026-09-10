@@ -13,9 +13,11 @@
     "check:credits-ledger":"node scripts/check-credit-ledger.mjs && node scripts/check-credit-authorization.mjs",
     "check:responsive":"node scripts/check-responsive-contracts.mjs",
     "check:recovery":"node scripts/check-route-recovery-contracts.mjs",
+    "check:beta-surface":"node scripts/check-beta-surface.mjs",
     "check:document-lang":"node scripts/check-built-document-languages.mjs",
     "check:legacy-redirects":"node scripts/check-legacy-redirects.mjs",
-    "build":"npm run check:i18n && npm run check:content && npm run check:saju && npm run check:culture && npm run check:functionality && npm run check:database && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && next build",
+    "build":"npm run check:i18n && npm run check:content && npm run check:saju && npm run check:culture && npm run check:functionality && npm run check:database && npm run check:hanbok && npm run check:payments && npm run check:credits-ledger && npm run check:responsive && npm run check:recovery && npm run check:beta-surface && next build",
+    "beta:verify":"npm run build && npm run check:document-lang",
     "start":"next start"
   },
   "dependencies":{"next":"16.3.3","next-intl":"4.13.4","react":"19.2.0","react-dom":"19.2.0"},
