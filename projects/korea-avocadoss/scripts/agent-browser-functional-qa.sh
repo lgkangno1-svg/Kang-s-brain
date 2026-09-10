@@ -14,24 +14,31 @@ step(){ printf 'AGENT_BROWSER_QA|STEP|%s|%s\n' "$MODE" "$*"; }
 pass(){ printf 'AGENT_BROWSER_QA|PASS|%s|%s\n' "$MODE" "$*"; }
 fail(){ printf 'AGENT_BROWSER_QA|FAIL|%s|%s\n' "$MODE" "$*" >&2; exit 1; }
 body(){ ab get text body 2>/dev/null || ab eval 'document.body.innerText'; }
+diagnostics(){
+  printf 'AGENT_BROWSER_QA|DIAG|%s|body-start\n' "$MODE" >&2
+  body >&2 || true
+  printf 'AGENT_BROWSER_QA|DIAG|%s|page-errors\n' "$MODE" >&2
+  ab errors >&2 || true
+  printf 'AGENT_BROWSER_QA|DIAG|%s|console\n' "$MODE" >&2
+  ab console >&2 || true
+}
 expect_text(){
   local needle="$1" label="$2" text
   text="$(body)"
-  grep -Fq "$needle" <<<"$text" || fail "$label: missing text [$needle]"
+  if ! grep -Fq "$needle" <<<"$text"; then diagnostics; fail "$label: missing text [$needle]"; fi
   pass "$label"
 }
 open_page(){
   local path="$1"
   step "open ${path}"
   ab open "${ORIGIN}${path}" >/dev/null
-  # Fixed settle time is more reliable than network-idle because public image sources can stay busy.
   ab wait 900 >/dev/null
   ab snapshot -i >/dev/null
 }
 assert_no_horizontal_scroll(){
   local label="$1" result
   result="$(ab eval 'document.documentElement.scrollWidth <= window.innerWidth')"
-  grep -Fq 'true' <<<"$result" || fail "$label: horizontal overflow"
+  grep -Fq 'true' <<<"$result" || { diagnostics; fail "$label: horizontal overflow"; }
   pass "$label no-horizontal-scroll"
 }
 
@@ -45,6 +52,8 @@ step 'Saju fill birth date'
 ab find label 'Birth date' fill '1990-05-15' >/dev/null
 step 'Saju fill birthplace timezone'
 ab find label 'Birthplace timezone' fill 'Asia/Seoul' >/dev/null
+step 'Saju inspect form validity'
+ab eval 'JSON.stringify(Array.from(document.querySelectorAll("input")).map((el)=>({type:el.type,value:el.value,valid:el.validity.valid})))' >&2 || true
 step 'Saju submit'
 ab find role button click --name 'Read my Saju' >/dev/null
 ab wait 700 >/dev/null
