@@ -1,4 +1,4 @@
-import {CURATED_LOOKS_CATALOG,type CuratedLook,type GarmentType,type Season,type StyleId} from './catalog';
+import {CURATED_LOOKS_CATALOG,type CuratedLook,type GarmentType,type Season,type StyleId,type Coverage} from './catalog';
 
 export type LookUndertone='warm'|'cool'|'neutral';
 export type LookPriority='photo'|'walking'|'balanced';
@@ -8,6 +8,7 @@ export type KoreaLookInput={
  tone:LookUndertone;
  priority:LookPriority;
  season:Season;
+ coverage?:Coverage;
 };
 
 export function scoreCuratedLook(look:CuratedLook,input:KoreaLookInput){
@@ -15,6 +16,7 @@ export function scoreCuratedLook(look:CuratedLook,input:KoreaLookInput){
  let score=0;
  if(look.styleId===input.style)score+=45;
  if(look.palette.undertone===input.tone||look.palette.undertone==='universal')score+=25;
+ if(input.coverage&&look.coverage===input.coverage)score+=35;
  if(look.seasons.includes(input.season)||look.seasons.includes('all-season'))score+=15;
  if(input.priority==='walking'&&look.walkingSuitability==='easy')score+=15;
  if(input.priority==='photo'&&look.walkingSuitability==='photo-focused')score+=15;

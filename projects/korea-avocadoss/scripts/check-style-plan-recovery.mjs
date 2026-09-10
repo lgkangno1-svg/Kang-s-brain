@@ -5,10 +5,13 @@ import {fileURLToPath} from 'node:url';
 
 const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'..');
 const source=readFileSync(path.join(root,'src/features/looks/style-consultation-v2.tsx'),'utf8');
+const ranking=readFileSync(path.join(root,'src/lib/looks/recommend.ts'),'utf8');
 
 assert.match(source,/STORAGE_KEY='kc-my-korea-look-plan-v1'/,'My Korea Look free plan needs a versioned local persistence key.');
-assert.match(source,/type SavedPlan=\{version:1;style:StyleId;garment:GarmentType;tone:LookUndertone;priority:LookPriority;season:Season\}/,'Saved free-plan state must contain only bounded non-sensitive preferences.');
+assert.match(source,/type SavedPlan=\{version:1;style:StyleId;garment:GarmentType;tone:LookUndertone;priority:LookPriority;season:Season;coverage\?:Coverage\}/,'Saved free-plan state must contain only bounded non-sensitive preferences including coverage.');
 assert.match(source,/function isSavedPlan\(value:unknown\)/,'Saved My Korea Look state must be validated before restoration.');
+assert.match(source,/COVERAGES:Coverage\[\]=\['standard','more-coverage'\]/,'Coverage persistence must be constrained to the PRD enum.');
+assert.match(source,/setCoverage\(parsed\.coverage\?\?'standard'\)/,'Legacy saved plans without coverage must recover to a safe standard default.');
 assert.match(source,/localStorage\.setItem\(STORAGE_KEY,JSON\.stringify\(payload\)\)/,'Visitors must be able to save free-plan choices locally without an account or API.');
 assert.match(source,/function restorePlan\(\)/,'Visitors must have an explicit recovery path for their saved free-plan choices.');
 assert.match(source,/try\{parsed=JSON\.parse\(raw\);\}catch\{localStorage\.removeItem\(STORAGE_KEY\);setMessage\(c\.noSaved\);return;\}/,'Malformed saved JSON must fail closed and be discarded rather than poisoning future restores.');
@@ -21,7 +24,16 @@ assert.match(source,/function clearPlan\(\).*catch\{setMessage\(c\.storageFailed
 for(const phrase of ['device storage','设备存储','端末ストレージ','裝置儲存空間','bộ nhớ thiết bị','พื้นที่จัดเก็บของอุปกรณ์']){
  assert.ok(source.includes(phrase),`Storage recovery guidance must be present in every P0 locale: ${phrase}`);
 }
+for(const phrase of ['Coverage preference','遮盖偏好','カバー範囲の希望','遮蓋偏好','Mức che phủ mong muốn','ระดับการปกปิดที่ต้องการ']){
+ assert.ok(source.includes(phrase),`Coverage control must be localized in every P0 locale: ${phrase}`);
+}
+assert.match(source,/\[coverage,setCoverage\]=useState<Coverage>\('standard'\)/,'Coverage must be a real visitor-controlled state.');
+assert.match(source,/rankCuratedLooks\(\{style,garment,tone,priority,season,coverage\}\)/,'Coverage must reach the deterministic ranking engine.');
+assert.match(ranking,/if\(input\.coverage&&look\.coverage===input\.coverage\)score\+=35/,'Matching coverage must materially affect deterministic rank without reducing the free result below three looks.');
+assert.match(source,/value=\{coverage\} onChange=\{e=>\{setCoverage/,'Coverage selector must update the planner state.');
+assert.match(source,/look\.coverage==='more-coverage'\?c\.moreCoverage:c\.standard/,'Each result must disclose its actual catalog coverage.');
 assert.match(source,/const planText=useMemo\(/,'The exported artifact must be derived from the currently ranked three-look result.');
+assert.match(source,/\$\{c\.coverage\}: \$\{coverage==='more-coverage'\?c\.moreCoverage:c\.standard\}/,'Export must preserve the visitor coverage preference.');
 assert.match(source,/\.\.\.look\.reasons\.map\(reason=>`- \$\{reason\}`\)/,'Export must preserve the recommendation reasons instead of reducing the plan to titles only.');
 assert.match(source,/\$\{c\.source\}: \$\{look\.creator\} · \$\{look\.license\} · \$\{look\.sourceUrl\}/,'Export must preserve creator, license and source provenance for each recommended visual.');
 assert.match(source,/href=\{look\.sourceUrl\}/,'Each visual recommendation must expose its source link immediately with the image.');
@@ -40,4 +52,4 @@ assert.match(source,/role="status"/,'Copy, download, save and recovery feedback 
 assert.match(source,/exports are created locally|导出文件也在本地生成|書き出しも端末内で作成されます/,'Core P0 copy must disclose that exports are created locally.');
 assert.doesNotMatch(source,/fetch\s*\(/,'Free My Korea Look save/export/recovery must remain zero-API.');
 
-console.log('My Korea Look free-plan recovery contract passed: validated local persistence/export recovery plus visible visual provenance with no API call.');
+console.log('My Korea Look free-plan contract passed: coverage now drives deterministic ranking and persists/exports locally while existing recovery and provenance remain intact.');
