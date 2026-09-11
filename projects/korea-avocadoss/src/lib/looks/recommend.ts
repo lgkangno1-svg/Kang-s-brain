@@ -1,4 +1,5 @@
-import {CURATED_LOOKS_CATALOG,type CuratedLook,type GarmentType,type Season,type StyleId,type Coverage} from './catalog';
+import {type CuratedLook,type GarmentType,type Season,type StyleId,type Coverage} from './catalog';
+import {EXPANDED_CURATED_LOOKS_CATALOG} from './catalog-expansion';
 
 export type LookUndertone='warm'|'cool'|'neutral';
 export type LookPriority='photo'|'walking'|'balanced';
@@ -25,7 +26,7 @@ export function scoreCuratedLook(look:CuratedLook,input:KoreaLookInput){
 }
 
 export function rankCuratedLooks(input:KoreaLookInput){
- return CURATED_LOOKS_CATALOG.map((look,index)=>({look,score:scoreCuratedLook(look,input),index}))
+ return EXPANDED_CURATED_LOOKS_CATALOG.map((look,index)=>({look,score:scoreCuratedLook(look,input),index}))
   .filter(item=>item.score>-1000)
   .sort((a,b)=>b.score-a.score||a.index-b.index);
 }
