@@ -17,5 +17,6 @@ const ROUTE_SETTINGS={
  '/contact':{changeFrequency:'monthly',priority:0.5},
  '/privacy':{changeFrequency:'monthly',priority:0.5},
  '/terms':{changeFrequency:'monthly',priority:0.5},
+ '/refunds':{changeFrequency:'monthly',priority:0.5},
 } as const;
 export default function sitemap():MetadataRoute.Sitemap{return PUBLIC_LOCALE_PATHS.flatMap(path=>P0_LOCALES.map(locale=>({url:localizedPublicUrl(locale,path),changeFrequency:ROUTE_SETTINGS[path].changeFrequency,priority:ROUTE_SETTINGS[path].priority,alternates:{languages:localizedLanguageAlternates(path)}})));}
