@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {setRequestLocale} from 'next-intl/server';
 import {StyleConsultationV5} from '@/features/looks/style-consultation-v5';
 import {StyleInputModeChoice} from '@/features/looks/style-input-mode-choice';
+import {StylePlanShareLink} from '@/features/looks/StylePlanShareLink';
 import {Link} from '@/i18n/navigation';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
@@ -49,5 +50,6 @@ export default async function StylePage({params}:{params:Promise<{locale:string}
     </aside>
     <div style={{maxWidth:1080,margin:'0 auto',padding:'0 20px'}}><StyleInputModeChoice/></div>
     <StyleConsultationV5/>
+    <StylePlanShareLink locale={safeLocale}/>
   </main>;
 }
