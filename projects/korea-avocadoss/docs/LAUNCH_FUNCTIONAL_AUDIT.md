@@ -1,6 +1,6 @@
 # Korea Concierge — Payment-grade functional audit
 
-Last reviewed: 2026-09-11
+Last reviewed: 2026-09-12
 
 This checklist treats **working end-to-end behavior** as the minimum bar. A page, card or mock interaction is not considered complete if the user's input does not materially change a result, failure cannot be recovered, or a paid result cannot be owned and re-opened safely.
 
@@ -24,7 +24,7 @@ This checklist treats **working end-to-end behavior** as the minimum bar. A page
 | Nearby Explorer | HARDENING | 1–3h deterministic routes consume the selected visit date, omit source-verified fixed weekly/known holiday closures, retain time-window warnings, account for origin-to-first-stop and calibrated inter-stop walking time, and provide per-stop maps plus one zero-API full walking-route handoff preserving selected stop order. | Expand verified closure coverage, source-refresh operations and broader walking calibration. |
 | Food & cafe finder | HARDENING | Source-checked official tourism records, category filters, hours/address/dietary notes, checked-at/source link. Records older than 30 days (or carrying an invalid/future check date) fail closed to verify-only instead of being presented as definitely open/closed, with six-locale visitor recovery copy and an automated regression contract. | Expand verified inventory, geospatial distance, localization of business descriptions and source-refresh operations. |
 | Quick Help | WORKING | Deterministic decision tree, keyboard recovery, 0 credits, no fetch/LLM. | Keep answers synchronized with live feature routes and policy changes. |
-| My Korea Look free preview | HARDENING | The source-checked catalog now has 12 distinct references, with at least two `chima` and two `baji` directions in each of the three experience families. The active free-preview ranker consumes all 12 and responds to style/garment/palette/mood/comfort/coverage/season-or-date/destination. Coverage materially changes deterministic scoring, result metadata is localized for P0 locales, choices persist/restore locally with recovery, and copy/download export works. The free boundary remains one curated look, basic color direction and short deterministic reasons; photo analysis is not falsely claimed. | Continue locale-native authored prose for the six newly added references and later build the private paid-result persistence path after dedicated auth/database prerequisites are approved. |
+| My Korea Look free preview | HARDENING | The source-checked catalog has 12 distinct references, with at least two `chima` and two `baji` directions in each of the three experience families. The active free-preview ranker consumes all 12 and responds to style/garment/palette/mood/comfort/coverage/season-or-date/destination. The six expansion references now have authored titles, taglines, descriptions and visual alternative text for every non-English P0 locale (`zh-CN`, `ja`, `zh-TW`, `vi`, `th`) instead of exposing generated generic result names; source/license facts remain unchanged. Coverage materially changes deterministic scoring, choices persist/restore locally with recovery, and copy/download export works. The free boundary remains one curated look, basic color direction and short deterministic reasons; photo analysis is not falsely claimed. | Broader native-speaker editorial/device QA remains; private paid-result persistence still depends on an approved dedicated Korea auth/database project. |
 | Credits catalog | HARDENING | Economics/catalog and authorization contracts exist. | Do not sell credits until durable account ledger/refund/idempotency flow is deployed and E2E tested. |
 
 ## Payment and ownership
@@ -59,9 +59,9 @@ Real checkout may not open until all are true:
 
 1. Keep MiniPC exact-SHA build green for the current functional branch.
 2. Complete remaining Personal Color real-device rotated-camera and constrained-memory QA; synthetic EXIF Orientation fixtures cover the compressed-header preflight path, while browser decode/render behavior still requires representative device evidence and final consent wording review.
-3. Finish release verification for the 12-look My Korea Look catalog, then continue locale-native authored presentation and edge-case/device QA without weakening the six-look `/hanbok` localization boundary.
-4. Continue Explore source-refresh/geospatial hardening; Gyeongbokgung holiday substitution, calibrated walking legs, map handoff and P0 hero-alt localization are now covered by code-level contracts.
-5. Continue My Korea Look locale-native result/catalog content; all active free-preview input dimensions are wired through deterministic ranking and persistence/export.
+3. Finish release verification for the 12-look My Korea Look catalog and authored P0 expansion presentation, then continue edge-case/device/native-editorial QA without weakening the six-look `/hanbok` localization boundary.
+4. Continue Explore source-refresh/geospatial hardening; Gyeongbokgung holiday substitution, calibrated walking legs, map handoff and P0 hero-alt localization are covered by code-level contracts.
+5. Continue My Korea Look result/catalog hardening; all active free-preview input dimensions are wired through deterministic ranking and persistence/export.
 6. Create the dedicated Korea Supabase project only when account/database integration becomes the blocking step and the project cost/organization is explicitly approved.
 7. Implement auth/order/webhook/fulfillment against that dedicated project.
 8. Run Stripe **test-mode** E2E including retries/duplicate events/refunds.
