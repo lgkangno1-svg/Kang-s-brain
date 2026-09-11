@@ -8,7 +8,8 @@ export const GYEONGBOKGUNG_GUIDED_TOURS:Record<GyeongbokgungGuideLanguage,readon
 
 export const GYEONGBOKGUNG_OFFICIAL_VISIT_SOURCE='https://royal.khs.go.kr/ROYAL/contents/R702000000.do';
 export const GYEONGBOKGUNG_OFFICIAL_GUIDE_SOURCE='https://royal.khs.go.kr/ROYAL/contents/R706010000.do';
-export const GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT='2026-09-10';
+export const GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT='2026-09-12';
+export const GYEONGBOKGUNG_VISIT_FACTS_MAX_AGE_DAYS=30;
 
 export type GyeongbokgungVisitFacts={
   open:string;
@@ -26,7 +27,14 @@ function parseIsoDate(date:string){
   if(parsed.getUTCFullYear()!==year||parsed.getUTCMonth()!==month-1||parsed.getUTCDate()!==day){
     throw new RangeError('Visit date is invalid.');
   }
-  return{month,weekday:parsed.getUTCDay()};
+  return{date:parsed,month,weekday:parsed.getUTCDay()};
+}
+
+export function isGyeongbokgungVisitFactsFresh(asOfDate:string){
+  const checked=parseIsoDate(GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT).date.getTime();
+  const asOf=parseIsoDate(asOfDate).date.getTime();
+  const ageDays=Math.floor((asOf-checked)/86_400_000);
+  return ageDays>=0&&ageDays<=GYEONGBOKGUNG_VISIT_FACTS_MAX_AGE_DAYS;
 }
 
 export function gyeongbokgungVisitFacts(date:string):GyeongbokgungVisitFacts{
