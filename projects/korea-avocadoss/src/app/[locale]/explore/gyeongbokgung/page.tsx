@@ -14,15 +14,24 @@ const nearbyCopy:Record<string,string>={
  vi:'Lập lộ trình 1–3 giờ quanh cung điện',
  th:'วางแผนเส้นทางใกล้พระราชวัง 1–3 ชั่วโมง'
 };
+const heroAlt:Record<string,string>={
+ en:'Gyeonghoeru Pavilion at Gyeongbokgung Palace',
+ 'zh-CN':'景福宫庆会楼',
+ ja:'景福宮の慶会楼',
+ 'zh-TW':'景福宮慶會樓',
+ vi:'Lầu Gyeonghoeru tại Cung điện Gyeongbokgung',
+ th:'ศาลาคยองฮเวรูในพระราชวังคยองบกกุง'
+};
 export async function generateMetadata({params}:PageProps):Promise<Metadata>{
  const {locale}=await params;setRequestLocale(locale);const meta=await getTranslations('Meta');
  return{title:meta('gyeongbokgungTitle'),description:meta('gyeongbokgungDescription'),alternates:localizedAlternates(locale,'/explore/gyeongbokgung')};
 }
 export default async function GyeongbokgungPage({params}:PageProps){
  const {locale}=await params;setRequestLocale(locale);const guide=await getTranslations('Gyeongbokgung');
+ const safeHeroAlt=heroAlt[locale]??heroAlt.en;
  return <main>
   <section className="stitchPalaceHero">
-   <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeonghoeru_Pavilion_at_Gyeongbokgung_Palace.jpg?width=1800" alt="Gyeonghoeru Pavilion at Gyeongbokgung Palace" referrerPolicy="no-referrer"/>
+   <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeonghoeru_Pavilion_at_Gyeongbokgung_Palace.jpg?width=1800" alt={safeHeroAlt} referrerPolicy="no-referrer"/>
    <div className="stitchPalaceHeroCopy"><p className="eyebrow">{guide('eyebrow')}</p><h1>{guide('title')}</h1><p>{guide('intro')}</p></div>
   </section>
   <section className="stitchRoutePanel">
