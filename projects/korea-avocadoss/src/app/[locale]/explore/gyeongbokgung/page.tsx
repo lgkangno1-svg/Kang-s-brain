@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {getTranslations,setRequestLocale} from 'next-intl/server';
 import {GyeongbokgungPlannerV2} from '@/features/explore/GyeongbokgungPlannerV2';
 import {GyeongbokgungVisitHelper} from '@/features/explore/GyeongbokgungVisitHelper';
+import {GyeongbokgungArrivalAdvisor} from '@/features/explore/GyeongbokgungArrivalAdvisor';
 import {Link} from '@/i18n/navigation';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
@@ -40,6 +41,7 @@ export default async function GyeongbokgungPage({params}:PageProps){
    <p className="freshnessNote">{guide('freshnessNote')}</p>
   </section>
   <GyeongbokgungVisitHelper locale={locale}/>
+  <GyeongbokgungArrivalAdvisor locale={locale}/>
   <GyeongbokgungPlannerV2 locale={locale}/>
   <section style={{maxWidth:1050,margin:'0 auto',padding:'0 20px 72px'}}><Link className="secondaryButton" href="/explore/nearby">{nearbyCopy[locale]??nearbyCopy.en}</Link></section>
  </main>;
