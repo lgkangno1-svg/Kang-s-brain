@@ -46,13 +46,13 @@ export function styleInputNeedsPaletteChoice(input:Pick<StyleInputV1,'palette'|'
  return input.palette==='suggest'&&input.colorSource==='manual';
 }
 
-const RESULT_TERMS:Record<ResultLocale,{look:string;top:string;bottom:string;accent:string;accessory:string;style:Record<StyleId,string>;garment:Record<GarmentType,string>}>= {
- en:{look:'Look',top:'Top',bottom:'Bottom',accent:'Accent',accessory:'Accessory',style:{'princess-prince':'Princess / Prince','queen-king':'Queen / King',royal:'Royal'},garment:{chima:'Chima',baji:'Baji',either:'Hanbok'}},
- 'zh-CN':{look:'造型',top:'上装',bottom:'下装',accent:'点缀',accessory:'配饰',style:{'princess-prince':'王子 / 公主风','queen-king':'王后 / 国王风',royal:'宫廷王室风'},garment:{chima:'裙装韩服',baji:'裤装韩服',either:'韩服'}},
- ja:{look:'ルック',top:'上衣',bottom:'ボトム',accent:'差し色',accessory:'小物',style:{'princess-prince':'王子 / 姫スタイル','queen-king':'王妃 / 王スタイル',royal:'王室スタイル'},garment:{chima:'チマ韓服',baji:'パジ韓服',either:'韓服'}},
- 'zh-TW':{look:'造型',top:'上身',bottom:'下身',accent:'點綴',accessory:'配件',style:{'princess-prince':'王子 / 公主風','queen-king':'王后 / 國王風',royal:'宮廷王室風'},garment:{chima:'裙裝韓服',baji:'褲裝韓服',either:'韓服'}},
- vi:{look:'Look',top:'Áo',bottom:'Phần dưới',accent:'Điểm nhấn',accessory:'Phụ kiện',style:{'princess-prince':'Hoàng tử / Công chúa','queen-king':'Hoàng hậu / Quốc vương',royal:'Hoàng gia'},garment:{chima:'Hanbok chima',baji:'Hanbok baji',either:'Hanbok'}},
- th:{look:'ลุค',top:'ท่อนบน',bottom:'ท่อนล่าง',accent:'สีเน้น',accessory:'เครื่องประดับ',style:{'princess-prince':'เจ้าชาย / เจ้าหญิง','queen-king':'ราชินี / กษัตริย์',royal:'ราชสำนัก'},garment:{chima:'ฮันบกชิมา',baji:'ฮันบกบาจี',either:'ฮันบก'}},
+const RESULT_TERMS:Record<ResultLocale,{look:string;visual:string;top:string;bottom:string;accent:string;accessory:string;style:Record<StyleId,string>;garment:Record<GarmentType,string>}>= {
+ en:{look:'Look',visual:'Reference photo',top:'Top',bottom:'Bottom',accent:'Accent',accessory:'Accessory',style:{'princess-prince':'Princess / Prince','queen-king':'Queen / King',royal:'Royal'},garment:{chima:'Chima',baji:'Baji',either:'Hanbok'}},
+ 'zh-CN':{look:'造型',visual:'参考照片',top:'上装',bottom:'下装',accent:'点缀',accessory:'配饰',style:{'princess-prince':'王子 / 公主风','queen-king':'王后 / 国王风',royal:'宫廷王室风'},garment:{chima:'裙装韩服',baji:'裤装韩服',either:'韩服'}},
+ ja:{look:'ルック',visual:'参考写真',top:'上衣',bottom:'ボトム',accent:'差し色',accessory:'小物',style:{'princess-prince':'王子 / 姫スタイル','queen-king':'王妃 / 王スタイル',royal:'王室スタイル'},garment:{chima:'チマ韓服',baji:'パジ韓服',either:'韓服'}},
+ 'zh-TW':{look:'造型',visual:'參考照片',top:'上身',bottom:'下身',accent:'點綴',accessory:'配件',style:{'princess-prince':'王子 / 公主風','queen-king':'王后 / 國王風',royal:'宮廷王室風'},garment:{chima:'裙裝韓服',baji:'褲裝韓服',either:'韓服'}},
+ vi:{look:'Look',visual:'Ảnh tham khảo',top:'Áo',bottom:'Phần dưới',accent:'Điểm nhấn',accessory:'Phụ kiện',style:{'princess-prince':'Hoàng tử / Công chúa','queen-king':'Hoàng hậu / Quốc vương',royal:'Hoàng gia'},garment:{chima:'Hanbok chima',baji:'Hanbok baji',either:'Hanbok'}},
+ th:{look:'ลุค',visual:'ภาพอ้างอิง',top:'ท่อนบน',bottom:'ท่อนล่าง',accent:'สีเน้น',accessory:'เครื่องประดับ',style:{'princess-prince':'เจ้าชาย / เจ้าหญิง','queen-king':'ราชินี / กษัตริย์',royal:'ราชสำนัก'},garment:{chima:'ฮันบกชิมา',baji:'ฮันบกบาจี',either:'ฮันบก'}},
 };
 
 const ACCESSORY_TERMS:Record<ResultLocale,Record<string,string>>={
@@ -71,8 +71,13 @@ function localizeAccessory(locale:ResultLocale,id:string,index:number){
  for(const [needle,label] of Object.entries(terms)){if(id.includes(needle)||id.includes(needle==='norigae'?'norige':'__none__'))return label;}
  return `${RESULT_TERMS[locale].accessory} ${index+1}`;
 }
+function localizeVisualAlt(look:CuratedLook,locale:ResultLocale){
+ if(locale==='en')return look.alt;
+ const terms=RESULT_TERMS[locale];
+ return `${terms.visual}: ${terms.style[look.styleId]} · ${terms.garment[look.garmentType]}`;
+}
 function localizeLookForResult(look:CuratedLook,locale:ResultLocale,index:number):RankedStyleLook{
- const visual={visualSrc:look.src,visualAlt:look.alt};
+ const visual={visualSrc:look.src,visualAlt:localizeVisualAlt(look,locale)};
  if(locale==='en')return {...look,...visual};
  const terms=RESULT_TERMS[locale];
  return {
