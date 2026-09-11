@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const root=process.cwd();
 const ui=fs.readFileSync(path.join(root,'src/features/looks/style-consultation-v5.tsx'),'utf8');
+const inputMode=fs.readFileSync(path.join(root,'src/features/looks/style-input-mode-choice.tsx'),'utf8');
 const engine=fs.readFileSync(path.join(root,'src/lib/looks/style-input-v1.ts'),'utf8');
 const catalog=fs.readFileSync(path.join(root,'src/lib/looks/catalog.ts'),'utf8');
 const page=fs.readFileSync(path.join(root,'src/app/[locale]/style/page.tsx'),'utf8');
@@ -33,5 +34,11 @@ if(moreCoverageLooks<3)throw new Error('strict more-coverage preference cannot p
 if(!ui.includes("colorSource:'manual'"))throw new Error('free preview must stay manual/local and avoid remote photo processing');
 if(ui.includes('fetch(')||ui.includes('/api/checkout'))throw new Error('free style input must remain zero-network and fail-closed for checkout');
 if(!page.includes('StyleConsultationV5'))throw new Error('live style route is not wired to the full input experience');
+if(!page.includes('StyleInputModeChoice'))throw new Error('live style route must expose explicit photo/no-photo input choice before paid entry');
+for(const marker of ["type Mode='no-photo'|'photo'","name=\"style-input-mode\"","value=\"no-photo\"","value=\"photo\"","mode==='photo'","href=\"/color\"","does not claim photo analysis","Secure paid photo styling is not available until private account, storage, consent and fulfillment infrastructure is verified."]){
+ if(!inputMode.includes(marker))throw new Error(`style input-mode boundary missing ${marker}`);
+}
+for(const locale of ["en:","'zh-CN':","ja:","'zh-TW':","vi:","th:"]){if(!inputMode.includes(locale))throw new Error(`style input-mode locale missing ${locale}`);}
+if(inputMode.includes('fetch(')||inputMode.includes('/api/checkout')||inputMode.includes('type="file"'))throw new Error('style input-mode boundary must not upload photos or open checkout');
 if(!engine.includes("if(month===12||month<=2)return 'winter'")||!engine.includes("if(month>=6&&month<=8)return 'summer'"))throw new Error('visit-date seasonal mapping is incomplete');
 console.log('My Korea Look full input contract OK');
