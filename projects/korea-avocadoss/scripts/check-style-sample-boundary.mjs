@@ -51,7 +51,8 @@ for (const forbidden of [
 }
 
 for (const required of [
-  'planned My Korea Look',
+  'fictitious one-adult public demonstration of the planned',
+  '<strong>My Korea Look</strong> stylebook',
   'paid checkout and private delivery are not available',
   'Planned launch price: $12.00 USD',
   'Start the Free Style Preview',
