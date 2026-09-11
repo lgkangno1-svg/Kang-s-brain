@@ -31,9 +31,10 @@ if(!ui.includes('slice(0,1)')||!ui.includes('looks.length===1'))throw new Error(
 for(const paidOnly of ['look.accessoryIds','altFor(','look.rentalShopCard.hangulTitle','look.photoRoute.map']){
  if(ui.includes(paidOnly))throw new Error(`free preview leaked paid-only detail: ${paidOnly}`);
 }
-for(const marker of ['3 Curated Looks Tailored to This Profile','koreanShopCardSummary','photoRoute.map','exact depth provided to paid clients']){
+for(const marker of ['3 Curated Looks Tailored to This Profile','koreanShopCardSummary','photoRoute.map','It shows the intended result depth']){
  if(!sample.includes(marker))throw new Error(`public paid-quality sample missing ${marker}`);
 }
+if(!sample.includes('paid checkout and private delivery are not available'))throw new Error('public sample must preserve paid-quality depth without implying checkout availability');
 for(const marker of ['buildMyKoreaLookDeliverable','slice(0,3)','rentalShopCard','photoRoute','tradeOff','recommendedLocation']){
  if(!deliverable.includes(marker))throw new Error(`paid deliverable contract missing ${marker}`);
 }
@@ -42,4 +43,4 @@ if(!ui.includes("colorSource:'manual'"))throw new Error('free style preview must
 if(ui.includes('fetch(')||ui.includes('/api/checkout')||ranking.includes('fetch(')||ranking.includes('/api/checkout'))throw new Error('free style preview must remain zero-network and checkout-free');
 if(!ui.includes('navigator.clipboard?.writeText')||!ui.includes('URL.createObjectURL')||!ui.includes('localStorage.setItem'))throw new Error('copy/download/save recovery must survive free-preview boundary');
 if(!page.includes('StyleConsultationV5'))throw new Error('live style route is not wired to the locale-native free preview');
-console.log('My Korea Look free/paid boundary contract OK: free route exposes one concise look with locale-native result accessibility; public sample and paid deliverable preserve three-look depth');
+console.log('My Korea Look free/paid boundary contract OK: free route exposes one concise look with locale-native result accessibility; public sample preserves three-look depth while checkout stays unavailable; paid deliverable contract remains intact');
