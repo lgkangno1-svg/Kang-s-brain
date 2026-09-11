@@ -1,4 +1,5 @@
-import {CURATED_LOOKS_CATALOG,type Coverage,type CuratedLook,type GarmentType,type StyleId} from './catalog';
+import {type Coverage,type CuratedLook,type GarmentType,type StyleId} from './catalog';
+import {EXPANDED_CURATED_LOOKS_CATALOG} from './catalog-expansion';
 
 export type StylePalette='jadeIvory'|'roseNavy'|'moonBlue'|'suggest';
 export type StyleMood='elegant'|'royal'|'romantic'|'minimal'|'kdrama';
@@ -125,7 +126,7 @@ export function rankStyleInputV1(input:StyleInputV1){
  // color source exists, the customer must explicitly choose one of the verified palettes.
  if(styleInputNeedsPaletteChoice(input))return [];
  const effectiveSeason=input.visitDate?seasonFromVisitDate(input.visitDate)??input.season:input.season;
- return CURATED_LOOKS_CATALOG.map((catalogLook,index)=>{
+ return EXPANDED_CURATED_LOOKS_CATALOG.map((catalogLook,index)=>{
   const look=localizeLookForResult(catalogLook,input.locale,index);
   if(input.garment!=='either'&&look.garmentType!==input.garment)return{look,index,score:-1000};
   // Coverage is a minimum requirement: a more-covered look also satisfies "standard".
