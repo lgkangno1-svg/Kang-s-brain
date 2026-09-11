@@ -34,11 +34,12 @@ if(moreCoverageLooks<3)throw new Error('strict more-coverage preference cannot p
 if(!ui.includes("colorSource:'manual'"))throw new Error('free preview must stay manual/local and avoid remote photo processing');
 if(ui.includes('fetch(')||ui.includes('/api/checkout'))throw new Error('free style input must remain zero-network and fail-closed for checkout');
 if(!page.includes('StyleConsultationV5'))throw new Error('live style route is not wired to the full input experience');
-if(!page.includes('StyleInputModeChoice'))throw new Error('live style route must expose explicit photo/no-photo input choice before paid entry');
-for(const marker of ["type Mode='no-photo'|'photo'","name=\"style-input-mode\"","value=\"no-photo\"","value=\"photo\"","mode==='photo'","href=\"/color\"","does not claim photo analysis","Secure paid photo styling is not available until private account, storage, consent and fulfillment infrastructure is verified."]){
- if(!inputMode.includes(marker))throw new Error(`style input-mode boundary missing ${marker}`);
+if(!page.includes('StyleInputModeChoice'))throw new Error('live style route must explain photo/no-photo boundaries before paid entry');
+for(const marker of ["noPhoto:'Without a photo'","photo:'Use browser-local Personal Color'","href=\"/color\"","preference-based and does not claim photo analysis","Secure paid photo styling is not available until private account, storage, consent and fulfillment infrastructure is verified."]){
+ if(!inputMode.includes(marker))throw new Error(`style input-method boundary missing ${marker}`);
 }
-for(const locale of ["en:","'zh-CN':","ja:","'zh-TW':","vi:","th:"]){if(!inputMode.includes(locale))throw new Error(`style input-mode locale missing ${locale}`);}
-if(inputMode.includes('fetch(')||inputMode.includes('/api/checkout')||inputMode.includes('type="file"'))throw new Error('style input-mode boundary must not upload photos or open checkout');
+for(const locale of ["en:","'zh-CN':","ja:","'zh-TW':","vi:","th:"]){if(!inputMode.includes(locale))throw new Error(`style input-method locale missing ${locale}`);}
+if(inputMode.includes('type="radio"')||inputMode.includes('name="style-input-mode"')||inputMode.includes("useState<Mode>"))throw new Error('style input-method comparison must not expose an inert mode selector');
+if(inputMode.includes('fetch(')||inputMode.includes('/api/checkout')||inputMode.includes('type="file"'))throw new Error('style input-method boundary must not upload photos or open checkout');
 if(!engine.includes("if(month===12||month<=2)return 'winter'")||!engine.includes("if(month>=6&&month<=8)return 'summer'"))throw new Error('visit-date seasonal mapping is incomplete');
 console.log('My Korea Look full input contract OK');
