@@ -29,8 +29,9 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
           <span>★ {stylebook.badge}</span>
         </div>
         <p className={styles.sampleDisclaimer}>
-          This is an official public demonstration sample of the <strong>My Korea Look ($12 USD)</strong> digital guidebook.
-          All photos, styling reasons, rental shop cards, and walking paths show the exact depth provided to paid clients.
+          This is a fictitious one-adult public demonstration of the planned <strong>My Korea Look</strong> stylebook.
+          It shows the intended result depth, but paid checkout and private delivery are not available until account,
+          fulfillment, refund, and merchant requirements are production-verified.
         </p>
       </div>
 
@@ -40,8 +41,8 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
         <h1 className={styles.mainTitle}>{stylebook.title}</h1>
         <p className={styles.subtitle}>{stylebook.tagline}</p>
         <div className={styles.priceTagWrapper}>
-          <span className={styles.priceTag}>$12.00 USD</span>
-          <span className={styles.priceDesc}>One-time · 3 Curated Looks + Korean Shop Card + Photo Route</span>
+          <span className={styles.priceTag}>Planned launch price: $12.00 USD</span>
+          <span className={styles.priceDesc}>One adult · 3 curated looks · Korean shop card · photo-route plan</span>
         </div>
       </header>
 
@@ -63,7 +64,7 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
           href="/style/sample/royal-ceremony"
           className={`${styles.tabBtn} ${currentSlug === 'royal-ceremony' ? styles.tabBtnActive : ''}`}
         >
-          3. Royal Ceremony (Dragon/Empress)
+          3. Royal Ceremony
         </Link>
       </div>
 
@@ -148,10 +149,10 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
                 </div>
 
                 <div className={styles.locationTip}>
-                  <strong>Best Palace Spot:</strong> {look.recommendedLocation.name} ({look.recommendedLocation.koreanName})
+                  <strong>Suggested Palace Spot:</strong> {look.recommendedLocation.name} ({look.recommendedLocation.koreanName})
                   <br />
                   <span style={{ fontSize: '11px', color: 'var(--stone-muted, #78716C)' }}>
-                    Tip: {look.recommendedLocation.photoAngle}
+                    Photo idea: {look.recommendedLocation.photoAngle}
                   </span>
                 </div>
               </div>
@@ -195,7 +196,7 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
         </div>
 
         <h3 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 8px' }}>
-          Show This to Hanbok Rental Staff in Seoul
+          Ask Rental Staff to Check What Is Actually Available
         </h3>
         <p style={{ fontSize: '14px', color: 'var(--stone-muted, #78716C)', margin: '0 0 16px' }}>
           {stylebook.koreanShopCardSummary.instructionEnglish}
@@ -210,10 +211,11 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
       {/* Palace Photo Walking Route */}
       <section className={styles.routeSection}>
         <h3 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 4px' }}>
-          Recommended 2-Hour Palace Photo Itinerary
+          Example 2-Hour Palace Photo Itinerary
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--stone-muted, #78716C)', margin: 0 }}>
-          Sequenced to avoid peak tourist crowds and capture the best lighting for this color palette.
+          This is a planning example, not live routing or crowd information. Check current palace hours, closures, weather,
+          and walking conditions before visiting.
         </p>
 
         <div className={styles.routeTimeline}>
@@ -233,17 +235,16 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
 
       {/* Call to Action Box */}
       <section className={styles.ctaBox}>
-        <h2 className={styles.ctaTitle}>Ready to Find Your Own Korea Look?</h2>
+        <h2 className={styles.ctaTitle}>Try the Free My Korea Look Preview</h2>
         <p className={styles.ctaDesc}>
-          Take our quick 1-minute style consultation. Receive 3 personalized looks matched to your coloring,
-          a custom Korean rental shop card, and a tailored palace photo itinerary.
+          Use the free preference-based consultation now. Paid photo-aware styling, private delivery, revision, and checkout
+          remain unavailable until the required account, privacy, fulfillment, refund, and merchant gates are verified.
         </p>
         <Link href="/style" className={styles.ctaBtn}>
-          <span>Start Your Custom Style Consultation ($12 USD)</span>
+          <span>Start the Free Style Preview</span>
           <span>→</span>
         </Link>
       </section>
     </div>
   );
 }
-
