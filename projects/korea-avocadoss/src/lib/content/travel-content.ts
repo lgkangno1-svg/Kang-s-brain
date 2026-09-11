@@ -18,6 +18,7 @@ function isString(value:unknown):value is string{return typeof value==='string'&
 function isMinute(value:unknown):value is number{return Number.isInteger(value)&&Number(value)>=0&&Number(value)<=1440;}
 function isPositiveMinute(value:unknown):value is number{return Number.isInteger(value)&&Number(value)>0&&Number(value)<=1440;}
 function isWeekdayList(value:unknown):value is number[]{return Array.isArray(value)&&value.every(day=>Number.isInteger(day)&&day>=0&&day<=6);}
+function isDateList(value:unknown):value is string[]{return Array.isArray(value)&&value.every(date=>typeof date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(date));}
 function isLanguageList(value:unknown):value is HanbokRentalLanguage[]{return Array.isArray(value)&&value.every(language=>RENTAL_LANGUAGES.has(language as HanbokRentalLanguage));}
 
 function isFoodPlace(value:unknown):value is FoodPlace{
@@ -52,6 +53,7 @@ function isNearbyStop(value:unknown):value is NearbyStop{
   isPositiveMinute(item.minutes)&&isMinute(item.transferMinutes)&&isString(item.note)&&
   isString(item.sourceUrl)&&/^https:\/\//.test(item.sourceUrl)&&isString(item.checkedAt)&&/^\d{4}-\d{2}-\d{2}$/.test(item.checkedAt)&&
   restrictedValid&&(item.closedWeekdays===undefined||isWeekdayList(item.closedWeekdays))&&
+  (item.closedDates===undefined||isDateList(item.closedDates))&&
   (item.closureNote===undefined||typeof item.closureNote==='string');
 }
 
@@ -89,7 +91,7 @@ async function fetchSanityHanbokRentalShops():Promise<HanbokRentalShop[]|null>{
 }
 
 async function fetchSanityNearbyStops():Promise<NearbyStop[]|null>{
- return fetchSanity('*[_type == "nearbyPlace" && region == "gyeongbokgung" && published == true] | order(name asc){id,name,koreanName,mapQuery,minutes,transferMinutes,note,sourceUrl,checkedAt,restrictedWindow,closedWeekdays,closureNote}',CONTENT_TAGS.gyeongbokgungNearby,isNearbyStop);
+ return fetchSanity('*[_type == "nearbyPlace" && region == "gyeongbokgung" && published == true] | order(name asc){id,name,koreanName,mapQuery,minutes,transferMinutes,note,sourceUrl,checkedAt,restrictedWindow,closedWeekdays,closedDates,closureNote}',CONTENT_TAGS.gyeongbokgungNearby,isNearbyStop);
 }
 
 export async function getGyeongbokgungFoodPlaces():Promise<readonly FoodPlace[]>{
