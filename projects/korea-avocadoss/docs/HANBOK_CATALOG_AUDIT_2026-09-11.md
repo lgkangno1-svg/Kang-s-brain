@@ -2,31 +2,51 @@
 
 Source of truth: `docs/PRD.md` → `BUILD_SPEC.md`.
 
-## This slice
+## Current state
 
-- The current source-checked catalog contains **6 distinct look IDs**, not 12.
-- This slice does **not** invent six extra style/color records merely to satisfy the number. Additional catalog records require source-checked imagery plus visually verified garment/style/palette metadata before they participate in deterministic ranking.
-- Existing six source-checked looks now have locale-native title and concise catalog description coverage for all P0 locales: `en`, `zh-CN`, `ja`, `zh-TW`, `vi`, `th`.
-- Hanbok comparison output now uses locale-native walking/season labels and Korean place names for non-English locales instead of leaking raw English catalog enums/names.
-- Non-English palette presentation exposes the verified hex values rather than hard-coded English color-name prose.
-- Catalog image alt text now follows the localized look presentation instead of falling back to raw English catalog alt text.
+- The **My Korea Look** catalog now contains **12 distinct, source-checked reference looks**: the original six plus six additional Korea.net / Korean Culture and Information Service cultural-showcase photographs published on Wikimedia Commons under CC BY-SA 2.0.
+- The six additions complete the PRD matrix with a second `chima` and second `baji` direction for each experience family: `princess-prince`, `queen-king`, and `royal`.
+- The active `/style` deterministic free-preview ranker consumes all 12 looks. Garment and coverage constraints remain filters; palette, comfort, season, destination, mood and explicit style continue to influence deterministic ranking.
+- The existing `/hanbok` catalog comparison remains on the original six-look subset in this slice because those six have authored locale-native title/description coverage across all P0 locales. Expanding that separate comparison surface without native presentation would reintroduce English fallback text.
+- The six new entries use conservative visual metadata only: visible garment family, color relationship, walking/photo trade-off and bounded styling direction. They do not claim historical rank, customer identity, body type, live inventory, booking availability or exact rental-shop stock.
+- Rental request cards for new entries explicitly tell visitors to confirm the actual design and any additional fee with the shop.
+
+## Added references
+
+| Look | Style | Garment | Source |
+|---|---|---|---|
+| `look-modern-gold-chima-07` | princess-prince | chima | Korea Hanbok Fashion Show 03 / Korea.net-KOCIS |
+| `look-layered-ivory-baji-08` | princess-prince | baji | Korea Hanbok Fashion Show 20 / Korea.net-KOCIS |
+| `look-teal-gold-chima-09` | queen-king | chima | KOCIS Korea Hanbok-AoDai FashionShow 71 |
+| `look-indigo-modern-baji-10` | queen-king | baji | Korea Hanbok Fashion Show 04 / Korea.net-KOCIS |
+| `look-jeonmo-gold-chima-11` | royal | chima | KOCIS Korea Hanbok-AoDai FashionShow 57 |
+| `look-scarlet-brocade-baji-12` | royal | baji | Korea Hanbok Fashion Show 18 / Korea.net-KOCIS |
+
+Each catalog record contains the individual Wikimedia Commons source page, creator attribution, CC BY-SA 2.0 license URL, commercial-use evidence note, source dimensions and a `checkedAt` date of 2026-09-11.
 
 ## Discovery gate
 
-Fresh discovery was run before considering a 6→12 expansion.
+Fresh discovery was repeated before implementation.
 
-- GitHub search did not identify a maintained dependency that materially improves deterministic Hanbok catalog ranking over the existing local rules.
-- Hugging Face surfaced a Hanbok image dataset, but this is not adopted: its surfaced result does not establish the provenance/license and curated commercial-use guarantees required for production catalog assets.
-- Wikimedia Commons/Korea.net Hanbok Fashion Show files provide additional source candidates under CC BY-SA 2.0, but source licensing alone is insufficient to assign palette, garment and style metadata safely. Those records remain a separate future exact-SHA slice after visual metadata verification.
+- GitHub search did not identify a maintained dependency or catalog-ranking library that materially improves the existing deterministic local implementation.
+- The connected Hugging Face dataset-search action was unavailable in this run because that endpoint was disabled by server configuration. This is recorded as an unavailable discovery endpoint, not evidence that no Hanbok datasets exist.
+- No model or runtime image-generation dependency was adopted. Curated, provenance-carrying static references remain cheaper, more predictable and easier to audit for the current requirement.
 
 ## Regression contract
 
-`npm run check:hanbok` now includes `scripts/check-hanbok-catalog-localization.mjs`, which fails if:
+`npm run check:hanbok` now includes both catalog-localization and 12-look completeness contracts.
 
-- the six current source-checked IDs are missing from any P0 locale block,
-- raw English catalog title/alt/walking/season/location presentation is reintroduced into `HanbokCatalogResults`, or
-- the localization adapter stops being used by the result/compare paths.
+`check-look-catalog-completeness.mjs` fails if:
 
-## Remaining PRD gap
+- the source-checked total is not exactly 12 for this release,
+- the six new IDs are not distinct,
+- any experience family fails to gain both a `chima` and `baji` direction,
+- an added record loses its Commons source, reviewed CC BY-SA 2.0 license or source-check date,
+- the active My Korea Look rank path stops consuming the expanded catalog, or
+- fabricated availability language is introduced into the expansion dataset.
 
-The PRD calls for a **12-look** curated catalog. Current verified count remains 6. This is an explicit fixable gap and must not be reported complete until six additional source-checked looks are added with reliable visual metadata, tests, exact-SHA CI, deployment and live verification.
+The existing `check-hanbok-catalog-localization.mjs` continues to protect the authored six-look `/hanbok` presentation and its P0 localization boundary.
+
+## Release status
+
+This document records repository implementation state only. The 12-look gap is not considered production-closed until the candidate exact-SHA MiniPC CI, merged exact-SHA CI, production deployment and affected-route live verification all pass.
