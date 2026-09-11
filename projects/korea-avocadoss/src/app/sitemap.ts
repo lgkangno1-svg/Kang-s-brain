@@ -1,6 +1,8 @@
 import type {MetadataRoute} from 'next';
 import {P0_LOCALES} from '@/lib/i18n/locales';
+import {getAllSampleSlugs} from '@/lib/looks/samples';
 import {PUBLIC_LOCALE_PATHS,localizedLanguageAlternates,localizedPublicUrl} from '@/lib/seo/localized-metadata';
+
 const ROUTE_SETTINGS={
  '':{changeFrequency:'weekly',priority:1},
  '/style':{changeFrequency:'weekly',priority:0.95},
@@ -19,4 +21,22 @@ const ROUTE_SETTINGS={
  '/terms':{changeFrequency:'monthly',priority:0.5},
  '/refunds':{changeFrequency:'monthly',priority:0.5},
 } as const;
-export default function sitemap():MetadataRoute.Sitemap{return PUBLIC_LOCALE_PATHS.flatMap(path=>P0_LOCALES.map(locale=>({url:localizedPublicUrl(locale,path),changeFrequency:ROUTE_SETTINGS[path].changeFrequency,priority:ROUTE_SETTINGS[path].priority,alternates:{languages:localizedLanguageAlternates(path)}})));}
+
+export default function sitemap():MetadataRoute.Sitemap{
+ const publicEntries=PUBLIC_LOCALE_PATHS.flatMap(path=>P0_LOCALES.map(locale=>({
+  url:localizedPublicUrl(locale,path),
+  changeFrequency:ROUTE_SETTINGS[path].changeFrequency,
+  priority:ROUTE_SETTINGS[path].priority,
+  alternates:{languages:localizedLanguageAlternates(path)},
+ })));
+ const sampleEntries=getAllSampleSlugs().flatMap(slug=>{
+  const path=`/style/sample/${slug}`;
+  return P0_LOCALES.map(locale=>({
+   url:localizedPublicUrl(locale,path),
+   changeFrequency:'monthly' as const,
+   priority:0.8,
+   alternates:{languages:localizedLanguageAlternates(path)},
+  }));
+ });
+ return [...publicEntries,...sampleEntries];
+}
