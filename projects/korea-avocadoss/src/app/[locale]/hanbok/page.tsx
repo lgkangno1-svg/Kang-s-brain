@@ -4,6 +4,7 @@ import {getTranslations, setRequestLocale} from 'next-intl/server';
 
 import {HanbokMatcher} from '@/features/hanbok/hanbok-matcher';
 import {HanbokRentalFinder} from '@/features/hanbok/HanbokRentalFinder';
+import {HanbokRentalDurationAdvisor} from '@/features/hanbok/HanbokRentalDurationAdvisor';
 import {HanbokVisualInspiration} from '@/features/hanbok/hanbok-visual-inspiration';
 import {Link} from '@/i18n/navigation';
 import {getGyeongbokgungHanbokRentalShops} from '@/lib/content/travel-content';
@@ -46,6 +47,7 @@ export default async function HanbokPage({params,searchParams}:PageProps){
         </div>
       </div>
       <section className="prototype stitchHanbokMatcherWrap"><Suspense fallback={<div className="prototypePanel" style={{minHeight:'300px',display:'flex',alignItems:'center',justifyContent:'center'}}>Loading Hanbok Studio...</div>}><HanbokMatcher/></Suspense></section>
+      <HanbokRentalDurationAdvisor locale={locale} shops={rentalShops} initialDate={initialDate} initialTime={initialTime}/>
       <HanbokRentalFinder shops={rentalShops} initialDate={initialDate} initialTime={initialTime}/>
     </main>
   );
