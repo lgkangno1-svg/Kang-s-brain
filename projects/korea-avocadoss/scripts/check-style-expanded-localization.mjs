@@ -14,7 +14,9 @@ const lookIds=[
 ];
 
 for(const locale of locales){
- if(!copy.includes(`${JSON.stringify(locale)}:{`)&&!copy.includes(` ${locale}:{`))throw new Error(`missing authored locale block: ${locale}`);
+ const quoted=` '${locale}':{`;
+ const bare=` ${locale}:{`;
+ if(!copy.includes(quoted)&&!copy.includes(bare))throw new Error(`missing authored locale block: ${locale}`);
 }
 for(const id of lookIds){
  const count=copy.split(`'${id}'`).length-1;
