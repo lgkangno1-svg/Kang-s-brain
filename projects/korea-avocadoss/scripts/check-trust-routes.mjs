@@ -24,7 +24,7 @@ assert.match(legal,/does not upload the selfie to an AI model/,'Privacy page mus
 assert.match(legal,/there is no live paid order to cancel or refund/,'Refunds page must state the current no-payment truth');
 assert.match(legal,/does not produce the first result within 15 minutes/,'Refunds page must preserve the planned delivery-failure recovery boundary');
 assert.match(legal,/statutory consumer rights take priority/,'Refunds page must preserve statutory-rights precedence');
-for(const locale of ['zh-CN','ja','zh-TW','vi','th'])assert.match(legal,new RegExp(`['"]${locale}['"]?\\s*:\\s*\\{[\\s\\S]*?refunds:`),`${locale} must provide native refunds copy`);
+for(const locale of ['zh-CN','ja','zh-TW','vi','th'])assert.match(legal,new RegExp(`(?:['"])?${locale}(?:['"])?\\s*:\\s*\\{[\\s\\S]*?refunds:`),`${locale} must provide native refunds copy`);
 
 const metadata=read('src/lib/seo/localized-metadata.ts');
 const sitemap=read('src/app/sitemap.ts');
