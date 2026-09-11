@@ -1,4 +1,5 @@
-import {CURATED_LOOKS_CATALOG,type CuratedLook,type Season,type StyleId} from '@/lib/looks/catalog';
+import {type CuratedLook,type Season,type StyleId} from '@/lib/looks/catalog';
+import {EXPANDED_CURATED_LOOKS_CATALOG} from '@/lib/looks/catalog-expansion';
 import type {HanbokMatcherColorId,HanbokPersonalColorContext,PersonalColorContrast,PersonalColorDepth} from './personal-color-bridge';
 
 export type HanbokCatalogMood='elegant'|'royal'|'romantic'|'minimal'|'kdrama';
@@ -50,7 +51,7 @@ export function rankHanbokCatalog(input:{color:HanbokMatcherColorId;mood:HanbokC
  const preferredUndertone=COLOR_TO_UNDERTONE[input.color];
  const preferredStyle=MOOD_TO_STYLE[input.mood];
  const preferredWalking=COMFORT_TO_WALKING[input.comfort];
- return CURATED_LOOKS_CATALOG.map((look,index)=>{
+ return EXPANDED_CURATED_LOOKS_CATALOG.map((look,index)=>{
   let score=0;
   if(look.styleId===preferredStyle)score+=38;
   if(look.palette.undertone===preferredUndertone||look.palette.undertone==='universal')score+=24;
