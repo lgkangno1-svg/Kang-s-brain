@@ -13,6 +13,7 @@ export type NearbyStop={
  checkedAt:string;
  restrictedWindow?:{openMinute:number;closeMinute:number;note:string};
  closedWeekdays?:number[];
+ closedDates?:string[];
  closureNote?:string;
 };
 
@@ -35,6 +36,7 @@ function weekdayFromIso(date:string){
 export function nearbyStopAvailabilityAt(stop:NearbyStop,date:string,minute:number):NearbyAvailability{
  const weekday=weekdayFromIso(date);
  if(weekday===null)return'recheck';
+ if(stop.closedDates?.includes(date))return'closed';
  if(stop.closedWeekdays?.includes(weekday))return'closed';
  if(stop.restrictedWindow&&(minute<stop.restrictedWindow.openMinute||minute>=stop.restrictedWindow.closeMinute))return'outside-window';
  return'available';
