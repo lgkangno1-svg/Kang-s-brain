@@ -38,6 +38,18 @@ assert.match(core,/nearbyStopAvailabilityAt/,'Nearby deterministic core must exp
 assert.match(core,/weekdayFromIso/,'Weekly closure evaluation must derive weekday from the visitor-selected ISO date.');
 assert.match(core,/if\(date&&nearbyStopAvailabilityAt\(base,date,720\)==='closed'\)continue/,'Routes must omit stops with a known weekly or exact-date closure on the selected date.');
 
+assert.match(core,/export const NEARBY_WALKING_LEGS/,'Nearby routing must keep explicit source-traceable walking-leg calibration rather than destination-only transfer guesses.');
+assert.match(core,/fromId:'gyeongbokgung',toId:'gwanghwamun',minutes:5/,'The palace-to-Gwanghwamun first leg must be calibrated.');
+assert.match(core,/fromId:'gyeongbokgung',toId:'seochon',minutes:12/,'The palace-to-Seochon first leg must be calibrated.');
+assert.match(core,/fromId:'gyeongbokgung',toId:'bukchon',minutes:15/,'The palace-to-Bukchon first leg must be calibrated.');
+assert.match(core,/fromId:'gyeongbokgung',toId:'insadong',minutes:20/,'The palace-to-Insadong first leg must be calibrated.');
+assert.match(core,/checkedAt:'2026-09-11',confidence:'medium'/,'Walking calibration must carry checkedAt and confidence provenance.');
+assert.match(core,/let previousId='gyeongbokgung'/,'Route budgeting must begin with the actual palace origin rather than zero-cost first arrival.');
+assert.match(core,/nearbyWalkingLeg\(previousId,base\.id\)/,'Each transfer must be looked up from the actual previous stop.');
+assert.match(core,/if\(!leg\)break/,'Missing walking-leg calibration must fail closed rather than invent a duration.');
+assert.match(core,/remaining-=leg\.minutes\+stay/,'Walking time and dwell time must both consume the visitor time budget.');
+assert.match(core,/previousId=base\.id/,'The next walking leg must use the stop actually added to the route.');
+
 assert.doesNotMatch(explorer,/useSearchParams/,'Nearby Explorer must not force the functional shell behind a client-only search-param bailout.');
 assert.match(explorer,/initialDate\?:string;initialTime\?:string/,'Nearby Explorer must accept validated server-resolved itinerary handoff values.');
 assert.match(explorer,/useState\(initialDate\?\?localToday\(\)\)/,'Nearby date state must seed from validated server handoff while preserving a local default.');
@@ -47,6 +59,10 @@ assert.match(explorer,/nearbyRoute\(stops,focus,budget,date\)/,'Nearby Explorer 
 assert.match(explorer,/nearbyRouteMapUrl\(routeStops\)/,'Nearby Explorer must build a single full-route map handoff from the chosen deterministic stops.');
 assert.match(explorer,/href=\{routeMap\}/,'The generated full walking route must be directly actionable from the result.');
 assert.ok((explorer.match(/fullRoute:'/g)??[]).length===6,'The full-route action must have native copy for all six P0 locales.');
+assert.ok((explorer.match(/walkingPolicy:'/g)??[]).length===6,'Walking-estimate limitations and verification guidance must have native copy for all six P0 locales.');
+assert.match(explorer,/routeStops\.map\(stop=>\{cursor\+=stop\.transferMinutes;const arrival=cursor/,'Timeline arrival must include the first calibrated walk as well as later transfers.');
+assert.doesNotMatch(explorer,/if\(index\)cursor\+=stop\.transferMinutes/,'The first walking leg must never be treated as zero minutes.');
+assert.match(explorer,/<strong>\{c\.walk\}:<\/strong> ~\{stop\.transferMinutes\}/,'Every displayed stop, including the first, must disclose its planned walking transfer.');
 assert.match(explorer,/nearbyStopAvailabilityAt\(stop,date,stop\.arrival\)/,'Nearby Explorer must evaluate time restrictions against each planned arrival.');
 assert.match(explorer,/navigator\.clipboard\?\.writeText/,'Nearby route must be copyable for use during the trip.');
 assert.match(explorer,/routeMap\]\.filter\(Boolean\)/,'Copied itinerary text must include the full-route map handoff when available.');
@@ -66,4 +82,4 @@ assert.match(quickHelp,/href:'\/explore\/nearby'/,'Quick Help nearby guidance mu
 assert.match(seo,/'\/explore\/nearby'/,'Nearby Explorer must participate in localized canonical/hreflang URLs.');
 assert.match(sitemap,/'\/explore\/nearby'/,'Nearby Explorer must be included in the public sitemap.');
 
-console.log('Nearby Explorer contracts passed: server-renderable URL handoff, source-checked deterministic 1–3h routes, weekly/exact-date closures, time restrictions, full walking-route/copy/map handoff, real navigation, and zero AI API.');
+console.log('Nearby Explorer contracts passed: source-checked deterministic 1–3h routes, first-leg and pairwise walking calibration, date-aware closures, time restrictions, full walking-route/copy/map handoff, real navigation, and zero AI API.');
