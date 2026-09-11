@@ -1,5 +1,6 @@
 import {type Coverage,type CuratedLook,type GarmentType,type StyleId} from './catalog';
 import {EXPANDED_CURATED_LOOKS_CATALOG} from './catalog-expansion';
+import {getExpandedLookResultCopy} from './expanded-result-copy';
 
 export type StylePalette='jadeIvory'|'roseNavy'|'moonBlue'|'suggest';
 export type StyleMood='elegant'|'royal'|'romantic'|'minimal'|'kdrama';
@@ -74,6 +75,8 @@ function localizeAccessory(locale:ResultLocale,id:string,index:number){
 }
 function localizeVisualAlt(look:CuratedLook,locale:ResultLocale){
  if(locale==='en')return look.alt;
+ const authored=getExpandedLookResultCopy(locale,look.id);
+ if(authored)return authored.visualAlt;
  const terms=RESULT_TERMS[locale];
  return `${terms.visual}: ${terms.style[look.styleId]} · ${terms.garment[look.garmentType]}`;
 }
@@ -81,10 +84,13 @@ function localizeLookForResult(look:CuratedLook,locale:ResultLocale,index:number
  const visual={visualSrc:look.src,visualAlt:localizeVisualAlt(look,locale)};
  if(locale==='en')return {...look,...visual};
  const terms=RESULT_TERMS[locale];
+ const authored=getExpandedLookResultCopy(locale,look.id);
  return {
   ...look,
   ...visual,
-  title:`${terms.style[look.styleId]} · ${terms.garment[look.garmentType]} · ${terms.look} ${index+1}`,
+  title:authored?.title??`${terms.style[look.styleId]} · ${terms.garment[look.garmentType]} · ${terms.look} ${index+1}`,
+  tagline:authored?.tagline??look.tagline,
+  description:authored?.description??look.description,
   palette:{...look.palette,top:`${terms.top} ${extractHex(look.palette.top)}`,bottom:`${terms.bottom} ${extractHex(look.palette.bottom)}`,accent:`${terms.accent} ${extractHex(look.palette.accent)}`},
   accessoryIds:look.accessoryIds.map((id,i)=>localizeAccessory(locale,id,i)),
  };
