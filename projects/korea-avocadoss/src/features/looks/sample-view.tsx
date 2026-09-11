@@ -113,7 +113,7 @@ export function SampleView({ stylebook, currentSlug }: SampleViewProps) {
       {/* 3 Looks Grid */}
       <section className={styles.looksSection}>
         <h2 className={styles.sectionHeading}>
-          <span>3 Curated Looks for This Example Profile</span>
+          <span>3 Curated Looks Tailored to This Profile</span>
         </h2>
 
         <div className={styles.looksGrid}>
