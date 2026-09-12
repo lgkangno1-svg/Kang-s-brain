@@ -20,7 +20,9 @@ for(const marker of [
   'accessories:[...look.accessoryIds]',
   'alternateColorway:{',
   'rentalShopCard:{...look.rentalShopCard}',
-  'photoRoute:look.photoRoute.map',
+  'getStylebookDestinationPlan(input.destination)',
+  'destinationPlan:{',
+  'photoRoute:destination.route.map',
   'source:{url:look.sourceUrl',
 ]){
   if(!engine.includes(marker))fail(`missing generation contract marker: ${marker}`);
@@ -60,4 +62,4 @@ if(!spec.includes('성공한 수정 1회'))fail('BUILD_SPEC one-successful-revis
 if(!spec.includes('실패한 수정은 사용 횟수를 소모하지 않는다'))fail('BUILD_SPEC failed-revision recovery contract missing');
 if(!input.includes('export function rankStyleInputV1'))fail('active full-input deterministic ranker missing');
 
-console.log('My Korea Look stylebook engine v1: OK — full active inputs feed three verified looks, localized reasons, alternate colorways, source-backed visuals, and one-successful-revision recovery without payment/network coupling');
+console.log('My Korea Look stylebook engine v1: OK — full active inputs feed three verified looks, localized reasons, destination-bound route/provenance, alternate colorways, source-backed visuals, and one-successful-revision recovery without payment/network coupling');
