@@ -19,6 +19,7 @@ import '../stitch-state-overrides.css';
 import '../stitch-quick-help-reference.css';
 import '../stitch-quick-help-localized.css';
 import '../responsive-system.css';
+import '../editorial-redesign.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://korea.avocadoss.co.kr'),
