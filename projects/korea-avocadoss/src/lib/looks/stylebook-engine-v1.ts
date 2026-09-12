@@ -173,9 +173,20 @@ function buildStylebook(input:StyleInputV1,generatedAt:string,revision:MyKoreaLo
           accent:alternate.palette.accent,
           undertone:alternate.palette.undertone,
         },
-        recommendedLocation:{...look.recommendedLocation},
+        recommendedLocation:{
+          name:destination.name,
+          koreanName:destination.koreanName,
+          description:destination.description,
+          photoAngle:destination.photoAngle,
+        },
         rentalShopCard:{...look.rentalShopCard},
-        photoRoute:look.photoRoute.map(stop=>({...stop})),
+        photoRoute:destination.route.map(stop=>({
+          order:stop.order,
+          spotName:stop.spotName,
+          koreanName:stop.koreanName,
+          bestTime:'Verify selected-date access before travel',
+          photoTip:stop.photoTip,
+        })),
         source:{url:look.sourceUrl,creator:look.creator,license:look.license,licenseUrl:look.licenseUrl,checkedAt:look.checkedAt},
       };
     }),
