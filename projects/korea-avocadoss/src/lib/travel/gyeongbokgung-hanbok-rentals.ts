@@ -126,8 +126,9 @@ export function hanbokRentalAvailabilityAt(shop:HanbokRentalShop,date:string,tim
  return shop.scheduleConfidence==='verified'?'open':'recheck';
 }
 
-export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,time:string,referenceDate:Date=new Date()){
- if(hanbokRentalSourceFreshness(shop.checkedAt,referenceDate)!=='fresh')return null;
+export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,date:string,time:string){
+ const visitDate=referenceDateForVisit(date);
+ if(!visitDate||hanbokRentalSourceFreshness(shop.checkedAt,visitDate)!=='fresh')return null;
  const minute=toMinute(time);
  if(!Number.isFinite(minute)||minute<shop.openMinute||minute>=shop.closeMinute)return null;
  return shop.closeMinute-minute;
