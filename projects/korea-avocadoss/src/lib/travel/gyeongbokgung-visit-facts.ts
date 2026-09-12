@@ -11,6 +11,26 @@ export const GYEONGBOKGUNG_OFFICIAL_GUIDE_SOURCE='https://royal.khs.go.kr/ROYAL/
 export const GYEONGBOKGUNG_VISIT_FACTS_CHECKED_AT='2026-09-12';
 export const GYEONGBOKGUNG_VISIT_FACTS_MAX_AGE_DAYS=30;
 
+export type GyeongbokgungTemporaryNotice={
+ id:string;
+ startDate:string;
+ endDate:string;
+ title:string;
+ sourceUrl:string;
+ checkedAt:string;
+};
+
+const GYEONGBOKGUNG_TEMPORARY_NOTICES:readonly GyeongbokgungTemporaryNotice[]=[
+ {
+  id:'geunjeongjeon-woldae-2026-autumn',
+  startDate:'2026-09-02',
+  endDate:'2026-10-31',
+  title:'Geunjeongjeon Woldae access is restricted during the autumn peak period.',
+  sourceUrl:'https://royal.khs.go.kr/ROYAL/contents/R403000000.do?id=20260830151817711582&schBcid=notice01&schM=view',
+  checkedAt:'2026-09-12'
+ }
+] as const;
+
 export type GyeongbokgungVisitFacts={
   open:string;
   close:string;
@@ -35,6 +55,15 @@ export function isGyeongbokgungVisitFactsFresh(asOfDate:string){
   const asOf=parseIsoDate(asOfDate).date.getTime();
   const ageDays=Math.floor((asOf-checked)/86_400_000);
   return ageDays>=0&&ageDays<=GYEONGBOKGUNG_VISIT_FACTS_MAX_AGE_DAYS;
+}
+
+export function gyeongbokgungTemporaryNotices(date:string):readonly GyeongbokgungTemporaryNotice[]{
+  const target=parseIsoDate(date).date.getTime();
+  return GYEONGBOKGUNG_TEMPORARY_NOTICES.filter(notice=>{
+    const start=parseIsoDate(notice.startDate).date.getTime();
+    const end=parseIsoDate(notice.endDate).date.getTime();
+    return target>=start&&target<=end;
+  });
 }
 
 export function gyeongbokgungVisitFacts(date:string):GyeongbokgungVisitFacts{
