@@ -1,6 +1,7 @@
 export type FoodCategory='korean-meal'|'halal'|'traditional-tea'|'coffee';
 export type ScheduleConfidence='verified'|'recheck';
 export type SourceFreshness='fresh'|'stale'|'invalid';
+export type FoodSort='source-order'|'nearest-access';
 
 export type FoodPlace={
  id:string;
@@ -17,10 +18,22 @@ export type FoodPlace={
  closeMinute:number;
  closedWeekdays:number[];
  scheduleConfidence:ScheduleConfidence;
+ accessDistanceMeters?:number;
+ accessDistanceBasis?:string;
 };
 
 export function filterFoodPlaces(places:readonly FoodPlace[],category:FoodCategory|'all'){
  return category==='all'?[...places]:places.filter(place=>place.category===category);
+}
+
+export function sortFoodPlaces(places:readonly FoodPlace[],sort:FoodSort){
+ if(sort==='source-order')return[...places];
+ return [...places].sort((a,b)=>{
+  const aDistance=a.accessDistanceMeters??Number.POSITIVE_INFINITY;
+  const bDistance=b.accessDistanceMeters??Number.POSITIVE_INFINITY;
+  if(aDistance!==bDistance)return aDistance-bDistance;
+  return a.name.localeCompare(b.name,'en');
+ });
 }
 
 export function foodAvailabilityAt(place:FoodPlace,date:string,time:string):'open'|'closed'|'verify'|'unknown'{
