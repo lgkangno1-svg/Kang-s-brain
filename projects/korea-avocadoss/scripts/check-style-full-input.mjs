@@ -31,7 +31,9 @@ const catalogLooks=(catalog.match(/\n\s+coverage: '(?:standard|more-coverage)'/g
 const moreCoverageLooks=(catalog.match(/\n\s+coverage: 'more-coverage'/g)??[]).length;
 if(catalogLooks<3)throw new Error('verified catalog cannot produce a default three-look plan');
 if(moreCoverageLooks<3)throw new Error('strict more-coverage preference cannot produce three verified looks');
-if(!ui.includes("colorSource:'manual'"))throw new Error('free preview must stay manual/local and avoid remote photo processing');
+for(const marker of ["initialHandoff?.colorSource??'manual'","['manual','local-preview'].includes(String(x.colorSource))","setColorSource('manual')"]){
+ if(!ui.includes(marker))throw new Error(`free preview color provenance contract missing ${marker}`);
+}
 if(ui.includes('fetch(')||ui.includes('/api/checkout'))throw new Error('free style input must remain zero-network and fail-closed for checkout');
 if(!page.includes('StyleConsultationV5'))throw new Error('live style route is not wired to the full input experience');
 if(!page.includes('StyleInputModeChoice'))throw new Error('live style route must explain photo/no-photo boundaries before paid entry');
