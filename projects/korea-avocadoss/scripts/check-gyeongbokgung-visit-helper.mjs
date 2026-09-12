@@ -23,6 +23,20 @@ const todaySeoul=Date.UTC(seoulClock.getUTCFullYear(),seoulClock.getUTCMonth(),s
 const ageDays=Math.floor((todaySeoul-checkedMs)/86_400_000);
 assert.ok(ageDays>=0,`Palace source checkedAt cannot be in the future in Asia/Seoul: ${checkedMatch[1]}`);
 assert.ok(ageDays<=30,`Palace hours/tour provenance is ${ageDays} days old. Re-check the official pages before shipping.`);
+
+for(const token of [
+ "id:'geunjeongjeon-woldae-2026-autumn'",
+ "startDate:'2026-09-02'",
+ "endDate:'2026-10-31'",
+ 'export function gyeongbokgungTemporaryNotices',
+ 'target>=start&&target<=end',
+ '20260830151817711582'
+])assert.ok(facts.includes(token),`Missing date-bounded official palace notice contract: ${token}`);
+assert.ok(helper.includes('gyeongbokgungTemporaryNotices(date)'),'Visit helper must derive temporary notices from the selected date');
+assert.ok(helper.includes('notices.map(notice=>'),'Active notices must be rendered when applicable');
+for(const marker of ['勤政殿月台','勤政殿の月台','Woldae','khu Woldae','ลานวอลแด'])assert.ok(helper.includes(marker),`Missing P0 temporary-access copy: ${marker}`);
+assert.ok(helper.includes('notice.sourceUrl'),'Visitor must be able to open the official notice source');
+
 assert.ok(helper.includes('GYEONGBOKGUNG_OFFICIAL_VISIT_SOURCE'),'Hours source link must remain available');
 assert.ok(helper.includes('GYEONGBOKGUNG_OFFICIAL_GUIDE_SOURCE'),'Guide source link must remain available');
 assert.ok(helper.includes('60–90'),'Official guide-duration disclosure must remain visible');
@@ -30,4 +44,4 @@ for(const marker of ['停止入场','入場締切','停止入場','Giờ vào c�
 assert.ok(!helper.includes('fetch('),'Helper must remain zero-network at runtime');
 assert.ok(!helper.includes('navigator.geolocation'),'Helper must not request precise location');
 assert.ok(page.includes('<GyeongbokgungVisitHelper locale={locale}/>'),'Page must mount the visit helper');
-console.log('Gyeongbokgung visit helper contract OK.');
+console.log('Gyeongbokgung visit helper + temporary notice contract OK.');
