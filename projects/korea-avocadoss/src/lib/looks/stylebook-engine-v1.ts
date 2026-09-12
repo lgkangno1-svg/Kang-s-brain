@@ -5,6 +5,7 @@ import {
   type StyleInputV1,
   type StyleSeason,
 } from './style-input-v1';
+import {getStylebookDestinationPlan,stylebookDestinationMapUrl} from './stylebook-destination-v1';
 
 export const MY_KOREA_LOOK_STYLEBOOK_VERSION='my-korea-look-stylebook-v1';
 export const MY_KOREA_LOOK_MAX_SUCCESSFUL_REVISIONS=1;
@@ -32,6 +33,18 @@ export type MyKoreaLookStylebook={
   inputSnapshot:StyleInputV1;
   effectiveSeason:StyleSeason;
   personalizationBasis:'explicit-preferences'|'local-color-preview-plus-preferences';
+  destinationPlan:{
+    destination:StyleInputV1['destination'];
+    name:string;
+    koreanName:string;
+    description:string;
+    photoAngle:string;
+    visitorNote:string;
+    estimatedMinutes:number;
+    mapUrl:string;
+    source:{url:string;label:string;checkedAt:string};
+    route:Array<{order:number;spotName:string;koreanName:string;minutes:number;photoTip:string}>;
+  };
   looks:Array<{
     rank:1|2|3;
     lookId:string;
@@ -111,6 +124,7 @@ function buildStylebook(input:StyleInputV1,generatedAt:string,revision:MyKoreaLo
   }
   const season=effectiveSeason(input);
   const reasonCopy=REASON_COPY[input.locale];
+  const destination=getStylebookDestinationPlan(input.destination);
   const topThree=ranked.slice(0,3);
   return{
     schemaVersion:MY_KOREA_LOOK_STYLEBOOK_VERSION,
@@ -120,6 +134,18 @@ function buildStylebook(input:StyleInputV1,generatedAt:string,revision:MyKoreaLo
     inputSnapshot:{...input},
     effectiveSeason:season,
     personalizationBasis:input.colorSource==='local-preview'?'local-color-preview-plus-preferences':'explicit-preferences',
+    destinationPlan:{
+      destination:destination.destination,
+      name:destination.name,
+      koreanName:destination.koreanName,
+      description:destination.description,
+      photoAngle:destination.photoAngle,
+      visitorNote:destination.visitorNote,
+      estimatedMinutes:destination.estimatedMinutes,
+      mapUrl:stylebookDestinationMapUrl(destination),
+      source:{url:destination.sourceUrl,label:destination.sourceLabel,checkedAt:destination.checkedAt},
+      route:destination.route.map(stop=>({...stop})),
+    },
     looks:topThree.map(({look},index)=>{
       const alternate=ranked.slice(3).find(({look:candidate})=>candidate.id!==look.id)?.look??pickAlternate(ranked,look.id);
       if(!alternate)throw new StylebookBuildError('NOT_ENOUGH_ELIGIBLE_LOOKS','A distinct alternate colorway could not be created from the verified catalog.');
@@ -147,9 +173,20 @@ function buildStylebook(input:StyleInputV1,generatedAt:string,revision:MyKoreaLo
           accent:alternate.palette.accent,
           undertone:alternate.palette.undertone,
         },
-        recommendedLocation:{...look.recommendedLocation},
+        recommendedLocation:{
+          name:destination.name,
+          koreanName:destination.koreanName,
+          description:destination.description,
+          photoAngle:destination.photoAngle,
+        },
         rentalShopCard:{...look.rentalShopCard},
-        photoRoute:look.photoRoute.map(stop=>({...stop})),
+        photoRoute:destination.route.map(stop=>({
+          order:stop.order,
+          spotName:stop.spotName,
+          koreanName:stop.koreanName,
+          bestTime:'Verify selected-date access before travel',
+          photoTip:stop.photoTip,
+        })),
         source:{url:look.sourceUrl,creator:look.creator,license:look.license,licenseUrl:look.licenseUrl,checkedAt:look.checkedAt},
       };
     }),
