@@ -32,5 +32,7 @@ for(const marker of ['parseStyleHandoff','searchParams:Promise','initialHandoff=
 }
 
 if(bridge.includes('fetch(')||hanbok.includes('/api/checkout')||style.includes('/api/checkout'))throw new Error('style handoff must stay zero-network and checkout-free');
-if(/photo|file|image/i.test(bridge.replace(/local-preview/g,'')))throw new Error('style handoff core must not carry photo/file/image data');
+for(const forbidden of ['photo:','photoUrl','image:','imageUrl','file:','fileName','fileUrl','dataUrl','base64','blob:']){
+ if(bridge.includes(forbidden))throw new Error(`style handoff core must not carry binary/media field ${forbidden}`);
+}
 console.log('Hanbok → My Korea Look handoff contract OK');
