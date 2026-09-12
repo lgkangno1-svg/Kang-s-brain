@@ -1,5 +1,6 @@
 export type HanbokRentalLanguage='en'|'ja'|'zh';
 export type HanbokRentalAvailability='open'|'closed'|'recheck';
+export type HanbokRentalSourceFreshness='fresh'|'stale'|'invalid';
 
 export type HanbokRentalShop={
  id:string;
@@ -95,16 +96,39 @@ export const GYEONGBOKGUNG_HANBOK_RENTALS:readonly HanbokRentalShop[]=[
 
 function weekdayInSeoul(date:string){const parsed=new Date(`${date}T12:00:00+09:00`);return Number.isNaN(parsed.getTime())?-1:parsed.getUTCDay();}
 function toMinute(value:string){const [hour,minute]=value.split(':').map(Number);return Number.isFinite(hour)&&Number.isFinite(minute)?hour*60+minute:NaN;}
+function referenceDateForVisit(date:string){
+ const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+ if(!match)return null;
+ const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]);
+ const parsed=new Date(Date.UTC(year,month-1,day,12));
+ return parsed.getUTCFullYear()===year&&parsed.getUTCMonth()===month-1&&parsed.getUTCDate()===day?parsed:null;
+}
+
+export function hanbokRentalSourceFreshness(checkedAt:string,referenceDate:Date=new Date()):HanbokRentalSourceFreshness{
+ const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(checkedAt);
+ if(!match||Number.isNaN(referenceDate.getTime()))return'invalid';
+ const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]);
+ const checked=Date.UTC(year,month-1,day);
+ const normalized=new Date(checked);
+ if(normalized.getUTCFullYear()!==year||normalized.getUTCMonth()!==month-1||normalized.getUTCDate()!==day)return'invalid';
+ const reference=Date.UTC(referenceDate.getUTCFullYear(),referenceDate.getUTCMonth(),referenceDate.getUTCDate());
+ const ageDays=Math.floor((reference-checked)/86_400_000);
+ if(ageDays<0)return'invalid';
+ return ageDays>30?'stale':'fresh';
+}
 
 export function hanbokRentalAvailabilityAt(shop:HanbokRentalShop,date:string,time:string):HanbokRentalAvailability{
- const weekday=weekdayInSeoul(date);const minute=toMinute(time);
- if(weekday<0||!Number.isFinite(minute))return 'recheck';
+ const weekday=weekdayInSeoul(date);const minute=toMinute(time);const visitDate=referenceDateForVisit(date);
+ if(weekday<0||!Number.isFinite(minute)||!visitDate)return 'recheck';
+ if(hanbokRentalSourceFreshness(shop.checkedAt,visitDate)!=='fresh')return 'recheck';
  if(shop.closedWeekdays.includes(weekday))return 'closed';
  if(minute<shop.openMinute||minute>=shop.closeMinute)return 'closed';
  return shop.scheduleConfidence==='verified'?'open':'recheck';
 }
 
-export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,time:string){
+export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,date:string,time:string){
+ const visitDate=referenceDateForVisit(date);
+ if(!visitDate||hanbokRentalSourceFreshness(shop.checkedAt,visitDate)!=='fresh')return null;
  const minute=toMinute(time);
  if(!Number.isFinite(minute)||minute<shop.openMinute||minute>=shop.closeMinute)return null;
  return shop.closeMinute-minute;
