@@ -39,15 +39,40 @@ const coreRequired=[
   'return shop.closeMinute-minute',
   'export function hanbokRentalToPalaceDirectionsHref',
   'https://www.google.com/maps/dir/?api=1',
-  '&travelmode=walking'
+  '&travelmode=walking',
+  'keep the catalog under 10 shops',
+  'very high current review',
+  'large inventory/operation',
+  'international booking presence',
+  "id:'hanboknam-gyeongbokgung'",
+  "id:'seohwa-hanbok'",
+  "id:'daehan-hanbok'",
+  "id:'oneday-hanbok'",
+  "id:'yes-hanbok'",
+  "id:'naye-hanbok'",
+  "id:'hanbok-day'"
 ];
 const missingCore=coreRequired.filter(token=>!core.includes(token));
 if(missingCore.length){
-  console.error(`Hanbok rental route-window contract failed. Missing: ${missingCore.join(', ')}`);
+  console.error(`Hanbok rental route-window/curation contract failed. Missing: ${missingCore.join(', ')}`);
+  process.exit(1);
+}
+const ids=[...core.matchAll(/\bid:'([^']+)'/g)].map(match=>match[1]);
+const uniqueIds=new Set(ids);
+if(ids.length!==uniqueIds.size){
+  console.error('Hanbok rental curation contract failed: duplicate shop IDs detected.');
+  process.exit(1);
+}
+if(ids.length<5||ids.length>10){
+  console.error(`Hanbok rental curation contract failed: expected a focused shortlist of 5–10 shops, found ${ids.length}.`);
+  process.exit(1);
+}
+if(core.includes("id:'hanbok-that-day'")){
+  console.error('Hanbok rental curation contract failed: proximity/official listing alone must not override the popularity/scale/international-recognition gate.');
   process.exit(1);
 }
 if(/fetch\(|XMLHttpRequest|navigator\.geolocation/.test(core)){
   console.error('Hanbok rental route-window contract failed: deterministic core must not require a runtime network/geolocation call.');
   process.exit(1);
 }
-console.log('Hanbok rental save/recovery and route-window contracts passed with server-catalog allowlisting.');
+console.log(`Hanbok rental contracts passed with ${ids.length} high-confidence shops, server-catalog allowlisting and route-window safeguards.`);
