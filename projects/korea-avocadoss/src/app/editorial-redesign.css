@@ -1,0 +1,445 @@
+:root {
+  --kc-canvas: #f6f1e8;
+  --kc-paper: #fffdf9;
+  --kc-paper-2: #fbf7ef;
+  --kc-ink: #1c1b19;
+  --kc-muted: #6f6a63;
+  --kc-jade: #1f6153;
+  --kc-jade-deep: #174a40;
+  --kc-red: #a54438;
+  --kc-gold: #b98a4c;
+  --kc-line: #ddd4c6;
+  --kc-serif: Georgia, 'Times New Roman', serif;
+  --kc-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --kc-shadow: 0 24px 70px rgba(49, 40, 29, .12);
+  --kc-soft-shadow: 0 10px 36px rgba(49, 40, 29, .08);
+}
+
+.kcReferenceApp {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(185, 138, 76, .08), transparent 28rem),
+    radial-gradient(circle at 88% 26%, rgba(31, 97, 83, .07), transparent 30rem),
+    var(--kc-canvas);
+  color: var(--kc-ink);
+  font-family: var(--kc-sans);
+}
+
+/* --- global shell ------------------------------------------------------- */
+.kcReferenceApp .siteHeader {
+  min-height: 74px;
+  padding-inline: clamp(18px, 4.5vw, 72px);
+  border-bottom: 1px solid rgba(67, 55, 42, .11);
+  background: rgba(255, 253, 249, .86);
+  box-shadow: 0 4px 24px rgba(52, 42, 31, .035);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+.kcReferenceApp .brand {
+  font-family: var(--kc-serif);
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: -.02em;
+  text-transform: none;
+}
+
+.kcReferenceApp .stitchReferenceNav {
+  gap: clamp(4px, 1.2vw, 18px);
+}
+
+.kcReferenceApp .stitchReferenceNav a {
+  position: relative;
+  border-radius: 0;
+  padding: 12px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .025em;
+}
+
+.kcReferenceApp .stitchReferenceNav a::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 5px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .18s ease;
+}
+.kcReferenceApp .stitchReferenceNav a:hover::after,
+.kcReferenceApp .stitchReferenceNav a:focus-visible::after { transform: scaleX(1); }
+
+.kcReferenceApp .langButton,
+.kcReferenceApp .siteHeader select {
+  min-height: 42px;
+  border: 1px solid #cfc4b4;
+  border-radius: 10px;
+  background: rgba(255, 253, 249, .94);
+  box-shadow: 0 4px 15px rgba(42, 35, 27, .04);
+}
+
+.kcReferenceApp .siteFooter {
+  margin-top: 0;
+  padding: 34px clamp(18px, 4.5vw, 72px) 38px;
+  background: #efe7da;
+  border-top: 1px solid rgba(67, 55, 42, .12);
+}
+.kcReferenceApp .stitchFooterLinks { gap: 20px; row-gap: 12px; }
+.kcReferenceApp .stitchFooterLinks a { color: #534b43; font-size: 12px; }
+.kcReferenceApp .siteFooter p { color: #777068; font-size: 12px; }
+
+/* --- typography and controls ----------------------------------------- */
+.kcReferenceApp main h1,
+.kcReferenceApp main h2,
+.kcReferenceApp main h3,
+.kcReferenceApp main h4 {
+  text-wrap: balance;
+}
+.kcReferenceApp main h1,
+.kcReferenceApp main h2 {
+  font-family: var(--kc-serif);
+  font-weight: 500;
+  letter-spacing: -.035em;
+}
+
+.kcReferenceApp main form input:not([type='radio']):not([type='checkbox']),
+.kcReferenceApp main form select,
+.kcReferenceApp main form textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #d7cec1;
+  border-radius: 11px;
+  background: rgba(255,255,255,.82);
+  color: var(--kc-ink);
+  padding: 0 14px;
+  font-family: var(--kc-sans);
+  font-size: 15px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.kcReferenceApp main form textarea { min-height: 120px; padding-block: 12px; }
+.kcReferenceApp main form input:focus,
+.kcReferenceApp main form select:focus,
+.kcReferenceApp main form textarea:focus {
+  outline: 0;
+  border-color: var(--kc-jade);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(31,97,83,.11);
+}
+.kcReferenceApp main form fieldset {
+  border: 1px solid #d7cec1;
+  border-radius: 13px;
+  background: rgba(255,253,249,.65);
+  padding: 14px 16px 16px;
+}
+.kcReferenceApp main form legend { padding-inline: 7px; font-weight: 750; }
+.kcReferenceApp main form button,
+.kcReferenceApp main .primaryButton,
+.kcReferenceApp main .secondaryButton {
+  min-height: 48px;
+  border-radius: 11px;
+  padding-inline: 20px;
+  font-family: var(--kc-sans);
+  font-weight: 750;
+  cursor: pointer;
+}
+.kcReferenceApp main form button[type='submit'],
+.kcReferenceApp main .primaryButton {
+  border: 1px solid var(--kc-jade-deep);
+  background: linear-gradient(180deg, #286f60 0%, var(--kc-jade-deep) 100%);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(23,74,64,.18);
+}
+.kcReferenceApp main form button[type='submit']:hover,
+.kcReferenceApp main .primaryButton:hover { transform: translateY(-1px); filter: brightness(1.03); }
+
+/* --- homepage --------------------------------------------------------- */
+.kcReferenceApp .stitchReferenceHome { background: transparent; }
+.kcReferenceApp .stitchReferenceHero {
+  width: min(100% - 32px, 1380px);
+  min-height: clamp(420px, 58vw, 660px);
+  margin: 22px auto 0;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: var(--kc-shadow);
+  isolation: isolate;
+  background: #2f3f39;
+}
+.kcReferenceApp .stitchReferenceHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(24,31,27,.68) 0%, rgba(24,31,27,.24) 46%, rgba(24,31,27,.02) 74%);
+  pointer-events: none;
+}
+.kcReferenceApp .stitchReferenceHero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.015);
+}
+.kcReferenceApp .stitchReferenceHeroCopy {
+  left: clamp(24px, 6vw, 82px);
+  right: auto;
+  bottom: clamp(36px, 7vw, 84px);
+  width: min(670px, 72%);
+  z-index: 2;
+  text-align: left;
+}
+.kcReferenceApp .stitchReferenceHeroCopy h1 {
+  color: #fffaf2;
+  font-family: var(--kc-serif);
+  font-size: clamp(44px, 6vw, 82px);
+  font-weight: 500;
+  line-height: .99;
+  letter-spacing: -.045em;
+  text-shadow: 0 3px 26px rgba(0,0,0,.24);
+}
+
+.kcReferenceApp .stitchReferenceHome > section:nth-of-type(2) > div {
+  border-radius: 22px !important;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at 82% 24%, rgba(185,138,76,.22), transparent 24rem),
+    linear-gradient(135deg, #172f2a 0%, #1f6153 100%) !important;
+  box-shadow: 0 22px 55px rgba(26,56,49,.18) !important;
+  padding: clamp(24px, 4vw, 42px) !important;
+}
+.kcReferenceApp .stitchReferenceHome > section:nth-of-type(2) h2 {
+  font-family: var(--kc-serif);
+  font-weight: 500 !important;
+  font-size: clamp(28px, 4vw, 46px) !important;
+}
+
+.kcReferenceApp .stitchReferenceServices {
+  width: min(100% - 32px, 1380px);
+  margin-inline: auto;
+  padding-block: 52px 74px;
+  gap: 14px;
+}
+.kcReferenceApp .stitchReferenceCard {
+  overflow: hidden;
+  border-radius: 17px;
+  border: 1px solid rgba(89,73,54,.12);
+  background: rgba(255,253,249,.72);
+  box-shadow: 0 7px 24px rgba(55,45,34,.05);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.kcReferenceApp .stitchReferenceCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(31,97,83,.28);
+  box-shadow: 0 16px 34px rgba(55,45,34,.10);
+}
+.kcReferenceApp .stitchReferenceMedia {
+  overflow: hidden;
+  border-radius: 12px;
+}
+.kcReferenceApp .stitchReferenceMedia img { transition: transform .4s ease; }
+.kcReferenceApp .stitchReferenceCard:hover .stitchReferenceMedia img { transform: scale(1.035); }
+.kcReferenceApp .stitchReferenceCard strong {
+  font-family: var(--kc-serif);
+  font-size: clamp(17px, 1.55vw, 22px);
+  letter-spacing: -.015em;
+}
+.kcReferenceApp .stitchReferenceButton {
+  color: var(--kc-jade);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* --- Saju: editorial feature page ------------------------------------ */
+.kcSajuPage {
+  position: relative;
+  overflow: clip;
+  min-height: 760px;
+  background:
+    linear-gradient(180deg, rgba(249,244,235,.78), rgba(255,253,249,.98) 720px),
+    url('https://commons.wikimedia.org/wiki/Special:Redirect/file/Gyeonghoeru_Pavilion_at_Gyeongbokgung_Palace.jpg?width=1800') center 18% / cover no-repeat;
+}
+.kcSajuPage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  height: 760px;
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255,255,255,.05), rgba(255,253,249,.55) 28rem),
+    linear-gradient(90deg, #f8f2e8 0 42%, rgba(248,242,232,.84) 60%, rgba(248,242,232,.52) 100%);
+  pointer-events: none;
+}
+.kcSajuPage > section {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: clamp(64px, 8vw, 110px) clamp(22px, 5vw, 68px) 96px !important;
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(430px, .75fr);
+  grid-template-areas:
+    'title tool'
+    'intro tool'
+    'notice tool';
+  align-items: start;
+  column-gap: clamp(42px, 7vw, 92px);
+}
+.kcSajuPage > section > h1 {
+  grid-area: title;
+  max-width: 720px;
+  margin: 0 0 20px;
+  font-family: var(--kc-serif);
+  font-size: clamp(54px, 7vw, 94px);
+  font-weight: 500;
+  line-height: .94;
+  letter-spacing: -.05em;
+  color: #17211e;
+}
+.kcSajuPage > section > h1::before {
+  content: 'A glimpse into what lies ahead.';
+  display: block;
+  max-width: 520px;
+  margin-bottom: 24px;
+  color: var(--kc-jade);
+  font-family: var(--kc-serif);
+  font-size: clamp(25px, 3.3vw, 42px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.03;
+  letter-spacing: -.025em;
+}
+.kcSajuPage > section > p:nth-of-type(1) {
+  grid-area: intro;
+  max-width: 620px;
+  margin: 0 0 22px;
+  color: #555048;
+  font-size: clamp(16px, 1.45vw, 19px);
+  line-height: 1.75;
+}
+.kcSajuPage > section > p:nth-of-type(2) {
+  grid-area: notice;
+  max-width: 560px;
+  margin: 0;
+  padding: 16px 18px;
+  border-left: 3px solid rgba(185,138,76,.8);
+  border-radius: 0 10px 10px 0;
+  background: rgba(255,250,240,.68);
+  color: #4d473f;
+  font-size: 14px;
+  box-shadow: 0 7px 24px rgba(78,64,46,.05);
+}
+.kcSajuPage > section > form,
+.kcSajuPage > section > div {
+  grid-area: tool;
+  width: 100%;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid rgba(121,104,83,.18);
+  border-radius: 20px;
+  background: rgba(255,253,249,.94);
+  box-shadow: var(--kc-shadow);
+  backdrop-filter: blur(10px);
+}
+.kcSajuPage > section > form p { margin: 0 0 18px; }
+.kcSajuPage > section > form label { display: block; color: #2d2925; font-weight: 700; }
+.kcSajuPage > section > form small { display: inline-block; margin-top: 7px; color: #7a736b; font-size: 12px; font-weight: 500; }
+.kcSajuPage > section > form fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin: 0 0 18px;
+}
+.kcSajuPage > section > form fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.kcSajuPage > section > form input[type='radio'] { accent-color: var(--kc-jade); width: 17px; height: 17px; }
+.kcSajuPage > section > form button[type='submit'] { width: 100%; margin-top: 4px; }
+.kcSajuPage > section > form button[type='submit']::after { content: '  →'; }
+
+.kcSajuPage > section > div > h2 {
+  font-family: var(--kc-serif);
+  font-size: clamp(32px, 4vw, 48px);
+  margin-bottom: 26px;
+}
+.kcSajuPage > section > div > section {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid rgba(121,104,83,.14);
+  border-radius: 15px;
+  background: #fffaf2;
+}
+.kcSajuPage > section > div > section h3 { font-family: var(--kc-serif); font-size: 24px; margin-bottom: 12px; }
+.kcSajuPage > section > div > section article {
+  padding: 16px 0;
+  border-top: 1px solid rgba(121,104,83,.13);
+}
+.kcSajuPage > section > div > section article:first-of-type { border-top: 0; }
+.kcSajuPage > section > div dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.kcSajuPage > section > div dt { color: #777068; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.kcSajuPage > section > div dd { margin: 3px 0 0; font-family: var(--kc-serif); font-size: 25px; }
+.kcSajuPage > section > div button {
+  min-height: 44px;
+  margin: 4px 6px 4px 0;
+  padding: 0 16px;
+  border: 1px solid #cfc4b4;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--kc-ink);
+  font-weight: 700;
+}
+
+/* --- responsive ------------------------------------------------------- */
+@media (max-width: 1120px) {
+  .kcReferenceApp .stitchReferenceNav { gap: 2px; }
+  .kcReferenceApp .stitchReferenceNav a { padding-inline: 6px; font-size: 11px; }
+  .kcSajuPage > section { grid-template-columns: minmax(0,.78fr) minmax(390px,.9fr); column-gap: 40px; }
+}
+
+@media (max-width: 900px) {
+  .kcReferenceApp .siteHeader { min-height: 64px; padding-inline: 18px; }
+  .kcReferenceApp .brand { font-size: 18px; }
+  .kcReferenceApp .stitchReferenceHero { width: min(100% - 20px, 1380px); margin-top: 10px; border-radius: 19px; }
+  .kcReferenceApp .stitchReferenceHeroCopy { width: min(560px, 82%); left: 26px; bottom: 34px; }
+  .kcReferenceApp .stitchReferenceHeroCopy h1 { font-size: clamp(38px, 10vw, 60px); }
+
+  .kcSajuPage::before { height: 560px; background: linear-gradient(180deg, rgba(248,242,232,.70), #f8f2e8 84%); }
+  .kcSajuPage > section {
+    padding: 54px 18px 76px !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: 'title' 'intro' 'notice' 'tool';
+    row-gap: 0;
+  }
+  .kcSajuPage > section > h1 { font-size: clamp(48px, 12vw, 72px); }
+  .kcSajuPage > section > h1::before { max-width: 420px; font-size: clamp(24px, 7vw, 36px); }
+  .kcSajuPage > section > p:nth-of-type(2) { margin-bottom: 28px; }
+  .kcSajuPage > section > form,
+  .kcSajuPage > section > div { padding: 22px; }
+}
+
+@media (max-width: 560px) {
+  .kcReferenceApp .stitchReferenceHero { min-height: 470px; }
+  .kcReferenceApp .stitchReferenceHero::after { background: linear-gradient(0deg, rgba(21,30,26,.74), rgba(21,30,26,.04) 76%); }
+  .kcReferenceApp .stitchReferenceHeroCopy { left: 20px; right: 20px; width: auto; bottom: 28px; }
+  .kcReferenceApp .stitchReferenceHeroCopy h1 { font-size: clamp(36px, 12vw, 52px); }
+  .kcReferenceApp .stitchReferenceServices { width: min(100% - 20px, 1380px); padding-top: 34px; }
+
+  .kcSajuPage > section { padding-inline: 14px !important; }
+  .kcSajuPage > section > h1 { font-size: clamp(44px, 14vw, 60px); }
+  .kcSajuPage > section > form,
+  .kcSajuPage > section > div { border-radius: 16px; padding: 18px; }
+  .kcSajuPage > section > form fieldset { display: grid; gap: 10px; }
+  .kcSajuPage > section > div dl { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .kcReferenceApp .mobileBottomNav { background: rgba(255,253,249,.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcReferenceApp * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
