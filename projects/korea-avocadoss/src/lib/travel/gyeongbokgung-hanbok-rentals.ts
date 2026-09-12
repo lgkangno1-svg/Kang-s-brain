@@ -69,7 +69,7 @@ export const GYEONGBOKGUNG_HANBOK_RENTALS:readonly HanbokRentalShop[]=[
  },
  {
   id:'yes-hanbok',name:'YES Hanbok — Gyeongbokgung',koreanName:'예스한복 경복궁점',
-  address:'133-6 Sajik-ro, 1F, Jongno-gu, Seoul',phone:'+82-2-734-2560',priceFromKrw:25000,
+  address:'133-6 Sajik-ro, 1F, Jongno-gu, Seoul',phone:'+82-2-734-2567',
   hoursLabel:'09:00–18:00 daily',openMinute:540,closeMinute:1080,closedWeekdays:[],scheduleConfidence:'verified',
   interpretationLanguages:['en','ja','zh'],websiteLanguages:['en','ja','zh'],
   supportNote:'Selected as one of the largest nearby inventories: current international booking information states 1,000+ hanbok sets and staff support in English, Chinese and Japanese, with thousands of platform reviews.',
