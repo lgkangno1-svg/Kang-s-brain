@@ -77,7 +77,7 @@ export const GYEONGBOKGUNG_HANBOK_RENTALS:readonly HanbokRentalShop[]=[
  },
  {
   id:'naye-hanbok',name:'NAYE Hanbok — Gyeongbokgung',koreanName:'나예한복 경복궁점',
-  address:'133-10 Sajik-ro, 1F, Jongno-gu, Seoul',phone:'+82-2-763-8383',priceFromKrw:25000,
+  address:'133-10 Sajik-ro, 1F, Jongno-gu, Seoul',phone:'+82-50-71314-8386',priceFromKrw:25000,
   hoursLabel:'09:00–18:00 Wed–Mon; closed Tuesdays; winter return deadline can be earlier',openMinute:540,closeMinute:1080,closedWeekdays:[2],scheduleConfidence:'verified',
   interpretationLanguages:['en','ja','zh'],websiteLanguages:['en','ja','zh'],
   supportNote:'Selected for strong overseas-platform ratings/bookings, a growing review base, multilingual visitor support and repeated praise for clean garments and an all-inclusive setup. Recheck seasonal return deadlines before visiting.',
