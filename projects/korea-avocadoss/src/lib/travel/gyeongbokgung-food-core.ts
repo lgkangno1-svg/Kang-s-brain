@@ -17,10 +17,20 @@ export type FoodPlace={
  closeMinute:number;
  closedWeekdays:number[];
  scheduleConfidence:ScheduleConfidence;
+ stationDistanceMeters?:number;
+ stationExit?:string;
 };
 
 export function filterFoodPlaces(places:readonly FoodPlace[],category:FoodCategory|'all'){
- return category==='all'?[...places]:places.filter(place=>place.category===category);
+ const filtered=category==='all'?[...places]:places.filter(place=>place.category===category);
+ return filtered
+  .map((place,index)=>({place,index}))
+  .sort((a,b)=>{
+   const left=a.place.stationDistanceMeters??Number.POSITIVE_INFINITY;
+   const right=b.place.stationDistanceMeters??Number.POSITIVE_INFINITY;
+   return left-right||a.index-b.index;
+  })
+  .map(item=>item.place);
 }
 
 export function foodAvailabilityAt(place:FoodPlace,date:string,time:string):'open'|'closed'|'verify'|'unknown'{
