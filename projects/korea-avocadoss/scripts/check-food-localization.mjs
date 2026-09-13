@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=(p)=>readFileSync(path.join(root,p),'utf8');
+const data=read('src/lib/travel/gyeongbokgung-food.ts');
+const i18n=read('src/lib/travel/gyeongbokgung-food-i18n.ts');
+const page=read('src/app/[locale]/explore/food/page.tsx');
+const ids=[...data.matchAll(/\{id:'([^']+)'/g)].map(match=>match[1]);
+assert.ok(ids.length>=7);
+for(const id of ids)assert.ok(i18n.includes(`${id}`),`Missing localized venue copy for ${id}`);
+for(const locale of ["'zh-CN'",'ja',"'zh-TW'",'vi','th'])assert.match(i18n,new RegExp(`${locale.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*:`));
+for(const token of ['localizeFoodPlace(place,l)','localizeFoodHours(place.hours,l)','summary:localized.summary','closed:localized.closed','dietaryNote:localized.dietaryNote'])assert.ok(page.includes(token));
+assert.match(i18n,/copy\?\?\{summary:place\.summary,closed:place\.closed,dietaryNote:place\.dietaryNote\}/);
+assert.doesNotMatch(page,/navigator|localStorage|fetch\(/);
+console.log('Food localization contract passed.');
