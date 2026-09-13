@@ -15,7 +15,7 @@ const required=[
   'checked={showSaved}',
   "!showSaved||favorites.has(shop.id)",
   'Saved shops are stored only as source-checked shop IDs in this browser.',
-  'hanbokRentalMinutesUntilPublishedClose(shop,time)',
+  'hanbokRentalMinutesUntilPublishedClose(shop,date,time)',
   'hanbokRentalToPalaceDirectionsHref(shop)',
   'not a promised rental duration or return deadline',
   'Walking directions to Gyeongbokgung'
@@ -34,7 +34,13 @@ if(!source.includes('if(!validShopIds.has(id))return')){
   process.exit(1);
 }
 const coreRequired=[
-  'export function hanbokRentalMinutesUntilPublishedClose',
+  "export type HanbokRentalSourceFreshness='fresh'|'stale'|'invalid'",
+  'export function hanbokRentalSourceFreshness',
+  "return ageDays>30?'stale':'fresh'",
+  "if(ageDays<0)return'invalid'",
+  "if(hanbokRentalSourceFreshness(shop.checkedAt,visitDate)!=='fresh')return 'recheck'",
+  'export function hanbokRentalMinutesUntilPublishedClose(shop:HanbokRentalShop,date:string,time:string)',
+  "if(!visitDate||hanbokRentalSourceFreshness(shop.checkedAt,visitDate)!=='fresh')return null",
   'minute<shop.openMinute||minute>=shop.closeMinute)return null',
   'return shop.closeMinute-minute',
   'export function hanbokRentalToPalaceDirectionsHref',
@@ -54,7 +60,7 @@ const coreRequired=[
 ];
 const missingCore=coreRequired.filter(token=>!core.includes(token));
 if(missingCore.length){
-  console.error(`Hanbok rental route-window/curation contract failed. Missing: ${missingCore.join(', ')}`);
+  console.error(`Hanbok rental route-window/freshness/curation contract failed. Missing: ${missingCore.join(', ')}`);
   process.exit(1);
 }
 const ids=[...core.matchAll(/\bid:'([^']+)'/g)].map(match=>match[1]);
@@ -75,4 +81,4 @@ if(/fetch\(|XMLHttpRequest|navigator\.geolocation/.test(core)){
   console.error('Hanbok rental route-window contract failed: deterministic core must not require a runtime network/geolocation call.');
   process.exit(1);
 }
-console.log(`Hanbok rental contracts passed with ${ids.length} high-confidence shops, server-catalog allowlisting and route-window safeguards.`);
+console.log(`Hanbok rental contracts passed with ${ids.length} high-confidence shops, server-catalog allowlisting, visit-date freshness fail-closed behavior and route-window safeguards.`);
