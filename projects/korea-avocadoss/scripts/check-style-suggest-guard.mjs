@@ -13,7 +13,9 @@ for(const marker of [
 ]){
   if(!engine.includes(marker))throw new Error(`style suggest fail-closed guard missing ${marker}`);
 }
-if(!ui.includes("colorSource:'manual'"))throw new Error('free style flow no longer proves manual/local-only color source');
+for(const marker of ["initialHandoff?.colorSource??'manual'","['manual','local-preview'].includes(String(x.colorSource))","setColorSource('manual')"]){
+  if(!ui.includes(marker))throw new Error(`free style flow no longer proves allowlisted local/manual color source: ${marker}`);
+}
 if(!ui.includes("palettes:StylePalette[]=['jadeIvory','roseNavy','moonBlue','suggest']"))throw new Error('style palette choices changed unexpectedly');
 for(const marker of [
   'SUGGEST_RECOVERY',
@@ -26,5 +28,5 @@ for(const marker of [
 for(const locale of ["'zh-CN'","ja:","'zh-TW'","vi:","th:"]){
   if(!page.includes(locale))throw new Error(`style suggest recovery localization missing ${locale}`);
 }
-if(engine.includes('fetch(')||engine.includes('/api/'))throw new Error('palette suggestion guard must remain deterministic and zero-network');
-console.log('My Korea Look ungrounded palette suggestion fail-closed and recovery contract OK');
+if(engine.includes('fetch(')||engine.includes('/api/')||ui.includes('/api/checkout'))throw new Error('palette suggestion guard must remain deterministic, zero-network and checkout-free');
+console.log('My Korea Look ungrounded palette suggestion stays fail-closed while allowlisted browser-local color provenance can continue across the free flow');

@@ -3,12 +3,14 @@ import {setRequestLocale} from 'next-intl/server';
 import {StyleConsultationV5} from '@/features/looks/style-consultation-v5';
 import {StyleInputModeChoice} from '@/features/looks/style-input-mode-choice';
 import {Link} from '@/i18n/navigation';
+import {parseStyleHandoff} from '@/lib/looks/style-handoff';
 import {localizedAlternates} from '@/lib/seo/localized-metadata';
 
 type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
 type StyleMeta={title:string;description:string};
 type SuggestRecovery={title:string;body:string;cta:string};
 type SampleShowcase={eyebrow:string;title:string;body:string;price:string;availability:string;cta:string;sampleLabels:[string,string,string]};
+type PageProps={params:Promise<{locale:string}>;searchParams:Promise<Record<string,string|string[]|undefined>>};
 
 const STYLE_META:Record<Locale,StyleMeta>={
   en:{title:'My Korea Look — Personalized Hanbok & Palace Style',description:'Choose style, garment, palette, mood, comfort, coverage, season or visit date, and destination for one free curated Seoul look preview.'},
@@ -46,12 +48,13 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
   return{title:meta.title,description:meta.description,alternates:localizedAlternates(safeLocale,'/style')};
 }
 
-export default async function StylePage({params}:{params:Promise<{locale:string}>}){
-  const {locale}=await params;
+export default async function StylePage({params,searchParams}:PageProps){
+  const [{locale},query]=await Promise.all([params,searchParams]);
   setRequestLocale(locale);
   const safeLocale=(locale in SUGGEST_RECOVERY?locale:'en') as Locale;
   const recovery=SUGGEST_RECOVERY[safeLocale];
   const showcase=SAMPLE_SHOWCASE[safeLocale];
+  const initialHandoff=parseStyleHandoff(query);
   return <main>
     <section aria-labelledby="style-paid-sample-title" style={{maxWidth:1080,margin:'24px auto 0',padding:'0 20px'}}>
       <div style={{border:'1px solid rgba(158,42,43,.32)',borderRadius:16,padding:'18px 18px 16px',background:'rgba(158,42,43,.035)'}}>
@@ -73,6 +76,6 @@ export default async function StylePage({params}:{params:Promise<{locale:string}
       </div>
     </aside>
     <div style={{maxWidth:1080,margin:'0 auto',padding:'0 20px'}}><StyleInputModeChoice/></div>
-    <StyleConsultationV5/>
+    <StyleConsultationV5 initialHandoff={initialHandoff}/>
   </main>;
 }

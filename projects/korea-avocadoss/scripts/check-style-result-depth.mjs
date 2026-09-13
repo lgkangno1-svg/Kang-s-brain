@@ -39,8 +39,10 @@ for(const marker of ['buildMyKoreaLookDeliverable','slice(0,3)','rentalShopCard'
  if(!deliverable.includes(marker))throw new Error(`paid deliverable contract missing ${marker}`);
 }
 
-if(!ui.includes("colorSource:'manual'"))throw new Error('free style preview must remain local/manual');
+for(const marker of ["initialHandoff?.colorSource??'manual'","['manual','local-preview'].includes(String(x.colorSource))","setColorSource('manual')"]){
+ if(!ui.includes(marker))throw new Error(`free style preview provenance boundary missing ${marker}`);
+}
 if(ui.includes('fetch(')||ui.includes('/api/checkout')||ranking.includes('fetch(')||ranking.includes('/api/checkout'))throw new Error('free style preview must remain zero-network and checkout-free');
 if(!ui.includes('navigator.clipboard?.writeText')||!ui.includes('URL.createObjectURL')||!ui.includes('localStorage.setItem'))throw new Error('copy/download/save recovery must survive free-preview boundary');
 if(!page.includes('StyleConsultationV5'))throw new Error('live style route is not wired to the locale-native free preview');
-console.log('My Korea Look free/paid boundary contract OK: free route exposes one concise look with locale-native result accessibility; public sample preserves three-look depth while checkout stays unavailable; paid deliverable contract remains intact');
+console.log('My Korea Look free/paid boundary contract OK: free route exposes one concise look with locale-native result accessibility and allowlisted local/manual color provenance; public sample preserves three-look depth while checkout stays unavailable; paid deliverable contract remains intact');

@@ -3,6 +3,8 @@
 import {useMemo,useState,useEffect} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
+import {Link} from '@/i18n/navigation';
+import {buildStyleHandoffQuery} from '@/lib/looks/style-handoff';
 import {isValidHanbokStyle,HANBOK_STYLE_CATEGORIES} from './hanbok-visual-library';
 import {HanbokCatalogResults} from './HanbokCatalogResults';
 import {hanbokColorForUndertone,isPersonalColorContrast,isPersonalColorDepth,isPersonalColorUndertone,type HanbokMatcherColorId} from './personal-color-bridge';
@@ -34,17 +36,18 @@ function scoreLook(look:HanbokLook,choices:{color:ColorId;mood:MoodId;comfort:Co
 export function HanbokMatcher(){
  const t=useTranslations('HanbokMatcher');const searchParams=useSearchParams();const styleParam=searchParams.get('hanbokStyle');const undertoneParam=searchParams.get('undertone');const depthParam=searchParams.get('depth');const contrastParam=searchParams.get('contrast');
  const personalDepth=isPersonalColorDepth(depthParam)?depthParam:undefined;const personalContrast=isPersonalColorContrast(contrastParam)?contrastParam:undefined;
- const [color,setColor]=useState<ColorId>('jadeIvory');const [mood,setMood]=useState<MoodId>('elegant');const [comfort,setComfort]=useState<ComfortId>('balanced');const [destination,setDestination]=useState<DestinationId>('stoneWall');const [season,setSeason]=useState<SeasonId>('springAutumn');const [appliedPreset,setAppliedPreset]=useState<string|null>(null);
+ const [color,setColor]=useState<ColorId>('jadeIvory');const [mood,setMood]=useState<MoodId>('elegant');const [comfort,setComfort]=useState<ComfortId>('balanced');const [destination,setDestination]=useState<DestinationId>('stoneWall');const [season,setSeason]=useState<SeasonId>('springAutumn');const [colorSource,setColorSource]=useState<'manual'|'local-preview'>('manual');const [appliedPreset,setAppliedPreset]=useState<string|null>(null);
 
- useEffect(()=>{let styleWasApplied=false;if(isValidHanbokStyle(styleParam)){const category=HANBOK_STYLE_CATEGORIES.find(item=>item.id===styleParam);if(category){setColor(category.matcherPreset.color);setMood(category.matcherPreset.mood);setComfort(category.matcherPreset.comfort);setAppliedPreset(category.name);styleWasApplied=true;}}if(isPersonalColorUndertone(undertoneParam))setColor(hanbokColorForUndertone(undertoneParam));if(!styleWasApplied)setAppliedPreset(null);},[styleParam,undertoneParam]);
+ useEffect(()=>{let styleWasApplied=false;if(isValidHanbokStyle(styleParam)){const category=HANBOK_STYLE_CATEGORIES.find(item=>item.id===styleParam);if(category){setColor(category.matcherPreset.color);setMood(category.matcherPreset.mood);setComfort(category.matcherPreset.comfort);setAppliedPreset(category.name);styleWasApplied=true;}}if(isPersonalColorUndertone(undertoneParam)){setColor(hanbokColorForUndertone(undertoneParam));setColorSource('local-preview');}else setColorSource('manual');if(!styleWasApplied)setAppliedPreset(null);},[styleParam,undertoneParam]);
 
  const rankedLooks=useMemo(()=>HANBOK_LOOKS.map(look=>({look,score:scoreLook(look,{color,mood,comfort,destination,season})})).sort((a,b)=>b.score-a.score),[color,mood,comfort,destination,season]);
+ const styleHref=useMemo(()=>buildStyleHandoffQuery({palette:color,mood,comfort,season,destination,colorSource}),[color,mood,comfort,season,destination,colorSource]);
 
  return <div className="prototypePanel" id="hanbok-matcher">
   <div className="sectionHead hanbokMatcherHead"><div><p className="eyebrow">{t('freeEyebrow')}</p><h2>{t('title')}</h2></div><p>{t('intro')}</p>{appliedPreset&&<div style={{marginTop:'0.6rem',padding:'0.4rem 0.8rem',background:'#f8f5e9',borderRadius:'2px',border:'1px solid rgba(0, 31, 91, 0.15)',display:'inline-flex',alignItems:'center',gap:'0.5rem',width:'fit-content'}}><span style={{fontSize:'0.75rem',color:'#2d5a4c',fontWeight:700}}>{t('presetAppliedLabel')}: {appliedPreset}</span></div>}</div>
 
   <div className="hanbokMatcherGrid">
-   <fieldset className="hanbokFieldset"><legend>{t('colorLegend')}</legend><p className="hanbokFieldHelp">{t('colorHelp')}</p><div className="hanbokChoiceGrid">{COLOR_IDS.map(id=><label className={`hanbokChoice ${color===id?'hanbokChoiceActive':''}`} key={id}><input checked={color===id} name="hanbok-color" onChange={()=>setColor(id)} type="radio" value={id}/><span>{t('colors.'+id)}</span></label>)}</div></fieldset>
+   <fieldset className="hanbokFieldset"><legend>{t('colorLegend')}</legend><p className="hanbokFieldHelp">{t('colorHelp')}</p><div className="hanbokChoiceGrid">{COLOR_IDS.map(id=><label className={`hanbokChoice ${color===id?'hanbokChoiceActive':''}`} key={id}><input checked={color===id} name="hanbok-color" onChange={()=>{setColor(id);setColorSource('manual');}} type="radio" value={id}/><span>{t('colors.'+id)}</span></label>)}</div></fieldset>
    <fieldset className="hanbokFieldset"><legend>{t('moodLegend')}</legend><p className="hanbokFieldHelp">{t('moodHelp')}</p><div className="hanbokChoiceGrid">{MOOD_IDS.map(id=><label className={`hanbokChoice ${mood===id?'hanbokChoiceActive':''}`} key={id}><input checked={mood===id} name="hanbok-mood" onChange={()=>setMood(id)} type="radio" value={id}/><span>{t('moods.'+id)}</span></label>)}</div></fieldset>
    <fieldset className="hanbokFieldset"><legend>{t('comfortLegend')}</legend><p className="hanbokFieldHelp">{t('comfortHelp')}</p><div className="hanbokChoiceGrid">{COMFORT_IDS.map(id=><label className={`hanbokChoice ${comfort===id?'hanbokChoiceActive':''}`} key={id}><input checked={comfort===id} name="hanbok-comfort" onChange={()=>setComfort(id)} type="radio" value={id}/><span>{t('comfort.'+id)}</span></label>)}</div></fieldset>
    <fieldset className="hanbokFieldset"><legend>{t('destinationLegend')}</legend><div className="hanbokChoiceGrid">{DESTINATION_IDS.map(id=><label className={`hanbokChoice ${destination===id?'hanbokChoiceActive':''}`} key={id}><input checked={destination===id} name="hanbok-destination" onChange={()=>setDestination(id)} type="radio" value={id}/><span>{t('destinations.'+id)}</span></label>)}</div></fieldset>
@@ -60,7 +63,7 @@ export function HanbokMatcher(){
 
    <HanbokCatalogResults color={color} mood={mood} comfort={comfort} destination={destination} season={season} depth={personalDepth} contrast={personalContrast}/>
 
-   <div className="boutiqueNoticeCard"><div className="boutiqueNoticeHead"><strong>{t('rentalMapCta')}</strong><p>{t('walkingTimeNotice')}</p></div><a href="#rental-finder" className="primaryButton">{t('rentalMapCta')}</a></div>
+   <div className="boutiqueNoticeCard"><div className="boutiqueNoticeHead"><strong>{t('rentalMapCta')}</strong><p>{t('walkingTimeNotice')}</p></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><a href="#rental-finder" className="primaryButton">{t('rentalMapCta')}</a><Link href={styleHref} className="secondaryButton">My Korea Look →</Link></div></div>
    <div className="hanbokBoundaryCard"><strong>{t('freeBoundaryTitle')}</strong><p>{t('freeBoundaryText')}</p><p className="hanbokPaidNote">{t('paidBoundaryText')}</p></div>
   </div>
  </div>;
