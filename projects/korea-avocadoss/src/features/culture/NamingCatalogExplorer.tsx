@@ -1,0 +1,27 @@
+'use client';
+
+import {useMemo,useState} from 'react';
+import {generateKoreanNames,type KoreanNameCandidate,type NamingSound,type NamingVibe} from '@/lib/naming/korean-name-generator';
+
+type Locale='en'|'zh-CN'|'ja'|'zh-TW'|'vi'|'th';
+type Copy={title:string;intro:string;search:string;placeholder:string;results:string;pronunciation:string;meaning:string;hanja:string;vibes:string;copy:string;copied:string;none:string;note:string};
+const C:Record<Locale,Copy>={
+ en:{title:'Explore the curated name catalog',intro:'Search the same curated name pool used by the generator so you can compare Hangul, romanization, pronunciation and one possible Hanja theme.',search:'Search name',placeholder:'Try 지우, Ji-u, 서준…',results:'Matches',pronunciation:'Pronunciation',meaning:'Possible meaning theme',hanja:'One possible Hanja',vibes:'Vibe tags',copy:'Copy name',copied:'Copied',none:'No curated name matches this search.',note:'This catalog is for cultural nickname/name inspiration. A Hangul name can use different Hanja; legal-name rules require separate verification.'},
+ 'zh-CN':{title:'浏览人工整理的名字库',intro:'搜索生成器使用的同一名字库，对比韩文、罗马字、发音和一种可能的汉字含义。',search:'搜索名字',placeholder:'例如 지우、Ji-u、서준…',results:'匹配结果',pronunciation:'发音',meaning:'可能的含义主题',hanja:'一种可能的汉字',vibes:'风格标签',copy:'复制名字',copied:'已复制',none:'没有匹配的人工整理名字。',note:'本名字库仅用于文化昵称/取名灵感。同一韩文名可对应不同汉字，法定姓名需另行确认。'},
+ ja:{title:'選定済み名前カタログを見る',intro:'生成器と同じ選定済みカタログを検索し、ハングル・ローマ字・発音・漢字表記例を比較できます。',search:'名前を検索',placeholder:'例: 지우、Ji-u、서준…',results:'一致候補',pronunciation:'発音',meaning:'意味テーマの例',hanja:'漢字表記の一例',vibes:'雰囲気タグ',copy:'名前をコピー',copied:'コピー済み',none:'一致する選定済み名前がありません。',note:'文化的なニックネーム／名前の着想用です。同じハングル名に複数の漢字があり得るため、法的利用は別途確認してください。'},
+ 'zh-TW':{title:'瀏覽人工整理的名字庫',intro:'搜尋生成器使用的同一名字庫，比較韓文、羅馬字、發音與一種可能的漢字含義。',search:'搜尋名字',placeholder:'例如 지우、Ji-u、서준…',results:'符合結果',pronunciation:'發音',meaning:'可能的含義主題',hanja:'一種可能的漢字',vibes:'風格標籤',copy:'複製名字',copied:'已複製',none:'沒有符合的人工整理名字。',note:'本名字庫僅供文化暱稱／取名靈感。同一韓文名可對應不同漢字，法定姓名需另外確認。'},
+ vi:{title:'Khám phá danh mục tên tuyển chọn',intro:'Tìm trong chính danh mục mà bộ tạo tên sử dụng để so sánh Hangul, chữ Latin, cách đọc và một chủ đề Hanja khả dĩ.',search:'Tìm tên',placeholder:'Thử 지우, Ji-u, 서준…',results:'Kết quả',pronunciation:'Phát âm',meaning:'Chủ đề nghĩa khả dĩ',hanja:'Một Hanja khả dĩ',vibes:'Thẻ phong cách',copy:'Sao chép tên',copied:'Đã sao chép',none:'Không có tên tuyển chọn phù hợp.',note:'Danh mục chỉ dành cho cảm hứng tên/biệt danh văn hóa. Một tên Hangul có thể có nhiều Hanja; dùng pháp lý cần kiểm tra riêng.'},
+ th:{title:'สำรวจคลังชื่อที่คัดสรร',intro:'ค้นหาในคลังเดียวกับที่ตัวสร้างชื่อใช้ เพื่อเปรียบเทียบฮันกึล อักษรโรมัน การออกเสียง และตัวอย่างความหมายฮันจา',search:'ค้นหาชื่อ',placeholder:'ลอง 지우, Ji-u, 서준…',results:'ผลลัพธ์',pronunciation:'การออกเสียง',meaning:'ธีมความหมายที่เป็นไปได้',hanja:'ตัวอย่างฮันจา',vibes:'แท็กบรรยากาศ',copy:'คัดลอกชื่อ',copied:'คัดลอกแล้ว',none:'ไม่พบชื่อที่คัดสรรตรงกับคำค้น',note:'คลังนี้ใช้เพื่อไอเดียชื่อเล่น/ชื่อเชิงวัฒนธรรม ชื่อฮันกึลเดียวกันอาจใช้ฮันจาได้หลายแบบ การใช้ทางกฎหมายต้องตรวจสอบแยกต่างหาก'}
+};
+const VIBES:NamingVibe[]=['gentle','elegant','bright','strong','modern'];
+const SOUNDS:NamingSound[]=['soft','crisp','balanced'];
+
+function buildCatalog(){const byId=new Map<string,KoreanNameCandidate>();for(const vibe of VIBES)for(const sound of SOUNDS){for(const item of generateKoreanNames({vibe,sound,surname:'none'},12))byId.set(item.id,item);}return [...byId.values()].sort((a,b)=>a.givenHangul.localeCompare(b.givenHangul,'ko'));}
+
+export function NamingCatalogExplorer({locale}:{locale:string}){
+ const l=(locale in C?locale:'en') as Locale,c=C[l];const [query,setQuery]=useState('');const [copied,setCopied]=useState('');
+ const catalog=useMemo(buildCatalog,[]);const normalized=query.trim().toLocaleLowerCase();
+ const matches=useMemo(()=>{if(!normalized)return catalog.slice(0,12);return catalog.filter(item=>[item.givenHangul,item.givenRomanized,item.hanja,item.hanjaMeaning,item.pronunciation].some(value=>value.toLocaleLowerCase().includes(normalized))).slice(0,12);},[catalog,normalized]);
+ async function copy(item:KoreanNameCandidate){try{await navigator.clipboard?.writeText(`${item.givenHangul} · ${item.givenRomanized} · ${item.hanja} · ${item.hanjaMeaning}`);setCopied(item.id);}catch{setCopied('');}}
+ return <section style={{maxWidth:960,margin:'0 auto',padding:'0 20px 72px'}}><div style={{border:'1px solid rgba(0,0,0,.12)',borderRadius:14,padding:18}}><h2>{c.title}</h2><p>{c.intro}</p><label style={{display:'grid',gap:6,maxWidth:520}}>{c.search}<input value={query} onChange={e=>{setQuery(e.target.value.slice(0,80));setCopied('');}} placeholder={c.placeholder} autoComplete="off"/></label><h3>{c.results} ({matches.length})</h3>{matches.length?<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12}}>{matches.map(item=><article key={item.id} style={{border:'1px solid rgba(0,0,0,.1)',borderRadius:10,padding:14}}><h4>{item.givenHangul} · {item.givenRomanized}</h4><p><strong>{c.pronunciation}:</strong> {item.pronunciation}<br/><strong>{c.hanja}:</strong> {item.hanja}<br/><strong>{c.meaning}:</strong> {item.hanjaMeaning}<br/><strong>{c.vibes}:</strong> {item.vibes.join(', ')}</p><button type="button" className="secondaryButton" onClick={()=>copy(item)}>{copied===item.id?c.copied:c.copy}</button></article>)}</div>:<p role="status"><strong>{c.none}</strong></p>}<p><small>{c.note}</small></p></div></section>;
+}
