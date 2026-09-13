@@ -15,6 +15,14 @@ const nearbyCopy:Record<string,string>={
  vi:'Lập lộ trình 1–3 giờ quanh cung điện',
  th:'วางแผนเส้นทางใกล้พระราชวัง 1–3 ชั่วโมง'
 };
+const dayPlanCopy:Record<string,string>={
+ en:'Build a full Hanbok + palace + meal day plan',
+ 'zh-CN':'生成韩服＋宫殿＋用餐的一日计划',
+ ja:'韓服＋宮殿＋食事の1日プランを作る',
+ 'zh-TW':'建立韓服＋宮殿＋用餐的一日計畫',
+ vi:'Lập kế hoạch cả ngày: Hanbok + cung điện + bữa ăn',
+ th:'สร้างแผนทั้งวัน: ฮันบก + พระราชวัง + มื้ออาหาร'
+};
 const heroAlt:Record<string,string>={
  en:'Gyeonghoeru Pavilion at Gyeongbokgung Palace',
  'zh-CN':'景福宫庆会楼',
@@ -43,6 +51,9 @@ export default async function GyeongbokgungPage({params}:PageProps){
   <GyeongbokgungVisitHelper locale={locale}/>
   <GyeongbokgungArrivalAdvisor locale={locale}/>
   <GyeongbokgungPlannerV2 locale={locale}/>
-  <section style={{maxWidth:1050,margin:'0 auto',padding:'0 20px 72px'}}><Link className="secondaryButton" href="/explore/nearby">{nearbyCopy[locale]??nearbyCopy.en}</Link></section>
+  <section style={{maxWidth:1050,margin:'0 auto',padding:'0 20px 72px',display:'flex',gap:10,flexWrap:'wrap'}}>
+   <Link className="primaryButton" href="/explore/day-plan">{dayPlanCopy[locale]??dayPlanCopy.en}</Link>
+   <Link className="secondaryButton" href="/explore/nearby">{nearbyCopy[locale]??nearbyCopy.en}</Link>
+  </section>
  </main>;
 }
